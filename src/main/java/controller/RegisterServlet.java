@@ -1,6 +1,8 @@
 package controller;
 
 import dao.AccountPatientDAO;
+import dao.AccountStaffDAO;
+import dao.AccountPharmacistDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -38,17 +40,26 @@ public class RegisterServlet extends HttpServlet {
             out.print("{\"success\": false, \"message\": \"Vui lòng điền đầy đủ thông tin\"}");
             return;
         }
+        boolean userNameEmailExists = AccountStaffDAO.checkAccountStaff(username, email)
+                || AccountPharmacistDAO.checkAccountPharmacist(username,email);
 
-        // Đăng ký tài khoản
-        boolean success = AccountPatientDAO.registerPatient(username, email, password, "Enable");
 
-        // Trả về kết quả dạng JSON
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+
+        if (userNameEmailExists) {
+            out.print("{\"success\": false, \"message\": \"Email hoặc Username đã tồn tại\"}");
+            return;
+        }
+
+        // Đăng ký tài khoản mới
+        boolean success = AccountPatientDAO.registerPatient(username, email, password, "Enable");
+
         if (success) {
             out.print("{\"success\": true, \"message\": \"Đăng ký thành công\"}");
         } else {
-            out.print("{\"success\": false, \"message\": \"Email đã tồn tại\"}");
+            out.print("{\"success\": false, \"message\": \"Đăng ký thất bại. Vui lòng thử lại sau.\"}");
         }
+
     }
 }

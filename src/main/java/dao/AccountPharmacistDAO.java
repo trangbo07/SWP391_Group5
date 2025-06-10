@@ -35,4 +35,27 @@ public class AccountPharmacistDAO {
 
         return pharmacist;
     }
+    public static boolean checkAccountPharmacist(String username, String email) {
+        DBContext db = DBContext.getInstance();
+
+        try {
+            String sql = """
+                     SELECT * FROM AccountPharmacist 
+                     WHERE username = ? OR email = ?
+                     """;
+            PreparedStatement statement = db.getConnection().prepareStatement(sql);
+            statement.setString(1, username);
+            statement.setString(2, email);
+
+            ResultSet rs = statement.executeQuery();
+            boolean exists = rs.next(); // true nếu có dòng dữ liệu trả về
+
+            rs.close();
+            statement.close();
+            return exists;
+        } catch (Exception e) {
+            e.printStackTrace(); // Ghi log lỗi
+            return false; // Có lỗi xảy ra thì coi như đăng nhập thất bại
+        }
+    }
 }
