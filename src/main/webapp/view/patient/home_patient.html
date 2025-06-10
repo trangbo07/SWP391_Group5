@@ -31,45 +31,120 @@
         <nav class="nav navbar navbar-expand-xl navbar-light iq-navbar header-hover-menu py-xl-0">
           <div class="container-fluid navbar-inner">
             <div class="d-flex align-items-center justify-content-between w-100 landing-header">
-              <div class="d-flex align-items-center gap-4">
-                <a href="./home_patient.html" class="navbar-brand m-0">
+              <div class="d-flex gap-3 gap-xl-0 align-items-center">
+                <div>
+                  <button data-trigger="navbar_main"
+                          class="d-xl-none btn btn-primary rounded-pill p-1 pt-0 toggle-rounded-btn"
+                          type="button">
+                    <svg width="20px" class="icon-20" viewBox="0 0 24 24">
+                      <path fill="currentColor"
+                            d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"></path>
+                    </svg>
+                  </button>
+                </div>
+                <!--Logo -->
+                <a href="home" class="navbar-brand m-0">
                   <span class="logo-normal">
-                    <img src="../assets/images/logo/logo.png" alt="logo" class="img-fluid" loading="lazy" style="height:40px;">
+                    <img src="../assets/images/logo/logo.png" alt="logo" class="img-fluid" loading="lazy">
                   </span>
                 </a>
-                <ul class="navbar-nav flex-row gap-3">
-                  <li class="nav-item">
-                    <a class="nav-link" href="./home_patient.html">Home</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#features">Features</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#profile">Profile</a>
-                  </li>
-                </ul>
+                <!-- Horizontal Menu Start -->
+                <nav id="navbar_main" class="mobile-offcanvas nav navbar navbar-expand-xl hover-nav horizontal-nav mega-menu-content py-xl-0">
+                  <div class="container-fluid p-lg-0">
+                    <div class="offcanvas-header px-0">
+                      <a href="home" class="navbar-brand m-0">
+                        <span class="logo-normal">
+                          <img src="../assets/images/logo/logo.png" alt="logo" class="img-fluid" loading="lazy">
+                        </span>
+                      </a>
+                      <button class="btn-close float-end px-3"></button>
+                    </div>
+                    <ul class="navbar-nav iq-nav-menu list-unstyled" id="header-menu">
+
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">
+                          <span class="item-name">Appointments</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">
+                          <span class="item-name">Medicine Records</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="prescriptions">
+                          <span class="item-name">Prescriptions</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="profile">
+                          <span class="item-name">Profile</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </nav>
               </div>
-              <div class="right-panel d-flex align-items-center gap-2">
-                <a class="btn btn-outline-primary" href="logout">Logout</a>
+              <div class="right-panel">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul class="navbar-nav align-items-center ms-auto mb-2 mb-xl-0">
+                    <li class="nav-item dropdown" id="itemdropdown1">
+                      <a class="nav-link d-flex align-items-center" href="#"
+                         id="navbarDropdown" role="button"
+                         data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="btn-icon btn-sm rounded-pill">
+                          <span class="btn-inner">
+                            <svg class="user-icons"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 width="20"
+                                 height="21" viewBox="0 0 20 21" fill="none">
+                              <mask style="mask-type:alpha"
+                                    maskUnits="userSpaceOnUse" x="3" y="12"
+                                    width="14" height="7">
+                                <path fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M3.33203 12.3041H16.5319V18.4491H3.33203V12.3041Z"
+                                      fill="white"></path>
+                              </mask>
+                              <g>
+                                <path fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M9.93286 13.5541C6.38203 13.5541 4.58203 14.1641 4.58203 15.3682C4.58203 16.5832 6.38203 17.1991 9.93286 17.1991C13.4829 17.1991 15.282 16.5891 15.282 15.3849C15.282 14.1699 13.4829 13.5541 9.93286 13.5541ZM9.93286 18.4491C8.30036 18.4491 3.33203 18.4491 3.33203 15.3682C3.33203 12.6216 7.09953 12.3041 9.93286 12.3041C11.5654 12.3041 16.532 12.3041 16.532 15.3849C16.532 18.1316 12.7654 18.4491 9.93286 18.4491Z"
+                                      fill="currentColor"></path>
+                              </g>
+                              <mask style="mask-type:alpha"
+                                    maskUnits="userSpaceOnUse" x="5" y="1"
+                                    width="10" height="10">
+                                <path fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M5.50781 1.89075H14.3578V10.7396H5.50781V1.89075Z"
+                                      fill="white"></path>
+                              </mask>
+                              <g>
+                                <path fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M9.93367 3.08038C8.14951 3.08038 6.69784 4.53121 6.69784 6.31538C6.69201 8.09371 8.13284 9.54371 9.9095 9.55038L9.93367 10.1454V9.55038C11.717 9.55038 13.1678 8.09871 13.1678 6.31538C13.1678 4.53121 11.717 3.08038 9.93367 3.08038ZM9.93367 10.7395H9.90701C7.47201 10.732 5.49951 8.74622 5.50784 6.31288C5.50784 3.87538 7.49284 1.89038 9.93367 1.89038C12.3737 1.89038 14.3578 3.87538 14.3578 6.31538C14.3578 8.75538 12.3737 10.7395 9.93367 10.7395Z"
+                                      fill="currentColor"></path>
+                              </g>
+                            </svg>
+                          </span>
+                        </div>
+                      </a>
+                      <ul class="dropdown-menu dropdown-menu-end dropdown-user"
+                          aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item border-bottom" href="profile">Profile</a></li>
+                        <li><a class="dropdown-item" href="logout">Logout</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </nav>
       </header>
-      <section class="banner-one-app py-5" style="background: linear-gradient(90deg, #e3f0ff 0%, #f8fbff 100%);">
-        <div class="container">
-          <div class="row align-items-center">
-            <div class="col-lg-7">
-              <h1 class="fw-bold mb-3">Welcome to the Patient Portal</h1>
-              <p class="lead mb-4">Manage your health easily: Book appointments, view history, search for doctors, access prescriptions, and more.</p>
-              <a href="#features" class="btn btn-primary btn-lg">Explore Features</a>
-            </div>
-            <div class="col-lg-5 text-center">
-              <img src="../assets/images/general/doctor.png" alt="Patient Home" class="img-fluid" style="max-height:300px;">
-            </div>
-          </div>
-        </div>
-      </section>
+
+    
       <section id="features" class="section-padding bg-light">
         <div class="container">
           <div class="text-center mb-5">
