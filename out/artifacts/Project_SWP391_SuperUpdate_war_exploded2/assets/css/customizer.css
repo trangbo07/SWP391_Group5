@@ -1,0 +1,119 @@
+:root {
+  --bs-primary: #7093e5;
+  --bs-primary-rgb: 112, 147, 229;
+  --bs-primary-bg-subtle: rgb(226.4, 233.4, 249.8);
+  --bs-primary-border-subtle: var(--bs-primary-bg-subtle);
+  --bs-link-color-rgb: var(--bs-primary-rgb);
+  --bs-primary-hover-bg: rgb(89.6, 117.6, 183.2);
+  --bs-primary-hover-border: rgb(78.4, 102.9, 160.3);
+  --bs-primary-active-bg: rgb(89.6, 117.6, 183.2);
+  --bs-primary-active-border: rgb(78.4, 102.9, 160.3);
+  --bs-secondary: #f68685;
+  --bs-secondary-rgb: 246, 134, 133;
+  --bs-secondary-bg-subtle: rgb(253.2, 230.8, 230.6);
+  --bs-secondary-border-subtle: var(--bs-secondary-bg-subtle);
+  --bs-link-color-rgb: var(--bs-secondary-rgb);
+  --bs-secondary-hover-bg: rgb(196.8, 107.2, 106.4);
+  --bs-secondary-hover-border: rgb(172.2, 93.8, 93.1);
+  --bs-secondary-active-bg: rgb(196.8, 107.2, 106.4);
+  --bs-secondary-active-border: rgb(172.2, 93.8, 93.1);
+  --bs-success: #219653;
+  --bs-success-rgb: 33, 150, 83;
+  --bs-success-bg-subtle: rgb(210.6, 234, 220.6);
+  --bs-success-border-subtle: var(--bs-success-bg-subtle);
+  --bs-link-color-rgb: var(--bs-success-rgb);
+  --bs-success-hover-bg: rgb(26.4, 120, 66.4);
+  --bs-success-hover-border: rgb(23.1, 105, 58.1);
+  --bs-success-active-bg: rgb(26.4, 120, 66.4);
+  --bs-success-active-border: rgb(23.1, 105, 58.1);
+  --bs-warning: #f16a1b;
+  --bs-warning-rgb: 241, 106, 27;
+  --bs-warning-bg-subtle: rgb(252.2, 225.2, 209.4);
+  --bs-warning-border-subtle: var(--bs-warning-bg-subtle);
+  --bs-link-color-rgb: var(--bs-warning-rgb);
+  --bs-warning-hover-bg: rgb(192.8, 84.8, 21.6);
+  --bs-warning-hover-border: rgb(168.7, 74.2, 18.9);
+  --bs-warning-active-bg: rgb(192.8, 84.8, 21.6);
+  --bs-warning-active-border: rgb(168.7, 74.2, 18.9);
+  --bs-danger: #eb5757;
+  --bs-danger-rgb: 235, 87, 87;
+  --bs-danger-bg-subtle: rgb(251, 221.4, 221.4);
+  --bs-danger-border-subtle: var(--bs-danger-bg-subtle);
+  --bs-link-color-rgb: var(--bs-danger-rgb);
+  --bs-danger-hover-bg: rgb(188, 69.6, 69.6);
+  --bs-danger-hover-border: rgb(164.5, 60.9, 60.9);
+  --bs-danger-active-bg: rgb(188, 69.6, 69.6);
+  --bs-danger-active-border: rgb(164.5, 60.9, 60.9);
+  --bs-info: #08B1BA;
+  --bs-info-rgb: 8, 177, 186;
+  --bs-info-bg-subtle: rgb(205.6, 239.4, 241.2);
+  --bs-info-border-subtle: var(--bs-info-bg-subtle);
+  --bs-link-color-rgb: var(--bs-info-rgb);
+  --bs-info-hover-bg: rgb(6.4, 141.6, 148.8);
+  --bs-info-hover-border: rgb(5.6, 123.9, 130.2);
+  --bs-info-active-bg: rgb(6.4, 141.6, 148.8);
+  --bs-info-active-border: rgb(5.6, 123.9, 130.2);
+  --bs-light: #dee2e6;
+  --bs-light-rgb: 222, 226, 230;
+  --bs-light-bg-subtle: rgb(248.4, 249.2, 250);
+  --bs-light-border-subtle: var(--bs-light-bg-subtle);
+  --bs-link-color-rgb: var(--bs-light-rgb);
+  --bs-light-hover-bg: rgb(177.6, 180.8, 184);
+  --bs-light-hover-border: rgb(155.4, 158.2, 161);
+  --bs-light-active-bg: rgb(177.6, 180.8, 184);
+  --bs-light-active-border: rgb(155.4, 158.2, 161);
+  --bs-dark: #000000;
+  --bs-dark-rgb: 0, 0, 0;
+  --bs-dark-bg-subtle: #cccccc;
+  --bs-dark-border-subtle: var(--bs-dark-bg-subtle);
+  --bs-link-color-rgb: var(--bs-dark-rgb);
+  --bs-dark-hover-bg: black;
+  --bs-dark-hover-border: black;
+  --bs-dark-active-bg: black;
+  --bs-dark-active-border: black;
+  --bs-gray: #6c757d;
+  --bs-gray-rgb: 108, 117, 125;
+  --bs-gray-bg-subtle: rgb(225.6, 227.4, 229);
+  --bs-gray-border-subtle: var(--bs-gray-bg-subtle);
+  --bs-link-color-rgb: var(--bs-gray-rgb);
+  --bs-gray-hover-bg: rgb(86.4, 93.6, 100);
+  --bs-gray-hover-border: rgb(75.6, 81.9, 87.5);
+  --bs-gray-active-bg: rgb(86.4, 93.6, 100);
+  --bs-gray-active-border: rgb(75.6, 81.9, 87.5);
+}
+:root[data-bs-theme=dark] {
+  --bs-primary-text-emphasis: rgb(169.2, 190.2, 239.4);
+  --bs-primary-bg-subtle: rgb(22.4, 29.4, 45.8);
+}
+:root[data-bs-theme=dark] {
+  --bs-secondary-text-emphasis: rgb(249.6, 182.4, 181.8);
+  --bs-secondary-bg-subtle: rgb(49.2, 26.8, 26.6);
+}
+:root[data-bs-theme=dark] {
+  --bs-success-text-emphasis: rgb(121.8, 192, 151.8);
+  --bs-success-bg-subtle: rgb(6.6, 30, 16.6);
+}
+:root[data-bs-theme=dark] {
+  --bs-warning-text-emphasis: rgb(246.6, 165.6, 118.2);
+  --bs-warning-bg-subtle: rgb(48.2, 21.2, 5.4);
+}
+:root[data-bs-theme=dark] {
+  --bs-danger-text-emphasis: rgb(243, 154.2, 154.2);
+  --bs-danger-bg-subtle: rgb(47, 17.4, 17.4);
+}
+:root[data-bs-theme=dark] {
+  --bs-info-text-emphasis: rgb(106.8, 208.2, 213.6);
+  --bs-info-bg-subtle: rgb(1.6, 35.4, 37.2);
+}
+:root[data-bs-theme=dark] {
+  --bs-light-text-emphasis: rgb(235.2, 237.6, 240);
+  --bs-light-bg-subtle: rgb(44.4, 45.2, 46);
+}
+:root[data-bs-theme=dark] {
+  --bs-dark-text-emphasis: #666666;
+  --bs-dark-bg-subtle: black;
+}
+:root[data-bs-theme=dark] {
+  --bs-gray-text-emphasis: rgb(166.8, 172.2, 177);
+  --bs-gray-bg-subtle: rgb(21.6, 23.4, 25);
+}

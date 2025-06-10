@@ -1,0 +1,1 @@
+{"version":3,"sources":["custom/custom-scss.scss"],"names":[],"mappings":"AAAA,0DACI,wBACA,eAAA,CAGJ,iBACI,cAAA,CAAA","file":"../../custom/custom-scss.min.css","sourcesContent":[".rm-cancel-btn[type=\"search\"]::-webkit-search-cancel-button {\n    -webkit-appearance: none;\n    appearance: none;\n}\n\n.flatpickr-month {\n    margin-top: 6px;\n}"]}
