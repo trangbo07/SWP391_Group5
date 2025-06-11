@@ -16,15 +16,6 @@
         <maven.compiler.source>17</maven.compiler.source>
         <junit.version>5.11.0</junit.version>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>eclipse-ee4j</id>
-            <name>Eclipse EE4J Repository</name>
-            <url>https://repo.eclipse.org/content/groups/releases/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -32,7 +23,6 @@
             <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -51,7 +41,12 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>12.4.1.jre11</version>
         </dependency>
-
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -59,12 +54,13 @@
         </dependency>
     </dependencies>
 
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.3.2</version>
+                <version>3.4.0</version>
             </plugin>
         </plugins>
     </build>
