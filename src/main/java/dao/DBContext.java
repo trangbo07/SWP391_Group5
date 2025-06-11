@@ -3,7 +3,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DBContext {
-    private static DBContext instance = new DBContext();
+    private static final DBContext instance = new DBContext();
     Connection connection;
 
     public static DBContext getInstance() {

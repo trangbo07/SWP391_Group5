@@ -1,0 +1,8 @@
+.rm-cancel-btn[type=search]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.flatpickr-month {
+  margin-top: 6px;
+}
