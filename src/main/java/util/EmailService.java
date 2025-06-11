@@ -1,56 +1,48 @@
 package util;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
 
 public class EmailService {
-    // Dán API Key mới vào đây DF564NVA9JJFGYGMXZF41G28
-    private static final String API_KEY = System.getenv("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");
+    private static final String FROM = "trangnkhe186034@fpt.edu.vn";
+    private static final String PASSWORD = "wdlh xokg dizk qdhl"; // App Password từ Gmail
 
-    public static void sendEmail(String toEmail, String subject, String body) throws IOException {
-        System.out.println("[DEBUG] Preparing to send email to: " + toEmail);
-        String url = "https://api.sendgrid.com/v3/mail/send";
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Authorization", "Bearer " + API_KEY);
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setDoOutput(true);
+    public static boolean sendEmail(String to, String subject, String content) {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
 
-        String jsonPayload = "{"
-                + "\"personalizations\": [{"
-                + "\"to\": [{\"email\": \"" + toEmail + "\"}]"
-                + "}],"
-                + "\"from\": {\"email\": \"qpnguyenhuukhai@gmail.com\"},"
-                + "\"reply_to\": {\"email\": \"qpnguyenhuukhai@gmail.com\"},"
-                + "\"subject\": \"" + subject + "\","
-                + "\"content\": [{\"type\": \"text/plain\", \"value\": \"" + body.replace("\n", "\\n").replace("\"", "\\\"") + "\"}]"
-                + "}";
-        System.out.println("[DEBUG] JSON Payload: " + jsonPayload);
-
-        try (OutputStream os = con.getOutputStream()) {
-            byte[] input = jsonPayload.getBytes("utf-8");
-            os.write(input, 0, input.length);
-            System.out.println("[DEBUG] Payload sent to SendGrid");
-        }
-
-        int responseCode = con.getResponseCode();
-        System.out.println("[DEBUG] SendGrid Response Code: " + responseCode);
-
-        if (responseCode == 202) {
-            System.out.println("[DEBUG] Email sent successfully to: " + toEmail);
-        } else {
-            System.err.println("[ERROR] Failed to send email. Response Code: " + responseCode);
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getErrorStream()))) {
-                String line;
-                StringBuilder errorDetails = new StringBuilder();
-                while ((line = br.readLine()) != null) {
-                    errorDetails.append(line).append("\n");
-                }
-                System.err.println("[ERROR] SendGrid Error Details: " + errorDetails.toString());
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(FROM, PASSWORD);
             }
-            throw new IOException("SendGrid API returned error code: " + responseCode);
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(FROM));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject(subject, "UTF-8");
+            message.setContent(content, "text/html; charset=UTF-8");
+            Transport.send(message);
+            return true;
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return false;
         }
+    }
+
+    public static String generateOtpEmailContent(String otp) {
+        return "Hello,<br><br>"
+                + "You have requested to reset your password for the Medical Clinic & Patient Management system.<br><br>"
+                + "Your OTP code is: <b>" + otp + "</b><br><br>"
+                + "Please enter this code on the website to proceed with resetting your password. This code is valid for 10 minutes.<br><br>"
+                + "If you did not request a password reset, please ignore this email.<br><br>"
+                + "Best regards,<br>"
+                + "KiviCare Team";
     }
 }
