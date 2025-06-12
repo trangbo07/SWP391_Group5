@@ -11,7 +11,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
+    @WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
 @MultipartConfig
 public class RegisterServlet extends HttpServlet {
 

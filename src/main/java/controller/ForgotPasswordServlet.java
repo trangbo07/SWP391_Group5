@@ -15,7 +15,7 @@ import java.util.Random;
 @MultipartConfig
 public class ForgotPasswordServlet extends HttpServlet {
     private AccountDAO accountDAO = new AccountDAO();
-    private static final long OTP_VALID_DURATION = 10 * 60 * 1000; // 10 minutes
+    private static final long OTP_VALID_DURATION = 10 * 60 * 1000; 
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

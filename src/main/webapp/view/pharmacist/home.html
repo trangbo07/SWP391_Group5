@@ -15,6 +15,110 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+      /* LUXURIOUS ENHANCEMENTS */
+
+      /* Font Styling */
+      body, .nav-link, .card-title, .card-text, .btn {
+        font-family: 'Roboto', sans-serif;
+      }
+
+      h2, h5 {
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+
+      /* Navigation Bar Enhancements */
+      .navbar-inner {
+        background: linear-gradient(90deg, #ffffff 0%, #f0f4ff 100%);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+      }
+
+      .navbar-brand img {
+        filter: drop-shadow(0 1px 3px rgba(0,0,0,0.1));
+      }
+
+      .nav-link {
+        font-size: 1rem;
+        color: #1f2937 !important;
+        text-transform: capitalize;
+      }
+
+      .nav-link:hover {
+        color: #3b82f6 !important;
+        background: transparent !important;
+      }
+
+      /* Card Enhancements */
+      .card {
+        border: none;
+        border-radius: 16px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        background: linear-gradient(to bottom, #ffffff, #f9f9ff);
+      }
+
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+      }
+
+      .card img {
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover img {
+        transform: scale(1.1);
+      }
+
+      .btn-outline-primary {
+        border-radius: 20px;
+        font-weight: 600;
+        padding: 8px 20px;
+        transition: all 0.2s ease-in-out;
+      }
+
+      .btn-outline-primary:hover {
+        background-color: #3b82f6;
+        color: #fff;
+        border-color: #3b82f6;
+      }
+
+      /* Footer Enhancements */
+      footer {
+        background: #f9fafb;
+        font-size: 0.95rem;
+      }
+
+      .footer-menu-link a {
+        color: #6b7280;
+        text-decoration: none;
+      }
+
+      .footer-menu-link a:hover {
+        color: #3b82f6;
+      }
+
+      .footer-top {
+        padding: 60px 0;
+      }
+
+      .footer-bottom {
+        background-color: #e0e7ff;
+      }
+
+      /* Avatar Button Glamor */
+      .avatar-btn {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .card {
+          margin-bottom: 24px;
+        }
+      }
+    </style>
     <meta name="page_colors" content=''>
   </head>
   <body class="body-bg landing-pages">
@@ -32,14 +136,14 @@
           <div class="container-fluid navbar-inner">
             <div class="d-flex align-items-center justify-content-between w-100 landing-header">
               <div class="d-flex align-items-center gap-4">
-                <a href="./home_pharmacist.html" class="navbar-brand m-0">
+                <a href="./home.html" class="navbar-brand m-0">
                   <span class="logo-normal">
                     <img src="../assets/images/logo/logo.png" alt="logo" class="img-fluid" loading="lazy" style="height:40px;">
                   </span>
                 </a>
                 <ul class="navbar-nav flex-row gap-3">
                   <li class="nav-item">
-                    <a class="nav-link" href="./home_pharmacist.html">Home</a>
+                    <a class="nav-link" href="./home.html">Home</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#features">Features</a>
@@ -50,7 +154,27 @@
                 </ul>
               </div>
               <div class="right-panel d-flex align-items-center gap-2">
-                <a class="btn btn-outline-primary" href="logout">Logout</a>
+                    <!-- Avatar Dropdown -->
+                    <div class="avatar-dropdown">
+                        <button class="btn avatar-btn" type="button" id="avatarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle fs-4"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
+                            <li>
+                                <a class="dropdown-item" href="#settings">
+                                    <i class="bi bi-gear"></i>
+                                    Settings
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="logout">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
               </div>
             </div>
           </div>
