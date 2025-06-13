@@ -29,12 +29,10 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        if (
-
-                        uri.endsWith("/reset") || uri.endsWith("/login") || uri.endsWith("/logout") ||
-                        uri.endsWith(".html") || uri.endsWith(".css") || uri.endsWith(".js") || uri.endsWith("/register") ||
-                        uri.contains("../assets/")|| uri.contains(".png") || uri.contains(".jpg") || uri.contains(".webp") ||
-                        uri.startsWith(contextPath + "/home") ||uri.contains(".svg") || uri.contains("https://fonts.") ) {
+        if (uri.endsWith("/reset") || uri.endsWith("/login") || uri.endsWith("/logout") ||
+            uri.endsWith(".html") || uri.endsWith(".css") || uri.endsWith(".js") || uri.endsWith("/register") ||
+            uri.contains("../assets/")|| uri.contains(".png") || uri.contains(".jpg") || uri.contains(".webp") ||
+            uri.startsWith(contextPath + "/home") ||uri.contains(".svg") || uri.contains("https://fonts.") ) {
             chain.doFilter(request, response);
             return;
         }
