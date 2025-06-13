@@ -52,8 +52,9 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
+        String img = "user.png";
         // Đăng ký tài khoản mới
-        boolean success = AccountPatientDAO.registerPatient(username, email, password, "Enable");
+        boolean success = AccountPatientDAO.registerPatient(username, email, password, img,"Enable");
 
         if (success) {
             out.print("{\"success\": true, \"message\": \"Đăng ký thành công\"}");
