@@ -24,6 +24,7 @@ public class AccountPatientDAO {
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("email"),
+                        rs.getString("img"),
                         rs.getString("status")
                 );
             }
@@ -34,7 +35,7 @@ public class AccountPatientDAO {
         return patient;
     }
 
-    public static boolean registerPatient(String username ,String email, String password, String status) {
+    public static boolean registerPatient(String username ,String email, String password, String img, String status) {
         DBContext db = DBContext.getInstance();
 
         try {
@@ -48,12 +49,13 @@ public class AccountPatientDAO {
             }
 
             // Chưa tồn tại → thêm mới
-            String sql = "INSERT INTO AccountPatient(username, password, email, status) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO AccountPatient(username, password, email, img ,status) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement ps = db.getConnection().prepareStatement(sql);
             ps.setString(1, username);
             ps.setString(2, password);
             ps.setString(3, email);
-            ps.setString(4, status);
+            ps.setString(4, img);
+            ps.setString(5, status);
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
@@ -101,6 +103,7 @@ public class AccountPatientDAO {
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("email"),
+                        rs.getString("img"),
                         rs.getString("status")
                 );
             }

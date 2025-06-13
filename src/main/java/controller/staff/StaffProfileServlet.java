@@ -22,7 +22,6 @@ public class StaffProfileServlet extends HttpServlet {
         }
         
         resp.sendRedirect(req.getContextPath() + "/view/staff/my-account.html");
-//        req.getRequestDispatcher("/view/staff/my-account.html").forward(req, resp);
     }
 }
 
