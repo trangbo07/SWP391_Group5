@@ -50,6 +50,9 @@ public class StaffServlet extends HttpServlet {
             case "/profile":
                 resp.sendRedirect(req.getContextPath() + req.getServletPath() + "/profile");
                 return;
+            case "/diagnosis":
+                resp.sendRedirect(req.getContextPath() + req.getServletPath() + "/diagnosis");
+                return;
             default:
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy: " + path);
         }
