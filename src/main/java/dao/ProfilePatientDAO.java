@@ -25,7 +25,7 @@ public class ProfilePatientDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     dto = new PatientDTO(
-                            rs.getString("full_name"),   // ✅ đúng tên cột
+                            rs.getString("full_name"),
                             rs.getString("phone"),
                             rs.getString("username"),
                             rs.getString("email"),

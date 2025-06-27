@@ -1345,7 +1345,7 @@
                                                   <img class="p-1 avatar-40 rounded-pill bg-primary-subtle"
                                                      src="../assets/assets/images/shapes/01.png" loading="lazy" />
                                                   <div class="ms-3 flex-grow-1 text-start">
-                                                     <h6 class="mb-0 ">Biker’s Jacket</h6>
+                                                     <h6 class="mb-0 ">Biker's Jacket</h6>
                                                      <p class="mb-0">$56.00</p>
                                                   </div>
                                                   <button type="button" class="btn btn-icon text-danger btn-sm">
@@ -1433,7 +1433,7 @@
                                                   <img class="p-1 avatar-40 rounded-pill bg-primary-subtle"
                                                      src="../assets/assets/images/shapes/01.png" loading="lazy" />
                                                   <div class="ms-3 flex-grow-1 text-start">
-                                                     <h6 class="mb-0 ">Biker’s Jacket</h6>
+                                                     <h6 class="mb-0 ">Biker's Jacket</h6>
                                                      <p class="mb-0">$56.00</p>
                                                   </div>
                                                   <button type="button" class="btn btn-icon text-danger btn-sm">
@@ -1760,8 +1760,7 @@
                   <td>$500</td>
                   <td>Completed</td>
                   <td>
-                     <a class="d-inline-block pe-2" data-bs-toggle="offcanvas" href="#offcanvasPaymentEdit"
-                        aria-controls="offcanvasPaymentEdit">
+                     <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(1)">
                         <span class="text-success">
                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                               xmlns="http://www.w3.org/2000/svg">
@@ -1803,7 +1802,7 @@
                   <td>$410</td>
                   <td>Completed</td>
                   <td>
-                     <a href="#" class="d-inline-block pe-2">
+                     <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(2)">
                         <span class="text-success">
                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                               xmlns="http://www.w3.org/2000/svg">
@@ -1845,7 +1844,7 @@
                   <td>$150</td>
                   <td>Completed</td>
                   <td>
-                     <a href="#" class="d-inline-block pe-2">
+                     <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(3)">
                         <span class="text-success">
                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                               xmlns="http://www.w3.org/2000/svg">
@@ -1887,7 +1886,7 @@
                   <td>$390</td>
                   <td>Completed</td>
                   <td>
-                     <a href="#" class="d-inline-block pe-2">
+                     <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(4)">
                         <span class="text-success">
                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                               xmlns="http://www.w3.org/2000/svg">
@@ -1929,7 +1928,7 @@
                   <td>$235</td>
                   <td>Completed</td>
                   <td>
-                     <a href="#" class="d-inline-block pe-2">
+                     <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(5)">
                         <span class="text-success">
                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                               xmlns="http://www.w3.org/2000/svg">
@@ -1971,7 +1970,7 @@
                   <td>$220</td>
                   <td>Completed</td>
                   <td>
-                     <a href="#" class="d-inline-block pe-2">
+                     <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(6)">
                         <span class="text-success">
                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                               xmlns="http://www.w3.org/2000/svg">
@@ -2013,7 +2012,7 @@
                   <td>$370</td>
                   <td>Completed</td>
                   <td>
-                     <a href="#" class="d-inline-block pe-2">
+                     <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(7)">
                         <span class="text-success">
                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                               xmlns="http://www.w3.org/2000/svg">
@@ -2102,8 +2101,8 @@
       <div class="form-group">
          <label class="form-label" for="payment-method">Payment Method <span class="text-danger">*</span></label>
          <select class="form-control select2-basic-single" id="payment-method">
-            <option>Online</option>
-            <option selected="selected">Cash</option>
+            <option value="Prescription">Prescription</option>
+            <option value="Service">Service</option>
          </select>
       </div>
       <div class="form-group col-md-12">
@@ -2553,7 +2552,7 @@
                                             <span class="mt-2">Hover</span>
                                         </div>
                                         <div data-setting="checkbox" class="text-center">
-                                            <input type="checkbox" value="sidebar-boxed" class="btn-check" name="sidebar_type"
+                                            <input type="radio" value="sidebar-boxed" class="btn-check" name="sidebar_type"
                                                 id="sidebar-boxed">
                                             <label class="btn btn-border p-0 d-block overflow-hidden" for="sidebar-boxed">
                                                 <img src="../assets/assets/images/settings/dark/05.png" alt="boxed"
@@ -2564,7 +2563,7 @@
                                             <span class="mt-2">Boxed</span>
                                         </div>
                                         <div data-setting="checkbox" class="text-center">
-                                            <input type="checkbox" value="sidebar-soft" class="btn-check" name="sidebar_type"
+                                            <input type="radio" value="sidebar-soft" class="btn-check" name="sidebar_type"
                                                 id="sidebar-soft">
                                             <label class="btn btn-border p-0 d-block overflow-hidden" for="sidebar-soft">
                                                 <img src="../assets/assets/images/settings/dark/05.png" alt="boxed"

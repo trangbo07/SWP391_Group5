@@ -214,4 +214,22 @@ public class PaymentDAO {
         }
         return result;
     }
+    
+    // Update all fields for a payment
+    public boolean updatePayment(int paymentId, double amount, String paymentType, String status, java.sql.Timestamp paymentDate) {
+        String sql = "UPDATE Payment SET amount = ?, payment_type = ?, status = ?, payment_date = ? WHERE payment_id = ?";
+        DBContext db = DBContext.getInstance();
+        try (Connection conn = db.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDouble(1, amount);
+            ps.setString(2, paymentType);
+            ps.setString(3, status);
+            ps.setTimestamp(4, paymentDate);
+            ps.setInt(5, paymentId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

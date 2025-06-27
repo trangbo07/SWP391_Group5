@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import com.google.gson.Gson;
 
-@WebServlet({"/payment-admin", "/payment-admin/analytics", "/payment-admin/update-status"})
+@WebServlet({"/payment-admin", "/payment-admin/analytics", "/payment-admin/update-status", "/payment-admin/update"})
 public class PaymentAdminServlet extends HttpServlet {
     private PaymentDAO paymentDAO = new PaymentDAO();
     private Gson gson = new Gson();
@@ -37,6 +37,8 @@ public class PaymentAdminServlet extends HttpServlet {
         
         if ("/payment-admin/update-status".equals(path)) {
             handleUpdatePaymentStatus(req, resp);
+        } else if ("/payment-admin/update".equals(path)) {
+            handleUpdatePayment(req, resp);
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -112,6 +114,40 @@ public class PaymentAdminServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("{\"error\": \"Invalid payment ID\"}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\": \"Internal server error\"}");
+        }
+    }
+
+    private void handleUpdatePayment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            String paymentIdParam = req.getParameter("paymentId");
+            String amountParam = req.getParameter("amount");
+            String paymentType = req.getParameter("paymentType");
+            String status = req.getParameter("status");
+            String paymentDateParam = req.getParameter("paymentDate");
+
+            if (paymentIdParam == null || amountParam == null || paymentType == null || status == null || paymentDateParam == null) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\": \"Missing parameters\"}");
+                return;
+            }
+
+            int paymentId = Integer.parseInt(paymentIdParam);
+            double amount = Double.parseDouble(amountParam.replace("$", "").replace(",", ""));
+            java.sql.Timestamp paymentDate = java.sql.Timestamp.valueOf(paymentDateParam + " 00:00:00");
+
+            boolean updated = paymentDAO.updatePayment(paymentId, amount, paymentType, status, paymentDate);
+
+            resp.setContentType("application/json");
+            if (updated) {
+                resp.getWriter().write("{\"success\": true, \"message\": \"Payment updated successfully\"}");
+            } else {
+                resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                resp.getWriter().write("{\"success\": false, \"message\": \"Failed to update payment\"}");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

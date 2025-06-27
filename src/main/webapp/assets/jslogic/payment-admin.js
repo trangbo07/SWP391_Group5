@@ -50,6 +50,15 @@ class PaymentAdmin {
                 this.goToPage(page);
             }
         });
+
+        // Update button in edit modal
+        const updateBtn = document.querySelector('#offcanvasPaymentEdit .btn.btn-primary');
+        if (updateBtn) {
+            updateBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await this.submitEditPayment();
+            });
+        }
     }
 
     async loadAnalytics() {
@@ -323,10 +332,98 @@ class PaymentAdmin {
             document.getElementById('payment-method').value = payment.payment_type;
             document.getElementById('Amount').value = `$${payment.amount}`;
             document.getElementById('payment_id').value = payment.status;
-
+            this.editingPaymentId = payment.payment_id;
             // Show edit offcanvas
             const offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasPaymentEdit'));
             offcanvas.show();
+        }
+    }
+
+    async submitEditPayment() {
+        // Get paymentId from the currently edited payment
+        const paymentId = this.editingPaymentId;
+        if (!paymentId) {
+            this.showError('No payment selected for update');
+            return;
+        }
+
+        // Get form values
+        const name = document.getElementById('Name').value.trim();
+        const paymentDate = document.getElementById('datetime').value;
+        const paymentType = document.getElementById('payment-method').value;
+        const amountStr = document.getElementById('Amount').value.replace('$', '').replace(',', '');
+        const status = document.getElementById('payment_id').value;
+
+        // Validation
+        if (!name || !paymentDate || !paymentType || !amountStr || !status) {
+            this.showError('Please fill in all required fields');
+            return;
+        }
+
+        const amount = parseFloat(amountStr);
+        if (isNaN(amount) || amount <= 0) {
+            this.showError('Please enter a valid amount');
+            return;
+        }
+
+        // Show loading state
+        const updateBtn = document.querySelector('#offcanvasPaymentEdit .btn.btn-primary');
+        const originalText = updateBtn.innerHTML;
+        updateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+        updateBtn.disabled = true;
+
+        try {
+            console.log('Updating payment:', {
+                paymentId,
+                amount,
+                paymentType,
+                status,
+                paymentDate
+            });
+
+            const response = await fetch('/payment-admin/update', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json'
+                },
+                body: `paymentId=${encodeURIComponent(paymentId)}&amount=${encodeURIComponent(amount)}&paymentType=${encodeURIComponent(paymentType)}&status=${encodeURIComponent(status)}&paymentDate=${encodeURIComponent(paymentDate)}`
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Update result:', result);
+
+            if (result.success) {
+                this.showSuccess('Payment updated successfully');
+                
+                // Close modal
+                const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasPaymentEdit'));
+                if (offcanvas) {
+                    offcanvas.hide();
+                }
+
+                // Refresh data and analytics immediately
+                await Promise.all([
+                    this.loadPayments(),
+                    this.loadAnalytics()
+                ]);
+                
+                // Clear editing payment ID
+                this.editingPaymentId = null;
+            } else {
+                this.showError(result.message || 'Failed to update payment');
+            }
+        } catch (error) {
+            console.error('Error updating payment:', error);
+            this.showError('Failed to update payment: ' + error.message);
+        } finally {
+            // Restore button state
+            updateBtn.innerHTML = originalText;
+            updateBtn.disabled = false;
         }
     }
 
@@ -399,6 +496,20 @@ class PaymentAdmin {
             });
         } else {
             alert(message);
+        }
+    }
+
+    // Test method to verify update functionality
+    testUpdateFunctionality() {
+        console.log('Testing update functionality...');
+        console.log('Available payments:', this.payments);
+        
+        if (this.payments && this.payments.length > 0) {
+            const firstPayment = this.payments[0];
+            console.log('Testing with payment:', firstPayment);
+            this.editPayment(firstPayment.payment_id);
+        } else {
+            console.log('No payments available for testing');
         }
     }
 }
