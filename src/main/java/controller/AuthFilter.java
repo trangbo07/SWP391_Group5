@@ -21,16 +21,21 @@ public class AuthFilter implements Filter {
 
         String requestURI = req.getRequestURI();
 
-        // Danh sách các đường dẫn được phép truy cập mà không cần đăng nhập
-        if (requestURI.equals("/api/login") ||
-                requestURI.equals("/api/register") ||
-                requestURI.equals("/api/logout") ||
-                requestURI.equals("/api/reset") ||
-                requestURI.equals("/view/home.html") ||
-                requestURI.equals("/view/login.html") ||
-                requestURI.equals("/view/registration.html") ||
-                requestURI.equals("/view/reset-password.html") ||
+        // Get the context path and servlet path for more accurate matching
+        String contextPath = req.getContextPath();
+        String servletPath = req.getServletPath();
+        
+        // List of paths that can be accessed without login
+        if (requestURI.endsWith("/api/login") ||
+                requestURI.endsWith("/api/register") ||
+                requestURI.endsWith("/api/logout") ||
+                requestURI.endsWith("/api/reset") ||
+                requestURI.endsWith("/view/home.html") ||
+                requestURI.endsWith("/view/login.html") ||
+                requestURI.endsWith("/view/registration.html") ||
+                requestURI.endsWith("/view/reset-password.html") ||
                 requestURI.equals("/") ||
+                requestURI.equals(contextPath + "/") ||
                 requestURI.endsWith(".css") ||
                 requestURI.endsWith(".js") ||
                 requestURI.endsWith(".png") ||
@@ -46,9 +51,9 @@ public class AuthFilter implements Filter {
         boolean isLoggedIn = (session != null && session.getAttribute("user") != null);
 
         if (isLoggedIn) {
-            chain.doFilter(request, response); // Cho phép đi tiếp
+            chain.doFilter(request, response); // Allow to proceed
         } else {
-            // Nếu là API request, trả về JSON response
+            // If it's an API request, return JSON response
             if (requestURI.startsWith("/api/")) {
                 res.setContentType("application/json");
                 res.setCharacterEncoding("UTF-8");
@@ -57,7 +62,7 @@ public class AuthFilter implements Filter {
                 PrintWriter out = res.getWriter();
                 out.write("{\"error\":\"unauthorized\", \"message\": \"You are not logged in.\"}");
             } else {
-                // Nếu là request thông thường, redirect về home.html
+                // If it's a regular request, redirect to home.html
                 res.sendRedirect(req.getContextPath() + "/view/home.html");
             }
         }
