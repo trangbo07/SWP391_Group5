@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <a href="invoice.html?patientId=${patientId}" class="d-inline-block pe-2" title="Xem hóa đơn">
         <span class="text-warning"><i class="bi bi-receipt"></i></span>
       </a>
-      <a href="examination.html?patientId=${patientId}" class="d-inline-block pe-2" title="Xem kết quả khám">
+      <a href="examination-patient.html?patientId=${patientId}" class="d-inline-block pe-2" title="Xem kết quả khám">
         <span class="text-primary"><i class="bi bi-activity"></i></span>
       </a>
       <a href="service.html?patientId=${patientId}" class="d-inline-block pe-2" title="Xem dịch vụ cận lâm sàng">
