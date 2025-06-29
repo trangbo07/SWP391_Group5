@@ -18,6 +18,7 @@ public class AdminSystemDAO {
                                        b.doctor_id, b.full_name, b.department, b.phone, b.eduLevel
                                 FROM AccountStaff a
                                 JOIN Doctor b ON a.account_staff_id = b.account_staff_id
+                    ORDER BY a.account_staff_id DESC
                 """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
@@ -151,6 +152,7 @@ public class AdminSystemDAO {
             params.add(keyword);
             params.add(keyword);
         }
+        sql.append(" ORDER BY a.account_staff_id DESC");
 
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {

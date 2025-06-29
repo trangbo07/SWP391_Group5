@@ -2,6 +2,7 @@ let allDoctors = [];
 let currentPage = 1;
 let pageSize = 5;
 let selectedDoctorIdForReset = null;
+let isReversed = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     loadSelectFilter('status', 'filterStatus');
@@ -70,9 +71,12 @@ async function fetchDoctorsWithFilter() {
 function paginateDoctors() {
     const tableBody = document.getElementById('waitListTableBody');
     const info = document.getElementById('paginationInfo');
+
+    const sourceList = isReversed ? [...allDoctors].reverse() : allDoctors;
+
     const start = (currentPage - 1) * pageSize;
     const end = start + pageSize;
-    const pageData = allDoctors.slice(start, end);
+    const pageData = sourceList.slice(start, end);
 
     if (!pageData.length) {
         tableBody.innerHTML = '<tr><td colspan="10">No doctors available.</td></tr>';
@@ -109,6 +113,30 @@ function paginateDoctors() {
     const formattedEnd = String(Math.min(end, allDoctors.length)).padStart(2, '0');
     info.innerText = `Showing ${formattedStart} to ${formattedEnd} of ${allDoctors.length} entries`;
 }
+
+document.getElementById('btnReverseList').addEventListener('click', () => {
+    isReversed = !isReversed;
+
+    const btn = document.getElementById('btnReverseList');
+    const icon = btn.querySelector('i');
+
+    // Đổi icon và class để hiển thị trạng thái
+    if (isReversed) {
+        btn.classList.remove('btn-outline-secondary');
+        btn.classList.add('btn-secondary');
+        icon.classList.remove('fa-sort-amount-down-alt');
+        icon.classList.add('fa-sort-amount-up-alt');
+    } else {
+        btn.classList.add('btn-outline-secondary');
+        btn.classList.remove('btn-secondary');
+        icon.classList.add('fa-sort-amount-down-alt');
+        icon.classList.remove('fa-sort-amount-up-alt');
+    }
+
+    currentPage = 1;
+    paginateDoctors();
+});
+
 
 document.getElementById('selectPageSize').addEventListener('change', (e) => {
     pageSize = parseInt(e.target.value);
