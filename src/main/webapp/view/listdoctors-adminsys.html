@@ -1201,18 +1201,25 @@
             <div class="card-body">
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
+
                     <button class="btn btn-primary" id="btnAddDoctor">
                         <i class="fas fa-plus me-1"></i> Add Doctor
                     </button>
-                    <div>
-                        <label for="selectPageSize" class="form-label me-2 mb-0">Show:</label>
-                        <select id="selectPageSize" class="form-select d-inline-block w-auto">
-                            <option value="5" selected>5</option>
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="50">50</option>
-                        </select>
-                        <span>entries</span>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary" id="btnReverseList">
+                            <i class="fas fa-sort-amount-down-alt me-1"></i> Reverse List
+                        </button>
+
+                        <div>
+                            <label for="selectPageSize" class="form-label me-2 mb-0">Show:</label>
+                            <select id="selectPageSize" class="form-select d-inline-block w-auto">
+                                <option value="5" selected>5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                            <span>entries</span>
+                        </div>
                     </div>
                 </div>
                 <div class="loading-spinner" id="loadingSpinner">
