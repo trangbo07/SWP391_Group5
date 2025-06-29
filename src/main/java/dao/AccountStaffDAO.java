@@ -41,7 +41,7 @@ public class AccountStaffDAO {
         return staff;
     }
 
-    public boolean checkAccountStaff(String username, String email) {
+    public boolean checkAccountStaff(String uoe) {
         DBContext db = DBContext.getInstance();
 
         try {
@@ -50,8 +50,8 @@ public class AccountStaffDAO {
                     WHERE username = ? OR email = ?
                     """;
             PreparedStatement statement = db.getConnection().prepareStatement(sql);
-            statement.setString(1, username);
-            statement.setString(2, email);
+            statement.setString(1, uoe);
+            statement.setString(2, uoe);
 
             ResultSet rs = statement.executeQuery();
             boolean exists = rs.next(); // true nếu có dòng dữ liệu trả về
@@ -65,6 +65,32 @@ public class AccountStaffDAO {
         }
     }
 
+    public AccountStaff getAccountStaffById(int id) {
+        String sql = "SELECT * FROM AccountStaff WHERE account_staff_id = ?";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new AccountStaff(
+                            rs.getInt("account_staff_id"),
+                            rs.getString("username"),
+                            rs.getString("password"),
+                            rs.getString("email"),
+                            rs.getString("role"),
+                            rs.getString("img"),
+                            rs.getString("status")
+                    );
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     public boolean updatePassword(String email, String newPassword) {
         DBContext db = DBContext.getInstance();

@@ -12,12 +12,29 @@ public class DoctorDTOFA {
     private String department;
     private String phone;
     private String eduLevel;
+    private String password;
 
     public DoctorDTOFA() {
     }
 
+    public DoctorDTOFA(int accountStaffId, String username, String password, String role, String email, String img,
+                       String status, int doctorId, String fullName, String department, String phone, String eduLevel) {
+        this.accountStaffId = accountStaffId;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.email = email;
+        this.img = img;
+        this.status = status;
+        this.doctorId = doctorId;
+        this.fullName = fullName;
+        this.department = department;
+        this.phone = phone;
+        this.eduLevel = eduLevel;
+    }
+
     public DoctorDTOFA(int accountStaffId, String username, String role, String email, String img,
-                     String status, int doctorId, String fullName, String department, String phone, String eduLevel) {
+                       String status, int doctorId, String fullName, String department, String phone, String eduLevel) {
         this.accountStaffId = accountStaffId;
         this.username = username;
         this.role = role;
@@ -29,6 +46,14 @@ public class DoctorDTOFA {
         this.department = department;
         this.phone = phone;
         this.eduLevel = eduLevel;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public int getAccountStaffId() {
@@ -117,5 +142,23 @@ public class DoctorDTOFA {
 
     public void setEduLevel(String eduLevel) {
         this.eduLevel = eduLevel;
+    }
+
+    @Override
+    public String toString() {
+        return "DoctorDTOFA{" +
+                "accountStaffId=" + accountStaffId +
+                ", username='" + username + '\'' +
+                ", role='" + role + '\'' +
+                ", email='" + email + '\'' +
+                ", img='" + img + '\'' +
+                ", status='" + status + '\'' +
+                ", doctorId=" + doctorId +
+                ", fullName='" + fullName + '\'' +
+                ", department='" + department + '\'' +
+                ", phone='" + phone + '\'' +
+                ", eduLevel='" + eduLevel + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

@@ -1,21 +1,32 @@
 package controller;
 
 import com.google.gson.Gson;
+import dao.AccountDAO;
+import dao.AccountStaffDAO;
 import dao.AdminSystemDAO;
 
 import dto.DistinctResponse;
 import dto.DoctorDTOFA;
 import dto.JsonResponse;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import model.AccountStaff;
 import util.NormalizeUtil;
 
-import java.awt.datatransfer.DataFlavor;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Random;
 
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,  // 1MB
+        maxFileSize = 5 * 1024 * 1024,    // 5MB
+        maxRequestSize = 10 * 1024 * 1024 // 10MB
+)
 @WebServlet("/api/admin/doctors")
 public class AdminSys4DoctorServlet extends HttpServlet {
 
@@ -39,7 +50,7 @@ public class AdminSys4DoctorServlet extends HttpServlet {
 
         try {
             String action = req.getParameter("action");
-            if (action == null) action = ""; // Dùng "" làm mặc định nếu không có action
+            if (action == null) action = "";
 
             switch (action) {
                 case "" -> { // Mặc định: lấy toàn bộ bác sĩ
@@ -70,19 +81,6 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                     out.print(gson.toJson(filteredDoctors));
                 }
 
-                case "delete" -> {
-                    int id = Integer.parseInt(req.getParameter("id"));
-//                    boolean success = dao.deleteDoctor(id);
-//                    JsonResponse res = new JsonResponse(success, success ? "Doctor deleted." : "Delete failed.");
-//                    out.print(gson.toJson(res));
-                }
-
-                case "search" -> {
-//                    String keyword = req.getParameter("keyword");
-//                    List<DoctorDTOFA> results = dao.searchDoctors(keyword);
-//                    out.print(gson.toJson(results));
-                }
-
                 default -> {
                     JsonResponse res = new JsonResponse(false, "Unknown action: " + action);
                     out.print(gson.toJson(res));
@@ -100,7 +98,6 @@ public class AdminSys4DoctorServlet extends HttpServlet {
         }
     }
 
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -108,40 +105,145 @@ public class AdminSys4DoctorServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter out = resp.getWriter();
+        Gson gson = new Gson();
+        AccountDAO accountDAO = new AccountDAO();
 
         try {
             String action = req.getParameter("action");
-            if (action == null) action = ""; // Mặc định là rỗng nếu không có action
 
-            DoctorDTOFA dto = gson.fromJson(req.getReader(), DoctorDTOFA.class);
-            boolean success;
+            String accountStaffId = req.getParameter("accountStaffId");
+            String fullName = req.getParameter("fullName");
+            String username = req.getParameter("username");
+            String email = req.getParameter("email");
+            String phone = req.getParameter("phone");
+            String department = req.getParameter("department");
+            String eduLevel = req.getParameter("eduLevel");
+            String status = req.getParameter("status");
+            String doctorId = req.getParameter("doctorId");
 
-            switch (action) {
-                case "create" -> {
-//                    success = dao.createDoctor(dto);
-//                    JsonResponse res = new JsonResponse(success, success ? "Doctor created successfully." : "Doctor creation failed.");
-//                    out.print(gson.toJson(res));
+            JsonResponse jsonRes;
+            String imagePath = "/assets/images/uploads/default.jpg"; // fallback
+
+            if ("create".equals(action)) {
+                // Xử lý ảnh nếu có
+                Part imgPart = req.getPart("img");
+                if (imgPart != null && imgPart.getSize() > 0) {
+                    String fileName = Paths.get(imgPart.getSubmittedFileName()).getFileName().toString();
+                    String uploadDirPath = getServletContext().getRealPath("/assets/images/uploads");
+                    File uploadDir = new File(uploadDirPath);
+                    if (!uploadDir.exists()) uploadDir.mkdirs();
+
+                    String savedFilePath = uploadDirPath + File.separator + fileName;
+                    imgPart.write(savedFilePath);
+                    imagePath = "/assets/images/uploads/" + fileName;
                 }
 
-                case "update" -> {
-//                    success = dao.updateDoctor(dto);
-//                    JsonResponse res = new JsonResponse(success, success ? "Doctor updated successfully." : "Doctor update failed.");
-//                    out.print(gson.toJson(res));
+                if (accountDAO.checkAccount(email)) {
+                    jsonRes = new JsonResponse(false, "Email already exists.");
+                    out.print(gson.toJson(jsonRes));
+                    return;
+                }
+                if (accountDAO.checkAccount(username)) {
+                    jsonRes = new JsonResponse(false, "Username already exists.");
+                    out.print(gson.toJson(jsonRes));
+                    return;
                 }
 
-                default -> {
-                    JsonResponse res = new JsonResponse(false, "Unknown or missing action.");
-                    out.print(gson.toJson(res));
+                String generatedPassword = generateRandomPassword(8);
+                boolean success = dao.insertDoctor(
+                        username, generatedPassword, email, imagePath, status,
+                        fullName, phone, department, eduLevel
+                );
+
+                jsonRes = new JsonResponse(success, success ? "Create successfully!" : "Create failed!");
+                out.print(gson.toJson(jsonRes));
+                return;
+
+            } else if ("update".equals(action)) {
+                if (doctorId == null || doctorId.isEmpty()) {
+                    jsonRes = new JsonResponse(false, "Missing doctor ID");
+                    out.print(gson.toJson(jsonRes));
+                    return;
                 }
+
+                AccountStaffDAO accountStaffDAO = new AccountStaffDAO();
+                String oldUsername = ((AccountStaff) accountStaffDAO.getAccountStaffById(Integer.parseInt(accountStaffId))).getUsername();
+                String oldEmail = ((AccountStaff) accountStaffDAO.getAccountStaffById(Integer.parseInt(accountStaffId))).getEmail();
+                String oldImagePath = ((AccountStaff) accountStaffDAO.getAccountStaffById(Integer.parseInt(accountStaffId))).getImg();
+
+                Part imgPart = req.getPart("img");
+                if (imgPart != null && imgPart.getSize() > 0) {
+                    String fileName = Paths.get(imgPart.getSubmittedFileName()).getFileName().toString();
+                    String uploadDirPath = getServletContext().getRealPath("/assets/images/uploads");
+                    File uploadDir = new File(uploadDirPath);
+                    if (!uploadDir.exists()) uploadDir.mkdirs();
+
+                    String savedFilePath = uploadDirPath + File.separator + fileName;
+                    imgPart.write(savedFilePath);
+                    imagePath = "/assets/images/uploads/" + fileName;
+                } else {
+                    imagePath = oldImagePath;
+                }
+
+                boolean isDuplicate = dao.isEmailOrUsernameDuplicated(username, email, oldUsername, oldEmail);
+                if (isDuplicate) {
+                    jsonRes = new JsonResponse(false, "Username or Email already exists.");
+                    out.print(gson.toJson(jsonRes));
+                    return;
+                }
+
+                boolean success = dao.updateDoctor(
+                        Integer.parseInt(doctorId), Integer.parseInt(accountStaffId), username, email, imagePath, status,
+                        fullName, phone, department, eduLevel
+                );
+
+                jsonRes = new JsonResponse(success, success ? "Updated successfully!" : "Update failed!");
+                out.print(gson.toJson(jsonRes));
+                return;
+            } else if ("updateStatus".equals(action)) {
+                int doctorIdInt = Integer.parseInt(req.getParameter("doctorId"));
+                String newStatus = req.getParameter("status");
+
+                boolean success = dao.updateAccountStaffStatus(doctorIdInt, newStatus); // viết hàm này trong DAO
+                jsonRes = new JsonResponse(success, success ? "Status updated!" : "Status update failed.");
+                out.print(gson.toJson(jsonRes));
+                return;
+            } else if ("resetPassword".equals(action)) {
+                String staffIdRaw = req.getParameter("accountStaffId");
+                if (staffIdRaw == null || staffIdRaw.isEmpty()) {
+                    jsonRes = new JsonResponse(false, "Missing accountStaffId");
+                    out.print(gson.toJson(jsonRes));
+                    return;
+                }
+
+                int staffId = Integer.parseInt(staffIdRaw);
+                String generatedPassword = generateRandomPassword(8);
+                boolean ok = accountDAO.resetStaffPassword(staffId, generatedPassword);
+                jsonRes = new JsonResponse(ok, ok ? "Reset mật khẩu thành công" : "Reset thất bại");
+                out.print(gson.toJson(jsonRes));
+                return;
+            } else {
+                jsonRes = new JsonResponse(false, "Invalid action");
+                out.print(gson.toJson(jsonRes));
             }
 
-            out.flush();
         } catch (Exception e) {
             e.printStackTrace();
-            JsonResponse res = new JsonResponse(false, "Invalid JSON or server error");
-            out.print(gson.toJson(res));
+            JsonResponse errorRes = new JsonResponse(false, "Error: " + e.getMessage());
+            out.print(gson.toJson(errorRes));
         }
     }
 
+    private String generateRandomPassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+
+        return sb.toString();
+    }
 }
 

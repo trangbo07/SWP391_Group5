@@ -4,6 +4,10 @@ import model.AccountStaff;
 import model.AccountPharmacist;
 import model.AccountPatient;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.List;
+
 public class AccountDAO {
     AccountStaffDAO accountStaffDAO = new AccountStaffDAO();
     AccountPharmacistDAO accountPharmacistDAO = new AccountPharmacistDAO();
@@ -28,36 +32,15 @@ public class AccountDAO {
         return null;
     }
 
+    public boolean checkAccount(String uoe) {
+        AccountStaffDAO accountStaffDAO = new AccountStaffDAO();
+        AccountPharmacistDAO accountPharmacistDAO = new AccountPharmacistDAO();
+        AccountPatientDAO accountPatientDAO = new AccountPatientDAO();
 
-
-    public Object checkAccount(String username, String email) {
-        AccountStaffDAO  accountStaffDAO = new AccountStaffDAO();
-        AccountPharmacistDAO  accountPharmacistDAO = new AccountPharmacistDAO();
-        AccountPatientDAO   accountPatientDAO = new AccountPatientDAO();
-
-        // Check AccountStaff
-        if (accountStaffDAO.checkAccountStaff(username, email)) {
-            AccountStaff staff = AccountStaffDAO.checkLogin(username, email);
-            if (staff != null) {
-                return staff;
-            }
-        }
-
-        // Check AccountPharmacist
-        if (accountPharmacistDAO.checkAccountPharmacist(username, email)) {
-            AccountPharmacist pharmacist = AccountPharmacistDAO.checkLogin(username, email);
-            if (pharmacist != null) {
-                return pharmacist;
-            }
-        }
-
-        // Check AccountPatient
-        AccountPatient patient = accountPatientDAO.checkLogin(username, email);
-        if (patient != null) {
-            return patient;
-        }
-
-        return null;
+        return accountStaffDAO.checkAccountStaff(uoe)
+                || accountPharmacistDAO.checkAccountPharmacist(uoe)
+                || accountPatientDAO.getAccountByEmailOrUsername(uoe) != null
+                || accountPatientDAO.getAccountByEmailOrUsername(uoe) != null;
     }
 
     public Object checkAccount1(String email) {
@@ -110,6 +93,20 @@ public class AccountDAO {
         return false;
     }
 
+    public boolean resetStaffPassword(int staffId, String generatedPassword) {
+        String sql = "UPDATE AccountStaff SET password = ? WHERE account_staff_id = ?";
 
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, generatedPassword);
+            ps.setInt(2, staffId);
+
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }
