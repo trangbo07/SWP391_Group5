@@ -36,17 +36,17 @@ public class AccountPharmacistDAO {
 
         return pharmacist;
     }
-    public static boolean checkAccountPharmacist(String username, String email) {
+    public static boolean checkAccountPharmacist(String uoe) {
         DBContext db = DBContext.getInstance();
 
         try {
             String sql = """
                      SELECT * FROM AccountPharmacist 
                      WHERE username = ? OR email = ?
-                     """;
+                    """;
             PreparedStatement statement = db.getConnection().prepareStatement(sql);
-            statement.setString(1, username);
-            statement.setString(2, email);
+            statement.setString(1, uoe);
+            statement.setString(2, uoe);
 
             ResultSet rs = statement.executeQuery();
             boolean exists = rs.next(); // true nếu có dòng dữ liệu trả về
