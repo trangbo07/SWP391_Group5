@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="vi" class="theme-fs-sm" data-bs-theme="light" data-bs-theme-color="default" dir="ltr">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Kết quả khám bệnh - KiviCare Clinic</title>
+    <meta name="description" content="Xem kết quả khám bệnh và chẩn đoán">
+    <meta name="keywords" content="kết quả khám, chẩn đoán, bệnh nhân, y tế">
+    <meta name="author" content="KiviCare">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../assets/assets/images/favicon.ico" />
+
+    <!-- Library / Plugin Css Build -->
+    <link rel="stylesheet" href="../assets/assets/css/core/libs.min.css" />
+
+    <!-- flaticon css -->
+    <link rel="stylesheet" href="../assets/assets/vendor/flaticon/css/flaticon.css" />
+
+    <!-- font-awesome css -->
+    <link rel="stylesheet" href="../assets/assets/vendor/font-awesome/css/all.min.css" />
+
+    <!-- Flatpickr css -->
+    <link rel="stylesheet" href="../assets/assets/vendor/flatpickr/dist/flatpickr.min.css" />
+
+    <link rel="stylesheet" href="../assets/assets/vendor/sheperd/dist/css/sheperd.css">
+
+    <!-- Sweetlaert2 css -->
+    <link rel="stylesheet" href="../assets/assets/vendor/sweetalert2/dist/sweetalert2.min.css"/>
+
+    <!-- Kivicare Design System Css -->
+    <link rel="stylesheet" href="../assets/assets/css/kivicare.min.css?v=1.4.1" />
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="../assets/assets/css/custom.min.css?v=1.4.1" />
+
+    <!-- RTL Css -->
+    <link rel="stylesheet" href="../assets/assets/css/rtl.min.css?v=1.4.1"/>
+
+    <!-- Customizer Css -->
+    <link rel="stylesheet" href="../assets/assets/css/customizer.min.css?v=1.4.1"/>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <style>
+        .main-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 30px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin: 0;
+            color: white;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .examination-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .examination-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .examination-section:hover {
+            transform: translateX(5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+        }
+
+        .examination-date {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #8b4513;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(252, 182, 159, 0.3);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .examination-result {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #28a745;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .examination-result:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .examination-result:nth-child(2) {
+            border-left-color: #007bff;
+        }
+
+        .examination-result:nth-child(3) {
+            border-left-color: #ffc107;
+        }
+
+        .examination-result:nth-child(4) {
+            border-left-color: #dc3545;
+        }
+
+        .examination-result h6 {
+            color: #495057;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .examination-result h6 i {
+            width: 20px;
+            text-align: center;
+            color: #667eea;
+        }
+
+        .examination-result p {
+            color: #6c757d;
+            line-height: 1.7;
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            padding-left: 28px;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            flex-direction: column;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: #6c757d;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            border-radius: 15px;
+            border: none;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .no-results i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #dee2e6;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .no-results h5 {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .no-results p {
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: #495057 !important;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 8px 16px !important;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .container-fluid {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 10px;
+            }
+
+            .card {
+                margin-bottom: 20px;
+                border-radius: 15px;
+            }
+
+            .card-header {
+                padding: 20px;
+                border-radius: 15px 15px 0 0 !important;
+            }
+
+            .card-title {
+                font-size: 1.3rem;
+            }
+
+            .examination-section {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .examination-result {
+                padding: 15px;
+            }
+
+            .no-results {
+                padding: 40px 15px;
+            }
+        }
+
+        /* Animation for examination sections */
+        .examination-section {
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        .examination-section:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .examination-section:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="full-screen">
+    <!-- loader Start -->
+    <div id="loading">
+        <div class="loader simple-loader">
+            <div class="loader-body">
+                <img src="../assets/assets/images/loader.gif" alt="loader" class="light-loader img-fluid" width="200">
+            </div>
+        </div>
+    </div>
+    <!-- loader END -->
+    
+    <main class="main-content">
+        <div class="position-relative">
+            <!--Nav Start-->
+            <nav class="nav navbar navbar-expand-xl navbar-light iq-navbar patient-header">
+                <div class="container-fluid navbar-inner">
+                    <a href="home-patient.html" class="navbar-brand ms-0 me-5">
+                        <!--Logo start-->
+                        <div class="logo-main">
+                            <img class="logo-normal img-fluid" src="../assets/assets/images/logo.png" height="30" alt="logo">
+                            <img class="logo-normal dark-normal img-fluid" src="../assets/assets/images/logo-dark.png" height="30" alt="logo">
+                            <img class="logo-normal white-normal img-fluid" src="../assets/assets/images/logo-white.png" height="30" alt="logo">
+                            <img class="logo-mini img-fluid" src="../assets/assets/images/logo-mini.png" height="30" alt="logo">
+                            <img class="logo-mini dark-mini img-fluid" src="../assets/assets/images/logo-mini-dark.png" height="30" alt="logo">
+                            <img class="logo-mini white-mini img-fluid" src="../assets/assets/images/logo-mini-white.png" height="30" alt="logo">
+                        </div>
+                        <!--logo End-->
+                    </a>
+                    
+                    <div class="d-flex align-items-center">
+                        <button id="navbar-toggle" class="navbar-toggler px-0" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                            <span class="navbar-toggler-btn">
+                                <span class="navbar-toggler-icon"></span>
+                            </span>
+                        </button>
+                    </div>
+                    
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="my-2 navbar-nav ms-auto align-items-center navbar-list">
+                            <li class="nav-item">
+                                <a href="patient-encounters.html" class="nav-link">
+                                    <i class="icon me-2">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </i>
+                                    <span>Quay lại</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!--Nav End-->
+            
+            <!-- Content Start -->
+            <div class="content-page">
+                <div class="container-fluid">
+                    <!-- Alert Messages -->
+                    <div id="alertContainer"></div>
+
+                    <!-- Examination Results Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title mb-0">
+                                <i class="fas fa-stethoscope me-2"></i>
+                                Kết quả khám bệnh
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="loading-spinner" id="examinationLoading">
+                                <div class="spinner"></div>
+                                <div class="loading-text">Đang tải kết quả khám bệnh...</div>
+                            </div>
+                            
+                            <div id="examinationResults" style="display: none;">
+                                <!-- Examination results will be loaded here -->
+                            </div>
+                            
+                            <div id="noResults" class="no-results" style="display: none;">
+                                <i class="fas fa-clipboard-list"></i>
+                                <h5>Chưa có kết quả khám bệnh</h5>
+                                <p>Bạn chưa có kết quả khám bệnh nào. Vui lòng liên hệ với bác sĩ để được khám bệnh và nhận kết quả.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Content End -->
+        </div>
+    </main>
+
+    <!-- Library Bundle Script -->
+    <script src="../assets/assets/js/core/libs.min.js"></script>
+    
+    <!-- Plugin Scripts -->
+    <!-- Sweet-alert Script -->
+    <script src="../assets/assets/vendor/sweetalert2/dist/sweetalert2.min.js" async></script>
+    <script src="../assets/assets/js/plugins/sweet-alert.js" defer></script>
+    
+    <!-- Lodash Utility -->
+    <script src="../assets/assets/vendor/lodash/lodash.min.js"></script>
+    
+    <!-- Utilities Functions -->
+    <script src="../assets/assets/js/iqonic-script/utility.min.js"></script>
+    
+    <!-- Settings Script -->
+    <script src="../assets/assets/js/iqonic-script/setting.min.js"></script>
+    
+    <!-- Settings Init Script -->
+    <script src="../assets/assets/js/setting-init.js"></script>
+    
+    <!-- External Library Bundle Script -->
+    <script src="../assets/assets/js/core/external.min.js"></script>
+    
+    <!-- Hopeui Script -->
+    <script src="../assets/assets/js/kivicare.js?v=1.4.1" defer></script>
+    <script src="../assets/assets/js/kivicare-advance.js?v=1.4.1" defer></script>
+    <script src="../assets/assets/js/sidebar.js?v=1.4.1" defer></script>
+    <script src="../assets/jslogic/examination-patient.js"></script>
+</body>
+</html>

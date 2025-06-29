@@ -14,7 +14,11 @@ public class DoctorDAO {
     public List<DoctorDTO> getAllDoctorDTOs() {
         List<DoctorDTO> list = new ArrayList<>();
 
-        String sql = "SELECT doctor_id, full_name, department, eduLevel FROM Doctor";
+        String sql = """
+        SELECT doctor_id, full_name, department, eduLevel FROM Doctor d
+                "JOIN AccountStaff a on d.doctor_id = a.account_staff_id
+                "Where Status = 'Enable' 
+        """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
