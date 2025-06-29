@@ -267,6 +267,295 @@
             .breadcrumb-item.active {
                 color: #6c757d;
             }
+            
+            /* Services Container Styling */
+            #servicesContainer {
+                padding: 20px 0;
+                display: flex !important;
+                flex-wrap: wrap;
+
+                justify-content: flex-start;
+                align-items: stretch;
+                width: 100%;
+            }
+            
+            #servicesContainer .col-md-6.col-lg-4 {
+                flex: 0 0 auto;
+                width: calc(33.333% - 13px);
+                margin-bottom: 0;
+                min-width: 250px;
+                max-width: calc(33.333% - 13px);
+            }
+            
+            .service-card {
+                border: none;
+                border-radius: 15px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+                overflow: hidden;
+                position: relative;
+                height: 100%;
+                border: 2px solid transparent;
+                background-clip: padding-box;
+            }
+            
+            .service-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+                background-size: 200% 100%;
+                animation: shimmer 3s ease-in-out infinite;
+            }
+            
+            @keyframes shimmer {
+                0%, 100% { background-position: 200% 0; }
+                50% { background-position: -200% 0; }
+            }
+            
+            .service-card:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 12px 35px rgba(102, 126, 234, 0.2);
+                border-color: #667eea;
+            }
+            
+            .service-card .card-body {
+                padding: 25px;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                position: relative;
+            }
+            
+            .service-card .card-title {
+                color: #2c3e50;
+                font-weight: 700;
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+                line-height: 1.3;
+                transition: color 0.3s ease;
+            }
+            
+            .service-card .card-text {
+                color: #6c757d;
+                font-size: 0.9rem;
+                line-height: 1.5;
+                margin-bottom: 20px;
+                flex-grow: 1;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+            }
+            
+            .service-price {
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                color: white;
+                padding: 10px 16px;
+                border-radius: 25px;
+                font-weight: 700;
+                font-size: 0.9rem;
+                text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+                margin-top: auto;
+                text-align: center;
+                box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .service-price::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                transition: left 0.5s ease;
+            }
+            
+            .service-card:hover .service-price::before {
+                left: 100%;
+            }
+            
+            .form-check {
+                margin-bottom: 12px !important;
+            }
+            
+            .form-check-input {
+                width: 1.2em;
+                height: 1.2em;
+                border: 2px solid #dee2e6;
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+            
+            .form-check-input:checked {
+                background-color: #667eea;
+                border-color: #667eea;
+                transform: scale(1.05);
+            }
+            
+            .form-check-input:focus {
+                box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            }
+            
+            .form-check-label {
+                margin-left: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            
+            .form-check-input:checked + .form-check-label .card-title {
+                color: #667eea;
+            }
+            
+            .service-card:has(.form-check-input:checked) {
+                border-color: #667eea;
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
+                background: linear-gradient(145deg, #f8f9ff 0%, #ffffff 100%);
+            }
+            
+            .doctor-selection {
+                background: #f8f9fa;
+                border-radius: 8px;
+                padding: 12px;
+                border: 1px solid #e9ecef;
+                animation: slideDown 0.3s ease;
+                margin-top: 10px;
+            }
+            
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            .doctor-selection label {
+                color: #495057;
+                font-weight: 600;
+                font-size: 0.9rem;
+                margin-bottom: 8px;
+            }
+            
+            .doctor-selection select {
+                border: 2px solid #dee2e6;
+                border-radius: 8px;
+                padding: 10px 12px;
+                background: white;
+                transition: all 0.3s ease;
+            }
+            
+            .doctor-selection select:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            }
+            
+            /* Selected Services Section */
+            .selected-services {
+                background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+                border-radius: 15px;
+                padding: 25px;
+                margin-top: 30px;
+                border: 2px solid #c3e6cb;
+                animation: fadeInUp 0.5s ease;
+            }
+            
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            .selected-services h6 {
+                color: #155724;
+                font-weight: 700;
+                font-size: 1.2rem;
+                margin-bottom: 20px;
+            }
+            
+            .total-amount {
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                font-weight: 700;
+                font-size: 1.1rem;
+                text-align: center;
+                margin-top: 20px;
+                box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            }
+            
+            /* Responsive Design */
+            @media (max-width: 1100px) {
+                #servicesContainer .col-md-6.col-lg-4 {
+                    width: calc(50% - 10px);
+                    max-width: calc(50% - 10px);
+                    min-width: 250px;
+                }
+                
+                #servicesContainer {
+                    gap: 15px;
+                }
+            }
+            
+            @media (max-width: 768px) {
+                #servicesContainer {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+                
+                #servicesContainer .col-md-6.col-lg-4 {
+                    width: 100%;
+                    min-width: auto;
+                }
+                
+                .service-card .card-body {
+                    padding: 20px;
+                }
+                
+                .service-card .card-title {
+                    font-size: 1rem;
+                }
+                
+                .service-card .card-text {
+                    font-size: 0.85rem;
+                }
+                
+                .selected-services {
+                    padding: 20px;
+                }
+            }
+            
+            @media (max-width: 480px) {
+                .service-card .card-body {
+                    padding: 15px;
+                }
+                
+                .service-card .card-title {
+                    font-size: 0.95rem;
+                }
+                
+                .service-price {
+                    padding: 8px 12px;
+                    font-size: 0.8rem;
+                }
+            }
         </style>
     </head>
     <body>
@@ -317,10 +606,6 @@
                                         <span class="info-label">Phone:</span>
                                         <span class="info-value" id="patientPhone">Loading...</span>
                                     </div>
-                                    <div class="info-item">
-                                        <span class="info-label">Medicine Record ID:</span>
-                                        <span class="info-value" id="medicineRecordId">Loading...</span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -342,7 +627,7 @@
                         </div>
 
                         <!-- Services Container -->
-                        <div id="servicesContainer" class="row" style="display: none;">
+                        <div id="servicesContainer" class="row" style="display: flex; justify-content: center;" >
                             <!-- Services will be loaded here -->
                         </div>
 
@@ -380,6 +665,7 @@
         <script src="../assets/assets/js/core/libs.min.js"></script>
         <script src="../assets/assets/js/core/external.min.js"></script>
         <script src="../assets/assets/js/kivicare.js"></script>
+        <script src="../assets/jslogic/service-order-status.js"></script>
         <script src="../assets/jslogic/service-order-details.js"></script>
     </body>
 </html> 

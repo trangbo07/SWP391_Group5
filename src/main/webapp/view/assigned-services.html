@@ -1,249 +1,415 @@
 <!doctype html>
 <html lang="en" class="theme-fs-sm" data-bs-theme="light" data-bs-theme-color="default" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Assigned Services - Doctor Dashboard</title>
-        <link rel="shortcut icon" href="../assets/assets/images/favicon.ico" />
-        <link rel="stylesheet" href="../assets/assets/css/core/libs.min.css" />
-        <link rel="stylesheet" href="../assets/assets/vendor/flaticon/css/flaticon.css" />
-        <link rel="stylesheet" href="../assets/assets/vendor/font-awesome/css/all.min.css" />
-        <link rel="stylesheet" href="../assets/assets/css/kivicare.min.css?v=1.4.1" />
-        <link rel="stylesheet" href="../assets/assets/css/custom.min.css?v=1.4.1" />
-        <link rel="stylesheet" href="../assets/assets/css/rtl.min.css?v=1.4.1"/>
-        <link rel="stylesheet" href="../assets/assets/css/customizer.min.css?v=1.4.1"/>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
-    </head>
-    <body class="  ">
-        <!-- loader Start -->
-        <div id="loading">
-            <div class="loader simple-loader">
-                <div class="loader-body">
-                    <img src="../assets/assets/images/loader.gif" alt="loader" class="light-loader img-fluid " width="200">
-                </div>
-            </div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Assigned Services - Doctor Dashboard</title>
+    <link rel="shortcut icon" href="../assets/assets/images/favicon.ico" />
+    <link rel="stylesheet" href="../assets/assets/css/core/libs.min.css" />
+    <link rel="stylesheet" href="../assets/assets/vendor/flaticon/css/flaticon.css" />
+    <link rel="stylesheet" href="../assets/assets/vendor/font-awesome/css/all.min.css" />
+    <link rel="stylesheet" href="../assets/assets/css/kivicare.min.css?v=1.4.1" />
+    <link rel="stylesheet" href="../assets/assets/css/custom.min.css?v=1.4.1" />
+    <link rel="stylesheet" href="../assets/assets/css/rtl.min.css?v=1.4.1"/>
+    <link rel="stylesheet" href="../assets/assets/css/customizer.min.css?v=1.4.1"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+</head>
+<body class="  ">
+<!-- loader Start -->
+<div id="loading">
+    <div class="loader simple-loader">
+        <div class="loader-body">
+            <img src="../assets/assets/images/loader.gif" alt="loader" class="light-loader img-fluid " width="200">
         </div>
-        <!-- loader END -->
-        <aside class="sidebar sidebar-base " id="first-tour" data-toggle="main-sidebar" data-sidebar="responsive">
-            <div class="sidebar-header d-flex align-items-center justify-content-start position-relative">
-                <a href="home-doctor.html" class="navbar-brand">
-                    <div class="logo-main">
-                        <img class="logo-normal img-fluid" src="../assets/assets/images/logo.png" height="30" alt="logo">
-                    </div>
-                </a>
+    </div>
+</div>
+<!-- loader END -->
+<aside class="sidebar sidebar-base " id="first-tour" data-toggle="main-sidebar" data-sidebar="responsive">
+    <div class="sidebar-header d-flex align-items-center justify-content-start position-relative">
+        <a href="home-doctor.html" class="navbar-brand">
+            <div class="logo-main">
+                <img class="logo-normal img-fluid" src="../assets/assets/images/logo.png" height="30" alt="logo">
+            </div>
+        </a>
+        <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
+            <i class="icon">
+                <svg class="icon-20 icon-arrow" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.5 19L8.5 12L15.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </i>
+        </div>
+    </div>
+    <div class="sidebar-body pt-0 data-scrollbar">
+        <div class="sidebar-list">
+            <!-- Sidebar Menu Start -->
+            <ul class="navbar-nav iq-main-menu" id="sidebar-menu">
+                <li class="nav-item static-item">
+                    <a class="nav-link static-item disabled text-start" href="#" tabindex="-1">
+                        <span class="default-icon">Home</span>
+                        <span class="mini-icon" data-bs-toggle="tooltip" title="Home" data-bs-placement="right">-</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#dashboard" role="button" aria-expanded="false">
+                        <i class="icon" data-bs-toggle="tooltip" title="Dashboard" data-bs-placement="right">
+                            <svg width="20" class="icon-20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.4"
+                                      d="M16.0756 2H19.4616C20.8639 2 22.0001 3.14585 22.0001 4.55996V7.97452C22.0001 9.38864 20.8639 10.5345 19.4616 10.5345H16.0756C14.6734 10.5345 13.5371 9.38864 13.5371 7.97452V4.55996C13.5371 3.14585 14.6734 2 16.0756 2Z"
+                                      fill="currentColor"></path>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M4.53852 2H7.92449C9.32676 2 10.463 3.14585 10.463 4.55996V7.97452C10.463 9.38864 9.32676 10.5345 7.92449 10.5345H4.53852C3.13626 10.5345 2 9.38864 2 7.97452V4.55996C2 3.14585 3.13626 2 4.53852 2ZM4.53852 13.4655H7.92449C9.32676 13.4655 10.463 14.6114 10.463 16.0255V19.44C10.463 20.8532 9.32676 22 7.92449 22H4.53852C3.13626 22 2 20.8532 2 19.44V16.0255C2 14.6114 3.13626 13.4655 4.53852 13.4655ZM19.4615 13.4655H16.0755C14.6732 13.4655 13.537 14.6114 13.537 16.0255V19.44C13.537 20.8532 14.6732 22 16.0755 22H19.4615C20.8637 22 22 20.8532 22 19.44V16.0255C22 14.6114 20.8637 13.4655 19.4615 13.4655Z"
+                                      fill="currentColor"></path>
+                            </svg>
+                        </i>
+                        <span class="item-name">Dashboard</span>
+                        <i class="right-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" class="icon-18" fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </i>
+                    </a>
+                    <ul class="sub-nav collapse" id="dashboard" data-bs-parent="#sidebar-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page"
+                               href="./home-doctor.html">
+                                <i class="icon" data-bs-toggle="tooltip" title="Dashboard" data-bs-placement="right">
+                                    <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                                d="M9.14373 20.7821V17.7152C9.14372 16.9381 9.77567 16.3067 10.5584 16.3018H13.4326C14.2189 16.3018 14.8563 16.9346 14.8563 17.7152V20.7732C14.8562 21.4473 15.404 21.9951 16.0829 22H18.0438C18.9596 22.0023 19.8388 21.6428 20.4872 21.0007C21.1356 20.3586 21.5 19.4868 21.5 18.5775V9.86585C21.5 9.13139 21.1721 8.43471 20.6046 7.9635L13.943 2.67427C12.7785 1.74912 11.1154 1.77901 9.98539 2.74538L3.46701 7.9635C2.87274 8.42082 2.51755 9.11956 2.5 9.86585V18.5686C2.5 20.4637 4.04738 22 5.95617 22H7.87229C8.19917 22.0023 8.51349 21.8751 8.74547 21.6464C8.97746 21.4178 9.10793 21.1067 9.10792 20.7821H9.14373Z"
+                                                fill="currentColor"></path>
+                                    </svg>
+                                </i>
+                                <i class="sidenav-mini-icon" data-bs-toggle="tooltip" title="Docter Dashboard"
+                                   data-bs-placement="right">DD</i>
+                                <span class="item-name">Docter Dashboard</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./appointment-doctor.html">
+                        <i class="icon" data-bs-toggle="tooltip" title="Appointment" data-bs-placement="right">
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V8H19V19ZM7 10H12V15H7V10Z" fill="currentColor"/>
+                            </svg>
+                        </i>
+                        <span class="item-name">Appointment</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./examination.html">
+                        <i class="icon" data-bs-toggle="tooltip" title="Wait List" data-bs-placement="right">
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z" fill="currentColor"/>
+                            </svg>
+                        </i>
+                        <span class="item-name">Wait List</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./service-order.html">
+                        <i class="icon" data-bs-toggle="tooltip" title="Service Order" data-bs-placement="right">
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="currentColor"/>
+                                <path d="M14 2C13.45 2 13 2.45 13 3S13.45 4 14 4H16V6H13C12.45 6 12 6.45 12 7S12.45 8 13 8H16V10H14C13.45 10 13 10.45 13 11S13.45 12 14 12H16V14H13C12.45 14 12 14.45 12 15S12.45 16 13 16H16V18H14C13.45 18 13 18.45 13 19S13.45 20 14 20H18C18.55 20 19 19.55 19 19V3C19 2.45 18.55 2 18 2H14Z" fill="currentColor"/>
+                            </svg>
+                        </i>
+                        <span class="item-name">Service Order</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./diagnosis.html">
+                        <i class="icon" data-bs-toggle="tooltip" title="Diagnosis" data-bs-placement="right">
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z" fill="currentColor"/>
+                                <path d="M11 7H13V17H11V7ZM7 11H17V13H7V11Z" fill="currentColor"/>
+                            </svg>
+                        </i>
+                        <span class="item-name">Diagnosis</span>
+                    </a>
+                </li>
+                <li>
+                    <hr class="hr-horizontal">
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="./assigned-services.html">
+                        <i class="icon" data-bs-toggle="tooltip" title="Assigned Services" data-bs-placement="right">
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 16V4C22 2.9 21.1 2 20 2H8C6.9 2 6 2.9 6 4V16C6 17.1 6.9 18 8 18H20C21.1 18 22 17.1 22 16ZM20 16H8V4H20V16Z" fill="currentColor"/>
+                                <path d="M4 6H2V20C2 21.1 2.9 22 4 22H18V20H4V6Z" fill="currentColor"/>
+                                <path d="M10 6H18V8H10V6ZM10 10H16V12H10V10ZM10 14H18V16H10V14Z" fill="currentColor"/>
+                            </svg>
+                        </i>
+                        <span class="item-name">Assigned Services</span>
+                    </a>
+                </li>
+                <li>
+                    <hr class="hr-horizontal">
+                </li>
+
+                <li class="nav-item static-item">
+                    <a class="nav-link static-item disabled text-start" href="#" tabindex="-1">
+                        <span class="default-icon">settings</span>
+                        <span class="mini-icon" data-bs-toggle="tooltip" title="Elements"
+                              data-bs-placement="right">-</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link " aria-current="page"
+                       href="./helpsupport.html">
+                        <i class="icon" data-bs-toggle="tooltip" title="Help & Support" data-bs-placement="right">
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.4"
+                                      d="M16.34 1.99976H7.67C4.28 1.99976 2 4.37976 2 7.91976V16.0898C2 19.6198 4.28 21.9998 7.67 21.9998H16.34C19.73 21.9998 22 19.6198 22 16.0898V7.91976C22 4.37976 19.73 1.99976 16.34 1.99976Z"
+                                      fill="currentColor"></path>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M11.1246 8.18921C11.1246 8.67121 11.5156 9.06421 11.9946 9.06421C12.4876 9.06421 12.8796 8.67121 12.8796 8.18921C12.8796 7.70721 12.4876 7.31421 12.0046 7.31421C11.5196 7.31421 11.1246 7.70721 11.1246 8.18921ZM12.8696 11.362C12.8696 10.88 12.4766 10.487 11.9946 10.487C11.5126 10.487 11.1196 10.88 11.1196 11.362V15.782C11.1196 16.264 11.5126 16.657 11.9946 16.657C12.4766 16.657 12.8696 16.264 12.8696 15.782V11.362Z"
+                                      fill="currentColor"></path>
+                            </svg>
+                        </i>
+                        <span class="item-name">Help & Support</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " aria-current="page"
+                       href="./setting.html">
+                        <i class="icon" data-bs-toggle="tooltip" title="Setting" data-bs-placement="right">
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                        d="M12.0122 14.8299C10.4077 14.8299 9.10986 13.5799 9.10986 12.0099C9.10986 10.4399 10.4077 9.17993 12.0122 9.17993C13.6167 9.17993 14.8839 10.4399 14.8839 12.0099C14.8839 13.5799 13.6167 14.8299 12.0122 14.8299Z"
+                                        fill="currentColor"></path>
+                                <path opacity="0.4"
+                                      d="M21.2301 14.37C21.036 14.07 20.76 13.77 20.4023 13.58C20.1162 13.44 19.9322 13.21 19.7687 12.94C19.2475 12.08 19.5541 10.95 20.4228 10.44C21.4447 9.87 21.7718 8.6 21.179 7.61L20.4943 6.43C19.9118 5.44 18.6344 5.09 17.6226 5.67C16.7233 6.15 15.5685 5.83 15.0473 4.98C14.8838 4.7 14.7918 4.4 14.8122 4.1C14.8429 3.71 14.7203 3.34 14.5363 3.04C14.1582 2.42 13.4735 2 12.7172 2H11.2763C10.5302 2.02 9.84553 2.42 9.4674 3.04C9.27323 3.34 9.16081 3.71 9.18125 4.1C9.20169 4.4 9.10972 4.7 8.9462 4.98C8.425 5.83 7.27019 6.15 6.38109 5.67C5.35913 5.09 4.09191 5.44 3.49917 6.43L2.81446 7.61C2.23194 8.6 2.55897 9.87 3.57071 10.44C4.43937 10.95 4.74596 12.08 4.23498 12.94C4.06125 13.21 3.87729 13.44 3.59115 13.58C3.24368 13.77 2.93709 14.07 2.77358 14.37C2.39546 14.99 2.4159 15.77 2.79402 16.42L3.49917 17.62C3.87729 18.26 4.58245 18.66 5.31825 18.66C5.66572 18.66 6.0745 18.56 6.40153 18.36C6.65702 18.19 6.96361 18.13 7.30085 18.13C8.31259 18.13 9.16081 18.96 9.18125 19.95C9.18125 21.1 10.1215 22 11.3069 22H12.6968C13.872 22 14.8122 21.1 14.8122 19.95C14.8429 18.96 15.6911 18.13 16.7029 18.13C17.0299 18.13 17.3365 18.19 17.6022 18.36C17.9292 18.56 18.3278 18.66 18.6855 18.66C19.411 18.66 20.1162 18.26 20.4943 17.62L21.2097 16.42C21.5776 15.75 21.6083 14.99 21.2301 14.37Z"
+                                      fill="currentColor"></path>
+                            </svg>
+                        </i>
+                        <span class="item-name">Setting</span>
+                    </a>
+                </li>
+                <li>
+                    <hr class="hr-horizontal">
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="sidebar-footer"></div>
+</aside>
+<main class="main-content">
+    <div class="position-relative">
+        <nav class="nav navbar navbar-expand-lg navbar-light iq-navbar">
+            <div class="container-fluid navbar-inner">
+                <a href="home-doctor.html" class="navbar-brand"></a>
                 <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
-                    <i class="icon">               
-                        <svg class="icon-20 icon-arrow" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M15.5 19L8.5 12L15.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>                            
+                    <i class="icon">
+                        <svg class="icon-20" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.25 12.2744L19.25 12.2744" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M10.2998 18.2988L4.2498 12.2748L10.2998 6.24976" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
                     </i>
                 </div>
-            </div>
-            <div class="sidebar-body pt-0 data-scrollbar">
-                <div class="sidebar-list">
-                    <!-- Sidebar Menu Start -->
-                    <ul class="navbar-nav iq-main-menu" id="sidebar-menu">
-                        <li class="nav-item">
-                            <a class="nav-link" href="home-doctor.html">
-                                <i class="icon fas fa-home"></i><span class="item-name">Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="appointment-doctor.html">
-                                <i class="icon fas fa-calendar-alt"></i><span class="item-name">Appointment</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="examination.html">
-                                <i class="icon fas fa-file-medical"></i><span class="item-name">Examination</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="assigned-services.html">
-                                <i class="icon fas fa-tasks"></i><span class="item-name">Assigned Services</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="diagnosis.html">
-                                <i class="icon fas fa-notes-medical"></i><span class="item-name">Diagnosis</span>
-                            </a>
-                        </li>
-                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="logout()">
-                                <i class="icon fas fa-sign-out-alt"></i><span class="item-name">Logout</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="sidebar-footer"></div>
-        </aside>
-        <main class="main-content">
-            <div class="position-relative">
-                 <nav class="nav navbar navbar-expand-lg navbar-light iq-navbar">
-                    <div class="container-fluid navbar-inner">
-                        <a href="home-doctor.html" class="navbar-brand"></a>
-                        <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
-                            <i class="icon">
-                                <svg class="icon-20" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.25 12.2744L19.25 12.2744" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path d="M10.2998 18.2988L4.2498 12.2748L10.2998 6.24976" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </i>
-                        </div>
-                         <div class="input-group search-input">
+                <div class="input-group search-input">
                             <span class="input-group-text" id="search-input">
                                 <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="11.7669" cy="11.7666" r="8.98856" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></circle>
                                     <path d="M18.0186 18.4851L21.5426 22.0001" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                 </svg>
                             </span>
-                            <input type="search" class="form-control" placeholder="Search...">
-                        </div>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav ms-auto top-menu navbar-nav-scroll">
-                                <!-- User Profile -->
-                            </ul>
+                    <input type="search" class="form-control" placeholder="Search...">
+                </div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto top-menu navbar-nav-scroll">
+                        <!-- User Profile -->
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="content-inner container-fluid pb-0" id="page_layout">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="mb-0">
+                    <i class="fas fa-tasks me-2"></i>
+                    My Assigned Services
+                </h2>
+                <p class="text-muted">View and manage paraclinical services assigned to you.</p>
+            </div>
+        </div>
+
+        <!-- Filter and Search Controls -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" id="searchInput" class="form-control" placeholder="Search by patient or service name...">
                         </div>
                     </div>
-                </nav>
-            </div>
-            <div class="content-inner container-fluid pb-0" id="page_layout">
-                <div class="row mb-4">
-                   <div class="col-12">
-                       <h2 class="mb-0">
-                           <i class="fas fa-tasks me-2"></i>
-                           My Assigned Services
-                       </h2>
-                       <p class="text-muted">View and manage paraclinical services assigned to you.</p>
-                   </div>
-               </div>
-
-                <!-- Filter and Search Controls -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="row g-3 align-items-center">
-                            <div class="col-md-6 col-lg-4">
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                    <input type="text" id="searchInput" class="form-control" placeholder="Search by patient or service name...">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-8">
-                                <div class="d-flex justify-content-md-end">
-                                    <div class="btn-group" role="group" aria-label="Status Filter">
-                                        <button type="button" class="btn btn-primary active" data-status-filter="all">
-                                            <i class="fas fa-list me-1"></i> All
-                                        </button>
-                                        <button type="button" class="btn btn-outline-primary" data-status-filter="pending">
-                                            <i class="fas fa-clock me-1"></i> Pending
-                                        </button>
-                                        <button type="button" class="btn btn-outline-primary" data-status-filter="completed">
-                                            <i class="fas fa-check-circle me-1"></i> Completed
-                                        </button>
-                                    </div>
-                                </div>
+                    <div class="col-md-6 col-lg-8">
+                        <div class="d-flex justify-content-md-end">
+                            <div class="btn-group" role="group" aria-label="Status Filter">
+                                <button type="button" class="btn btn-primary active" data-status-filter="all">
+                                    <i class="fas fa-list me-1"></i> All
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" data-status-filter="pending">
+                                    <i class="fas fa-clock me-1"></i> Pending
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" data-status-filter="completed">
+                                    <i class="fas fa-check-circle me-1"></i> Completed
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Alert Message -->
-                <div id="alertContainer"></div>
-                
-                <!-- Loading Spinner -->
-                <div id="loadingSpinner" class="d-flex justify-content-center align-items-center d-none" style="height: 200px;">
-                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-
-                <!-- Error Message -->
-                <div id="errorMessage" class="alert alert-danger d-none">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <span id="errorText">An error occurred</span>
-                </div>
-                
-                <!-- Services List -->
-                <div id="servicesList" class="row">
-                    <!-- Service cards will be loaded here -->
-                </div>
-
-                <!-- No Services Message -->
-                 <div id="noServicesMessage" class="text-center p-5 d-none">
-                    <img src="../assets/assets/images/error/404-error.png" alt="No data" class="img-fluid mb-4" style="max-width: 250px;">
-                    <h4 class="mb-2">No Assigned Services Found</h4>
-                    <p class="text-muted">It seems there are no services assigned to you matching the current filters.</p>
-                </div>
-
-            </div>
-        </main>
-        <!-- Result Modal -->
-    <div class="modal fade" id="resultModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-flask me-2"></i>
-                        Enter Test Results
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="resultForm">
-                        <input type="hidden" id="serviceOrderItemId" name="serviceOrderItemId">
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Service Name</label>
-                            <input type="text" class="form-control" id="modalServiceName" readonly>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Patient Name</label>
-                            <input type="text" class="form-control" id="modalPatientName" readonly>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Test Results *</label>
-                            <textarea class="form-control" id="testResults" name="testResults" rows="4" 
-                                      placeholder="Enter detailed test results..." required></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Conclusion</label>
-                            <textarea class="form-control" id="conclusion" name="conclusion" rows="3" 
-                                      placeholder="Enter conclusion or recommendations..."></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select class="form-select" id="resultStatus" name="resultStatus" required>
-                                <option value="">Select status...</option>
-                                <option value="Normal">Normal</option>
-                                <option value="Abnormal">Abnormal</option>
-                                <option value="Critical">Critical</option>
-                                <option value="Pending">Pending Further Tests</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="saveTestResult()">
-                        <i class="fas fa-save me-2"></i>Save Results
-                    </button>
                 </div>
             </div>
         </div>
+
+        <!-- Services Summary -->
+        <div id="servicesSummary" class="card mb-4 d-none">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="d-flex flex-column">
+                            <span class="h4 mb-1 text-primary" id="totalServices">0</span>
+                            <span class="text-muted small">Total Services</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex flex-column">
+                            <span class="h4 mb-1 text-warning" id="pendingServices">0</span>
+                            <span class="text-muted small">Pending</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex flex-column">
+                            <span class="h4 mb-1 text-success" id="completedServices">0</span>
+                            <span class="text-muted small">Completed</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex flex-column">
+                            <span class="h4 mb-1 text-info" id="completionRate">0%</span>
+                            <span class="text-muted small">Completion Rate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Assignment Notification -->
+        <div id="newAssignmentNotification" class="alert alert-primary alert-dismissible fade show d-none" role="alert">
+            <i class="fas fa-bell me-2"></i>
+            <strong>New Assignment Alert!</strong> You may have new services assigned to you.
+            <button type="button" class="btn btn-sm btn-outline-primary ms-2" onclick="forceRefreshServices()">
+                <i class="fas fa-sync me-1"></i>Check Now
+            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Alert Message -->
+        <div id="alertContainer"></div>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="d-flex justify-content-center align-items-center d-none" style="height: 200px;">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="alert alert-danger d-none">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span id="errorText">An error occurred</span>
+        </div>
+
+        <!-- Services List -->
+        <div id="servicesList" class="row">
+            <!-- Service cards will be loaded here -->
+        </div>
+
+        <!-- No Services Message -->
+        <div id="noServicesMessage" class="text-center p-5 d-none">
+            <img src="../assets/assets/images/error/404-error.png" alt="No data" class="img-fluid mb-4" style="max-width: 250px;">
+            <h4 class="mb-2">No Assigned Services Found</h4>
+            <p class="text-muted">It seems there are no services assigned to you matching the current filters.</p>
+        </div>
+
     </div>
-        <script src="../assets/assets/js/core/libs.min.js"></script>
-        <script src="../assets/assets/js/core/external.min.js"></script>
-        <script src="../assets/assets/js/kivicare.js?v=1.4.1"></script>
-        <script src="../assets/jslogic/assigned-services.js"></script>
-    </body>
+</main>
+<!-- Result Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-flask me-2"></i>
+                    Enter Test Results
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="resultForm">
+                    <input type="hidden" id="serviceOrderItemId" name="serviceOrderItemId">
+
+                    <div class="mb-3">
+                        <label class="form-label">Service Name</label>
+                        <input type="text" class="form-control" id="modalServiceName" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Patient Name</label>
+                        <input type="text" class="form-control" id="modalPatientName" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Test Results *</label>
+                        <textarea class="form-control" id="testResults" name="testResults" rows="4"
+                                  placeholder="Enter detailed test results..." required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Conclusion</label>
+                        <textarea class="form-control" id="conclusion" name="conclusion" rows="3"
+                                  placeholder="Enter conclusion or recommendations..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="resultStatus" name="resultStatus" required>
+                            <option value="">Select status...</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Abnormal">Abnormal</option>
+                            <option value="Critical">Critical</option>
+                            <option value="Pending">Pending Further Tests</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveTestResult()">
+                    <i class="fas fa-save me-2"></i>Save Results
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/assets/js/core/libs.min.js"></script>
+<script src="../assets/assets/js/core/external.min.js"></script>
+<script src="../assets/assets/js/kivicare.js?v=1.4.1"></script>
+<script src="../assets/jslogic/assigned-services.js"></script>
+</body>
 </html> 
