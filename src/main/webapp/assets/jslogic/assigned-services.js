@@ -5,9 +5,37 @@ let currentSearchTerm = '';
 
 document.addEventListener('DOMContentLoaded', initializePage);
 
+// Auto refresh để check assigned services mới
+let autoRefreshInterval;
+const AUTO_REFRESH_INTERVAL = 30000; // 30 seconds
+
 function initializePage() {
     setupEventListeners();
     fetchAndRenderServices();
+    startAutoRefresh();
+
+    // Check for URL parameter indicating new service assigned
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('newAssignment') === 'true') {
+        setTimeout(() => {
+            showAlert('You may have new services assigned to you!', 'info');
+
+            // Show new assignment notification
+            const notificationEl = document.getElementById('newAssignmentNotification');
+            if (notificationEl) {
+                notificationEl.classList.remove('d-none');
+            }
+
+            // Auto refresh after 3 seconds to check for new assignments
+            setTimeout(() => {
+                forceRefreshServices();
+            }, 3000);
+        }, 1000);
+
+        // Clear the URL parameter to prevent repeated notifications
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
 }
 
 function setupEventListeners() {
@@ -18,7 +46,7 @@ function setupEventListeners() {
             filterButtons.forEach(btn => btn.classList.add('btn-outline-primary'));
             button.classList.remove('btn-outline-primary');
             button.classList.add('btn-primary', 'active');
-            
+
             currentStatusFilter = button.getAttribute('data-status-filter');
             applyFiltersAndRender();
         });
@@ -31,30 +59,310 @@ function setupEventListeners() {
     });
 }
 
-async function fetchAndRenderServices() {
+async function fetchAndRenderServices(showLoadingAlert = false) {
     const servicesList = document.getElementById("servicesList");
     const errorMessage = document.getElementById("errorMessage");
     const noServicesMessage = document.getElementById("noServicesMessage");
-    
+
     try {
+        if (showLoadingAlert) {
+            showAlert('Refreshing assigned services...', 'info');
+        }
+
         servicesList.style.display = "none";
         errorMessage.classList.add("d-none");
         noServicesMessage.classList.add("d-none");
 
         const response = await fetch('/api/doctor/service-order?action=getAssignedServices');
         if (!response.ok) throw new Error('Failed to fetch assigned services from server.');
-        
+
         const result = await response.json();
         if (!result.success) throw new Error(result.message || 'Failed to process assigned services data.');
-        
-        allAssignedServices = result.data || [];
+
+        const previousCount = allAssignedServices.length;
+        const rawData = result.data || [];
+
+        console.log('Raw data from API:', rawData);
+        console.log('Number of services received:', rawData.length);
+
+        if (rawData.length > 0) {
+            // Debug: Analyze data
+            const withResults = rawData.filter(s => s.result_description && s.result_description.trim() !== '');
+            const withoutResults = rawData.filter(s => !s.result_description || s.result_description.trim() === '');
+
+            console.log('Services WITH results:', withResults.length);
+            console.log('Services WITHOUT results (pending):', withoutResults.length);
+
+            // Show sample data
+            if (withoutResults.length > 0) {
+                console.log('Sample service WITHOUT results:', withoutResults[0]);
+            }
+            if (withResults.length > 0) {
+                console.log('Sample service WITH results:', withResults[0]);
+            }
+        }
+
+        allAssignedServices = rawData;
+
+        // Check for new services
+        if (showLoadingAlert && allAssignedServices.length > previousCount) {
+            showAlert(`Found ${allAssignedServices.length - previousCount} new assigned service(s)!`, 'success');
+        } else if (showLoadingAlert) {
+            showAlert('Assigned services refreshed successfully', 'success');
+        }
+
         applyFiltersAndRender();
-        
+
     } catch (error) {
         errorMessage.classList.remove("d-none");
         document.getElementById("errorText").textContent = error.message;
         console.error("Error loading assigned services:", error);
+
+        if (showLoadingAlert) {
+            showAlert('Failed to refresh assigned services', 'danger');
+        }
     }
+}
+
+// Auto refresh functions
+function startAutoRefresh() {
+    // Clear any existing interval
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+    }
+
+    // Start auto refresh every 30 seconds
+    autoRefreshInterval = setInterval(async () => {
+        console.log('Auto-refreshing assigned services...');
+        const previousCount = allAssignedServices.length;
+        await fetchAndRenderServices(false); // Silent refresh
+
+        // Check if there are new services
+        if (allAssignedServices.length > previousCount) {
+            const newCount = allAssignedServices.length - previousCount;
+            showAlert(`🔔 ${newCount} new service(s) assigned to you!`, 'success');
+        }
+    }, AUTO_REFRESH_INTERVAL);
+
+    console.log('Auto-refresh started for assigned services');
+}
+
+function stopAutoRefresh() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+        console.log('Auto-refresh stopped');
+    }
+}
+
+function forceRefreshServices() {
+    console.log('Force refreshing assigned services...');
+    fetchAndRenderServices(true);
+
+    // Hide new assignment notification
+    const notificationEl = document.getElementById('newAssignmentNotification');
+    if (notificationEl) {
+        notificationEl.classList.add('d-none');
+    }
+
+    // Remove any dynamic refresh alerts
+    const refreshAlert = document.querySelector('.alert-primary');
+    if (refreshAlert && refreshAlert.textContent.includes('You may have new assigned services')) {
+        refreshAlert.remove();
+    }
+}
+
+// Debug function để test assigned services flow
+async function debugAssignedServices() {
+    console.log('=== DEBUGGING ASSIGNED SERVICES với DAO ===');
+
+    try {
+        // 1. Test API endpoint
+        console.log('1. Testing getAssignedServices API...');
+        const response = await fetch('/api/doctor/service-order?action=getAssignedServices', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('API Response Status:', response.status);
+        console.log('API URL:', '/api/doctor/service-order?action=getAssignedServices');
+
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('2. Complete API Response:', result);
+
+        if (result.success) {
+            const services = result.data || [];
+            console.log(`3. Found ${services.length} assigned services from DAO`);
+            console.log('4. Raw services data:', services);
+
+            if (services.length > 0) {
+                console.log('5. Analyzing each service:');
+                services.forEach((service, index) => {
+                    console.log(`Service ${index + 1}:`, {
+                        service_order_item_id: service.service_order_item_id,
+                        service_name: service.service_name,
+                        patient_name: service.patient_name,
+                        doctor_id: service.doctor_id,
+                        doctor_name: service.doctor_name,
+                        order_date: service.order_date,
+                        has_results: !!(service.result_description && service.result_description.trim()),
+                        result_description: service.result_description
+                    });
+                });
+
+                // Check for services with results vs pending
+                const withResults = services.filter(s => s.result_description && s.result_description.trim() !== '');
+                const pending = services.filter(s => !s.result_description || s.result_description.trim() === '');
+
+                console.log(`6. Services status breakdown:`);
+                console.log(`   - Completed (có kết quả): ${withResults.length}`);
+                console.log(`   - Pending (chưa có kết quả): ${pending.length}`);
+
+                if (pending.length > 0) {
+                    console.log('7. Chi tiết services PENDING (chưa có kết quả):');
+                    pending.forEach((service, index) => {
+                        console.log(`   ${index + 1}. ${service.service_name} cho ${service.patient_name} (Item ID: ${service.service_order_item_id})`);
+                    });
+                }
+
+                showAlert(`✅ Found ${services.length} assigned services (${pending.length} chưa khám, ${withResults.length} đã khám)`, 'success');
+
+                // Force re-render with debug data
+                allAssignedServices = services;
+                applyFiltersAndRender();
+
+            } else {
+                console.log('5. ❌ No assigned services found');
+                console.log('   Possible reasons:');
+                console.log('   - Chưa có service order nào được assign cho doctor này');
+                console.log('   - Doctor ID không đúng');
+                console.log('   - Database chưa có data');
+                showAlert('⚠️ Không tìm thấy assigned services. Hãy tạo service order và assign cho bác sĩ này.', 'warning');
+            }
+        } else {
+            throw new Error(result.message || 'API returned success=false');
+        }
+
+    } catch (error) {
+        console.error('Debug Error:', error);
+        showAlert(`❌ Debug Error: ${error.message}`, 'danger');
+    }
+
+    console.log('=== DEBUG COMPLETE ===');
+}
+
+// Function để bác sĩ thực hiện khám bệnh nhân đã được assigned
+function performExamination(serviceOrderItemId, patientName, medicineRecordId) {
+    console.log('Performing examination for:', {
+        serviceOrderItemId,
+        patientName,
+        medicineRecordId
+    });
+
+    const service = allAssignedServices.find(s => s.service_order_item_id === serviceOrderItemId);
+    if (!service) {
+        showAlert('Service not found!', 'danger');
+        return;
+    }
+
+    // Hiển thị thông tin khám
+    const examInfo = `
+        <div class="alert alert-info">
+            <h6><i class="fas fa-stethoscope me-2"></i>Thông tin khám bệnh</h6>
+            <p><strong>Bệnh nhân:</strong> ${patientName}</p>
+            <p><strong>Dịch vụ:</strong> ${service.service_name}</p>
+            <p><strong>Triệu chứng:</strong> ${service.symptoms || 'Chưa có thông tin'}</p>
+            <p><strong>Chẩn đoán sơ bộ:</strong> ${service.preliminary_diagnosis || 'Chưa có thông tin'}</p>
+            <hr>
+            <p class="mb-0"><strong>Hướng dẫn:</strong> Thực hiện dịch vụ ${service.service_name} và nhập kết quả bằng nút "Enter Results"</p>
+        </div>
+    `;
+
+    // Tạo modal thông tin khám
+    const modalHtml = `
+        <div class="modal fade" id="examModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-stethoscope me-2"></i>
+                            Thực hiện khám - ${service.service_name}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        ${examInfo}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Đóng
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="bootstrap.Modal.getInstance(document.getElementById('examModal')).hide(); openResultModal(${serviceOrderItemId})">
+                            <i class="fas fa-edit me-2"></i>Nhập kết quả
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Remove existing modal if any
+    const existingModal = document.getElementById('examModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Show modal
+    const examModal = new bootstrap.Modal(document.getElementById('examModal'));
+    examModal.show();
+
+    // Remove modal after closing
+    document.getElementById('examModal').addEventListener('hidden.bs.modal', function() {
+        this.remove();
+    });
+
+    showAlert(`Bắt đầu thực hiện khám cho ${patientName}`, 'info');
+}
+
+// Alert function for assigned services page
+function showAlert(message, type = 'info') {
+    const alertContainer = document.createElement('div');
+    alertContainer.className = 'alert-container-assigned';
+    alertContainer.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+        max-width: 400px;
+    `;
+
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+
+    alertContainer.innerHTML = alertHtml;
+    document.body.appendChild(alertContainer);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (alertContainer.parentNode) {
+            alertContainer.parentNode.removeChild(alertContainer);
+        }
+    }, 5000);
 }
 
 // Hàm tiện ích bỏ dấu tiếng Việt
@@ -85,12 +393,12 @@ function applyFiltersAndRender() {
         servicesToRender = servicesToRender.filter(service => {
             const normalizedPatientName = removeDiacritics(service.patient_name).toLowerCase();
             const normalizedServiceName = removeDiacritics(service.service_name).toLowerCase();
-            
-            return normalizedPatientName.includes(normalizedSearchTerm) || 
+
+            return normalizedPatientName.includes(normalizedSearchTerm) ||
                    normalizedServiceName.includes(normalizedSearchTerm);
         });
     }
-    
+
     filteredServices = servicesToRender;
     renderServices();
 }
@@ -98,17 +406,23 @@ function applyFiltersAndRender() {
 function renderServices() {
     const servicesList = document.getElementById("servicesList");
     const noServicesMessage = document.getElementById("noServicesMessage");
-    
+    const servicesSummary = document.getElementById("servicesSummary");
+
     servicesList.innerHTML = '';
-    
+
     if (filteredServices.length === 0) {
         servicesList.style.display = "none";
         noServicesMessage.classList.remove("d-none");
+        if (servicesSummary) servicesSummary.classList.add("d-none");
         return;
     }
-    
+
+    // Update services summary
+    updateServicesSummary();
+
     servicesList.style.display = "flex";
     noServicesMessage.classList.add("d-none");
+    if (servicesSummary) servicesSummary.classList.remove("d-none");
 
     filteredServices.forEach((service, index) => {
         const hasResults = service.result_description && service.result_description.trim() !== '';
@@ -120,11 +434,11 @@ function renderServices() {
 
         const serviceCard = document.createElement("div");
         serviceCard.className = "col-xl-6 col-lg-12 mb-4";
-        
+
         const cardId = `service-card-${service.service_order_item_id}`;
 
         serviceCard.innerHTML = `
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-flask me-2 text-primary"></i>
@@ -136,33 +450,48 @@ function renderServices() {
                     </span>
                 </div>
                 <div class="card-body">
-                     <p class="mb-3">
-                        <strong>Patient:</strong> ${service.patient_name || 'N/A'} <br>
-                        <strong>Order Date:</strong> ${formatDateTime(service.order_date)}
-                    </p>
+                     <div class="mb-3">
+                        <h6 class="text-primary"><i class="fas fa-user me-2"></i>Patient Information</h6>
+                        <p class="mb-2"><strong>Name:</strong> ${service.patient_name || 'N/A'}</p>
+                        <p class="mb-2"><strong>Order Date:</strong> ${formatDateTime(service.order_date)}</p>
+                        <p class="mb-0"><strong>Service Price:</strong> ${(service.service_price || 0).toLocaleString()} VND</p>
+                    </div>
                     
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab-${cardId}" role="tablist">
-                            <button class="nav-link active" id="nav-exam-tab-${cardId}" data-bs-toggle="tab" data-bs-target="#nav-exam-${cardId}" type="button" role="tab">Exam Info</button>
-                            <button class="nav-link" id="nav-result-tab-${cardId}" data-bs-toggle="tab" data-bs-target="#nav-result-${cardId}" type="button" role="tab">Results</button>
+                            <button class="nav-link active" id="nav-exam-tab-${cardId}" data-bs-toggle="tab" data-bs-target="#nav-exam-${cardId}" type="button" role="tab">
+                                <i class="fas fa-stethoscope me-1"></i>Exam Info
+                            </button>
+                            <button class="nav-link" id="nav-result-tab-${cardId}" data-bs-toggle="tab" data-bs-target="#nav-result-${cardId}" type="button" role="tab">
+                                <i class="fas fa-clipboard-check me-1"></i>Results
+                            </button>
                         </div>
                     </nav>
                     <div class="tab-content pt-3" id="nav-tabContent-${cardId}">
                         <div class="tab-pane fade show active" id="nav-exam-${cardId}" role="tabpanel">
                             <h6><i class="fas fa-stethoscope me-2"></i>Examination Details</h6>
-                            <p><strong>Symptoms:</strong><br>${service.symptoms || 'Not provided'}</p>
-                            <p><strong>Preliminary Diagnosis:</strong><br>${service.preliminary_diagnosis || 'Not provided'}</p>
+                            <div class="alert alert-light">
+                                <p class="mb-2"><strong>Symptoms:</strong><br>${service.symptoms || 'Not provided'}</p>
+                                <p class="mb-0"><strong>Preliminary Diagnosis:</strong><br>${service.preliminary_diagnosis || 'Not provided'}</p>
+                            </div>
+                            <p class="text-muted small"><strong>Service Description:</strong> ${service.service_description || 'No description available'}</p>
                         </div>
                         <div class="tab-pane fade" id="nav-result-${cardId}" role="tabpanel">
                              <h6><i class="fas fa-clipboard-check me-2"></i>Test Results</h6>
                              <div id="result-display-${service.service_order_item_id}">
                                 <!-- Result content will be rendered here -->
                              </div>
-                             <button class="btn btn-${hasResults ? 'success' : 'primary'} mt-3" onclick="openResultModal(${service.service_order_item_id})">
-                                <i class="fas fa-edit me-2"></i>${hasResults ? 'Update Results' : 'Enter Results'}
-                            </button>
+                             <button class="btn btn-${hasResults ? 'success' : 'primary'} btn-lg w-100 mt-3" onclick="openResultModal(${service.service_order_item_id})">
+                                <i class="fas fa-${hasResults ? 'edit' : 'plus'} me-2"></i>
+                                ${hasResults ? 'Update Results' : 'Enter Results'}
+                             </button>
                         </div>
                     </div>
+                </div>
+                <div class="card-footer text-muted small">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Service Order Item ID: ${service.service_order_item_id} | 
+                    Assigned to: ${service.doctor_name || 'You'}
                 </div>
             </div>
         `;
@@ -172,46 +501,89 @@ function renderServices() {
     });
 }
 
+// Update services summary statistics
+function updateServicesSummary() {
+    const total = allAssignedServices.length;
+    const completed = allAssignedServices.filter(s => s.result_description && s.result_description.trim() !== '').length;
+    const pending = total - completed;
+    const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    // Safe element updates with null checks
+    const totalEl = document.getElementById('totalServices');
+    const pendingEl = document.getElementById('pendingServices');
+    const completedEl = document.getElementById('completedServices');
+    const completionRateEl = document.getElementById('completionRate');
+
+    if (totalEl) totalEl.textContent = total;
+    if (pendingEl) pendingEl.textContent = pending;
+    if (completedEl) completedEl.textContent = completed;
+    if (completionRateEl) completionRateEl.textContent = `${completionRate}%`;
+}
+
 function renderResultDisplay(serviceOrderItemId) {
     const service = allAssignedServices.find(s => s.service_order_item_id === serviceOrderItemId);
     const resultContainer = document.getElementById(`result-display-${serviceOrderItemId}`);
 
     if (!resultContainer) return;
-    
+
     if (service && service.result_description) {
-         const lines = service.result_description.split('\\n');
-         let resultHtml = '<dl class="row">';
-         lines.forEach(line => {
-             if (line.includes(':')) {
-                 const [key, ...valueParts] = line.split(':');
-                 const value = valueParts.join(':').trim();
-                 resultHtml += `
-                    <dt class="col-sm-4">${key.trim()}</dt>
-                    <dd class="col-sm-8">${value}</dd>`;
-             }
-         });
-         resultHtml += '</dl>';
-         resultContainer.innerHTML = resultHtml;
+        const lines = service.result_description.split('\\n');
+        let resultHtml = '<div class="alert alert-success">';
+        lines.forEach(line => {
+            if (line.includes(':')) {
+                const [key, ...valueParts] = line.split(':');
+                const value = valueParts.join(':').trim();
+                resultHtml += `
+                   <p class="mb-2"><strong>${key.trim()}:</strong> ${value}</p>`;
+            }
+        });
+        resultHtml += '</div>';
+
+        if (service.result_date) {
+            resultHtml += `<p class="text-muted small"><i class="fas fa-clock me-1"></i>Results entered: ${formatDateTime(service.result_date)}</p>`;
+        }
+
+        resultContainer.innerHTML = resultHtml;
     } else {
-        resultContainer.innerHTML = '<p class="text-muted">No results have been entered yet.</p>';
+        resultContainer.innerHTML = `
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>No results entered yet</strong>
+                <p class="mb-0 mt-2">Please perform the test and enter the results by clicking the button below.</p>
+            </div>
+        `;
     }
 }
 
 function openResultModal(serviceOrderItemId) {
     const service = allAssignedServices.find(s => s.service_order_item_id === serviceOrderItemId);
-    if (!service) return;
+    if (!service) {
+        showAlert('Service not found. Please refresh the page.', 'danger');
+        return;
+    }
 
+    console.log('Opening result modal for service:', service);
+
+    // Update modal title based on whether updating or creating
+    const hasResults = service.result_description && service.result_description.trim() !== '';
+    const modalTitle = document.querySelector('#resultModal .modal-title');
+    modalTitle.innerHTML = `
+        <i class="fas fa-flask me-2"></i>
+        ${hasResults ? 'Update' : 'Enter'} Test Results - ${service.service_name}
+    `;
+
+    // Set form values
     document.getElementById("serviceOrderItemId").value = service.service_order_item_id;
     document.getElementById("modalServiceName").value = service.service_name || '';
     document.getElementById("modalPatientName").value = service.patient_name || '';
-    
-    // Reset form fields
+
+    // Reset form fields first
     document.getElementById("testResults").value = '';
     document.getElementById("conclusion").value = '';
     document.getElementById("resultStatus").value = '';
 
     // Load existing results into form if available
-    if (service.result_description) {
+    if (hasResults) {
         const lines = service.result_description.split('\\n');
         lines.forEach(line => {
             if (line.startsWith('Test Results:')) {
@@ -222,59 +594,104 @@ function openResultModal(serviceOrderItemId) {
                 document.getElementById("resultStatus").value = line.replace('Status:', '').trim();
             }
         });
+
+        showAlert('Existing results loaded for editing', 'info');
     }
-    
+
+    // Update save button text
+    const saveButton = document.querySelector('#resultModal .btn-primary');
+    saveButton.innerHTML = `<i class="fas fa-save me-2"></i>${hasResults ? 'Update' : 'Save'} Results`;
+
     const resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
     resultModal.show();
+
+    // Focus on test results field
+    setTimeout(() => {
+        document.getElementById("testResults").focus();
+    }, 300);
 }
 
 async function saveTestResult() {
     const saveButton = document.querySelector('#resultModal .btn-primary');
-    try {
-        saveButton.disabled = true;
-        saveButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
+    const form = document.getElementById('resultForm');
 
+    try {
+        // Validation
         const serviceOrderItemId = document.getElementById("serviceOrderItemId").value;
         const testResults = document.getElementById("testResults").value;
         const conclusion = document.getElementById("conclusion").value;
         const resultStatus = document.getElementById("resultStatus").value;
-        
-        if (!testResults.trim() || !resultStatus) {
+
+        console.log('Saving test result for service order item:', serviceOrderItemId);
+
+        if (!serviceOrderItemId || !testResults.trim() || !resultStatus) {
             showAlert('Please fill in all required fields: Test Results and Status.', 'danger');
             return;
         }
-        
+
+        if (testResults.trim().length < 10) {
+            showAlert('Test results must be at least 10 characters long.', 'warning');
+            return;
+        }
+
+        // UI feedback
+        saveButton.disabled = true;
+        saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+        form.style.opacity = '0.7';
+
+        const requestData = {
+            serviceOrderItemId: parseInt(serviceOrderItemId),
+            testResults: testResults.trim(),
+            conclusion: conclusion.trim(),
+            resultStatus: resultStatus
+        };
+
+        console.log('Request data:', requestData);
+
         const response = await fetch('/api/doctor/service-result', {
             method: 'POST',
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                serviceOrderItemId: parseInt(serviceOrderItemId),
-                testResults: testResults,
-                conclusion: conclusion,
-                resultStatus: resultStatus
-            })
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(requestData)
         });
 
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
         const result = await response.json();
+        console.log('Save result:', result);
 
         if (result.success) {
-            showAlert('Test results saved successfully!', 'success');
-            
+            showAlert('✅ Test results saved successfully!', 'success');
+
+            // Close modal
             const modal = bootstrap.Modal.getInstance(document.getElementById("resultModal"));
             modal.hide();
-            
-            await fetchAndRenderServices();
+
+            // Refresh the services list to show updated status
+            await fetchAndRenderServices(true);
+
+            // Clear form for next use
+            form.reset();
+
         } else {
             throw new Error(result.message || 'Failed to save test results');
         }
 
     } catch (error) {
         console.error("Error saving test result:", error);
-        showAlert(error.message, 'danger');
+        showAlert(`❌ Failed to save test results: ${error.message}`, 'danger');
     } finally {
+        // Reset UI
         saveButton.disabled = false;
         saveButton.innerHTML = '<i class="fas fa-save me-2"></i>Save Results';
+        form.style.opacity = '1';
     }
 }
 
@@ -285,10 +702,10 @@ function showAlert(message, type) {
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
-    
+
     const container = document.querySelector('.main-content .container-fluid');
     container.insertBefore(alertDiv, container.firstChild);
-    
+
     setTimeout(() => {
         if (alertDiv.parentNode) {
             alertDiv.remove();
@@ -298,7 +715,7 @@ function showAlert(message, type) {
 
 function formatDateTime(dateTimeString) {
     if (!dateTimeString) return 'N/A';
-    
+
     try {
         const date = new Date(dateTimeString);
         return date.toLocaleString('vi-VN', {
@@ -317,4 +734,4 @@ function logout() {
     if (confirm('Are you sure you want to logout?')) {
         window.location.href = '../index.html';
     }
-} 
+}

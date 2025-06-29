@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @WebServlet("/api/doctor/waitlist")
 public class DoctorWaitlistServlet extends HttpServlet {
@@ -116,30 +117,84 @@ public class DoctorWaitlistServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        
+        // Test endpoint - trả về thông tin cơ bản để verify connection
+        String testParam = request.getParameter("test");
+        if ("ping".equals(testParam)) {
+            response.getWriter().write("{\"status\":\"success\",\"message\":\"PUT endpoint is working\",\"timestamp\":\"" + new java.util.Date() + "\"}");
+            return;
+        }
+        
         try {
             BufferedReader reader = request.getReader();
-            JsonObject jsonBody = JsonParser.parseReader(reader).getAsJsonObject();
-
-            if (!jsonBody.has("waitlistId") || !jsonBody.has("status")) {
+            String requestBody = reader.lines().collect(Collectors.joining());
+            System.out.println("Request body: " + requestBody);
+            
+            // Kiểm tra nếu request body rỗng
+            if (requestBody == null || requestBody.trim().isEmpty()) {
+                System.out.println("ERROR: Request body is empty");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write("{\"error\":\"Missing waitlistId or status\"}");
+                response.getWriter().write("{\"error\":\"Request body is empty\"}");
+                return;
+            }
+            
+            JsonObject jsonBody = JsonParser.parseString(requestBody).getAsJsonObject();
+            System.out.println("Parsed JSON: " + jsonBody);
+
+            if (!jsonBody.has("waitlistId")) {
+                System.out.println("ERROR: Missing waitlistId in request");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\":\"Missing waitlistId\"}");
                 return;
             }
 
             int waitlistId = jsonBody.get("waitlistId").getAsInt();
-            String status = jsonBody.get("status").getAsString();
+            System.out.println("Processing waitlistId: " + waitlistId);
+            
+            boolean updated = false;
+            String message = "";
 
-            boolean updated = waitlistDAO.updateStatus(waitlistId, status);
+            // Kiểm tra xem có cả status và visittype không
+            if (jsonBody.has("status") && jsonBody.has("visittype")) {
+                // Cập nhật cả status và visittype
+                String status = jsonBody.get("status").getAsString();
+                String visittype = jsonBody.get("visittype").getAsString();
+                System.out.println("Updating both - status: " + status + ", visittype: " + visittype);
 
-            response.setContentType("application/json");
+                updated = waitlistDAO.updateStatusAndVisittype(waitlistId, status, visittype);
+                message = updated ? "Status and visittype updated successfully" : "Failed to update status and visittype";
+                System.out.println("Update result: " + updated);
+
+            } else if (jsonBody.has("status")) {
+                // Chỉ cập nhật status
+                String status = jsonBody.get("status").getAsString();
+                System.out.println("Updating status only: " + status);
+                
+                updated = waitlistDAO.updateStatus(waitlistId, status);
+                message = updated ? "Status updated successfully" : "Failed to update status";
+                System.out.println("Update result: " + updated);
+
+            } else {
+                System.out.println("ERROR: Missing status or visittype fields");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\":\"Missing status or visittype\"}");
+                return;
+            }
+
+            System.out.println("Final response - updated: " + updated + ", message: " + message);
+            
             if (updated) {
-                response.getWriter().write("{\"success\":true}");
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write("{\"success\":true,\"message\":\"" + message + "\"}");
             } else {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                response.getWriter().write("{\"success\":false,\"message\":\"Waitlist not found or not updated\"}");
+                response.getWriter().write("{\"success\":false,\"message\":\"" + message + "\"}");
             }
 
         } catch (Exception e) {
+            System.out.println("EXCEPTION in doPut: " + e.getMessage());
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");

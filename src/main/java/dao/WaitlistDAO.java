@@ -18,7 +18,7 @@ public class WaitlistDAO {
                        w.registered_at, w.estimated_time, w.visittype,
                        a.appointment_datetime, a.note, a.shift
                 FROM Appointment a
-                JOIN Waitlist w ON a.patient_id = w.patient_id
+                JOIN Waitlist w ON a.patient_id = w.patient_id AND a.doctor_id = w.doctor_id
                 WHERE a.doctor_id = ?
                 ORDER BY w.estimated_time ASC
             """;
@@ -103,6 +103,21 @@ public class WaitlistDAO {
             PreparedStatement stmt = db.getConnection().prepareStatement(sql);
             stmt.setString(1, status);
             stmt.setInt(2, waitlistId);
+            return stmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateStatusAndVisittype(Integer waitlistId, String status, String visittype) {
+        DBContext db = DBContext.getInstance();
+        try {
+            String sql = "UPDATE Waitlist SET status = ?, visittype = ? WHERE waitlist_id = ?";
+            PreparedStatement stmt = db.getConnection().prepareStatement(sql);
+            stmt.setString(1, status);
+            stmt.setString(2, visittype);
+            stmt.setInt(3, waitlistId);
             return stmt.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
