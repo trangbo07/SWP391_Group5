@@ -200,4 +200,29 @@ public class ServiceOrderDAO {
         
         return orders;
     }
+    
+    public List<ServiceOrder> getAllServiceOrders() {
+        List<ServiceOrder> orders = new ArrayList<>();
+        String sql = "SELECT * FROM ServiceOrder ORDER BY order_date DESC";
+        
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                orders.add(new ServiceOrder(
+                    rs.getInt("service_order_id"),
+                    rs.getInt("doctor_id"),
+                    rs.getInt("medicineRecord_id"),
+                    rs.getString("order_date")
+                ));
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return orders;
+    }
 } 
