@@ -453,6 +453,105 @@ public class DoctorServiceOrderServlet extends HttpServlet {
                     jsonResponse.put("message", "Test failed: " + e.getMessage());
                 }
 
+            } else if ("getAllServiceOrders".equals(action)) {
+                // Lấy tất cả service orders (không giới hạn theo doctor)
+                try {
+                    System.out.println("Getting all service orders...");
+                    
+                    List<ServiceOrder> allServiceOrders = serviceOrderDAO.getAllServiceOrders();
+                    List<Map<String, Object>> serviceOrdersWithDetails = new ArrayList<>();
+
+                    for (ServiceOrder serviceOrder : allServiceOrders) {
+                        Map<String, Object> orderDetails = serviceOrderDAO.getServiceOrderWithDetails(serviceOrder.getService_order_id());
+                        if (orderDetails != null) {
+                            // Lấy items của service order
+                            List<Map<String, Object>> items = serviceOrderItemDAO.getServiceOrderItemsWithDetails(serviceOrder.getService_order_id());
+
+                            // Tính tổng tiền cho order này
+                            double totalAmount = 0.0;
+                            for (Map<String, Object> item : items) {
+                                Object priceObj = item.get("service_price");
+                                if (priceObj != null) {
+                                    totalAmount += Double.parseDouble(priceObj.toString());
+                                }
+                            }
+
+                            orderDetails.put("items", items);
+                            orderDetails.put("totalAmount", totalAmount);
+                            orderDetails.put("total_amount", totalAmount); // Alias cho frontend
+                            serviceOrdersWithDetails.add(orderDetails);
+                        }
+                    }
+
+                    System.out.println("Retrieved " + serviceOrdersWithDetails.size() + " service orders with details");
+
+                    jsonResponse.put("success", true);
+                    jsonResponse.put("data", serviceOrdersWithDetails);
+                    jsonResponse.put("message", "All service orders retrieved successfully");
+                    jsonResponse.put("totalCount", serviceOrdersWithDetails.size());
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    jsonResponse.put("success", false);
+                    jsonResponse.put("message", "Error retrieving all service orders: " + e.getMessage());
+                }
+
+            } else if ("getMyServiceOrders".equals(action)) {
+                // Lấy service orders của bác sĩ hiện tại
+                try {
+                    // Lấy thông tin bác sĩ hiện tại từ session
+                    Doctor doctor = (Doctor) accountStaffDAO.getOStaffByStaffId(accountStaff.getAccount_staff_id(), "Doctor");
+                    if (doctor == null) {
+                        jsonResponse.put("success", false);
+                        jsonResponse.put("message", "Failed to get doctor information");
+                        mapper.writeValue(response.getWriter(), jsonResponse);
+                        return;
+                    }
+
+                    int doctorId = doctor.getDoctor_id();
+                    System.out.println("Getting service orders for doctor ID: " + doctorId);
+                    
+                    List<ServiceOrder> myServiceOrders = serviceOrderDAO.getServiceOrdersByDoctorId(doctorId);
+                    List<Map<String, Object>> serviceOrdersWithDetails = new ArrayList<>();
+
+                    for (ServiceOrder serviceOrder : myServiceOrders) {
+                        Map<String, Object> orderDetails = serviceOrderDAO.getServiceOrderWithDetails(serviceOrder.getService_order_id());
+                        if (orderDetails != null) {
+                            // Lấy items của service order
+                            List<Map<String, Object>> items = serviceOrderItemDAO.getServiceOrderItemsWithDetails(serviceOrder.getService_order_id());
+
+                            // Tính tổng tiền cho order này
+                            double totalAmount = 0.0;
+                            for (Map<String, Object> item : items) {
+                                Object priceObj = item.get("service_price");
+                                if (priceObj != null) {
+                                    totalAmount += Double.parseDouble(priceObj.toString());
+                                }
+                            }
+
+                            orderDetails.put("items", items);
+                            orderDetails.put("totalAmount", totalAmount);
+                            orderDetails.put("total_amount", totalAmount); // Alias cho frontend
+                            serviceOrdersWithDetails.add(orderDetails);
+                        }
+                    }
+
+                    System.out.println("Retrieved " + serviceOrdersWithDetails.size() + " service orders for doctor " + doctorId);
+
+                    jsonResponse.put("success", true);
+                    jsonResponse.put("data", serviceOrdersWithDetails);
+                    jsonResponse.put("message", "My service orders retrieved successfully");
+                    jsonResponse.put("totalCount", serviceOrdersWithDetails.size());
+                    jsonResponse.put("doctorId", doctorId);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    jsonResponse.put("success", false);
+                    jsonResponse.put("message", "Error retrieving my service orders: " + e.getMessage());
+                }
+
             } else {
                 jsonResponse.put("success", false);
                 jsonResponse.put("message", "Invalid action");

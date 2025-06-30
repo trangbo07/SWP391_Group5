@@ -21,6 +21,9 @@ public class WaitlistDTO {
     private String dob;
     private String gender;
     private String phone;
+    
+    // Từ bảng MedicineRecords
+    private int medicine_record_id;
 
     public int getAppointment_id() {
         return appointment_id;
@@ -149,5 +152,13 @@ public class WaitlistDTO {
 
     public void setShift(String shift) {
         this.shift = shift;
+    }
+
+    public int getMedicine_record_id() {
+        return medicine_record_id;
+    }
+
+    public void setMedicine_record_id(int medicine_record_id) {
+        this.medicine_record_id = medicine_record_id;
     }
 }

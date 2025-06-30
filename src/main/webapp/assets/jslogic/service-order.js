@@ -135,6 +135,34 @@ function renderServiceOrderTable() {
         const row = document.createElement("tr");
         row.className = "service-order-row";
 
+        // Determine which button to show based on status and visittype
+        let actionButton = '';
+        const status = waitlist.status?.toLowerCase();
+        const visittype = waitlist.visittype?.toLowerCase();
+        
+        if (status === 'inprogress') {
+            // Show "Chỉ định" button for inprogress status
+            actionButton = `
+                <button class="btn btn-success assign-service-btn" data-waitlist-id="${waitlist.waitlist_id}" data-patient-id="${waitlist.patient_id}">
+                    <i class="fas fa-stethoscope me-1"></i>Chỉ định
+                </button>
+            `;
+        } else if (visittype === 'result' && status === 'waiting') {
+            // Show "View" button for result visittype with waiting status
+            actionButton = `
+                <button class="btn btn-primary view-results-btn" data-waitlist-id="${waitlist.waitlist_id}" data-patient-id="${waitlist.patient_id}">
+                    <i class="fas fa-eye me-1"></i>View
+                </button>
+            `;
+        } else {
+            // Show disabled state for other cases
+            actionButton = `
+                <span class="text-muted">
+                    <i class="fas fa-minus-circle me-1"></i>No action available
+                </span>
+            `;
+        }
+
         row.innerHTML = `
             <td>${index + 1}</td>
             <td>
@@ -156,9 +184,7 @@ function renderServiceOrderTable() {
             <td><i class="fas fa-sticky-note me-2"></i>${waitlist.note || 'No note'}</td>
             <td><i class="fas fa-clock me-2"></i>${waitlist.shift || 'N/A'}</td>
             <td>
-                <button class="btn btn-success assign-service-btn" data-waitlist-id="${waitlist.waitlist_id}" data-patient-id="${waitlist.patient_id}">
-                    <i class="fas fa-stethoscope me-1"></i>Chỉ định
-                </button>
+                ${actionButton}
             </td>
         `;
 
@@ -237,6 +263,45 @@ async function assignServices(waitlistId, patientId) {
     } catch (error) {
         console.error("Error getting waitlist details:", error);
         showAlert('Failed to get waitlist details. Please try again.', 'danger');
+    }
+}
+
+// Hàm xử lý nút view xét nghiệm
+async function viewTestResults(waitlistId, patientId) {
+    try {
+        console.log('Viewing test results for:', { waitlistId, patientId });
+        
+        // Lấy thông tin chi tiết của waitlist để có medicine_record_id
+        const waitlistResponse = await fetch(`/api/doctor/waitlist?action=detail&id=${waitlistId}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!waitlistResponse.ok) {
+            throw new Error('Failed to get waitlist details');
+        }
+
+        const waitlistData = await waitlistResponse.json();
+        console.log('Waitlist data:', waitlistData);
+
+        if (!waitlistData.success || !waitlistData.data) {
+            throw new Error('Invalid waitlist data');
+        }
+
+        const medicineRecordId = waitlistData.data.medicine_record_id;
+        if (!medicineRecordId) {
+            throw new Error('Medicine record ID not found');
+        }
+
+        // Chuyển hướng đến trang xem kết quả xét nghiệm
+        window.location.href = `test-results.html?medicineRecordId=${medicineRecordId}&patientId=${patientId}&waitlistId=${waitlistId}`;
+
+    } catch (error) {
+        console.error("Error viewing test results:", error);
+        showAlert(`Failed to view test results: ${error.message}`, 'danger');
     }
 }
 
@@ -637,3 +702,371 @@ window.runDebugTests = runDebugTests;
 window.showAlert = showAlert;
 window.assignServices = assignServices;
 window.displayEmptyState = displayEmptyState;
+
+
+    // Ensure all required functions are available immediately
+    window.loadServiceOrderWaitlist = window.loadServiceOrderWaitlist || function() {
+        console.log('Loading service order waitlist...');
+        // Will be defined by service-order.js
+    };
+    
+    window.loadMyServiceOrders = window.loadMyServiceOrders || function() {
+        console.log('Loading my service orders...');
+        // Will be defined by service-order.js
+    };
+    
+    window.searchServiceOrder = window.searchServiceOrder || function() {
+        console.log('Searching service order...');
+        // Will be defined by service-order.js
+    };
+    
+    window.searchByMedicineRecord = window.searchByMedicineRecord || function() {
+        console.log('Searching by medicine record...');
+        // Will be defined by service-order.js
+    };
+    
+    window.searchByPatientName = window.searchByPatientName || function() {
+        console.log('Searching by patient name...');
+        // Will be defined by service-order.js
+    };
+    
+    window.loadDoctorHistory = window.loadDoctorHistory || function() {
+        console.log('Loading doctor history...');
+        // Will be defined by service-order.js
+    };
+    
+    window.demoGetServiceOrderDetails = window.demoGetServiceOrderDetails || function() {
+        console.log('Demo: Get service order details');
+        // Will be defined by service-order.js
+    };
+    
+    window.demoGetPatientHistory = window.demoGetPatientHistory || function() {
+        console.log('Demo: Get patient history');
+        // Will be defined by service-order.js
+    };
+    
+    window.demoGetDoctorHistory = window.demoGetDoctorHistory || function() {
+        console.log('Demo: Get doctor history');
+        // Will be defined by service-order.js
+    };
+    
+    window.demoSearchByPatientName = window.demoSearchByPatientName || function() {
+        console.log('Demo: Search by patient name');
+        // Will be defined by service-order.js
+    };
+    
+    window.runDebugTests = window.runDebugTests || function() {
+        console.log('Running debug tests...');
+        // Will be defined by service-order.js
+    };
+    
+    window.printServiceOrder = window.printServiceOrder || function() {
+        console.log('Printing service order...');
+        window.print();
+    };
+    
+    // Additional UI Functions
+    function showStatistics() {
+        // Create a beautiful statistics modal
+        const modal = document.createElement('div');
+        modal.className = 'statistics-modal';
+        modal.innerHTML = `
+            <div class="statistics-content">
+                <div class="statistics-header">
+                    <h4><i class="fas fa-chart-line me-2"></i>Service Order Statistics</h4>
+                    <button class="btn-close-stats" onclick="this.parentElement.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="statistics-body">
+                    <div class="stats-grid">
+                        <div class="stat-card primary">
+                            <div class="stat-icon"><i class="fas fa-file-medical"></i></div>
+                            <div class="stat-info">
+                                <h3>24</h3>
+                                <p>Total Orders Today</p>
+                            </div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="stat-info">
+                                <h3>18</h3>
+                                <p>Completed Orders</p>
+                            </div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            <div class="stat-info">
+                                <h3>6</h3>
+                                <p>Pending Orders</p>
+                            </div>
+                        </div>
+                        <div class="stat-card info">
+                            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                            <div class="stat-info">
+                                <h3>2.4M</h3>
+                                <p>Revenue (VND)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-area fa-3x"></i>
+                        <p>Interactive charts coming soon!</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add styles for the modal
+        const style = document.createElement('style');
+        style.textContent = `
+            .statistics-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                animation: fadeIn 0.3s ease;
+            }
+            
+            .statistics-content {
+                background: white;
+                border-radius: 16px;
+                width: 90%;
+                max-width: 800px;
+                max-height: 90vh;
+                overflow-y: auto;
+                animation: slideUp 0.3s ease;
+            }
+            
+            .statistics-header {
+                padding: 2rem;
+                border-bottom: 1px solid #e9ecef;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 16px 16px 0 0;
+            }
+            
+            .btn-close-stats {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 1.2rem;
+                cursor: pointer;
+                padding: 0.5rem;
+                border-radius: 50%;
+                transition: background 0.3s;
+            }
+            
+            .btn-close-stats:hover {
+                background: rgba(255,255,255,0.2);
+            }
+            
+            .statistics-body {
+                padding: 2rem;
+            }
+            
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .stat-card {
+                background: white;
+                border-radius: 12px;
+                padding: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                border-left: 4px solid;
+            }
+            
+            .stat-card.primary { border-left-color: #667eea; }
+            .stat-card.success { border-left-color: #11998e; }
+            .stat-card.warning { border-left-color: #f093fb; }
+            .stat-card.info { border-left-color: #3182ce; }
+            
+            .stat-icon {
+                font-size: 2rem;
+                color: #667eea;
+            }
+            
+            .stat-info h3 {
+                margin: 0;
+                font-size: 2rem;
+                font-weight: 700;
+                color: #2d3748;
+            }
+            
+            .stat-info p {
+                margin: 0;
+                color: #718096;
+                font-size: 0.9rem;
+            }
+            
+            .chart-placeholder {
+                text-align: center;
+                padding: 3rem;
+                color: #718096;
+                background: #f8f9fa;
+                border-radius: 12px;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            @keyframes slideUp {
+                from { transform: translateY(30px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+        `;
+        
+        document.head.appendChild(style);
+        document.body.appendChild(modal);
+    }
+    
+    function refreshAllData() {
+        // Show loading animation
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.style.display = 'flex';
+        }
+        
+        // Add smooth refresh animation
+        document.body.style.opacity = '0.8';
+        setTimeout(() => {
+            location.reload();
+        }, 500);
+    }
+    
+    // Enhanced smooth scrolling and animations
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add smooth scrolling to all internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add entrance animations to cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'slideInUp 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all cards
+        document.querySelectorAll('.modern-card, .action-card, .search-section').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            observer.observe(card);
+        });
+        
+        // Add CSS for entrance animations
+        const animationStyle = document.createElement('style');
+        animationStyle.textContent = `
+            @keyframes slideInUp {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            .btn-modern:active {
+                transform: translateY(0) scale(0.98);
+            }
+            
+            .action-card:hover .action-icon {
+                transform: scale(1.1) rotate(5deg);
+            }
+            
+            .search-item:hover .search-label i {
+                transform: scale(1.2);
+                color: #667eea;
+            }
+        `;
+        document.head.appendChild(animationStyle);
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + F to focus search
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                const searchInput = document.getElementById('serviceOrderIdInput');
+                if (searchInput) {
+                    searchInput.focus();
+                    document.getElementById('searchSection').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            }
+            
+            // Ctrl + R to refresh
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                refreshAllData();
+            }
+        });
+        
+        // Add tooltips to buttons
+        document.querySelectorAll('.btn-modern, .btn-demo').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip-modern';
+                tooltip.textContent = this.getAttribute('title') || this.textContent;
+                tooltip.style.cssText = `
+                    position: absolute;
+                    background: #2d3748;
+                    color: white;
+                    padding: 0.5rem 1rem;
+                    border-radius: 6px;
+                    font-size: 0.8rem;
+                    white-space: nowrap;
+                    z-index: 1000;
+                    transform: translateX(-50%);
+                    opacity: 0;
+                    transition: opacity 0.3s;
+                    pointer-events: none;
+                `;
+                
+                document.body.appendChild(tooltip);
+                
+                const rect = this.getBoundingClientRect();
+                tooltip.style.left = rect.left + rect.width / 2 + 'px';
+                tooltip.style.top = rect.top - tooltip.offsetHeight - 10 + 'px';
+                
+                setTimeout(() => tooltip.style.opacity = '1', 100);
+                
+                this.addEventListener('mouseleave', function() {
+                    tooltip.remove();
+                }, { once: true });
+            });
+        });
+    });
