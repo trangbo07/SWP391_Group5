@@ -4,10 +4,9 @@ import com.google.gson.Gson;
 import dao.AccountDAO;
 import dao.AccountStaffDAO;
 import dao.AdminSystemDAO;
-
 import dto.DistinctResponse;
-import dto.DoctorDTOFA;
 import dto.JsonResponse;
+import dto.ReceptionistDTOFA;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,8 +26,8 @@ import java.util.Random;
         maxFileSize = 5 * 1024 * 1024,    // 5MB
         maxRequestSize = 10 * 1024 * 1024 // 10MB
 )
-@WebServlet("/api/admin/doctors")
-public class AdminSys4DoctorServlet extends HttpServlet {
+@WebServlet("/api/admin/receptionists")
+public class AdminSys4RecepServlet extends HttpServlet {
 
     private final AdminSystemDAO dao = new AdminSystemDAO();
     private final Gson gson = new Gson();
@@ -54,32 +53,29 @@ public class AdminSys4DoctorServlet extends HttpServlet {
 
             switch (action) {
                 case "" -> { // Mặc định: lấy toàn bộ bác sĩ
-                    List<DoctorDTOFA> doctors = dao.getAllDoctors();
-                    out.print(gson.toJson(doctors));
+                    List<ReceptionistDTOFA> receptionists = dao.getAllReceptionists();
+                    out.print(gson.toJson(receptionists));
                 }
 
                 case "distinct" -> {
                     String field = req.getParameter("field");
-                    List<String> values = dao.getDistinctValues(field);
+                    List<String> values = dao.getDistinctValuesRecep(field);
                     DistinctResponse res = new DistinctResponse(field, values);
                     out.print(gson.toJson(res));
                 }
 
                 case "view" -> {
                     int id = Integer.parseInt(req.getParameter("id"));
-                    DoctorDTOFA doctor = dao.getDoctorById(id);
-                    out.print(gson.toJson(doctor));
+                    ReceptionistDTOFA receptionist = dao.getReceptionistById(id);
+                    out.print(gson.toJson(receptionist));
                 }
 
                 case "filter" -> {
                     String status = req.getParameter("status");
-                    String eduLevel = req.getParameter("eduLevel");
-                    String department = req.getParameter("department");
                     String search = NormalizeUtil.normalizeKeyword(req.getParameter("search"));
 
-                    List<DoctorDTOFA> filteredDoctors = dao.filterDoctors(status, eduLevel, department, search);
-                    System.out.println();
-                    out.print(gson.toJson(filteredDoctors));
+                    List<ReceptionistDTOFA> receptionists = dao.filterReceptionists(status, search);
+                    out.print(gson.toJson(receptionists));
                 }
 
                 default -> {
@@ -117,16 +113,13 @@ public class AdminSys4DoctorServlet extends HttpServlet {
             String username = req.getParameter("username");
             String email = req.getParameter("email");
             String phone = req.getParameter("phone");
-            String department = req.getParameter("department");
-            String eduLevel = req.getParameter("eduLevel");
             String status = req.getParameter("status");
-            String doctorId = req.getParameter("doctorId");
+            String receptionistId = req.getParameter("receptionistId");
 
             JsonResponse jsonRes;
-            String imagePath = "/assets/images/uploads/default.jpg"; // fallback
+            String imagePath = "/assets/images/uploads/default.jpg";
 
             if ("create".equals(action)) {
-                // Xử lý ảnh nếu có
                 Part imgPart = req.getPart("img");
                 if (imgPart != null && imgPart.getSize() > 0) {
                     String fileName = Paths.get(imgPart.getSubmittedFileName()).getFileName().toString();
@@ -151,9 +144,9 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 }
 
                 String generatedPassword = generateRandomPassword(8);
-                boolean success = dao.insertDoctor(
+                boolean success = dao.insertReceptionist(
                         username, generatedPassword, email, imagePath, status,
-                        fullName, phone, department, eduLevel
+                        fullName, phone
                 );
 
                 jsonRes = new JsonResponse(success, success ? "Create successfully!" : "Create failed!");
@@ -161,16 +154,17 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 return;
 
             } else if ("update".equals(action)) {
-                if (doctorId == null || doctorId.isEmpty()) {
-                    jsonRes = new JsonResponse(false, "Missing doctor ID");
+                if (receptionistId == null || receptionistId.isEmpty()) {
+                    jsonRes = new JsonResponse(false, "Missing receptionist ID");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
 
                 AccountStaffDAO accountStaffDAO = new AccountStaffDAO();
-                String oldUsername = ((AccountStaff) accountStaffDAO.getAccountStaffById(Integer.parseInt(accountStaffId))).getUsername();
-                String oldEmail = ((AccountStaff) accountStaffDAO.getAccountStaffById(Integer.parseInt(accountStaffId))).getEmail();
-                String oldImagePath = ((AccountStaff) accountStaffDAO.getAccountStaffById(Integer.parseInt(accountStaffId))).getImg();
+                AccountStaff acc = (AccountStaff) accountStaffDAO.getAccountStaffById(Integer.parseInt(accountStaffId));
+                String oldUsername = acc.getUsername();
+                String oldEmail = acc.getEmail();
+                String oldImagePath = acc.getImg();
 
                 Part imgPart = req.getPart("img");
                 if (imgPart != null && imgPart.getSize() > 0) {
@@ -193,9 +187,9 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                     return;
                 }
 
-                boolean success = dao.updateDoctor(
-                        Integer.parseInt(doctorId), Integer.parseInt(accountStaffId), username, email, imagePath, status,
-                        fullName, phone, department, eduLevel
+                boolean success = dao.updateReceptionist(
+                        Integer.parseInt(receptionistId), Integer.parseInt(accountStaffId),
+                        username, email, imagePath, status, fullName, phone
                 );
 
                 jsonRes = new JsonResponse(success, success ? "Updated successfully!" : "Update failed!");
@@ -205,7 +199,7 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 int account_staff_id = Integer.parseInt(req.getParameter("account_staff_id"));
                 String newStatus = req.getParameter("status");
 
-                boolean success = dao.updateAccountStaffStatus(account_staff_id , newStatus); // viết hàm này trong DAO
+                boolean success = dao.updateAccountStaffStatus(account_staff_id, newStatus);
                 jsonRes = new JsonResponse(success, success ? "Status updated!" : "Status update failed.");
                 out.print(gson.toJson(jsonRes));
                 return;
@@ -220,6 +214,7 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 int staffId = Integer.parseInt(staffIdRaw);
                 String generatedPassword = generateRandomPassword(8);
                 boolean ok = accountDAO.resetStaffPassword(staffId, generatedPassword);
+
                 jsonRes = new JsonResponse(ok, ok ? "Reset password successfully" : "Reset password failed");
                 out.print(gson.toJson(jsonRes));
                 return;
