@@ -53,7 +53,30 @@
         <!-- Google Font -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">    </head>
+        <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+        
+        <style>
+            /* Custom styles for search functionality */
+            #serviceSearchInput:focus {
+                box-shadow: 0 0 0 0.2rem rgba(112, 147, 229, 0.25);
+                border-color: #7093e5;
+            }
+            
+            #clearSearchBtn {
+                border-left: none;
+                border-color: #dee2e6;
+            }
+            
+            #clearSearchBtn:hover {
+                background-color: #e9ecef;
+                border-color: #dee2e6;
+            }
+            
+            .input-group > #serviceSearchInput:not(:last-child) {
+                border-right: none;
+            }
+        </style>
+    </head>
     <body class="  ">
         <!-- loader Start -->
         <div id="loading">
@@ -1640,24 +1663,47 @@
     </svg>
     <span class="head-title fw-500 mt-1">Services</span>
 </div><div class="card">
-   <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-3">
-      <div>
-         <h4>Medical Services</h4>
-         <span>Healthcare Service Price List</span>
-      </div>
-      <button class="btn btn-primary " type="button" data-bs-toggle="offcanvas"
-         data-bs-target="#offcanvasServiceAdd" aria-controls="offcanvasServiceAdd">
-         <span class="btn-inner">
-            <span class="text d-inline-block align-middle">Add Service</span>
-            <span class="icon d-inline-block align-middle ms-1 ps-2">
-               <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8" fill="none">
-                  <path
-                        d="M7.32046 4.70834H4.74952V7.25698C4.74952 7.66734 4.41395 8 4 8C3.58605 8 3.25048 7.66734 3.25048 7.25698V4.70834H0.679545C0.293423 4.6687 0 4.34614 0 3.96132C0 3.5765 0.293423 3.25394 0.679545 3.21431H3.24242V0.673653C3.28241 0.290878 3.60778 0 3.99597 0C4.38416 0 4.70954 0.290878 4.74952 0.673653V3.21431H7.32046C7.70658 3.25394 8 3.5765 8 3.96132C8 4.34614 7.70658 4.6687 7.32046 4.70834Z"
-                        fill="currentColor" />
-               </svg>
+   <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+         <div>
+            <h4>Medical Services</h4>
+            <span>Healthcare Service Price List</span>
+         </div>
+         <button class="btn btn-primary " type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasServiceAdd" aria-controls="offcanvasServiceAdd">
+            <span class="btn-inner">
+               <span class="text d-inline-block align-middle">Add Service</span>
+               <span class="icon d-inline-block align-middle ms-1 ps-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8" fill="none">
+                     <path
+                           d="M7.32046 4.70834H4.74952V7.25698C4.74952 7.66734 4.41395 8 4 8C3.58605 8 3.25048 7.66734 3.25048 7.25698V4.70834H0.679545C0.293423 4.6687 0 4.34614 0 3.96132C0 3.5765 0.293423 3.25394 0.679545 3.21431H3.24242V0.673653C3.28241 0.290878 3.60778 0 3.99597 0C4.38416 0 4.70954 0.290878 4.74952 0.673653V3.21431H7.32046C7.70658 3.25394 8 3.5765 8 3.96132C8 4.34614 7.70658 4.6687 7.32046 4.70834Z"
+                           fill="currentColor" />
+                  </svg>
+               </span>
             </span>
-         </span>
-      </button>
+         </button>
+      </div>
+      <div class="mt-3">
+         <div class="row">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <div class="input-group">
+                     <span class="input-group-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                           <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                     </span>
+                     <input type="text" class="form-control" id="serviceSearchInput" placeholder="Search services by name...">
+                     <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn" style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                           <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                        </svg>
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
    </div>
    <div class="card-body pt-0">
       <div class="table-responsive">
@@ -1719,53 +1765,37 @@
       </div>   </div>
 </div>
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasProductEdit"
-   aria-labelledby="offcanvasProductEditLabel">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasServiceEdit"
+   aria-labelledby="offcanvasServiceEditLabel">
    <div class="offcanvas-header border-bottom">
-      <h3 class="offcanvas-title" id="offcanvasProductEditLabel">Edit Product</h3>
+      <h3 class="offcanvas-title" id="offcanvasServiceEditLabel">Edit Medical Service</h3>
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
    </div>
    <div class="offcanvas-body">
-       <div class="form-group">
-         <label class="form-label" for="Id">Product Id <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="Id" value="#14356">
-      </div>
-      <div class="form-group col-md-12">
-         <label class="form-label" for="Name">Product Name <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="Name" value="Asthma Inhaler">
-      </div>
-      <div class="form-group">
-         <label class="form-label">Category <span class="text-danger">*</span></label>
-         <select class="form-control select2-basic-single">
-            <option>Medical Equipment</option>
-            <option selected="selected">Health Care</option>
-            <option>Home Equipment</option>
-            <option>Disease</option>
-            <option>Physical</option>
-         </select>
-      </div>
-      <div class="form-group col-md-12">
-         <label class="form-label" for="Price">Price <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="Price" value="$67.90">
-      </div>
-      <div class="form-group col-md-12">
-         <label class="form-label" for="stock">In Stock <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="stock" value="23">
-      </div>
-      <div class="form-group col-md-12">
-         <label class="form-label" for="discount">Discount <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="discount" value="15% Off">
-      </div>
-      <div class="form-group col-md-12">
-         <label class="form-label" for="sale">Sale <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="sale" value="173 Sold">
-      </div>
+      <form id="editServiceForm">
+         <input type="hidden" id="edit_serviceId" name="service_id">
+         <div class="form-group mb-3">
+            <label class="form-label" for="edit_serviceName">Service Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="edit_serviceName" name="name" required>
+            <div class="invalid-feedback" id="edit_serviceName_error"></div>
+         </div>
+         <div class="form-group mb-3">
+            <label class="form-label" for="edit_serviceDescription">Description</label>
+            <textarea class="form-control" id="edit_serviceDescription" name="description" rows="3" placeholder="Enter service description..."></textarea>
+            <div class="invalid-feedback" id="edit_serviceDescription_error"></div>
+         </div>
+         <div class="form-group mb-3">
+            <label class="form-label" for="edit_servicePrice">Price (VND) <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="edit_servicePrice" name="price" min="0" step="0.01" required>
+            <div class="invalid-feedback" id="edit_servicePrice_error"></div>
+         </div>
+      </form>
    </div>
    <div class="offcanvas-footer border-top">
       <div class="d-grid d-md-flex gap-3 p-3">
-         <button type="submit" class="btn btn-primary d-block">
+         <button type="button" class="btn btn-primary d-block" id="updateServiceBtn">
             <span class="btn-inner">
-               <span class="text d-inline-block align-middle">Update</span>
+               <span class="text d-inline-block align-middle">Update Service</span>
                <span class="icon d-inline-block align-middle ms-1 ps-2">
                      <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8" fill="none">
                         <path
@@ -1791,53 +1821,36 @@
    </div>
 </div>
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasProductAdd"
-   aria-labelledby="offcanvasProductAddLabel">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasServiceAdd"
+   aria-labelledby="offcanvasServiceAddLabel">
    <div class="offcanvas-header border-bottom">
-      <h3 class="offcanvas-title" id="offcanvasProductAddLabel">Add Product</h3>
+      <h3 class="offcanvas-title" id="offcanvasServiceAddLabel">Add Medical Service</h3>
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
    </div>
    <div class="offcanvas-body">
-       <div class="form-group">
-         <label class="form-label" for="add_Id">Product Id <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="add_Id" >
-      </div>
-      <div class="form-group col-md-12">
-         <label class="form-label" for="add_Name">Product Name <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="add_Name" >
-      </div>
-      <div class="form-group">
-         <label class="form-label" for="add_category">Category <span class="text-danger">*</span></label>
-         <select class="form-control select2-basic-single" id="add_category">
-            <option>Medical Equipment</option>
-            <option>Health Care</option>
-            <option>Home Equipment</option>
-            <option>Disease</option>
-            <option>Physical</option>
-         </select>
-      </div>
-      <div class="form-group col-md-12">
-         <label class="form-label" for="add_Price">Price <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="add_Price" >
-      </div>
-      <div class="form-group col-md-12">
-         <label class="form-label" for="add_stock">In Stock <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="add_stock">
-      </div>
-      <div class="form-group col-md-12">
-         <label class="form-label" for="add_discount">Discount <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="add_discount" >
-      </div>
-      <div class="form-group col-md-12">
-         <label class="form-label" for="add_sale">Sale <span class="text-danger">*</span></label>
-         <input type="text" class="form-control" id="add_sale" >
-      </div>
+      <form id="addServiceForm">
+         <div class="form-group mb-3">
+            <label class="form-label" for="add_serviceName">Service Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="add_serviceName" name="name" required>
+            <div class="invalid-feedback" id="add_serviceName_error"></div>
+         </div>
+         <div class="form-group mb-3">
+            <label class="form-label" for="add_serviceDescription">Description</label>
+            <textarea class="form-control" id="add_serviceDescription" name="description" rows="3" placeholder="Enter service description..."></textarea>
+            <div class="invalid-feedback" id="add_serviceDescription_error"></div>
+         </div>
+         <div class="form-group mb-3">
+            <label class="form-label" for="add_servicePrice">Price (VND) <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="add_servicePrice" name="price" min="0" step="0.01" required>
+            <div class="invalid-feedback" id="add_servicePrice_error"></div>
+         </div>
+      </form>
    </div>
    <div class="offcanvas-footer border-top">
       <div class="d-grid d-md-flex gap-3 p-3">
-         <button type="submit" class="btn btn-primary d-block">
+         <button type="button" class="btn btn-primary d-block" id="saveServiceBtn">
             <span class="btn-inner">
-               <span class="text d-inline-block align-middle">Save</span>
+               <span class="text d-inline-block align-middle">Save Service</span>
                <span class="icon d-inline-block align-middle ms-1 ps-2">
                      <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8" fill="none">
                         <path
