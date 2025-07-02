@@ -1,19 +1,19 @@
-let allDoctors = [];
+let allAdmins = [];
 let currentPage = 1;
 let pageSize = 5;
-let selectedDoctorIdForReset = null;
+let selectedAdminIdForReset = null;
 let isReversed = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     loadSelectFilter('status', 'filterStatus');
-    loadSelectFilter('eduLevel', 'filterEduLevel');
+    loadSelectFilter('role', 'filterRole');
     loadSelectFilter('department', 'filterDepartment');
-    fetchDoctorsWithFilter();
+    fetchAdminsWithFilter();
 
-    document.getElementById('filterStatus').addEventListener('change', fetchDoctorsWithFilter);
-    document.getElementById('filterEduLevel').addEventListener('change', fetchDoctorsWithFilter);
-    document.getElementById('filterDepartment').addEventListener('change', fetchDoctorsWithFilter);
-    document.getElementById('searchInput').addEventListener('input', debounce(fetchDoctorsWithFilter, 400));
+    document.getElementById('filterStatus').addEventListener('change', fetchAdminsWithFilter);
+    document.getElementById('filterRole').addEventListener('change', fetchAdminsWithFilter);
+    document.getElementById('filterDepartment').addEventListener('change', fetchAdminsWithFilter);
+    document.getElementById('searchInput').addEventListener('input', debounce(fetchAdminsWithFilter, 400));
     document.getElementById('btnPreviousPage').addEventListener('click', e => {
         e.preventDefault();
         changePage(-1);
@@ -22,91 +22,102 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         changePage(1);
     });
+    document.getElementById('role').addEventListener('change', () => {
+        const deptSelect = document.getElementById('department');
+        const customInput = document.getElementById('customDepartment');
+
+        deptSelect.selectedIndex = 0;
+        deptSelect.setAttribute('name', 'department');
+        customInput.classList.add('d-none');
+        customInput.removeAttribute('name');
+        customInput.value = '';
+    });
+
 });
 
-async function fetchDoctorsWithFilter() {
+async function fetchAdminsWithFilter() {
     const status = document.getElementById('filterStatus')?.value || '';
-    const eduLevel = document.getElementById('filterEduLevel')?.value || '';
+    const role = document.getElementById('filterRole')?.value || '';
     const department = document.getElementById('filterDepartment')?.value || '';
     const search = document.getElementById('searchInput')?.value || '';
-    const tableBody = document.getElementById('waitListTableBody');
+    const tableBody = document.getElementById('adminTableBody');
     const info = document.getElementById('paginationInfo');
 
     tableBody.innerHTML = '<tr><td colspan="10">Loading...</td></tr>';
 
     const params = new URLSearchParams({action: 'filter'});
     if (status) params.append("status", status);
-    if (eduLevel) params.append("eduLevel", eduLevel);
+    if (role) params.append("role", role);
     if (department) params.append("department", department);
     if (search) params.append("search", search);
 
     try {
-        const response = await fetch('/api/admin/doctors?' + params.toString(), {
+        const response = await fetch('/api/admin/admins?' + params.toString(), {
             method: 'GET',
             credentials: 'include'
         });
-        const doctors = await response.json();
+        const admins = await response.json();
 
-        if (!Array.isArray(doctors) || doctors.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="10">No doctors found.</td></tr>';
+        if (!Array.isArray(admins) || admins.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="10">No admins found.</td></tr>';
             if (info) info.innerText = `Showing 0 to 0 of 0 entries`;
             return;
         }
 
-        allDoctors = doctors;
+        allAdmins = admins;
         currentPage = 1;
-        paginateDoctors();
+        paginateAdmins();
 
     } catch (error) {
-        console.error('Error fetching doctors:', error);
-        tableBody.innerHTML = '<tr><td colspan="10">Failed to load doctor data.</td></tr>';
+        console.error('Error fetching admins:', error);
+        tableBody.innerHTML = '<tr><td colspan="10">Failed to load admin data.</td></tr>';
     }
 }
 
-function paginateDoctors() {
-    const tableBody = document.getElementById('waitListTableBody');
+function paginateAdmins() {
+    const tableBody = document.getElementById('adminTableBody');
     const info = document.getElementById('paginationInfo');
 
-    const sourceList = isReversed ? [...allDoctors].reverse() : allDoctors;
+    const sourceList = isReversed ? [...allAdmins].reverse() : allAdmins;
 
     const start = (currentPage - 1) * pageSize;
     const end = start + pageSize;
     const pageData = sourceList.slice(start, end);
 
     if (!pageData.length) {
-        tableBody.innerHTML = '<tr><td colspan="10">No doctors available.</td></tr>';
-        info.innerText = `Showing 0 to 0 of ${allDoctors.length} entries`;
+        tableBody.innerHTML = '<tr><td colspan="10">No admins available.</td></tr>';
+        info.innerText = `Showing 0 to 0 of ${allAdmins.length} entries`;
         return;
     }
 
-    tableBody.innerHTML = pageData.map((d, index) => `
+    tableBody.innerHTML = pageData.map((a, index) => `
         <tr>
             <td>${start + index + 1}</td>
-            <td>${d.fullName}</td>
-            <td>${d.username}</td>
-            <td>${d.email}</td>
-            <td>${d.status}</td>
-            <td>${d.phone}</td>
-            <td>${d.department}</td>
-            <td>${d.eduLevel}</td>
-            <td><img src="${d.img}" style="width: 40px; height: 40px; object-fit: cover;"></td>
+            <td>${a.fullName}</td>
+            <td>${a.username}</td>
+            <td>${a.email}</td>
+            <td>${a.status}</td>
+            <td>${a.phone}</td>
+            <td>${a.department}</td>
+            <td>${a.role}</td>
+            <td><img src="${a.img}" style="width: 40px; height: 40px; object-fit: cover;"></td>
             <td>
                 <button class="btn btn-sm btn-info me-1"
-                            data-bs-toggle="offcanvas"
-                            data-bs-target="#doctorViewCanvas"
-                            onclick="viewDoctor(${d.doctorId})">View</button>
-                <button class="btn btn-sm btn-warning me-1" onclick="editDoctor(${d.doctorId})">Edit</button>
-                <button class="btn btn-sm ${d.status === 'Enable' ? 'btn-danger' : 'btn-success'}"
-                        onclick="toggleDoctorStatus(${d.accountStaffId}, '${d.status}')">
-                    ${d.status === 'Enable' ? 'Disable' : 'Enable'}
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#adminViewCanvas"
+                        onclick="viewAdmin(${a.adminId})">View</button>
+                <button class="btn btn-sm btn-warning me-1" onclick="editAdmin(${a.adminId})">Edit</button>
+                <button class="btn btn-sm ${a.status === 'Enable' ? 'btn-danger' : 'btn-success'}"
+                        onclick="toggleAdminStatus(${a.accountStaffId}, '${a.status}')">
+                    ${a.status === 'Enable' ? 'Disable' : 'Enable'}
                 </button>
             </td>
         </tr>
     `).join('');
 
     const formattedStart = String(start + 1).padStart(2, '0');
-    const formattedEnd = String(Math.min(end, allDoctors.length)).padStart(2, '0');
-    info.innerText = `Showing ${formattedStart} to ${formattedEnd} of ${allDoctors.length} entries`;
+    const formattedEnd = String(Math.min(end, allAdmins.length)).padStart(2, '0');
+    info.innerText = `Showing ${formattedStart} to ${formattedEnd} of ${allAdmins.length} entries`;
 }
 
 document.getElementById('btnReverseList').addEventListener('click', () => {
@@ -115,7 +126,6 @@ document.getElementById('btnReverseList').addEventListener('click', () => {
     const btn = document.getElementById('btnReverseList');
     const icon = btn.querySelector('i');
 
-    // Đổi icon và class để hiển thị trạng thái
     if (isReversed) {
         btn.classList.remove('btn-outline-secondary');
         btn.classList.add('btn-secondary');
@@ -129,26 +139,26 @@ document.getElementById('btnReverseList').addEventListener('click', () => {
     }
 
     currentPage = 1;
-    paginateDoctors();
+    paginateAdmins();
 });
 
 document.getElementById('selectPageSize').addEventListener('change', (e) => {
     pageSize = parseInt(e.target.value);
     currentPage = 1;
-    paginateDoctors();
+    paginateAdmins();
 });
 
 function changePage(direction) {
     const newPage = currentPage + direction;
-    const maxPage = Math.ceil(allDoctors.length / pageSize);
+    const maxPage = Math.ceil(allAdmins.length / pageSize);
     if (newPage >= 1 && newPage <= maxPage) {
         currentPage = newPage;
-        paginateDoctors();
+        paginateAdmins();
     }
 }
 
 function loadSelectFilter(field, selectId) {
-    fetch(`/api/admin/doctors?action=distinct&field=${field}`)
+    fetch(`/api/admin/admins?action=distinct&field=${field}`)
         .then(res => res.json())
         .then(data => {
             const select = document.getElementById(selectId);
@@ -175,24 +185,23 @@ function debounce(func, delay) {
 
 //===============================================================================================================
 
-function viewDoctor(doctorId) {
-    const d = allDoctors.find(doc => doc.doctorId === doctorId);
-    if (!d) return;
+function viewAdmin(adminId) {
+    const a = allAdmins.find(ad => ad.adminId === adminId);
+    if (!a) return;
 
-    selectedDoctorIdForReset = doctorId; // lưu để dùng cho reset
+    selectedAdminIdForReset = adminId;
 
-    document.getElementById('viewDoctorId').textContent = d.doctorId;
-    document.getElementById('viewAccountStaffId').textContent = d.accountStaffId;
-    document.getElementById('viewUsername').textContent = d.username;
-    document.getElementById("viewPassword").value = d.password || '********';
-    document.getElementById('viewEmail').textContent = d.email;
-    document.getElementById('viewFullName').textContent = d.fullName;
-    document.getElementById('viewDepartment').textContent = d.department;
-    document.getElementById('viewPhone').textContent = d.phone;
-    document.getElementById('viewEduLevel').textContent = d.eduLevel;
-    document.getElementById('viewStatus').textContent = d.status;
-    document.getElementById('viewRole').textContent = d.role;
-    document.getElementById('viewImg').src = d.img || '';
+    document.getElementById('viewAdminId').textContent = a.adminId;
+    document.getElementById('viewAccountStaffId').textContent = a.accountStaffId;
+    document.getElementById('viewUsername').textContent = a.username;
+    document.getElementById("viewPassword").value = a.password || '********';
+    document.getElementById('viewEmail').textContent = a.email;
+    document.getElementById('viewFullName').textContent = a.fullName;
+    document.getElementById('viewDepartment').textContent = a.department;
+    document.getElementById('viewPhone').textContent = a.phone;
+    document.getElementById('viewStatus').textContent = a.status;
+    document.getElementById('viewRole').textContent = a.role;
+    document.getElementById('viewImg').src = a.img || '';
 }
 
 function togglePasswordVisibility() {
@@ -209,14 +218,14 @@ function togglePasswordVisibility() {
     }
 }
 
-function resetDoctorPassword() {
-    if (!selectedDoctorIdForReset) {
-        alert("Please select a doctor.");
+function resetAdminPassword() {
+    if (!selectedAdminIdForReset) {
+        alert("Please select an admin.");
         return;
     }
     const accountStaffId = document.getElementById('viewAccountStaffId').textContent.trim();
 
-    fetch("/api/admin/doctors", {
+    fetch("/api/admin/admins", {
         method: "POST",
         headers: {"Content-Type": "application/x-www-form-urlencoded"},
         body: "action=resetPassword&accountStaffId=" + accountStaffId
@@ -225,9 +234,8 @@ function resetDoctorPassword() {
         .then(data => {
             alert(data.message)
             if (data.success) {
-                fetchDoctorsWithFilter();
-                const canvasEl = document.getElementById('doctorViewCanvas');
-                let doctorId = document.getElementById('viewDoctorId').textContent.trim();
+                fetchAdminsWithFilter();
+                const canvasEl = document.getElementById('adminViewCanvas');
                 bootstrap.Offcanvas.getOrCreateInstance(canvasEl).hide();
             }
         })
@@ -235,74 +243,68 @@ function resetDoctorPassword() {
 }
 
 //===============================================================================================================
-document.getElementById('cancelDoctorForm').addEventListener('click', () => {
-    document.getElementById('doctorFormCard').style.display = 'none';
-    document.getElementById("doctorSelectionCard").style.display = 'block';
+
+document.getElementById('cancelAdminForm').addEventListener('click', () => {
+    document.getElementById('adminFormCard').style.display = 'none';
+    document.getElementById("adminSelectionCard").style.display = 'block';
 });
 
-document.getElementById('btnAddDoctor').addEventListener('click', () => {
-    openDoctorForm('add');
+document.getElementById('btnAddAdmin').addEventListener('click', () => {
+    openAdminForm('add');
 });
 
-function editDoctor(doctorId) {
-    const doctor = allDoctors.find(d => d.doctorId === doctorId);
-    if (doctor) {
-        openDoctorForm('edit', doctor);
+function editAdmin(adminId) {
+    const admin = allAdmins.find(a => a.adminId === adminId);
+    if (admin) {
+        openAdminForm('edit', admin);
     }
 }
 
-async function openDoctorForm(mode, doctor = null) {
-    const formCard = document.getElementById('doctorFormCard');
-    const selectionCard = document.getElementById('doctorSelectionCard');
-    const form = document.getElementById('doctorForm');
-    const title = document.getElementById('doctorFormTitle');
+async function openAdminForm(mode, admin = null) {
+    const formCard = document.getElementById('adminFormCard');
+    const selectionCard = document.getElementById('adminSelectionCard');
+    const form = document.getElementById('adminForm');
+    const title = document.getElementById('adminFormTitle');
     formCard.style.display = 'block';
     selectionCard.style.display = 'none';
     form.reset();
 
-    // Luôn load select trước khi gán value
     await loadSelectForForm('department', 'department', 'customDepartment');
-    await loadSelectForForm('eduLevel', 'eduLevel', 'customEduLevel');
 
-    if (mode === 'edit' && doctor) {
-        title.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Doctor';
-        const previewImg = document.getElementById('previewImg');
-        if (doctor.img && doctor.img !== '') {
-            previewImg.src = doctor.img;
+    if (mode === 'edit' && admin) {
+        title.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Admin';
+        const previewImg = document.getElementById('previewImgAdmin');
+        if (admin.img && admin.img !== '') {
+            previewImg.src = admin.img;
             previewImg.style.display = 'block';
         } else {
             previewImg.style.display = 'none';
         }
 
-        document.getElementById('accountStaffId').value = doctor.accountStaffId;
-        document.getElementById('doctorId').value = doctor.doctorId;
-        document.getElementById('fullName').value = doctor.fullName;
-        document.getElementById('username').value = doctor.username;
-        document.getElementById('email').value = doctor.email;
-        document.getElementById('phone').value = doctor.phone;
-        document.getElementById('status').value = doctor.status;
+        document.getElementById('accountStaffId').value = admin.accountStaffId;
+        document.getElementById('adminId').value = admin.adminId;
+        document.getElementById('fullName').value = admin.fullName;
+        document.getElementById('username').value = admin.username;
+        document.getElementById('email').value = admin.email;
+        document.getElementById('phone').value = admin.phone;
+        document.getElementById('status').value = admin.status;
+        document.getElementById('role').value = admin.role;
         document.getElementById('img').value = '';
 
-        document.getElementById('department').value = doctor.department;
-        document.getElementById('eduLevel').value = doctor.eduLevel;
+        document.getElementById('department').value = admin.department;
 
-        // Reset custom input
         document.getElementById('customDepartment').classList.add('d-none');
         document.getElementById('customDepartment').removeAttribute('name');
         document.getElementById('customDepartment').value = '';
 
-        document.getElementById('customEduLevel').classList.add('d-none');
-        document.getElementById('customEduLevel').removeAttribute('name');
-        document.getElementById('customEduLevel').value = '';
-        const messageBox = document.getElementById('formMessage');
-        messageBox.style.display = 'none';
+        document.getElementById('formMessage').style.display = 'none';
     } else {
-        title.innerHTML = '<i class="fas fa-plus me-2"></i>Add Doctor';
-        const previewImg = document.getElementById('previewImg');
+        title.innerHTML = '<i class="fas fa-plus me-2"></i>Add Admin';
+        const previewImg = document.getElementById('previewImgAdmin');
         previewImg.src = '/assets/images/uploads/default.jpg';
         previewImg.style.display = 'none';
 
-        document.getElementById('doctorId').value = '';
+        document.getElementById('adminId').value = '';
         document.getElementById('fullName').value = '';
         document.getElementById('username').value = '';
         document.getElementById('email').value = '';
@@ -310,24 +312,20 @@ async function openDoctorForm(mode, doctor = null) {
         document.getElementById('img').value = '';
 
         document.getElementById('department').selectedIndex = 0;
-        document.getElementById('eduLevel').selectedIndex = 0;
         document.getElementById('status').selectedIndex = 0;
+        document.getElementById('role').selectedIndex = 0;
 
         document.getElementById('customDepartment').classList.add('d-none');
         document.getElementById('customDepartment').removeAttribute('name');
         document.getElementById('customDepartment').value = '';
 
-        document.getElementById('customEduLevel').classList.add('d-none');
-        document.getElementById('customEduLevel').removeAttribute('name');
-        document.getElementById('customEduLevel').value = '';
-        const messageBox = document.getElementById('formMessage');
-        messageBox.style.display = 'none';
+        document.getElementById('formMessage').style.display = 'none';
     }
 }
 
 document.getElementById('img').addEventListener('change', function () {
     const file = this.files[0];
-    const previewImg = document.getElementById('previewImg');
+    const previewImg = document.getElementById('previewImgAdmin');
 
     if (file) {
         const reader = new FileReader();
@@ -343,7 +341,7 @@ document.getElementById('img').addEventListener('change', function () {
 
 async function loadSelectForForm(field, selectId, inputId = null) {
     try {
-        const response = await fetch(`/api/admin/doctors?action=distinct&field=${field}`);
+        const response = await fetch(`/api/admin/admins?action=distinct&field=${field}`);
         const data = await response.json();
         const select = document.getElementById(selectId);
 
@@ -362,7 +360,7 @@ async function loadSelectForForm(field, selectId, inputId = null) {
     }
 }
 
-function handleCustomInput(selectId, inputId) {
+function handleCustomInput(selectId, inputId)   {
     const select = document.getElementById(selectId);
     const input = document.getElementById(inputId);
 
@@ -380,14 +378,13 @@ function handleCustomInput(selectId, inputId) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    handleCustomInput("eduLevel", "customEduLevel");
     handleCustomInput("department", "customDepartment");
 });
 
-document.getElementById('doctorForm').addEventListener('submit', async function (e) {
+document.getElementById('adminForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    const validationErrors = validateDoctorForm();
+    const validationErrors = validateAdminForm();
 
     if (validationErrors.length > 0) {
         const html = "<ul class='mb-0'>" + validationErrors.map(err => `<li>${err}</li>`).join('') + "</ul>";
@@ -397,8 +394,8 @@ document.getElementById('doctorForm').addEventListener('submit', async function 
 
     const form = e.target;
     const formData = new FormData(form);
-    const doctorId = document.getElementById('doctorId').value;
-    const action = doctorId ? 'update' : 'create';
+    const adminId = document.getElementById('adminId').value;
+    const action = adminId ? 'update' : 'create';
     formData.append('action', action);
 
     const customDept = document.getElementById('customDepartment');
@@ -406,13 +403,8 @@ document.getElementById('doctorForm').addEventListener('submit', async function 
         formData.set('department', customDept.value.trim());
     }
 
-    const customEdu = document.getElementById('customEduLevel');
-    if (!formData.get('eduLevel') && customEdu && customEdu.value.trim() !== "") {
-        formData.set('eduLevel', customEdu.value.trim());
-    }
-
     try {
-        const response = await fetch('/api/admin/doctors', {
+        const response = await fetch('/api/admin/admins', {
             method: 'POST',
             body: formData
         });
@@ -424,9 +416,9 @@ document.getElementById('doctorForm').addEventListener('submit', async function 
             if (result.success) {
                 alert(result.message);
                 form.reset();
-                document.getElementById('doctorFormCard').style.display = 'none';
-                document.getElementById('doctorSelectionCard').style.display = 'block';
-                fetchDoctorsWithFilter();
+                document.getElementById('adminFormCard').style.display = 'none';
+                document.getElementById('adminSelectionCard').style.display = 'block';
+                fetchAdminsWithFilter();
             } else {
                 displayFormMessage(result.message, result.success ? "success" : "danger");
             }
@@ -449,14 +441,12 @@ function displayFormMessage(message, type = 'info') {
     msgDiv.innerHTML = message;
 }
 
-function validateDoctorForm() {
+function validateAdminForm() {
     const fullName = document.getElementById('fullName').value.trim();
-    const usernameRaw = document.getElementById('username').value;
-    const username = usernameRaw.trim();
+    const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const department = document.getElementById('department').value.trim() || document.getElementById('customDepartment').value.trim();
-    const eduLevel = document.getElementById('eduLevel').value.trim() || document.getElementById('customEduLevel').value.trim();
 
     const fullNameRegex = /^[A-Za-zÀ-ỹ]{2,}(?: [A-Za-zÀ-ỹ]{2,})+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -486,19 +476,16 @@ function validateDoctorForm() {
         errors.push("Department cannot be empty.");
     }
 
-    if (!eduLevel) {
-        errors.push("Education Level cannot be empty.");
-    }
-
     return errors;
 }
 
-//===============================================================================
 
-function toggleDoctorStatus(account_staff_id, currentStatus) {
+//===============================================================================================================
+
+function toggleAdminStatus(account_staff_id, currentStatus) {
     const newStatus = currentStatus === 'Enable' ? 'Disable' : 'Enable';
 
-    fetch('/api/admin/doctors', {
+    fetch('/api/admin/admins', {
         method: 'POST',
         headers: {
             'Accept': 'application/json'
@@ -513,7 +500,7 @@ function toggleDoctorStatus(account_staff_id, currentStatus) {
         .then(data => {
             if (data.success) {
                 alert(data.message);
-                fetchDoctorsWithFilter();
+                fetchAdminsWithFilter();
             } else {
                 alert("Failed: " + data.message);
             }
