@@ -3,7 +3,9 @@ package dao;
 import model.ListOfMedicalService;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListOfMedicalServiceDAO {
     
@@ -22,6 +24,30 @@ public class ListOfMedicalServiceDAO {
                     rs.getString("description"),
                     rs.getDouble("price")
                 ));
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return services;
+    }
+    
+    public List<Map<String, Object>> getAllServicesAsMap() {
+        List<Map<String, Object>> services = new ArrayList<>();
+        String sql = "SELECT service_id, name, description, price FROM ListOfMedicalService ORDER BY name";
+        
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            while (rs.next()) {
+                Map<String, Object> service = new HashMap<>();
+                service.put("service_id", rs.getInt("service_id"));
+                service.put("service_name", rs.getString("name"));
+                service.put("description", rs.getString("description"));
+                service.put("price", rs.getDouble("price"));
+                services.add(service);
             }
             
         } catch (Exception e) {
