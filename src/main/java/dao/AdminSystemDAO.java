@@ -1147,25 +1147,5 @@ public class AdminSystemDAO {
         }
         return false;
     }
-
-    public static void main(String[] args) {
-        AdminSystemDAO dao = new AdminSystemDAO();
-
-        // Test lấy danh sách toàn bộ dược sĩ
-        System.out.println("=== ALL PHARMACISTS ===");
-        for (PharmacistDTOFA p : dao.getAllPharmacists()) {
-            System.out.println(p);
-        }
-
-        // Test lấy dược sĩ theo ID
-        System.out.println("\n=== GET PHARMACIST BY ID ===");
-        PharmacistDTOFA pharmacist = dao.getPharmacistById(3); // thay ID theo dữ liệu thực tế
-        if (pharmacist != null) {
-            System.out.println(pharmacist);
-        } else {
-            System.out.println("Pharmacist not found.");
-        }
-    }
-
 }
 
