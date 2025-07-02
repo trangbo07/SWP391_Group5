@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import util.DBConnection;
+import dao.DBContext;
 
 public class ReportDAO {
     // Report for Total Revenue
@@ -18,7 +18,7 @@ public class ReportDAO {
             "FROM Invoice " +
             "WHERE status = 'Paid'";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
             
@@ -44,7 +44,7 @@ public class ReportDAO {
             "GROUP BY ls.name " +
             "ORDER BY service_count DESC";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
             
@@ -69,7 +69,7 @@ public class ReportDAO {
             "COUNT(CASE WHEN status = 'Cancelled' THEN 1 END) as cancelled_appointments " +
             "FROM Appointment";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
             
@@ -96,7 +96,7 @@ public class ReportDAO {
             "LEFT JOIN Category c ON m.category_id = c.category_id " +
             "ORDER BY m.quantity ASC";
         
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query);
              ResultSet rs = pstmt.executeQuery()) {
             
