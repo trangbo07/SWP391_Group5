@@ -86,4 +86,91 @@ public class PrescriptionDAO {
         }
         return list;
     }
+
+    public int createPrescription(int medicineRecordId, int doctorId) {
+        String sql = "INSERT INTO Prescription (medicineRecord_id, doctor_id, prescription_date, status) VALUES (?, ?, GETDATE(), 'Pending')";
+        
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            
+            ps.setInt(1, medicineRecordId);
+            ps.setInt(2, doctorId);
+            
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1); 
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public boolean createPrescriptionInvoice(int invoiceId, int prescriptionId) {
+        String sql = "INSERT INTO PrescriptionInvoice (invoice_id, pharmacist_id, prescription_id) VALUES (?, 1, ?)";
+        
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, invoiceId);
+            ps.setInt(2, prescriptionId);
+            
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public int getPrescriptionInvoiceId(int prescriptionId) {
+        String sql = "SELECT prescription_invoice_id FROM PrescriptionInvoice WHERE prescription_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, prescriptionId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("prescription_invoice_id");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public boolean addMedicinesForPrescription(int prescriptionId, List<Map<String, Object>> medicines) {
+        // First get the prescription_invoice_id
+        int prescriptionInvoiceId = getPrescriptionInvoiceId(prescriptionId);
+        if (prescriptionInvoiceId == -1) {
+            return false;
+        }
+        
+        return addMedicines(prescriptionInvoiceId, medicines);
+    }
+
+    private boolean addMedicines(int prescriptionInvoiceId, List<Map<String, Object>> medicines) {
+        String sql = "INSERT INTO Medicines (prescription_invoice_id, medicine_id, quantity, dosage) VALUES (?, ?, ?, ?)";
+        
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            for (Map<String, Object> medicine : medicines) {
+                ps.setInt(1, prescriptionInvoiceId);
+                ps.setInt(2, ((Number)medicine.get("medicine_id")).intValue());
+                ps.setInt(3, ((Number)medicine.get("quantity")).intValue());
+                ps.setString(4, (String)medicine.get("dosage"));
+                ps.addBatch();
+            }
+            
+            int[] results = ps.executeBatch();
+            return results.length == medicines.size();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 } 

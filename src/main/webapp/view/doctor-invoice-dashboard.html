@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="vi" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Quản Lý Hóa Đơn - Bác Sĩ</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../assets/images/favicon.ico">
+    
+    <!-- Library / Plugin Css Build -->
+    <link rel="stylesheet" href="../assets/css/core/libs.min.css">
+    <link rel="stylesheet" href="../assets/css/kivicare.min.css?v=5.0.0">
+    <link rel="stylesheet" href="../assets/css/custom.min.css?v=5.0.0">
+    
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="../assets/vendor/sweetalert2/sweetalert2.min.css">
+</head>
+
+<body class="theme-default">
+    <div class="wrapper">
+        <main class="main-content">
+            <div class="container-fluid content-inner mt-3">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div class="header-title">
+                                    <h4 class="card-title">
+                                        <i class="fas fa-file-invoice-dollar me-2"></i>Quản Lý Hóa Đơn
+                                    </h4>
+                                </div>
+                                <div>
+                                    <a href="create-invoice.html" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>Tạo hóa đơn mới
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Quick Stats -->
+                                <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <div class="card bg-primary text-white">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-file-invoice fa-2x mb-2"></i>
+                                                <h5>Hôm nay</h5>
+                                                <h3 id="todayCount">0</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card bg-warning text-white">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-clock fa-2x mb-2"></i>
+                                                <h5>Chờ duyệt</h5>
+                                                <h3 id="pendingCount">0</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card bg-success text-white">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-check fa-2x mb-2"></i>
+                                                <h5>Đã duyệt</h5>
+                                                <h3 id="approvedCount">0</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card bg-info text-white">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-money-bill fa-2x mb-2"></i>
+                                                <h5>Tổng tiền</h5>
+                                                <h3 id="totalAmount">0 VNĐ</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Search and Filter -->
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm theo tên bệnh nhân...">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" id="statusFilter">
+                                            <option value="">Tất cả trạng thái</option>
+                                            <option value="Pending">Chờ duyệt</option>
+                                            <option value="Approved">Đã duyệt</option>
+                                            <option value="Rejected">Đã từ chối</option>
+                                            <option value="Paid">Đã thanh toán</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="date" class="form-control" id="dateFilter">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-secondary w-100" onclick="clearFilters()">
+                                            <i class="fas fa-times"></i> Xóa lọc
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Invoices Table -->
+                                <div class="table-responsive">
+                                    <table class="table table-striped align-middle">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>Mã HĐ</th>
+                                                <th>Ngày tạo</th>
+                                                <th>Bệnh nhân</th>
+                                                <th>Chẩn đoán</th>
+                                                <th>Tổng tiền</th>
+                                                <th>Trạng thái</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="invoicesTableBody">
+                                            <!-- Data will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <nav>
+                                    <ul class="pagination justify-content-center" id="pagination">
+                                        <!-- Pagination will be generated here -->
+                                    </ul>
+                                </nav>
+
+                                <!-- Loading state -->
+                                <div id="loadingState" class="text-center p-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Đang tải dữ liệu...</p>
+                                </div>
+
+                                <!-- Empty state -->
+                                <div id="emptyState" class="text-center p-4" style="display: none;">
+                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">Chưa có hóa đơn nào</h5>
+                                    <p class="text-muted">Bắt đầu tạo hóa đơn đầu tiên cho bệnh nhân</p>
+                                    <a href="create-invoice.html" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>Tạo hóa đơn mới
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Invoice Details Modal -->
+    <div class="modal fade" id="invoiceDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi Tiết Hóa Đơn</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="invoiceDetailsContent">
+                        <!-- Invoice details will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="editInvoiceBtn">
+                        <i class="fas fa-edit me-2"></i>Chỉnh sửa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Library Bundle Script -->
+    <script src="../assets/js/core/libs.min.js"></script>
+    <script src="../assets/js/core/external.min.js"></script>
+    <script src="../assets/js/kivicare.js"></script>
+    <script src="../assets/vendor/sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+        let allInvoices = [];
+        let filteredInvoices = [];
+        const itemsPerPage = 10;
+
+        $(document).ready(function() {
+            loadInvoices();
+            
+            // Event listeners
+            $('#searchInput').on('input', filterInvoices);
+            $('#statusFilter').change(filterInvoices);
+            $('#dateFilter').change(filterInvoices);
+        });
+
+        function loadInvoices() {
+            $('#loadingState').show();
+            $('#emptyState').hide();
+            
+            // Mock data - in real app, this would be an AJAX call
+            // You would replace this with: $.get('/doctor-invoices?doctorId=' + getDoctorId())
+            const mockInvoices = [
+                {
+                    invoice_id: 1,
+                    issue_date: '2024-01-15 10:30:00',
+                    patient_name: 'Nguyễn Văn A',
+                    diagnosis: 'Viêm họng cấp',
+                    total_amount: 500000,
+                    status: 'Pending'
+                },
+                {
+                    invoice_id: 2,
+                    issue_date: '2024-01-15 14:20:00',
+                    patient_name: 'Trần Thị B',
+                    diagnosis: 'Đau đầu mãn tính',
+                    total_amount: 750000,
+                    status: 'Approved'
+                }
+            ];
+            
+            setTimeout(() => {
+                allInvoices = mockInvoices;
+                filteredInvoices = [...allInvoices];
+                updateStatistics();
+                renderInvoicesTable();
+                setupPagination();
+                
+                $('#loadingState').hide();
+                
+                if (allInvoices.length === 0) {
+                    $('#emptyState').show();
+                }
+            }, 1000);
+        }
+
+        function updateStatistics() {
+            const today = new Date().toISOString().split('T')[0];
+            let todayCount = 0;
+            let pendingCount = 0;
+            let approvedCount = 0;
+            let totalAmount = 0;
+            
+            allInvoices.forEach(invoice => {
+                if (invoice.issue_date.startsWith(today)) {
+                    todayCount++;
+                }
+                
+                switch(invoice.status) {
+                    case 'Pending':
+                        pendingCount++;
+                        break;
+                    case 'Approved':
+                        approvedCount++;
+                        break;
+                }
+                
+                totalAmount += invoice.total_amount;
+            });
+            
+            $('#todayCount').text(todayCount);
+            $('#pendingCount').text(pendingCount);
+            $('#approvedCount').text(approvedCount);
+            $('#totalAmount').text(formatCurrency(totalAmount));
+        }
+
+        function filterInvoices() {
+            const searchTerm = $('#searchInput').val().toLowerCase();
+            const statusFilter = $('#statusFilter').val();
+            const dateFilter = $('#dateFilter').val();
+            
+            filteredInvoices = allInvoices.filter(invoice => {
+                const matchesSearch = invoice.patient_name.toLowerCase().includes(searchTerm);
+                const matchesStatus = !statusFilter || invoice.status === statusFilter;
+                const matchesDate = !dateFilter || invoice.issue_date.startsWith(dateFilter);
+                
+                return matchesSearch && matchesStatus && matchesDate;
+            });
+            
+            currentPage = 1;
+            renderInvoicesTable();
+            setupPagination();
+        }
+
+        function clearFilters() {
+            $('#searchInput').val('');
+            $('#statusFilter').val('');
+            $('#dateFilter').val('');
+            filterInvoices();
+        }
+
+        function renderInvoicesTable() {
+            const tbody = $('#invoicesTableBody');
+            tbody.empty();
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageInvoices = filteredInvoices.slice(startIndex, endIndex);
+            
+            pageInvoices.forEach(invoice => {
+                const statusBadge = getStatusBadge(invoice.status);
+                
+                tbody.append(`
+                    <tr>
+                        <td><strong>#${invoice.invoice_id}</strong></td>
+                        <td>${formatDateTime(invoice.issue_date)}</td>
+                        <td>${invoice.patient_name}</td>
+                        <td>${invoice.diagnosis}</td>
+                        <td><strong class="text-primary">${formatCurrency(invoice.total_amount)}</strong></td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-primary btn-sm" onclick="viewInvoice(${invoice.invoice_id})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                ${invoice.status === 'Pending' ? 
+                                    `<button type="button" class="btn btn-warning btn-sm" onclick="editInvoice(${invoice.invoice_id})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>` : ''
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+
+        function setupPagination() {
+            totalPages = Math.ceil(filteredInvoices.length / itemsPerPage);
+            const pagination = $('#pagination');
+            pagination.empty();
+            
+            if (totalPages <= 1) return;
+            
+            // Previous button
+            pagination.append(`
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Trước</a>
+                </li>
+            `);
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                pagination.append(`
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `);
+            }
+            
+            // Next button
+            pagination.append(`
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Sau</a>
+                </li>
+            `);
+        }
+
+        function changePage(page) {
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderInvoicesTable();
+            setupPagination();
+        }
+
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'Pending':
+                    return '<span class="badge bg-warning">Chờ duyệt</span>';
+                case 'Approved':
+                    return '<span class="badge bg-success">Đã duyệt</span>';
+                case 'Rejected':
+                    return '<span class="badge bg-danger">Đã từ chối</span>';
+                case 'Paid':
+                    return '<span class="badge bg-info">Đã thanh toán</span>';
+                default:
+                    return '<span class="badge bg-secondary">N/A</span>';
+            }
+        }
+
+        function viewInvoice(invoiceId) {
+            // Mock invoice details - replace with actual AJAX call
+            const mockDetails = {
+                invoice_id: invoiceId,
+                issue_date: '2024-01-15 10:30:00',
+                patient_name: 'Nguyễn Văn A',
+                patient_phone: '0987654321',
+                diagnosis: 'Viêm họng cấp',
+                treatment_plan: 'Uống thuốc kháng sinh 7 ngày',
+                total_amount: 500000,
+                status: 'Pending',
+                items: [
+                    { item_name: 'Khám tổng quát', item_type: 'Service', quantity: 1, unit_price: 200000, total_price: 200000 },
+                    { item_name: 'Amoxicillin', item_type: 'Medication', quantity: 2, unit_price: 150000, total_price: 300000 }
+                ]
+            };
+            
+            renderInvoiceDetails(mockDetails);
+            $('#invoiceDetailsModal').modal('show');
+        }
+
+        function editInvoice(invoiceId) {
+            window.location.href = `create-invoice.html?edit=${invoiceId}`;
+        }
+
+        function renderInvoiceDetails(invoice) {
+            const content = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Thông tin hóa đơn</h5>
+                        <p><strong>Mã hóa đơn:</strong> #${invoice.invoice_id}</p>
+                        <p><strong>Ngày tạo:</strong> ${formatDateTime(invoice.issue_date)}</p>
+                        <p><strong>Trạng thái:</strong> ${getStatusBadge(invoice.status)}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Thông tin bệnh nhân</h5>
+                        <p><strong>Tên:</strong> ${invoice.patient_name}</p>
+                        <p><strong>Điện thoại:</strong> ${invoice.patient_phone}</p>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>Chi tiết hóa đơn</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Tên</th>
+                                        <th>Loại</th>
+                                        <th>Số lượng</th>
+                                        <th>Đơn giá</th>
+                                        <th>Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${renderInvoiceItems(invoice.items)}
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-primary">
+                                        <th colspan="4" class="text-end">Tổng cộng:</th>
+                                        <th>${formatCurrency(invoice.total_amount)}</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            $('#invoiceDetailsContent').html(content);
+        }
+
+        function renderInvoiceItems(items) {
+            return items.map(item => `
+                <tr>
+                    <td>${item.item_name}</td>
+                    <td>
+                        <span class="badge ${item.item_type === 'Service' ? 'bg-primary' : 'bg-success'}">
+                            ${item.item_type === 'Service' ? 'Dịch vụ' : 'Thuốc'}
+                        </span>
+                    </td>
+                    <td>${item.quantity}</td>
+                    <td>${formatCurrency(item.unit_price)}</td>
+                    <td>${formatCurrency(item.total_price)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+
+        function formatDateTime(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleString('vi-VN');
+        }
+    </script>
+</body>
+</html> 

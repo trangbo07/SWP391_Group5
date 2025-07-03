@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="vi" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Tạo Hóa Đơn - Kivicare</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../assets/images/favicon.ico">
+    
+    <!-- Library / Plugin Css Build -->
+    <link rel="stylesheet" href="../assets/css/core/libs.min.css">
+    <link rel="stylesheet" href="../assets/css/kivicare.min.css?v=5.0.0">
+    <link rel="stylesheet" href="../assets/css/custom.min.css?v=5.0.0">
+    
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="../assets/vendor/sweetalert2/sweetalert2.min.css">
+</head>
+
+<body class="theme-default">
+    <div class="wrapper">
+        <main class="main-content">
+            <div class="container-fluid content-inner mt-3">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div class="header-title">
+                                    <h4 class="card-title">Tạo Hóa Đơn Cho Bệnh Nhân</h4>
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                                        <i class="fas fa-arrow-left me-2"></i>Quay lại
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <form id="invoiceForm">
+                                    <!-- Thông tin bệnh nhân -->
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <h5 class="mb-3"><i class="fas fa-user me-2"></i>Thông tin bệnh nhân</h5>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Mã bệnh nhân <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="patientId" placeholder="Nhập mã bệnh nhân" required>
+                                                <button type="button" class="btn btn-outline-primary" id="loadPatientBtn">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Tên bệnh nhân</label>
+                                            <input type="text" class="form-control" id="patientName" readonly>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Mã hồ sơ y tế</label>
+                                            <input type="number" class="form-control" id="medicineRecordId" readonly>
+                                        </div>
+                                    </div>
+
+                                    <!-- Thông tin chẩn đoán -->
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <h5 class="mb-3"><i class="fas fa-stethoscope me-2"></i>Thông tin chẩn đoán</h5>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Chẩn đoán</label>
+                                            <textarea class="form-control" id="diagnosis" rows="3" readonly></textarea>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Kế hoạch điều trị</label>
+                                            <textarea class="form-control" id="treatmentPlan" rows="3" readonly></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Dịch vụ y tế -->
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <h5 class="mb-3">
+                                                <i class="fas fa-clipboard-list me-2"></i>Dịch vụ y tế
+                                                <button type="button" class="btn btn-primary btn-sm ms-3" id="addServiceBtn">
+                                                    <i class="fas fa-plus me-1"></i>Thêm dịch vụ
+                                                </button>
+                                            </h5>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered" id="servicesTable">
+                                                    <thead class="table-primary">
+                                                        <tr>
+                                                            <th width="40%">Tên dịch vụ</th>
+                                                            <th width="15%">Số lượng</th>
+                                                            <th width="20%">Đơn giá</th>
+                                                            <th width="20%">Thành tiền</th>
+                                                            <th width="5%">Xóa</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="servicesTableBody">
+                                                        <!-- Services will be added here -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Thuốc -->
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <h5 class="mb-3">
+                                                <i class="fas fa-pills me-2"></i>Thuốc
+                                                <button type="button" class="btn btn-success btn-sm ms-3" id="addMedicationBtn">
+                                                    <i class="fas fa-plus me-1"></i>Thêm thuốc
+                                                </button>
+                                            </h5>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered" id="medicationsTable">
+                                                    <thead class="table-success">
+                                                        <tr>
+                                                            <th width="40%">Tên thuốc</th>
+                                                            <th width="15%">Số lượng</th>
+                                                            <th width="20%">Đơn giá</th>
+                                                            <th width="20%">Thành tiền</th>
+                                                            <th width="5%">Xóa</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="medicationsTableBody">
+                                                        <!-- Medications will be added here -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tổng tiền và ghi chú -->
+                                    <div class="row mb-4">
+                                        <div class="col-md-8">
+                                            <label class="form-label">Ghi chú</label>
+                                            <textarea class="form-control" id="notes" rows="3" placeholder="Ghi chú thêm về hóa đơn..."></textarea>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center">
+                                                    <h5 class="card-title">Tổng tiền</h5>
+                                                    <h3 class="text-primary" id="totalAmount">0 VNĐ</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Buttons -->
+                                    <div class="row">
+                                        <div class="col-12 text-end">
+                                            <button type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Hủy</button>
+                                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                                <i class="fas fa-save me-2"></i>Tạo hóa đơn
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hidden fields -->
+                                    <input type="hidden" id="doctorId" value="1"> <!-- Sẽ được set từ session -->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Service Selection Modal -->
+    <div class="modal fade" id="serviceModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chọn dịch vụ y tế</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Dịch vụ <span class="text-danger">*</span></label>
+                            <select class="form-select" id="serviceSelect" required>
+                                <option value="">Chọn dịch vụ...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Số lượng <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="serviceQuantity" value="1" min="1" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Đơn giá</label>
+                            <input type="text" class="form-control" id="servicePrice" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="addServiceConfirm">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medication Selection Modal -->
+    <div class="modal fade" id="medicationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chọn thuốc</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Thuốc <span class="text-danger">*</span></label>
+                            <select class="form-select" id="medicationSelect" required>
+                                <option value="">Chọn thuốc...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Số lượng <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="medicationQuantity" value="1" min="1" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Đơn giá</label>
+                            <input type="text" class="form-control" id="medicationPrice" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-success" id="addMedicationConfirm">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Library Bundle Script -->
+    <script src="../assets/js/core/libs.min.js"></script>
+    <script src="../assets/js/core/external.min.js"></script>
+    <script src="../assets/js/kivicare.js"></script>
+    <script src="../assets/vendor/sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+        let services = [];
+        let medications = [];
+        let allServices = [];
+        let allMedicines = [];
+
+        $(document).ready(function() {
+            loadServices();
+            loadMedicines();
+            
+            // Event listeners
+            $('#loadPatientBtn').click(loadPatientInfo);
+            $('#addServiceBtn').click(() => $('#serviceModal').modal('show'));
+            $('#addMedicationBtn').click(() => $('#medicationModal').modal('show'));
+            $('#addServiceConfirm').click(addService);
+            $('#addMedicationConfirm').click(addMedication);
+            $('#serviceSelect').change(updateServicePrice);
+            $('#medicationSelect').change(updateMedicationPrice);
+            $('#serviceQuantity').on('input', updateServicePrice);
+            $('#medicationQuantity').on('input', updateMedicationPrice);
+            $('#invoiceForm').submit(submitInvoice);
+        });
+
+        function loadServices() {
+            $.get('/create-invoice?action=getServices')
+                .done(function(data) {
+                    allServices = data;
+                    const select = $('#serviceSelect');
+                    select.empty().append('<option value="">Chọn dịch vụ...</option>');
+                    data.forEach(service => {
+                        select.append(`<option value="${service.service_id}" data-price="${service.price}">${service.service_name}</option>`);
+                    });
+                })
+                .fail(function() {
+                    Swal.fire('Lỗi', 'Không thể tải danh sách dịch vụ', 'error');
+                });
+        }
+
+        function loadMedicines() {
+            $.get('/create-invoice?action=getMedicines')
+                .done(function(data) {
+                    allMedicines = data;
+                    const select = $('#medicationSelect');
+                    select.empty().append('<option value="">Chọn thuốc...</option>');
+                    data.forEach(medicine => {
+                        select.append(`<option value="${medicine.medicine_id}" data-price="${medicine.price}">${medicine.medicine_name}</option>`);
+                    });
+                })
+                .fail(function() {
+                    Swal.fire('Lỗi', 'Không thể tải danh sách thuốc', 'error');
+                });
+        }
+
+        function loadPatientInfo() {
+            const patientId = $('#patientId').val();
+            if (!patientId) {
+                Swal.fire('Lỗi', 'Vui lòng nhập mã bệnh nhân', 'warning');
+                return;
+            }
+
+            $.get(`/create-invoice?action=getPatientInfo&patientId=${patientId}`)
+                .done(function(data) {
+                    if (data && data.patient_name) {
+                        $('#patientName').val(data.patient_name);
+                        $('#medicineRecordId').val(data.medicineRecord_id);
+                        $('#diagnosis').val(data.diagnosis);
+                        $('#treatmentPlan').val(data.treatment_plan);
+                        
+                        Swal.fire('Thành công', 'Đã tải thông tin bệnh nhân', 'success');
+                    } else {
+                        Swal.fire('Lỗi', 'Không tìm thấy thông tin bệnh nhân', 'error');
+                    }
+                })
+                .fail(function() {
+                    Swal.fire('Lỗi', 'Không thể tải thông tin bệnh nhân', 'error');
+                });
+        }
+
+        function updateServicePrice() {
+            const selected = $('#serviceSelect option:selected');
+            const price = selected.data('price') || 0;
+            const quantity = parseInt($('#serviceQuantity').val()) || 1;
+            $('#servicePrice').val(formatCurrency(price * quantity));
+        }
+
+        function updateMedicationPrice() {
+            const selected = $('#medicationSelect option:selected');
+            const price = selected.data('price') || 0;
+            const quantity = parseInt($('#medicationQuantity').val()) || 1;
+            $('#medicationPrice').val(formatCurrency(price * quantity));
+        }
+
+        function addService() {
+            const select = $('#serviceSelect');
+            const serviceId = select.val();
+            const serviceName = select.find('option:selected').text();
+            const quantity = parseInt($('#serviceQuantity').val());
+            const unitPrice = parseFloat(select.find('option:selected').data('price'));
+            const totalPrice = unitPrice * quantity;
+
+            if (!serviceId || !quantity || quantity <= 0) {
+                Swal.fire('Lỗi', 'Vui lòng chọn dịch vụ và nhập số lượng hợp lệ', 'warning');
+                return;
+            }
+
+            const service = {
+                itemId: parseInt(serviceId),
+                itemName: serviceName,
+                itemType: 'Service',
+                quantity: quantity,
+                unitPrice: unitPrice,
+                totalPrice: totalPrice,
+                description: ''
+            };
+
+            services.push(service);
+            renderServicesTable();
+            updateTotalAmount();
+            $('#serviceModal').modal('hide');
+            
+            // Reset form
+            $('#serviceSelect').val('');
+            $('#serviceQuantity').val(1);
+            $('#servicePrice').val('');
+        }
+
+        function addMedication() {
+            const select = $('#medicationSelect');
+            const medicationId = select.val();
+            const medicationName = select.find('option:selected').text();
+            const quantity = parseInt($('#medicationQuantity').val());
+            const unitPrice = parseFloat(select.find('option:selected').data('price'));
+            const totalPrice = unitPrice * quantity;
+
+            if (!medicationId || !quantity || quantity <= 0) {
+                Swal.fire('Lỗi', 'Vui lòng chọn thuốc và nhập số lượng hợp lệ', 'warning');
+                return;
+            }
+
+            const medication = {
+                itemId: parseInt(medicationId),
+                itemName: medicationName,
+                itemType: 'Medication',
+                quantity: quantity,
+                unitPrice: unitPrice,
+                totalPrice: totalPrice,
+                description: ''
+            };
+
+            medications.push(medication);
+            renderMedicationsTable();
+            updateTotalAmount();
+            $('#medicationModal').modal('hide');
+            
+            // Reset form
+            $('#medicationSelect').val('');
+            $('#medicationQuantity').val(1);
+            $('#medicationPrice').val('');
+        }
+
+        function renderServicesTable() {
+            const tbody = $('#servicesTableBody');
+            tbody.empty();
+            
+            services.forEach((service, index) => {
+                tbody.append(`
+                    <tr>
+                        <td>${service.itemName}</td>
+                        <td>${service.quantity}</td>
+                        <td>${formatCurrency(service.unitPrice)}</td>
+                        <td>${formatCurrency(service.totalPrice)}</td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeService(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+
+        function renderMedicationsTable() {
+            const tbody = $('#medicationsTableBody');
+            tbody.empty();
+            
+            medications.forEach((medication, index) => {
+                tbody.append(`
+                    <tr>
+                        <td>${medication.itemName}</td>
+                        <td>${medication.quantity}</td>
+                        <td>${formatCurrency(medication.unitPrice)}</td>
+                        <td>${formatCurrency(medication.totalPrice)}</td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeMedication(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+
+        function removeService(index) {
+            services.splice(index, 1);
+            renderServicesTable();
+            updateTotalAmount();
+        }
+
+        function removeMedication(index) {
+            medications.splice(index, 1);
+            renderMedicationsTable();
+            updateTotalAmount();
+        }
+
+        function updateTotalAmount() {
+            let total = 0;
+            services.forEach(service => total += service.totalPrice);
+            medications.forEach(medication => total += medication.totalPrice);
+            $('#totalAmount').text(formatCurrency(total));
+        }
+
+        function submitInvoice(e) {
+            e.preventDefault();
+            
+            const patientId = $('#patientId').val();
+            const medicineRecordId = $('#medicineRecordId').val();
+            const patientName = $('#patientName').val();
+            
+            if (!patientId || !medicineRecordId || !patientName) {
+                Swal.fire('Lỗi', 'Vui lòng tải thông tin bệnh nhân trước khi tạo hóa đơn', 'warning');
+                return;
+            }
+
+            if (services.length === 0 && medications.length === 0) {
+                Swal.fire('Lỗi', 'Vui lòng thêm ít nhất một dịch vụ hoặc thuốc', 'warning');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('patientId', patientId);
+            formData.append('medicineRecordId', medicineRecordId);
+            formData.append('doctorId', $('#doctorId').val());
+            formData.append('patientName', patientName);
+            formData.append('diagnosis', $('#diagnosis').val());
+            formData.append('treatmentPlan', $('#treatmentPlan').val());
+            formData.append('notes', $('#notes').val());
+            formData.append('services', JSON.stringify(services));
+            formData.append('medications', JSON.stringify(medications));
+
+            $('#submitBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+
+            $.ajax({
+                url: '/invoice/create',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: response.message,
+                            showConfirmButton: true
+                        }).then(() => {
+                            window.location.href = '/view/doctor-dashboard.html';
+                        });
+                    } else {
+                        Swal.fire('Lỗi', response.message, 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Lỗi', 'Có lỗi xảy ra khi tạo hóa đơn', 'error');
+                },
+                complete: function() {
+                    $('#submitBtn').prop('disabled', false).html('<i class="fas fa-save me-2"></i>Tạo hóa đơn');
+                }
+            });
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+    </script>
+</body>
+</html> 

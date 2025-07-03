@@ -39,9 +39,11 @@ public class ResultsOfParaclinicalServicesDAO {
     public List<Map<String, Object>> getResultsByServiceOrderId(int serviceOrderId) {
         List<Map<String, Object>> results = new ArrayList<>();
         String sql = """
-            SELECT 
+          
+   SELECT 
                 so.service_order_id,
                 so.order_date,
+                so.medicineRecord_id,
                 soi.service_order_item_id,
                 lms.service_id,
                 lms.name as service_name,
@@ -50,10 +52,18 @@ public class ResultsOfParaclinicalServicesDAO {
                 r.result_id,
                 r.result_description,
                 r.created_at as result_date,
-                d.full_name as doctor_name
+                d.full_name as doctor_name,
+                p.patient_id,
+                p.full_name as patient_name,
+                p.dob as patient_dob,
+                p.gender as patient_gender,
+                p.phone as patient_phone,
+                p.address as patient_address
             FROM ServiceOrder so
             JOIN ServiceOrderItem soi ON so.service_order_id = soi.service_order_id
             JOIN ListOfMedicalService lms ON soi.service_id = lms.service_id
+            LEFT JOIN MedicineRecords mr ON so.medicineRecord_id = mr.medicineRecord_id
+            LEFT JOIN Patient p ON mr.patient_id = p.patient_id
             LEFT JOIN ResultsOfParaclinicalServices r ON soi.service_order_item_id = r.service_order_item_id
             LEFT JOIN Doctor d ON soi.doctor_id = d.doctor_id
             WHERE so.service_order_id = ?
@@ -70,6 +80,7 @@ public class ResultsOfParaclinicalServicesDAO {
                 Map<String, Object> result = new HashMap<>();
                 result.put("service_order_id", rs.getInt("service_order_id"));
                 result.put("order_date", rs.getString("order_date"));
+                result.put("medicineRecord_id", rs.getInt("medicineRecord_id"));
                 result.put("service_order_item_id", rs.getInt("service_order_item_id"));
                 result.put("service_id", rs.getInt("service_id"));
                 result.put("service_name", rs.getString("service_name"));
@@ -80,6 +91,15 @@ public class ResultsOfParaclinicalServicesDAO {
                 result.put("result_date", rs.getString("result_date"));
                 result.put("doctor_name", rs.getString("doctor_name"));
                 result.put("is_completed", rs.getString("result_description") != null);
+                
+                // Thông tin bệnh nhân
+                result.put("patient_id", rs.getInt("patient_id"));
+                result.put("patient_name", rs.getString("patient_name"));
+                result.put("patient_dob", rs.getString("patient_dob"));
+                result.put("patient_gender", rs.getString("patient_gender"));
+                result.put("patient_phone", rs.getString("patient_phone"));
+                result.put("patient_address", rs.getString("patient_address"));
+                
                 results.add(result);
             }
             
@@ -135,6 +155,7 @@ public class ResultsOfParaclinicalServicesDAO {
              SELECT 
                 so.service_order_id,
                 so.order_date,
+                so.medicineRecord_id,
                 soi.service_order_item_id,
                 lms.service_id,
                 lms.name as service_name,
@@ -143,10 +164,18 @@ public class ResultsOfParaclinicalServicesDAO {
                 r.result_id,
                 r.result_description,
                 r.created_at as result_date,
-                d.full_name as doctor_name
+                d.full_name as doctor_name,
+                p.patient_id,
+                p.full_name as patient_name,
+                p.dob as patient_dob,
+                p.gender as patient_gender,
+                p.phone as patient_phone,
+                p.address as patient_address
             FROM ServiceOrder so
             JOIN ServiceOrderItem soi ON so.service_order_id = soi.service_order_id
             JOIN ListOfMedicalService lms ON soi.service_id = lms.service_id
+            LEFT JOIN MedicineRecords mr ON so.medicineRecord_id = mr.medicineRecord_id
+            LEFT JOIN Patient p ON mr.patient_id = p.patient_id
             LEFT JOIN ResultsOfParaclinicalServices r ON soi.service_order_item_id = r.service_order_item_id
             LEFT JOIN Doctor d ON soi.doctor_id = d.doctor_id
             WHERE so.medicineRecord_id = ?
@@ -163,6 +192,7 @@ public class ResultsOfParaclinicalServicesDAO {
                 Map<String, Object> result = new HashMap<>();
                 result.put("service_order_id", rs.getInt("service_order_id"));
                 result.put("order_date", rs.getString("order_date"));
+                result.put("medicineRecord_id", rs.getInt("medicineRecord_id"));
                 result.put("service_order_item_id", rs.getInt("service_order_item_id"));
                 result.put("service_id", rs.getInt("service_id"));
                 result.put("service_name", rs.getString("service_name"));
@@ -173,6 +203,15 @@ public class ResultsOfParaclinicalServicesDAO {
                 result.put("result_date", rs.getString("result_date"));
                 result.put("doctor_name", rs.getString("doctor_name"));
                 result.put("is_completed", rs.getString("result_description") != null);
+                
+                // Thông tin bệnh nhân
+                result.put("patient_id", rs.getInt("patient_id"));
+                result.put("patient_name", rs.getString("patient_name"));
+                result.put("patient_dob", rs.getString("patient_dob"));
+                result.put("patient_gender", rs.getString("patient_gender"));
+                result.put("patient_phone", rs.getString("patient_phone"));
+                result.put("patient_address", rs.getString("patient_address"));
+                
                 results.add(result);
             }
             
