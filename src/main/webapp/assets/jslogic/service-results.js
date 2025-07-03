@@ -1,5 +1,6 @@
 let serviceResultsList = [];
 let currentMedicineRecordId = null;
+let currentDoctorId = null;
 
 // Hàm khởi tạo trang
 async function initializeServiceResultsPage() {
@@ -79,6 +80,12 @@ async function loadServiceResults() {
             return;
         }
 
+        // Get doctor ID from first service order
+        if (myServiceOrders.length > 0 && myServiceOrders[0].doctor_id) {
+            currentDoctorId = myServiceOrders[0].doctor_id;
+            console.log('Got doctor ID:', currentDoctorId);
+        }
+
         console.log(`Found ${myServiceOrders.length} service orders prescribed by you`);
 
         // Bước 2: Với mỗi service order, lấy progress kết quả xét nghiệm
@@ -102,11 +109,9 @@ async function loadServiceResults() {
                         const patientResult = {
                             service_order_id: serviceOrder.service_order_id,
                             patient_name: serviceOrder.patient_name,
-                            patient_id: serviceOrder.patient_id || 'N/A',
                             order_date: serviceOrder.order_date,
                             medicineRecord_id: serviceOrder.medicineRecord_id,
                             doctor_name: serviceOrder.doctor_name, // bác sĩ chỉ định
-                            
                             // Thông tin kết quả xét nghiệm (có thể do bác sĩ khác thực hiện)
                             total_tests: progressData.data.total_services,
                             completed_tests: progressData.data.completed_services,
@@ -151,8 +156,8 @@ async function loadServiceResults() {
         const pendingCount = patientTestResults.length - completeCount;
         const totalTests = patientTestResults.reduce((sum, r) => sum + r.total_tests, 0);
         const completedTests = patientTestResults.reduce((sum, r) => sum + r.completed_tests, 0);
-        
-        showAlert(`Loaded ${patientTestResults.length} patient(s) with your prescribed tests: ${completedTests}/${totalTests} tests completed (${completeCount} patients finished, ${pendingCount} pending)`, 'success');
+
+        console.log(`Loaded ${patientTestResults.length} patient(s) with your prescribed tests: ${completedTests}/${totalTests} tests completed (${completeCount} patients finished, ${pendingCount} pending)`, 'success');
 
     } catch (error) {
         console.error("Error loading service results:", error);
@@ -340,6 +345,16 @@ function displayDetailedResults(detailedResults, serviceOrderId) {
     detailedSection.style.display = "block";
     detailedSection.scrollIntoView({ behavior: 'smooth' });
 
+    // Debug: Log detailed results data
+    console.log('📋 Detailed Results Data:', detailedResults);
+    if (detailedResults && detailedResults.length > 0) {
+        console.log('👤 Patient info from first result:', {
+            patient_id: detailedResults[0].patient_id,
+            patient_name: detailedResults[0].patient_name,
+            medicineRecord_id: detailedResults[0].medicineRecord_id
+        });
+    }
+
     // Group results by service order
     const groupedResults = {};
     detailedResults.forEach(result => {
@@ -348,6 +363,9 @@ function displayDetailedResults(detailedResults, serviceOrderId) {
             groupedResults[orderId] = {
                 order_id: orderId,
                 order_date: result.order_date,
+                patient_id: result.patient_id,
+                patient_name: result.patient_name,
+                medicineRecord_id: result.medicineRecord_id,
                 results: []
             };
         }
@@ -401,6 +419,28 @@ function displayDetailedResults(detailedResults, serviceOrderId) {
         const completedCount = orderGroup.results.filter(r => r.is_completed).length;
         const totalCount = orderGroup.results.length;
         const progressPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+        
+        // Lấy thông tin bệnh nhân từ nhiều nguồn (orderGroup, results trong group, hoặc detailedResults đầu tiên)
+        console.log(`🔍 Order #${orderGroup.order_id} - Extracting patient info from:`);
+        console.log('  - orderGroup.patient_id:', orderGroup.patient_id);
+        console.log('  - orderGroup.results[0]?.patient_id:', orderGroup.results[0]?.patient_id);
+        console.log('  - detailedResults[0]?.patient_id:', detailedResults[0]?.patient_id);
+        
+        const patientInfo = {
+            patient_id: orderGroup.patient_id || 
+                       (orderGroup.results[0] && orderGroup.results[0].patient_id) ||
+                       (detailedResults[0] && detailedResults[0].patient_id) || 'N/A',
+            patient_name: orderGroup.patient_name || 
+                         (orderGroup.results[0] && orderGroup.results[0].patient_name) ||
+                         (detailedResults[0] && detailedResults[0].patient_name) || 'N/A',
+            medicineRecord_id: orderGroup.medicineRecord_id || 
+                              (orderGroup.results[0] && orderGroup.results[0].medicineRecord_id) ||
+                              (detailedResults[0] && detailedResults[0].medicineRecord_id) || 'N/A'
+        };
+        
+        console.log(`🔍 Order #${orderGroup.order_id} - Patient Info:`, patientInfo);
+        console.log(`🔍 Order #${orderGroup.order_id} - Raw orderGroup:`, orderGroup);
+        console.log(`🔍 Order #${orderGroup.order_id} - First result:`, orderGroup.results[0] || 'No results');
         
         // Calculate total cost
         const totalCost = orderGroup.results.reduce((sum, r) => sum + (r.service_price || 0), 0);
@@ -530,6 +570,28 @@ function displayDetailedResults(detailedResults, serviceOrderId) {
         
         contentHTML += `
                 </div>
+                
+                <!-- Nút Kết luận cho order group này -->
+                <div class="order-conclusion-section mt-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="conclusion-info">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Sau khi hoàn thành các xét nghiệm, bạn có thể kết luận điều trị và tạo hóa đơn cho bệnh nhân
+                            </small>
+                        </div>
+                        <button class="btn btn-success btn-conclusion" 
+                                data-patient-id="${patientInfo.patient_id}"
+                                data-patient-name="${patientInfo.patient_name}"
+                                data-medicine-record-id="${patientInfo.medicineRecord_id}"
+                                data-service-order-id="${orderGroup.order_id}"
+                                ${progressPercentage < 100 ? 'disabled' : ''}
+                                title="Progress: ${progressPercentage}% (${completedCount}/${totalCount} tests completed)">
+                            <i class="fas fa-file-medical-alt me-2"></i>
+                            ${progressPercentage < 100 ? `Chờ hoàn thành xét nghiệm (${progressPercentage}%)` : 'Kết luận điều trị'}
+                        </button>
+                    </div>
+                </div>
             </div>
         `;
     });
@@ -552,18 +614,40 @@ function displayDetailedResults(detailedResults, serviceOrderId) {
     addResultEditListeners();
 }
 
-// Hàm thêm event listeners cho read-only buttons (chỉ print)
+// Hàm thêm event listeners cho buttons
 function addResultEditListeners() {
     const detailedContent = document.getElementById("detailedResultsContent");
     if (!detailedContent) return;
 
-    // Event delegation chỉ cho print button
+    // Event delegation cho các buttons
     detailedContent.addEventListener('click', function(e) {
         // Event listener cho print button
         const printBtn = e.target.closest('.print-result-btn');
         if (printBtn) {
             const serviceOrderItemId = printBtn.getAttribute('data-service-order-item-id');
             printResult(serviceOrderItemId);
+            return;
+        }
+
+        // Event listener cho nút kết luận
+        const conclusionBtn = e.target.closest('.btn-conclusion');
+        if (conclusionBtn) {
+            const patientId = conclusionBtn.getAttribute('data-patient-id');
+            const patientName = conclusionBtn.getAttribute('data-patient-name');
+            const medicineRecordId = conclusionBtn.getAttribute('data-medicine-record-id');
+            const serviceOrderId = conclusionBtn.getAttribute('data-service-order-id');
+            
+            console.log('🔍 Conclusion button clicked:', {
+                patientId, patientName, medicineRecordId, serviceOrderId
+            });
+            console.log('🔍 Button data attributes:', {
+                'data-patient-id': conclusionBtn.getAttribute('data-patient-id'),
+                'data-patient-name': conclusionBtn.getAttribute('data-patient-name'),
+                'data-medicine-record-id': conclusionBtn.getAttribute('data-medicine-record-id'),
+                'data-service-order-id': conclusionBtn.getAttribute('data-service-order-id')
+            });
+            
+            showConclusionModal(patientId, patientName, medicineRecordId, serviceOrderId);
             return;
         }
     });
@@ -759,7 +843,7 @@ function runDebugTests() {
     console.log('Debug Tests Running...');
 
     console.log('Testing functions availability:');
-    console.log('- loadServiceResults:', typeof loadServiceResults);
+    console.log('- loadServiceResults:', typeof loadServiceRsesults);
     console.log('- viewDetailedResults:', typeof viewDetailedResults);
     console.log('- displayDetailedResults:', typeof displayDetailedResults);
     console.log('- refreshResults:', typeof refreshResults);
@@ -1634,4 +1718,601 @@ enhancedStyles.textContent = `
         }
     }
 `;
-document.head.appendChild(enhancedStyles); 
+document.head.appendChild(enhancedStyles);
+
+// =================== CHỨC NĂNG KẾT LUẬN VÀ TẠO INVOICE ===================
+
+// Global variables cho chức năng kết luận
+let currentConclusionData = {
+    patientId: null,
+    patientName: null,
+    medicineRecordId: null,
+    serviceOrderId: null,
+    completedServices: [],
+    medications: [],
+    allMedicines: []
+};
+
+// Add this function to get doctor info
+async function getCurrentDoctorId() {
+    try {
+        const response = await fetch('/api/doctor/service-results?action=getCurrentDoctor', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to get doctor info');
+        }
+
+        return data.data.doctor_id;
+    } catch (error) {
+        console.error('Error getting doctor ID:', error);
+        throw error;
+    }
+}
+
+// Update the showConclusionModal function
+async function showConclusionModal(patientId, patientName, medicineRecordId, serviceOrderId) {
+    try {
+        // Check if we have doctor ID
+        if (!currentDoctorId) {
+            throw new Error('Doctor ID not found. Please refresh the page.');
+        }
+
+        // Reset current data
+        currentConclusionData = {
+            patientId: patientId,
+            patientName: patientName,
+            completedServices: [],
+            medications: []
+        };
+
+        // Set doctor ID in form
+        document.getElementById('doctorId').value = currentDoctorId;
+        
+        // Set medicine record ID
+        document.getElementById('conclusionMedicineRecordId').value = medicineRecordId;
+        document.getElementById('conclusionMedicineRecordDisplay').value = medicineRecordId;
+
+        // Update patient info in modal
+        document.getElementById('conclusionPatientName').value = patientName;
+        document.getElementById('conclusionPatientId').value = patientId;
+
+        // Load completed services
+        await loadCompletedServices(medicineRecordId, serviceOrderId);
+        
+        // Load medicines for dropdown
+        await loadMedicines();
+        
+        // Setup event listeners
+        setupConclusionModalListeners();
+        
+        // Show the modal
+        const conclusionModal = new bootstrap.Modal(document.getElementById('conclusionModal'));
+        conclusionModal.show();
+    } catch (error) {
+        console.error('Error showing conclusion modal:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: error.message || 'Không thể mở form kết luận. Vui lòng thử lại.'
+        });
+    }
+}
+
+// Sửa hàm loadCompletedServices để nhận thêm serviceOrderId
+async function loadCompletedServices(medicineRecordId, serviceOrderId) {
+    try {
+        console.log('Loading completed services for medicine record:', medicineRecordId, 'service order:', serviceOrderId);
+        let url = `/api/doctor/service-results?action=getDetailedResults`;
+        if (serviceOrderId) {
+            url += `&serviceOrderId=${serviceOrderId}`;
+        } else {
+            url += `&medicineRecordId=${medicineRecordId}`;
+        }
+        const response = await fetch(url, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: Failed to fetch completed services`);
+        }
+
+        const data = await response.json();
+        console.log('Completed services response:', data);
+
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to load completed services');
+        }
+
+        const detailedResults = data.data;
+        if (!detailedResults || !Array.isArray(detailedResults)) {
+            throw new Error('No service results found');
+        }
+
+        // Lấy tất cả services đã hoàn thành
+        let completedServices = [];
+        detailedResults.forEach(result => {
+            if (result.is_completed) {
+                completedServices.push({
+                    itemId: result.service_id,
+                    itemName: result.service_name,
+                    itemType: 'Service',
+                    quantity: 1,
+                    unitPrice: result.service_price || 0,
+                    totalPrice: result.service_price || 0,
+                    description: result.service_description || '',
+                    resultDescription: result.result_description || ''
+                });
+            }
+        });
+
+        currentConclusionData.completedServices = completedServices;
+        renderCompletedServicesTable();
+        updateConclusionTotalAmount();
+
+        console.log(`Loaded ${completedServices.length} completed services`);
+        
+        if (completedServices.length === 0) {
+            console.warn('⚠️ No completed services found for medicine record:', medicineRecordId);
+            showAlert('Không có dịch vụ nào đã hoàn thành để thêm vào hóa đơn.', 'warning');
+        }
+
+    } catch (error) {
+        console.error('Error loading completed services:', error);
+        showAlert('Không thể tải danh sách dịch vụ: ' + error.message, 'danger');
+    }
+}
+
+// Render bảng dịch vụ đã hoàn thành
+function renderCompletedServicesTable() {
+    const tbody = document.getElementById('completedServicesTableBody');
+    const badge = document.getElementById('serviceCountBadge');
+    
+    if (!tbody || !badge) return;
+
+    tbody.innerHTML = '';
+    badge.textContent = currentConclusionData.completedServices.length;
+
+    currentConclusionData.completedServices.forEach(service => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${service.itemName}</strong></td>
+            <td>${service.description}</td>
+            <td>${formatCurrency(service.unitPrice)}</td>
+            <td>
+                <small class="text-muted">
+                    ${service.resultDescription.substring(0, 100)}${service.resultDescription.length > 100 ? '...' : ''}
+                </small>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Load danh sách thuốc
+async function loadMedicines() {
+    try {
+        console.log('Loading medicines list...');
+
+        const response = await fetch('/api/medicine/list', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: Failed to fetch medicines`);
+        }
+
+        const data = await response.json();
+        console.log('Medicines response:', data);
+
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to load medicines');
+        }
+
+        currentConclusionData.allMedicines = data.data || [];
+        populateMedicineSelect();
+
+        console.log(`Loaded ${currentConclusionData.allMedicines.length} medicines`);
+
+    } catch (error) {
+        console.error('Error loading medicines:', error);
+        showAlert('Không thể tải danh sách thuốc: ' + error.message, 'warning');
+        
+        // Fallback - tạo danh sách thuốc mẫu
+        currentConclusionData.allMedicines = [
+            { medicine_id: 1, medicine_name: 'Paracetamol 500mg', price: 5000 },
+            { medicine_id: 2, medicine_name: 'Amoxicillin 250mg', price: 8000 },
+            { medicine_id: 3, medicine_name: 'Ibuprofen 400mg', price: 6000 },
+            { medicine_id: 4, medicine_name: 'Vitamin C 1000mg', price: 3000 }
+        ];
+        populateMedicineSelect();
+    }
+}
+
+// Điền danh sách thuốc vào select
+function populateMedicineSelect() {
+    const select = document.getElementById('medicationSelect');
+    if (!select) return;
+
+    select.innerHTML = '<option value="">Chọn thuốc...</option>';
+    
+    currentConclusionData.allMedicines.forEach(medicine => {
+        const option = document.createElement('option');
+        option.value = medicine.medicine_id;
+        option.textContent = medicine.medicine_name;
+        option.dataset.price = medicine.price || 0;
+        select.appendChild(option);
+    });
+}
+
+// Setup event listeners cho modal
+function setupConclusionModalListeners() {
+    // Nút thêm thuốc
+    const addMedicationBtn = document.getElementById('addMedicationBtn');
+    if (addMedicationBtn) {
+        addMedicationBtn.replaceWith(addMedicationBtn.cloneNode(true)); // Remove old listeners
+        document.getElementById('addMedicationBtn').addEventListener('click', () => {
+            const medicationModal = new bootstrap.Modal(document.getElementById('medicationModal'));
+            medicationModal.show();
+        });
+    }
+
+    // Thay đổi thuốc trong modal
+    const medicationSelect = document.getElementById('medicationSelect');
+    if (medicationSelect) {
+        medicationSelect.replaceWith(medicationSelect.cloneNode(true));
+        document.getElementById('medicationSelect').addEventListener('change', updateMedicationPrice);
+    }
+
+    const medicationQuantity = document.getElementById('medicationQuantity');
+    if (medicationQuantity) {
+        medicationQuantity.replaceWith(medicationQuantity.cloneNode(true));
+        document.getElementById('medicationQuantity').addEventListener('input', updateMedicationPrice);
+    }
+
+    // Nút xác nhận thêm thuốc
+    const addMedicationConfirm = document.getElementById('addMedicationConfirm');
+    if (addMedicationConfirm) {
+        addMedicationConfirm.replaceWith(addMedicationConfirm.cloneNode(true));
+        document.getElementById('addMedicationConfirm').addEventListener('click', addMedication);
+    }
+
+    // Nút submit kết luận
+    const submitBtn = document.getElementById('submitConclusionBtn');
+    if (submitBtn) {
+        submitBtn.replaceWith(submitBtn.cloneNode(true));
+        document.getElementById('submitConclusionBtn').addEventListener('click', submitConclusion);
+    }
+}
+
+// Cập nhật giá thuốc khi thay đổi
+function updateMedicationPrice() {
+    const select = document.getElementById('medicationSelect');
+    const quantityInput = document.getElementById('medicationQuantity');
+    const priceInput = document.getElementById('medicationPrice');
+    
+    if (!select || !quantityInput || !priceInput) return;
+
+    const selectedOption = select.options[select.selectedIndex];
+    const unitPrice = parseFloat(selectedOption.dataset.price || 0);
+    const quantity = parseInt(quantityInput.value || 1);
+    
+    priceInput.value = formatCurrency(unitPrice * quantity);
+}
+
+// Thêm thuốc vào danh sách
+function addMedication() {
+    const select = $('#medicationSelect');
+    const medicationId = select.val();
+    const medicationName = select.find('option:selected').text();
+    const quantity = parseInt($('#medicationQuantity').val());
+    const unitPrice = parseFloat(select.find('option:selected').data('price'));
+    const totalPrice = unitPrice * quantity;
+    const usage = $('#medicationUsage').val() || '3 lần/ngày';
+
+    if (!medicationId || !quantity || quantity <= 0) {
+        Swal.fire('Lỗi', 'Vui lòng chọn thuốc và nhập số lượng hợp lệ', 'warning');
+        return;
+    }
+
+    const medication = {
+        itemId: parseInt(medicationId),
+        itemName: medicationName,
+        itemType: 'Medication',
+        quantity: quantity,
+        unitPrice: unitPrice,
+        totalPrice: totalPrice,
+        description: usage
+    };
+
+    currentConclusionData.medications.push(medication);
+    renderMedicationsTable();
+    updateConclusionTotalAmount();
+    $('#medicationModal').modal('hide');
+    
+    // Reset form
+    $('#medicationSelect').val('');
+    $('#medicationQuantity').val(1);
+    $('#medicationPrice').val('');
+    $('#medicationUsage').val('3 lần/ngày');
+}
+
+// Render bảng thuốc
+function renderMedicationsTable() {
+    const tbody = document.getElementById('medicationsTableBody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+
+    currentConclusionData.medications.forEach((medication, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${medication.itemName}</strong></td>
+            <td>${medication.quantity}</td>
+            <td>${formatCurrency(medication.unitPrice)}</td>
+            <td>${formatCurrency(medication.totalPrice)}</td>
+            <td><small class="text-muted">${medication.description}</small></td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeMedication(${index})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Xóa thuốc
+function removeMedication(index) {
+    currentConclusionData.medications.splice(index, 1);
+    renderMedicationsTable();
+    updateConclusionTotalAmount();
+}
+
+// Cập nhật tổng tiền
+function updateConclusionTotalAmount() {
+    let total = 0;
+    
+    // Tính tiền dịch vụ
+    currentConclusionData.completedServices.forEach(service => {
+        total += service.totalPrice;
+    });
+    
+    // Tính tiền thuốc
+    currentConclusionData.medications.forEach(medication => {
+        total += medication.totalPrice;
+    });
+
+    const totalElement = document.getElementById('conclusionTotalAmount');
+    if (totalElement) {
+        totalElement.textContent = formatCurrency(total);
+    }
+}
+
+function submitPrescription(invoiceId, medicineRecordId, doctorId, medications) {
+    return fetch('/invoice-creation?action=addPrescription', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `invoiceId=${invoiceId}&medicineRecordId=${medicineRecordId}&doctorId=${doctorId}&medications=${encodeURIComponent(JSON.stringify(
+            medications.map(med => ({
+                medicine_id: med.itemId,
+                quantity: med.quantity,
+                dosage: `${med.quantity} viên x ${med.description || '3 lần/ngày'}`
+            }))
+        ))}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            throw new Error(data.message || 'Không thể tạo đơn thuốc');
+        }
+        return data.data; // prescription_id
+    });
+}
+
+function submitConclusion() {
+    const medicineRecordId = document.getElementById('conclusionMedicineRecordId').value;
+    const conclusion = document.getElementById('finalDiagnosis').value;
+    const disease = document.getElementById('finalDiagnosis').value;
+    const treatmentPlan = document.getElementById('treatmentPlan').value;
+    const notes = document.getElementById('invoiceNotes')?.value || '';
+    const doctorId = document.getElementById('doctorId')?.value; // Add this line to get doctorId
+
+    // Validate input
+    if (!conclusion || !treatmentPlan) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Vui lòng điền đầy đủ thông tin chẩn đoán và kế hoạch điều trị'
+        });
+        return;
+    }
+
+    // Validate patient ID
+    if (!currentConclusionData.patientId || currentConclusionData.patientId === 'N/A') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Không tìm thấy thông tin bệnh nhân. Vui lòng tải lại trang và thử lại.'
+        });
+        return;
+    }
+
+    // Validate doctor ID
+    if (!doctorId) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Không tìm thấy thông tin bác sĩ. Vui lòng tải lại trang và thử lại.'
+        });
+        return;
+    }
+
+    // Disable submit button
+    const submitBtn = document.getElementById('submitConclusionBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...';
+
+    // Log debug information
+    console.log('Submitting conclusion with:', {
+        patientId: currentConclusionData.patientId,
+        medicineRecordId: medicineRecordId,
+        conclusion: conclusion,
+        disease: disease,
+        treatmentPlan: treatmentPlan,
+        services: currentConclusionData.completedServices,
+        medications: currentConclusionData.medications
+    });
+
+    // Step 1: Create new diagnosis
+    fetch('/invoice-creation?action=updateDiagnosis', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `medicineRecordId=${medicineRecordId}&conclusion=${encodeURIComponent(conclusion)}&disease=${encodeURIComponent(disease)}&treatmentPlan=${encodeURIComponent(treatmentPlan)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Step 2: Create initial invoice
+            return fetch('/invoice-creation?action=createInitial', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `patientId=${currentConclusionData.patientId}&medicineRecordId=${medicineRecordId}&status=Pending`
+            });
+        } else {
+            throw new Error(data.message || 'Không thể tạo chẩn đoán mới');
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.message || 'HTTP Error: ' + response.status);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data.success) {
+            throw new Error(data.message || 'Không thể tạo hóa đơn');
+        }
+        if (!data.invoiceId) {
+            throw new Error('Không nhận được mã hóa đơn từ server');
+        }
+
+        const invoiceId = data.invoiceId;
+        const promises = [];
+
+        // Step 3: Add services if any
+        if (currentConclusionData.completedServices && currentConclusionData.completedServices.length > 0) {
+            promises.push(
+                fetch('/invoice-creation?action=addServices', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `invoiceId=${invoiceId}&services=${encodeURIComponent(JSON.stringify(
+                        currentConclusionData.completedServices.map(service => ({
+                            service_order_item_id: service.itemId,
+                            quantity: service.quantity,
+                            unit_price: service.unitPrice
+                        }))
+                    ))}`
+                })
+            );
+        }
+
+        // Step 4: Add medications if any
+        if (currentConclusionData.medications && currentConclusionData.medications.length > 0) {
+            promises.push(
+                submitPrescription(invoiceId, medicineRecordId, doctorId, currentConclusionData.medications)
+            );
+        }
+
+        // Step 5: Update total amount
+        const totalAmount = (currentConclusionData.completedServices || []).reduce((sum, service) => sum + service.totalPrice, 0) +
+                          (currentConclusionData.medications || []).reduce((sum, med) => sum + med.totalPrice, 0);
+
+        promises.push(
+            fetch('/invoice-creation?action=updateTotal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `invoiceId=${invoiceId}&totalAmount=${totalAmount}&notes=${encodeURIComponent(notes)}`
+            })
+        );
+
+        return Promise.all(promises).then(() => invoiceId);
+    })
+    .then(invoiceId => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành công',
+            text: `Đã tạo chẩn đoán và hóa đơn thành công! Mã hóa đơn: ${invoiceId}`,
+            showConfirmButton: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload();
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: error.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.',
+            confirmButtonText: 'Đóng'
+        });
+    })
+    .finally(() => {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-file-invoice me-2"></i>Kết luận và tạo hóa đơn';
+    });
+}
+
+// Utility function format currency
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND'
+    }).format(amount || 0);
+}
+
+// Export new functions to window
+window.showConclusionModal = showConclusionModal;
+window.removeMedication = removeMedication;
+
+// Temporary debug function - Remove after testing
+window.clearDebugLogs = function() {
+    // Xóa console debug logs
+    const logs = document.querySelector('#patientInfoDebug');
+    if (logs) logs.style.display = 'none';
+    console.clear();
+    showAlert('Debug logs cleared', 'info');
+}; 

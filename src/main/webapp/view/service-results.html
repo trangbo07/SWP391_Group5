@@ -159,10 +159,57 @@
                 color: #3182ce;
                 margin-bottom: 0.5rem;
             }
+
+            /* Styles cho nút kết luận */
+            .order-conclusion-section {
+                background: linear-gradient(135deg, #f8fff9 0%, #e8f5e8 100%);
+                border-radius: 12px;
+                padding: 20px;
+                border: 1px solid #d4edda;
+                margin-top: 25px;
+            }
+            
+            .btn-conclusion {
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                border: none;
+                color: white;
+                padding: 12px 25px;
+                border-radius: 8px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            }
+            
+            .btn-conclusion:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+                background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+                color: white;
+            }
+            
+            .btn-conclusion:disabled {
+                background: #6c757d;
+                color: #fff;
+                cursor: not-allowed;
+                opacity: 0.6;
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .conclusion-info {
+                flex: 1;
+                margin-right: 15px;
+            }
+            
+            .conclusion-info small {
+                color: #155724;
+                font-weight: 500;
+            }
         </style>
+      
     </head>
     
-    <body class="">
+    <body class="kivicare-clinic-dashboard" data-doctor-id="${sessionScope.user.doctor_id}">
         <!-- loader Start -->
         <div id="loading">
             <div class="loader simple-loader">
@@ -308,7 +355,7 @@
         
         <main class="main-content">
             <div class="position-relative iq-banner">
-                <div class="iq-navbar-header" style="height: 215px;">
+                <div class="iq-navbar-header" style="height: 215px; background-color: #f68685">
                     <div class="container-fluid iq-container">
                         <div class="row">
                             <div class="col-md-12">
@@ -321,7 +368,7 @@
                                         <button class="btn btn-primary" onclick="loadServiceResults()">
                                             <i class="fas fa-refresh me-2"></i>Refresh Results
                                         </button>
-                                        <button class="btn btn-outline-primary" onclick="showStatistics()">
+                                        <button class="btn btn-outline-primary" onclick="showStatistics()" style="color: white;">
                                             <i class="fas fa-chart-bar me-2"></i>Statistics
                                         </button>
                                     </div>
@@ -403,6 +450,179 @@
                 </div>
             </div>
         </main>
+        
+        <!-- Modal Kết luận và Tạo Invoice -->
+        <div class="modal fade" id="conclusionModal" tabindex="-1" aria-labelledby="conclusionModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="conclusionModalLabel">
+                            <i class="fas fa-file-medical-alt me-2"></i>Kết luận điều trị và tạo hóa đơn
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Thông tin bệnh nhân -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="mb-3"><i class="fas fa-user me-2"></i>Thông tin bệnh nhân</h6>
+                                <div id="patientInfoDebug" class="alert alert-info" style="display: none;">
+                                    <small><strong>Debug Info:</strong> <span id="debugText"></span></small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Tên bệnh nhân</label>
+                                <input type="text" class="form-control" id="conclusionPatientName" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Mã hồ sơ y tế</label>
+                                <input type="text" class="form-control" id="conclusionMedicineRecordDisplay" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Mã bệnh nhân</label>
+                                <input type="text" class="form-control" id="conclusionPatientId" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Hidden inputs for form submission -->
+                        <div style="display: none;">
+                            <input type="hidden" id="doctorId" name="doctorId">
+                            <input type="hidden" id="conclusionMedicineRecordId" name="medicineRecordId">
+                        </div>
+
+                        <!-- Kết luận cuối cùng -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="mb-3"><i class="fas fa-stethoscope me-2"></i>Kết luận điều trị</h6>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Chẩn đoán cuối cùng <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="finalDiagnosis" rows="4" placeholder="Nhập chẩn đoán cuối cùng..." required></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Kế hoạch điều trị <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="treatmentPlan" rows="4" placeholder="Nhập kế hoạch điều trị..." required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Dịch vụ đã thực hiện -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="mb-3">
+                                    <i class="fas fa-flask me-2"></i>Dịch vụ đã thực hiện
+                                    <span class="badge bg-info" id="serviceCountBadge">0</span>
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="completedServicesTable">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Tên dịch vụ</th>
+                                                <th>Mô tả</th>
+                                                <th>Đơn giá</th>
+                                                <th>Kết quả</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="completedServicesTableBody">
+                                            <!-- Services will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chỉ định thuốc -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="mb-3">
+                                    <i class="fas fa-pills me-2"></i>Chỉ định thuốc
+                                    <button type="button" class="btn btn-success btn-sm ms-3" id="addMedicationBtn">
+                                        <i class="fas fa-plus me-1"></i>Thêm thuốc
+                                    </button>
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="medicationsTable">
+                                        <thead class="table-success">
+                                            <tr>
+                                                <th>Tên thuốc</th>
+                                                <th>Số lượng</th>
+                                                <th>Đơn giá</th>
+                                                <th>Thành tiền</th>
+                                                <th>Cách dùng</th>
+                                                <th>Xóa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="medicationsTableBody">
+                                            <!-- Medications will be added here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tổng tiền -->
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label class="form-label">Ghi chú thêm</label>
+                                <textarea class="form-control" id="invoiceNotes" rows="2" placeholder="Ghi chú thêm về điều trị hoặc hóa đơn..."></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">Tổng tiền thanh toán</h6>
+                                        <h4 class="text-primary" id="conclusionTotalAmount">0 VNĐ</h4>
+                                        <small class="text-muted">Bao gồm dịch vụ và thuốc</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-primary" id="submitConclusionBtn">
+                            <i class="fas fa-file-invoice me-2"></i>Kết luận và tạo hóa đơn
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Chọn thuốc -->
+        <div class="modal fade" id="medicationModal" tabindex="-1" aria-labelledby="medicationModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="medicationModalLabel">Thêm thuốc</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Tên thuốc <span class="text-danger">*</span></label>
+                                <select class="form-select" id="medicationSelect" required>
+                                    <option value="">Chọn thuốc...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Số lượng <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="medicationQuantity" value="1" min="1" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Đơn giá</label>
+                                <input type="text" class="form-control" id="medicationPrice" readonly>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Cách dùng</label>
+                                <textarea class="form-control" id="medicationUsage" rows="2" placeholder="Ví dụ: Uống 2 viên/ngày sau ăn..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-success" id="addMedicationConfirm">Thêm thuốc</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <!-- Hidden Print Section -->
         <div id="printSection" class="print-only">
