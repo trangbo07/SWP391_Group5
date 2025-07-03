@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en" class="theme-fs-sm" data-bs-theme="light" data-bs-theme-color="default" dir="ltr">
     <head>
@@ -427,7 +426,7 @@
                                                   <img class="p-1 avatar-40 rounded-pill bg-primary-subtle"
                                                      src="../assets/assets/images/shapes/01.png" loading="lazy" />
                                                   <div class="ms-3 flex-grow-1 text-start">
-                                                     <h6 class="mb-0 ">Biker’s Jacket</h6>
+                                                     <h6 class="mb-0 ">Biker's Jacket</h6>
                                                      <p class="mb-0">$56.00</p>
                                                   </div>
                                                   <button type="button" class="btn btn-icon text-danger btn-sm">
@@ -515,7 +514,7 @@
                                                   <img class="p-1 avatar-40 rounded-pill bg-primary-subtle"
                                                      src="../assets/assets/images/shapes/01.png" loading="lazy" />
                                                   <div class="ms-3 flex-grow-1 text-start">
-                                                     <h6 class="mb-0 ">Biker’s Jacket</h6>
+                                                     <h6 class="mb-0 ">Biker's Jacket</h6>
                                                      <p class="mb-0">$56.00</p>
                                                   </div>
                                                   <button type="button" class="btn btn-icon text-danger btn-sm">
@@ -672,11 +671,24 @@
             <div class="content-inner container-fluid pb-0" id="page_layout">
 <div class="mt-5">
     <h1 class="mb-3">Hello! Amine Steward</h1>
-    <span class="mx-0 text-capitalize">Have a nice day. don’t forget to take care of your self.</span>
+    <span class="mx-0 text-capitalize">Have a nice day. don't forget to take care of your self.</span>
 </div>
-               <div class="row mt-5 mb-5" id="doctorList">
-                  <!-- Danh sách bác sĩ sẽ được render ở đây -->
-               </div>
+<div class="row mb-3">
+    <div class="col-12 col-md-4">
+        <select id="departmentFilter" class="form-select">
+            <option value="">Tất cả chuyên khoa</option>
+            <!-- Các option chuyên khoa sẽ được render bằng JS -->
+        </select>
+    </div>
+</div>
+<div class="row mt-5 mb-5" id="doctorList">
+    <!-- Danh sách bác sĩ sẽ được render ở đây -->
+</div>
+
+<!-- Container cho thông tin chi tiết bác sĩ -->
+<div id="doctorDetailContainer" style="display: none;">
+    <!-- Thông tin chi tiết bác sĩ sẽ được render ở đây -->
+</div>
             <!-- Footer Section Start -->
             <footer class="footer">
                 <div class="footer-body">
@@ -1105,7 +1117,7 @@
                                                 fill="currentColor" />
                                             <path
                                                 d="M20.0941 18.5594C21.3117 16.848 21.9736 14.8163 21.9993 12.7329C22.0027 12.4569 21.7699 12.2413 21.4941 12.2512L19.5244 12.3213C19.2482 12.3311 19.0342 12.5633 19.0254 12.8395C18.9796 14.283 18.5078 15.6861 17.6628 16.8739C16.7203 18.1986 15.3651 19.183 13.8035 19.6772C12.2419 20.1714 10.5595 20.1483 9.01246 19.6114C7.4654 19.0746 6.13845 18.0534 5.23367 16.7033C4.66562 15.8557 4.28352 14.9076 4.10367 13.9196C4.00935 18.0934 6.49194 21.37 10.008 22.6416C10.697 22.8908 11.4336 22.9852 12.1652 22.9465C13.075 22.8983 13.8508 22.742 14.7105 22.4699C16.8889 21.7805 18.7794 20.4073 20.0941 18.5594Z"
-                                                fill="currentColor" />
+                                                fill="#0169CA" />
                                         </svg>
                                     </a>
                                 </div>
@@ -1549,3 +1561,21 @@
         <script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>
     </body>
 </html>
+
+<!-- Doctor Detail Modal -->
+<div class="modal fade" id="doctorDetailModal" tabindex="-1" aria-labelledby="doctorDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="doctorDetailModalLabel">
+          <i class="fas fa-user-md me-2"></i>Thông tin chi tiết bác sĩ
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="doctorDetailModalBody">
+        <!-- Nội dung chi tiết bác sĩ sẽ được render ở đây -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Doctor Detail Modal -->

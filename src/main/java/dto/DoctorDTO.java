@@ -13,4 +13,7 @@ public class DoctorDTO {
     private String department;
     private String eduLevel;
     private String avatarUrl;
+    private String phone;
+    private String email;
+    private String role;
 }

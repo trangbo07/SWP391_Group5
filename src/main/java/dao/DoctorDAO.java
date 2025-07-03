@@ -15,9 +15,10 @@ public class DoctorDAO {
         List<DoctorDTO> list = new ArrayList<>();
 
         String sql = """
-        SELECT doctor_id, full_name, department, eduLevel FROM Doctor d
-                "JOIN AccountStaff a on d.doctor_id = a.account_staff_id
-                "Where Status = 'Enable' 
+        SELECT d.doctor_id, d.full_name, d.department, d.eduLevel, d.phone, a.email, a.role 
+        FROM Doctor d
+        JOIN AccountStaff a on d.doctor_id = a.account_staff_id
+        WHERE a.Status = 'Enable' 
         """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
@@ -30,7 +31,10 @@ public class DoctorDAO {
                         rs.getString("full_name"),
                         rs.getString("department"),
                         rs.getString("eduLevel"),
-                        "/assets/assets/images/doctor/" + rs.getInt("doctor_id") + ".webp" // ảnh tự động
+                        "/assets/assets/images/doctor/" + rs.getInt("doctor_id") + ".webp", // ảnh tự động
+                        rs.getString("phone"),
+                        rs.getString("email"),
+                        rs.getString("role")
                 );
                 list.add(dto);
             }
@@ -78,6 +82,57 @@ public class DoctorDAO {
         }
 
         return dto;
+    }
+
+    public List<String> getAllDepartments() {
+        List<String> departments = new ArrayList<>();
+        String sql = "SELECT DISTINCT department FROM Doctor";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                departments.add(rs.getString("department"));
+            }
+        } catch (Exception e) {
+            System.err.println("Error in getAllDepartments: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return departments;
+    }
+
+    public DoctorDTO getDoctorDTOById(int doctorId) {
+        String sql = """
+        SELECT d.doctor_id, d.full_name, d.department, d.eduLevel, d.phone, a.email, a.role 
+        FROM Doctor d
+        JOIN AccountStaff a on d.doctor_id = a.account_staff_id
+        WHERE d.doctor_id = ? AND a.Status = 'Enable'
+        """;
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, doctorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new DoctorDTO(
+                            rs.getInt("doctor_id"),
+                            rs.getString("full_name"),
+                            rs.getString("department"),
+                            rs.getString("eduLevel"),
+                            "/assets/assets/images/doctor/" + rs.getInt("doctor_id") + ".webp",
+                            rs.getString("phone"),
+                            rs.getString("email"),
+                            rs.getString("role")
+                    );
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error in getDoctorDTOById: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }
