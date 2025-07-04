@@ -109,4 +109,21 @@ public class AccountDAO {
         }
     }
 
+    public boolean resetPharmacistPassword(int accountPharmacistId, String generatedPassword) {
+        String sql = "UPDATE AccountPharmacist SET password = ? WHERE account_pharmacist_id = ?";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, generatedPassword);
+            ps.setInt(2, accountPharmacistId);
+
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 }

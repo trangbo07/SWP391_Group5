@@ -4,6 +4,7 @@ import dto.AdminDTOFA;
 import dto.DoctorDTOFA;
 import dto.PharmacistDTOFA;
 import dto.ReceptionistDTOFA;
+import model.AccountPharmacist;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -1078,6 +1079,165 @@ public class AdminSystemDAO {
         return null;
     }
 
+    public List<String> getDistinctValuesPharmacist(String fieldName) {
+        List<String> result = new ArrayList<>();
+        List<String> allowedFields = List.of("status", "eduLevel");
+
+        if (!allowedFields.contains(fieldName)) {
+            throw new IllegalArgumentException("Invalid field name: " + fieldName);
+        }
+
+        String sql = """
+                SELECT DISTINCT %s FROM AccountPharmacist a
+                JOIN Pharmacist b ON a.account_pharmacist_id = b.account_pharmacist_id
+                WHERE %s IS NOT NULL
+            """.formatted(fieldName, fieldName);
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                result.add(rs.getString(1));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public List<PharmacistDTOFA> filterPharmacists(String status, String eduLevel, String search) {
+        List<PharmacistDTOFA> result = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("""
+                SELECT a.account_pharmacist_id, a.username, a.password, a.email, a.img, a.status,
+                       b.pharmacist_id, b.full_name, b.phone, b.eduLevel
+                FROM AccountPharmacist a
+                JOIN Pharmacist b ON a.account_pharmacist_id = b.account_pharmacist_id
+                WHERE 1 = 1
+            """);
+
+        List<Object> params = new ArrayList<>();
+        if (status != null && !status.isEmpty()) {
+            sql.append(" AND a.status = ?");
+            params.add(status);
+        }
+        if (eduLevel != null && !eduLevel.isEmpty()) {
+            sql.append(" AND b.eduLevel = ?");
+            params.add(eduLevel);
+        }
+        if (search != null && !search.isEmpty()) {
+            sql.append("""
+                    AND (
+                        b.full_name COLLATE Latin1_General_CI_AI LIKE ? OR
+                        a.username COLLATE Latin1_General_CI_AI LIKE ? OR
+                        a.email COLLATE Latin1_General_CI_AI LIKE ?
+                    )
+                """);
+            String keyword = "%" + search.trim().replaceAll("\\s+", " ") + "%";
+            params.add(keyword);
+            params.add(keyword);
+            params.add(keyword);
+        }
+
+        sql.append(" ORDER BY a.account_pharmacist_id DESC");
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    PharmacistDTOFA pharmacist = new PharmacistDTOFA(
+                            rs.getInt("account_pharmacist_id"),
+                            rs.getString("username"),
+                            rs.getString("password"),
+                            rs.getString("email"),
+                            rs.getString("status"),
+                            rs.getString("img"),
+                            rs.getInt("pharmacist_id"),
+                            rs.getString("full_name"),
+                            rs.getString("phone"),
+                            rs.getString("eduLevel")
+                    );
+                    result.add(pharmacist);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public boolean insertPharmacist(String username, String password, String email, String img, String status,
+                                    String fullName, String phone, String eduLevel) {
+        String insertAccountSql = """
+        INSERT INTO AccountPharmacist (username, password, email, img, status)
+        VALUES (?, ?, ?, ?, ?)
+    """;
+
+        String insertPharmacistSql = """
+        INSERT INTO Pharmacist (account_pharmacist_id, full_name, phone, eduLevel)
+        VALUES (?, ?, ?, ?)
+    """;
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement psAccount = conn.prepareStatement(insertAccountSql, Statement.RETURN_GENERATED_KEYS)) {
+
+            conn.setAutoCommit(false); // Bắt đầu transaction
+
+            // B1. Insert vào AccountPharmacist
+            psAccount.setString(1, username);
+            psAccount.setString(2, password);
+            psAccount.setString(3, email);
+            psAccount.setString(4, img);
+            psAccount.setString(5, status);
+
+            int affectedRows = psAccount.executeUpdate();
+            if (affectedRows == 0) {
+                conn.rollback();
+                return false;
+            }
+
+            int accountPharmacistId;
+            try (ResultSet rs = psAccount.getGeneratedKeys()) {
+                if (rs.next()) {
+                    accountPharmacistId = rs.getInt(1);
+                } else {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            // B2. Insert vào Pharmacist
+            try (PreparedStatement psPharmacist = conn.prepareStatement(insertPharmacistSql)) {
+                psPharmacist.setInt(1, accountPharmacistId);
+                psPharmacist.setString(2, fullName);
+                psPharmacist.setString(3, phone);
+                psPharmacist.setString(4, eduLevel);
+
+                if (psPharmacist.executeUpdate() == 0) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            conn.commit(); // Thành công
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     public boolean updatePharmacist(int pharmacistId, int accountPharmacistId, String username, String email, String imagePath,
                                     String status, String fullName, String phone, String eduLevel) {
         String updateAccountSql = """
@@ -1132,20 +1292,55 @@ public class AdminSystemDAO {
 
     public boolean updateAccountPharmacistStatus(int accountPharmacistId, String newStatus) {
         String sql = """
-                    UPDATE AccountPharmacist
-                    SET status = ?
-                    WHERE account_pharmacist_id = ?
-                """;
+                UPDATE AccountPharmacist
+                SET status = ?
+                WHERE account_pharmacist_id = ?
+            """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, newStatus);
             ps.setInt(2, accountPharmacistId);
+
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return false;
     }
+
+    public AccountPharmacist getAccountPharmacistById(int id) {
+        String sql = """
+            SELECT account_pharmacist_id, username, password, email, img, status
+            FROM AccountPharmacist
+            WHERE account_pharmacist_id = ?
+        """;
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new AccountPharmacist(
+                            rs.getInt("account_pharmacist_id"),
+                            rs.getString("username"),
+                            rs.getString("password"),
+                            rs.getString("email"),
+                            rs.getString("img"),
+                            rs.getString("status")
+                    );
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }
 
