@@ -225,15 +225,17 @@ public class InvoiceCreationServlet extends HttpServlet {
             int prescriptionId = prescriptionDAO.createPrescription(medicineRecordId, doctorId);
             
             // Create prescription invoice link
-            prescriptionDAO.createPrescriptionInvoice(invoiceId, prescriptionId);
+            boolean prescriptionInvoiceCreated = prescriptionDAO.createPrescriptionInvoice(invoiceId, prescriptionId);
+            
+            if (!prescriptionInvoiceCreated) {
+                throw new Exception("Failed to create prescription invoice");
+            }
             
             // Add medicines to prescription
-            for (Map<String, Object> med : medications) {
-                int medicineId = ((Number) med.get("medicine_id")).intValue();
-                int quantity = ((Number) med.get("quantity")).intValue();
-                String dosage = (String) med.get("dosage");
-                
-                //medicineDAO.addMedicineToPrescription(prescriptionId, medicineId, quantity, dosage);
+            boolean medicinesAdded = prescriptionDAO.addMedicinesForPrescription(prescriptionId, medications);
+            
+            if (!medicinesAdded) {
+                throw new Exception("Failed to add medicines to prescription");
             }
             
             Map<String, Object> result = new HashMap<>();

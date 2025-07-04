@@ -3,7 +3,7 @@
     let selectedSymptoms = [];
 
     async function loadWaitlist() {
-        const loadingSpinner = document.getElementById("loadingSpinner"); // fix sai ID
+        const loadingSpinner = document.getElementById("loadingSpinner");
         const tableContainer = document.getElementById("tableContainer");
         const errorMessage = document.getElementById("errorMessage");
 
@@ -98,7 +98,6 @@
         const visitType = waitlist.visittype?.toLowerCase();
         const waitlistId = waitlist.waitlist_id;
 
-        // Check if visit type is "result" first
         if (visitType === 'result') {
             return `
                 <button class="btn btn-sm btn-warning" disabled>
@@ -214,7 +213,6 @@
         }
     }
 
-    // Hàm tính tuổi
     function calculateAge(dob) {
         if (!dob) return null;
         const birthDate = new Date(dob);
@@ -229,7 +227,6 @@
         return age;
     }
 
-    // Hàm reset form khám bệnh
     function resetExaminationForm() {
         document.getElementById("examinationForm").reset();
         selectedSymptoms = [];
@@ -240,7 +237,7 @@
         });
     }
 
-    // Hàm quay lại danh sách bệnh nhân
+
     function backToPatientSelection() {
         document.getElementById("examinationCard").style.display = "none";
         document.getElementById("patientSelectionCard").style.display = "block";
@@ -261,7 +258,7 @@
         }
     }
 
-    // Hàm lưu thông tin khám bệnh
+
     async function saveExamination(formData) {
         try {
             console.log("patientId =", document.getElementById("patientId").textContent);
@@ -272,11 +269,11 @@
                 preliminaryDiagnosis: formData.get('preliminaryDiagnosis')
             };
 
-            console.log("DEBUG CHECK:");
-            console.log("patientId:", examinationData.patientId);
-            console.log("waitlistId:", examinationData.waitlistId);
-            console.log("symptomsDescription:", examinationData.symptomsDescription);
-            console.log("preliminaryDiagnosis:", examinationData.preliminaryDiagnosis);
+            // console.log("DEBUG CHECK:");
+            // console.log("patientId:", examinationData.patientId);
+            // console.log("waitlistId:", examinationData.waitlistId);
+            // console.log("symptomsDescription:", examinationData.symptomsDescription);
+            // console.log("preliminaryDiagnosis:", examinationData.preliminaryDiagnosis);
 
             const response = await fetch('/api/doctor/examination', {
                 method: 'POST',
@@ -360,12 +357,10 @@
         }, 5000);
     }
 
-    // Event Listeners
+
     document.addEventListener('DOMContentLoaded', function() {
-        // Load appointments khi trang được load
         loadWaitlist();
 
-        // Event listener cho việc chọn bệnh nhân
         document.getElementById("waitListTableBody").addEventListener('click', function(e) {
             const selectBtn = e.target.closest('.select-patient-btn');
             if (selectBtn) {
@@ -374,25 +369,23 @@
             }
         });
 
-        // Event listener cho symptom tags
         document.getElementById("symptomsContainer").addEventListener('click', function(e) {
             if (e.target.classList.contains('symptom-tag')) {
                 handleSymptomTagClick(e.target);
             }
         });
 
-        // Event listener cho nút back
         document.getElementById("backToSelection").addEventListener('click', function() {
             backToPatientSelection();
         });
 
-        // Event listener cho form submission
+
         document.getElementById("examinationForm").addEventListener('submit', function(e) {
             e.preventDefault();
 
             const formData = new FormData(this);
 
-            // Validation
+
             if (!formData.get('symptomsDescription').trim()) {
                 showAlert('Please describe the symptoms', 'danger');
                 return;
@@ -403,11 +396,11 @@
                 return;
             }
 
-            // Save examination
+
             saveExamination(formData);
         });
 
-        // Event listener cho việc refresh appointments
+
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 'r') {
                 e.preventDefault();
@@ -416,7 +409,7 @@
         });
     });
 
-    // Hàm utility để validate form
+
     function validateExaminationForm(formData) {
         const errors = [];
 
