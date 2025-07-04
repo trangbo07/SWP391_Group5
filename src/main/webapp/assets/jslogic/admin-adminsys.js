@@ -99,7 +99,12 @@ function paginateAdmins() {
             <td>${a.status}</td>
             <td>${a.phone}</td>
             <td>${a.department}</td>
-            <td>${a.role}</td>
+            <td>
+              ${a.role === 'AdminSys' ? 'Admin System' :
+                    a.role === 'AdminBusiness' ? 'Admin Business' :
+                        a.role}
+            </td>
+
             <td><img src="${a.img}" style="width: 40px; height: 40px; object-fit: cover;"></td>
             <td>
                 <button class="btn btn-sm btn-info me-1"
@@ -163,9 +168,19 @@ function loadSelectFilter(field, selectId) {
         .then(data => {
             const select = document.getElementById(selectId);
             if (!select) return;
+
             select.innerHTML = `<option value="">All ${capitalize(field)}</option>`;
+
             (data?.values || []).forEach(val => {
-                select.innerHTML += `<option value="${val}">${val}</option>`;
+                let displayVal = val;
+
+                if (field === "role") {
+                    displayVal = val === "AdminSys" ? "Admin System" :
+                        val === "AdminBusiness" ? "Admin Business" :
+                            val; // fallback
+                }
+
+                select.innerHTML += `<option value="${val}">${displayVal}</option>`;
             });
         })
         .catch(err => console.error(`Error loading ${field}:`, err));
@@ -349,10 +364,21 @@ async function loadSelectForForm(field, selectId, inputId = null) {
             select.innerHTML = '';
             const capitalized = field.charAt(0).toUpperCase() + field.slice(1);
             select.innerHTML += `<option value="" disabled selected>Please select ${capitalized}</option>`;
+
             (data?.values || []).forEach(val => {
-                select.innerHTML += `<option value="${val}">${val}</option>`;
+                let displayVal = val;
+
+                if (field === "role") {
+                    displayVal = val === "AdminSys" ? "Admin System" :
+                        val === "AdminBusiness" ? "Admin Business" :
+                            val;
+                }
+
+                select.innerHTML += `<option value="${val}">${displayVal}</option>`;
             });
+
             select.innerHTML += `<option value="Other">Other</option>`;
+
             if (inputId) handleCustomInput(selectId, inputId);
         }
     } catch (error) {
@@ -360,7 +386,7 @@ async function loadSelectForForm(field, selectId, inputId = null) {
     }
 }
 
-function handleCustomInput(selectId, inputId)   {
+function handleCustomInput(selectId, inputId) {
     const select = document.getElementById(selectId);
     const input = document.getElementById(inputId);
 
@@ -478,7 +504,6 @@ function validateAdminForm() {
 
     return errors;
 }
-
 
 //===============================================================================================================
 
