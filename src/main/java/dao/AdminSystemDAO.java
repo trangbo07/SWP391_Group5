@@ -958,12 +958,12 @@ public class AdminSystemDAO {
     }
 
     public boolean updateAdmin(int adminId, int accountStaffId,
-                               String username, String email, String imagePath, String status,
+                               String username, String email, String imagePath, String status, String role,
                                String fullName, String phone, String department) {
 
         String updateAccountSql = """
                     UPDATE AccountStaff
-                    SET username = ?, email = ?, img = ?, status = ?
+                    SET username = ?, email = ?, img = ?, status = ?, role = ?
                     WHERE account_staff_id = ?
                 """;
 
@@ -983,7 +983,8 @@ public class AdminSystemDAO {
             psAcc.setString(2, email);
             psAcc.setString(3, imagePath);
             psAcc.setString(4, status);
-            psAcc.setInt(5, accountStaffId);
+            psAcc.setString(5, role);
+            psAcc.setInt(6, accountStaffId);
             if (psAcc.executeUpdate() == 0) {
                 conn.rollback();
                 return false;

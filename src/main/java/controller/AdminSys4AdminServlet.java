@@ -207,7 +207,7 @@ public class AdminSys4AdminServlet extends HttpServlet {
 
                 boolean success = dao.updateAdmin(
                         adminIdInt, accountStaffIdInt,
-                        username, email, imagePath, status,
+                        username, email, imagePath, status, role,
                         fullName, phone, department
                 );
 
