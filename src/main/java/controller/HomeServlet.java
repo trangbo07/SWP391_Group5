@@ -24,7 +24,7 @@ public class  HomeServlet extends HttpServlet {
 
         if (user instanceof AccountStaff) {
             AccountStaff staff = (AccountStaff) user;
-            String role = staff.getRole().toLowerCase(); // ví dụ: "doctor", "adminsys"
+            String role = staff.getRole().toLowerCase();
 
             switch (role) {
                 case "doctor":
@@ -43,7 +43,7 @@ public class  HomeServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/view/home-adminbusiness.html");
                     break;
                 default:
-                    response.sendRedirect(request.getContextPath() + "/view/home-staff.html"); // fallback
+                    response.sendRedirect(request.getContextPath() + "/view/home-staff.html");
                     break;
             }
         } else if (user instanceof AccountPharmacist) {
@@ -51,7 +51,6 @@ public class  HomeServlet extends HttpServlet {
         } else if (user instanceof AccountPatient) {
             response.sendRedirect(request.getContextPath() + "/view/home-patient.html");
         } else {
-            // Nếu không rõ loại user → logout hoặc về login
             response.sendRedirect(request.getContextPath() + "/view/login.html");
         }
     }
