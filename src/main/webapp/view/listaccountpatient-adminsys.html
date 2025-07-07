@@ -283,8 +283,8 @@
                         <hr class="hr-horizontal">
                     </li>
                 </ul>
-                <!-- Sidebar Menu End -->
-            </div>
+
+                <!-- Sidebar Menu End -->        </div>
         </div>
         <div class="scrollbar-track scrollbar-track-x" style="display: none;">
             <div class="scrollbar-thumb scrollbar-thumb-x"
@@ -1073,21 +1073,22 @@
     <div class="content-inner container-fluid pb-0" id="page_layout">
         <div id="alertContainer"></div>
 
-        <!-- Admin Selection Section -->
-        <div class="card" id="adminSelectionCard">
+        <!-- AccountPatient - Manager-->
+        <!-- AccountPatient Selection Section -->
+        <div class="card" id="accountPatientSelectionCard">
             <div class="card-header">
                 <h4 class="card-title mb-0">
-                    <i class="fas fa-user-shield me-2"></i>
-                    Admin List
+                    <i class="fas fa-user me-2"></i>
+                    Account Patient List
                 </h4>
             </div>
             <div class="card-body">
 
+                <!-- Top Controls -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <button class="btn btn-primary" id="btnAddAdmin">
-                        <i class="fas fa-plus me-1"></i> Add Admin
+                    <button class="btn btn-primary" id="btnAddAccountPatient">
+                        <i class="fas fa-plus me-1"></i> Add Account Patient
                     </button>
-
                     <div class="d-flex gap-2">
                         <button class="btn btn-outline-secondary" id="btnReverseList">
                             <i class="fas fa-sort-amount-down-alt me-1"></i> Reverse List
@@ -1111,56 +1112,42 @@
                 </div>
 
                 <div class="row mb-3">
-                    <div class="col-md-3">
-                        <select class="form-select" id="filterStatus">
+                    <div class="col-md-12 d-flex">
+                        <select class="form-select me-2" id="filterStatus" style="max-width: 300px;">
                             <option value="">All Status</option>
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
                         </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" id="filterRole">
-                            <option value="">All Roles</option>
-                            <option value="AdminBusiness">AdminBusiness</option>
-                            <option value="AdminSystem">AdminSystem</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" id="filterDepartment">
-                            <option value="">All Departments</option>
-                            <!-- Dynamic options loaded by JS -->
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="text" id="searchInput" class="form-control" placeholder="Search Full Name...">
+
+                        <input type="text" id="searchInput" class="form-control ms-auto"
+                               placeholder="Search Username..." style="max-width: 300px;">
                     </div>
                 </div>
 
+                <!-- Table -->
                 <div class="table-responsive" id="tableContainer" style="display: block;">
                     <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Full Name</th>
                             <th>Username</th>
                             <th>Email</th>
                             <th>Status</th>
-                            <th>Phone</th>
-                            <th>Department</th>
-                            <th>Role</th>
                             <th>Image</th>
                             <th>Action</th>
                         </tr>
                         </thead>
-                        <tbody id="adminTableBody"></tbody>
+                        <tbody id="accountPatientTableBody"></tbody>
                     </table>
                 </div>
 
+                <!-- Error Message -->
                 <div id="errorMessage" class="alert alert-danger d-none" role="alert">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    Failed to load admin data.
+                    Failed to load account data.
                 </div>
 
+                <!-- Pagination Info -->
                 <div class="row align-items-center mt-4">
                     <div class="col-sm-6">
                         <span id="paginationInfo">Showing 0 to 0 of 0 entries</span>
@@ -1189,28 +1176,21 @@
             </div>
         </div>
 
-        <!-- Admin Form -->
-        <div class="card" id="adminFormCard" style="display: none;">
+        <!-- AccountPatient Form -->
+        <div class="card" id="accountPatientFormCard" style="display: none;">
             <div class="card-header">
-                <h4 class="card-title mb-0" id="adminFormTitle">
-                    <i class="fas fa-user-shield me-2"></i>
-                    Admin Form
+                <h4 class="card-title mb-0" id="accountPatientFormTitle">
+                    <i class="fas fa-user me-2"></i>
+                    Account Form
                 </h4>
             </div>
             <div class="card-body">
-                <form id="adminForm" enctype="multipart/form-data" method="post">
+                <form id="accountPatientForm" enctype="multipart/form-data" method="post">
                     <div id="formMessage" class="mb-3" style="display: none;"></div>
-
-                    <!-- Hidden IDs -->
-                    <input type="hidden" id="accountStaffId" name="accountStaffId">
-                    <input type="hidden" id="adminId" name="adminId">
+                    <input type="hidden" id="accountPatientId" name="accountPatientId">
 
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="fullName" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="fullName" name="fullName">
-                            </div>
                             <div class="form-group mb-3">
                                 <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="username" name="username">
@@ -1219,32 +1199,8 @@
                                 <label for="email" class="form-label">Email</label>
                                 <input type="text" class="form-control" id="email" name="email">
                             </div>
-                            <div class="form-group mb-3">
-                                <label for="phone" class="form-label">Phone</label>
-                                <input type="tel" class="form-control" id="phone" name="phone">
-                            </div>
                         </div>
-
                         <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="role" class="form-label">Role</label>
-                                <select class="form-select" id="role" name="role" required
-                                        onchange="onRoleChangeForm()">
-                                    <option value="">-- Select Role --</option>
-                                    <option value="AdminBusiness">Admin Business</option>
-                                    <option value="AdminSys">Admin System</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <label for="department" class="form-label">Department</label>
-                                <select class="form-select" id="department" name="department" required>
-                                    <option value="">-- Select Department --</option>
-                                </select>
-                                <input type="text" class="form-control mt-2 d-none" id="customDepartment"
-                                       placeholder="Enter custom department...">
-                            </div>
-
                             <div class="form-group mb-3">
                                 <label for="status" class="form-label">Status</label>
                                 <select class="form-select" id="status" name="status">
@@ -1252,7 +1208,6 @@
                                     <option value="Disable">Disable</option>
                                 </select>
                             </div>
-
                             <div class="form-group mb-3">
                                 <label for="img" class="form-label">Upload Photo</label>
                                 <input type="file" class="form-control" id="img" name="img" accept="image/*">
@@ -1260,39 +1215,33 @@
                         </div>
                     </div>
 
-                    <!-- Preview Image -->
                     <div>
-                        <img id="previewImgAdmin" class="img-thumbnail mt-2" style="max-width: 120px; display: none;">
+                        <img id="previewImg" class="img-thumbnail mb-2"
+                             style="width: 120px; height: 120px; object-fit: cover; display: none;">
                     </div>
 
                     <!-- Action Buttons -->
                     <div class="d-flex justify-content-end gap-3 mt-4">
-                        <button type="button" class="btn btn-secondary" id="cancelAdminForm">
+                        <button type="button" class="btn btn-secondary" id="cancelAccountPatientForm">
                             <i class="fas fa-times me-2"></i>Cancel
                         </button>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>Save Admin
+                            <i class="fas fa-save me-2"></i>Save Account
                         </button>
                     </div>
                 </form>
             </div>
         </div>
 
-
-        <!-- Admin Detail View -->
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="adminViewCanvas"
-             aria-labelledby="adminViewCanvasLabel">
+        <!-- View Offcanvas -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="accountPatientViewCanvas">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="adminViewCanvasLabel">
-                    <i class="fas fa-user-shield me-2"></i>Admin Detail
-                </h5>
+                <h5 class="offcanvas-title"><i class="fas fa-user me-2"></i>Account Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
             </div>
-
             <div class="offcanvas-body">
                 <ul class="list-group">
-                    <li class="list-group-item"><strong>Admin ID:</strong> <span id="viewAdminId"></span></li>
-                    <li class="list-group-item"><strong>Account Staff ID:</strong> <span id="viewAccountStaffId"></span>
+                    <li class="list-group-item"><strong>Account ID:</strong> <span id="viewAccountPatientId"></span>
                     </li>
                     <li class="list-group-item"><strong>Username:</strong> <span id="viewUsername"></span></li>
                     <li class="list-group-item">
@@ -1305,20 +1254,14 @@
                         </button>
                     </li>
                     <li class="list-group-item"><strong>Email:</strong> <span id="viewEmail"></span></li>
-                    <li class="list-group-item"><strong>Full Name:</strong> <span id="viewFullName"></span></li>
-                    <li class="list-group-item"><strong>Department:</strong> <span id="viewDepartment"></span></li>
-                    <li class="list-group-item"><strong>Phone:</strong> <span id="viewPhone"></span></li>
                     <li class="list-group-item"><strong>Status:</strong> <span id="viewStatus"></span></li>
-                    <li class="list-group-item"><strong>Role:</strong> <span id="viewRole"></span></li>
-                    <li class="list-group-item">
-                        <strong>Photo:</strong><br>
+                    <li class="list-group-item"><strong>Image:</strong><br>
                         <img id="viewImg" src="" class="img-thumbnail mt-2" style="max-width: 120px;">
                     </li>
                 </ul>
             </div>
-
             <div class="offcanvas-footer d-flex justify-content-between gap-2">
-                <button class="btn btn-primary w-50" id="btnResetPassword" onclick="resetAdminPassword()">
+                <button class="btn btn-primary w-50" id="btnResetPassword" onclick="resetAccountPatientPassword()">
                     <i class="fas fa-key me-2"></i>Reset Password
                 </button>
                 <button class="btn btn-secondary w-50" data-bs-dismiss="offcanvas">
@@ -2198,7 +2141,7 @@
 
 <!-- Icons -->
 <!--<script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>-->
-<script src="../assets/jslogic/admin-adminsys.js" defer></script>
+<script src="../assets/jslogic/accountpatient-adminsys.js" defer></script>
 <script src="../assets/jslogic/sidebar-active.js" defer></script>
 <script src="../assets/jslogic/logout.js" defer></script>
 </body>

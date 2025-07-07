@@ -357,7 +357,7 @@ function validateReceptionistForm() {
 
     const fullNameRegex = /^[A-Za-zÀ-ỹ]{2,}(?: [A-Za-zÀ-ỹ]{2,})+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\d{10,15}$/;
+    const phoneRegex = /^0\d{9}$/;
 
     const errors = [];
 
@@ -376,7 +376,7 @@ function validateReceptionistForm() {
     }
 
     if (!phoneRegex.test(phone)) {
-        errors.push("Phone must be 10–15 digits.");
+        errors.push("Phone must be exactly 10 digits and start with 0.");
     }
 
     return errors;
@@ -409,7 +409,7 @@ function toggleReceptionistStatus(account_staff_id, currentStatus) {
         .then(data => {
             if (data.success) {
                 alert(data.message);
-                fetchReceptionistsWithFilter(); // gọi lại hàm load danh sách lễ tân
+                fetchReceptionistsWithFilter();
             } else {
                 alert("Failed: " + data.message);
             }

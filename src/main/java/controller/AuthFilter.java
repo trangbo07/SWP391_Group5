@@ -21,7 +21,6 @@ public class AuthFilter implements Filter {
 
         String requestURI = req.getRequestURI();
 
-        // Danh sách các đường dẫn được phép truy cập mà không cần đăng nhập
         if (requestURI.equals("/api/login") ||
                 requestURI.equals("/api/register") ||
                 requestURI.equals("/api/logout") ||
@@ -46,9 +45,8 @@ public class AuthFilter implements Filter {
         boolean isLoggedIn = (session != null && session.getAttribute("user") != null);
 
         if (isLoggedIn) {
-            chain.doFilter(request, response); // Cho phép đi tiếp
+            chain.doFilter(request, response);
         } else {
-            // Nếu là API request, trả về JSON response
             if (requestURI.startsWith("/api/")) {
                 res.setContentType("application/json");
                 res.setCharacterEncoding("UTF-8");
@@ -57,7 +55,6 @@ public class AuthFilter implements Filter {
                 PrintWriter out = res.getWriter();
                 out.write("{\"error\":\"unauthorized\", \"message\": \"You are not logged in.\"}");
             } else {
-                // Nếu là request thông thường, redirect về home.html
                 res.sendRedirect(req.getContextPath() + "/view/home.html");
             }
         }
