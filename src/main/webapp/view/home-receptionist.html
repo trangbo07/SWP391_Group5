@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title data-setting="app_name" data-rightJoin=" Clinic And Patient Management Dashboard">KiviCare Receptionist Dashboard</title>
+  <title>Receptionist Dashboard - Clinic Management System</title>
   <meta name="description" content="KiviCare is a revolutionary Bootstrap Admin Dashboard Template and UI Components Library. The Admin Dashboard Template and UI Component features 8 modules.">
   <meta name="keywords" content="premium, admin, dashboard, template, bootstrap 5, clean ui, Kivicare, admin dashboard,responsive dashboard, optimized dashboard,">
   <meta name="author" content="Iqonic Design">
@@ -50,7 +50,46 @@
   <!-- Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">    </head>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+  
+  <!-- Custom styles for appointment form -->
+  <style>
+    .patient-search-container {
+      position: relative;
+    }
+    
+    #patient-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 1000;
+      display: none;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border: 1px solid #dee2e6;
+      border-radius: 0.375rem;
+      background-color: white;
+    }
+    
+    #patient-suggestions .dropdown-item {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #f8f9fa;
+    }
+    
+    #patient-suggestions .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    
+    #patient-suggestions .dropdown-item:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .appointment-form-card {
+      border-left: 4px solid #007bff;
+    }
+  </style>
+</head>
 <body class="  ">
 <!-- loader Start -->
 <div id="loading">
@@ -134,7 +173,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link " aria-current="page"
-             href="./appointment.html">
+             href="./appointment-receptionist.html">
             <i class="icon" data-bs-toggle="tooltip" title="Appointment" data-bs-placement="right">
               <svg width="20" class="icon-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd"
@@ -328,6 +367,81 @@
                     </div>
                   </div>
                 </div>
+                                 <!-- Book Appointment Section -->
+                 <div class="row mt-4">
+                   <div class="col-md-12">
+                     <div class="card appointment-form-card">
+                       <div class="card-header">
+                         <h4 class="card-title">Book New Appointment</h4>
+                       </div>
+                      <div class="card-body">
+                        <form id="appointment-form">
+                          <div class="row">
+                                                         <div class="col-md-6">
+                               <div class="mb-3 patient-search-container">
+                                 <label for="patient-search" class="form-label">Search Patient</label>
+                                 <input type="text" class="form-control" id="patient-search" 
+                                        placeholder="Enter patient name or phone number">
+                                 <div id="patient-suggestions" class="dropdown-menu" style="width: 100%;"></div>
+                                 <input type="hidden" id="selected-patient-id">
+                               </div>
+                             </div>
+                            <div class="col-md-6">
+                              <div class="mb-3">
+                                <label for="doctor-select" class="form-label">Select Doctor</label>
+                                <select class="form-select" id="doctor-select" required>
+                                  <option value="">Choose a doctor...</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-4">
+                              <div class="mb-3">
+                                <label for="appointment-date" class="form-label">Appointment Date</label>
+                                <input type="date" class="form-control" id="appointment-date" required>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="mb-3">
+                                <label for="appointment-time" class="form-label">Appointment Time</label>
+                                <input type="time" class="form-control" id="appointment-time" required>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="mb-3">
+                                <label for="shift-select" class="form-label">Shift</label>
+                                <select class="form-select" id="shift-select" required>
+                                  <option value="">Choose shift...</option>
+                                  <option value="Morning">Morning (08:00 - 12:00)</option>
+                                  <option value="Afternoon">Afternoon (13:00 - 17:00)</option>
+                                  <option value="Evening">Evening (18:00 - 21:00)</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div class="mb-3">
+                                <label for="appointment-note" class="form-label">Note</label>
+                                <textarea class="form-control" id="appointment-note" rows="3" 
+                                          placeholder="Enter any additional notes..."></textarea>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <button type="submit" class="btn btn-primary me-2">Book Appointment</button>
+                              <button type="reset" class="btn btn-secondary">Clear Form</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Upcoming Appointments Section -->
                 <div class="row mt-4">
                   <div class="col-md-12">
                     <div class="card">
@@ -461,8 +575,116 @@
   </svg>
 </a>        <!-- Live Customizer end -->
 <!-- Wrapper End-->
+<!-- đẻ tạm đây ae nhé  -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Load bác sĩ vào dropdown
+    fetch('/api/receptionist/appointment?action=doctors', { credentials: 'include' })
+        .then(res => res.json())
+        .then(data => {
+            const doctorSelect = document.getElementById('doctor-select');
+            data.forEach(doctor => {
+                const option = document.createElement('option');
+                option.value = doctor.doctorId;
+                option.textContent = doctor.fullName + " - " + doctor.specialization;
+                doctorSelect.appendChild(option);
+            });
+        });
 
+    // Tìm kiếm bệnh nhân
+    const patientInput = document.getElementById('patient-search');
+    const patientSuggestions = document.getElementById('patient-suggestions');
+    const selectedPatientId = document.getElementById('selected-patient-id');
 
+    let debounceTimeout;
+    patientInput.addEventListener('input', () => {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            const keyword = patientInput.value.trim();
+            if (!keyword) {
+                patientSuggestions.style.display = 'none';
+                return;
+            }
+
+            fetch(`/api/receptionist/appointment?action=patients&keyword=${encodeURIComponent(keyword)}`, {
+                credentials: 'include'
+            })
+                .then(res => res.json())
+                .then(data => {
+                    patientSuggestions.innerHTML = '';
+                    if (data.length === 0) {
+                        patientSuggestions.style.display = 'none';
+                        return;
+                    }
+                    data.forEach(patient => {
+                        const item = document.createElement('div');
+                        item.classList.add('dropdown-item');
+                        item.textContent = `${patient.full_name} (${patient.phone})`;
+                        item.addEventListener('click', () => {
+                            patientInput.value = `${patient.full_name}`;
+                            selectedPatientId.value = patient.id;
+                            patientSuggestions.style.display = 'none';
+                        });
+                        patientSuggestions.appendChild(item);
+                    });
+                    patientSuggestions.style.display = 'block';
+                });
+        }, 300);
+    });
+
+    // Gửi form đặt lịch , tôi để tạm dây ae nhéeeeeeeeeeeenhéeeeeeeeeeee
+    const appointmentForm = document.getElementById('appointment-form');
+    appointmentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const patientId = selectedPatientId.value;
+        const doctorId = document.getElementById('doctor-select').value;
+        const date = document.getElementById('appointment-date').value;
+        const time = document.getElementById('appointment-time').value;
+        const shift = document.getElementById('shift-select').value;
+        const note = document.getElementById('appointment-note').value;
+
+        if (!patientId || !doctorId || !date || !time || !shift) {
+            alert('Vui lòng điền đầy đủ thông tin.');
+            return;
+        }
+
+        const appointmentDateTime = `${date}T${time}`;
+
+        const payload = {
+            action: 'create',
+            patientId: parseInt(patientId),
+            doctorId: parseInt(doctorId),
+            appointmentDateTime,
+            shift,
+            note
+        };
+
+        try {
+            const response = await fetch('/api/receptionist/appointment', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Đặt lịch thành công!');
+                appointmentForm.reset();
+                selectedPatientId.value = '';
+            } else {
+                alert('Lỗi: ' + result.message || 'Không thể đặt lịch');
+            }
+        } catch (err) {
+            console.error('Lỗi khi gửi yêu cầu đặt lịch:', err);
+            alert('Lỗi hệ thống. Vui lòng thử lại sau.');
+        }
+    });
+});
+
+</script>
 <!-- Library Bundle Script -->
 <script src="../assets/assets/js/core/libs.min.js"></script>
 <!-- Plugin Scripts -->
@@ -513,5 +735,8 @@
 
 <!-- Icons -->
 <script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>
+
+<!-- Receptionist specific scripts -->
+<script src="../assets/jslogic/home-receptionist.js" defer></script>
 </body>
 </html>
