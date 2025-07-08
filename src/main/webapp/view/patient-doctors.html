@@ -14,43 +14,150 @@
         <meta name="google_font_api" content="AIzaSyBG58yNdAjc20_8jAvLNSVi9E4Xhwjau_k">
         <!-- Favicon -->
         <link rel="shortcut icon" href="../assets/assets/images/favicon.ico" />
-        
+
         <!-- Library / Plugin Css Build -->
         <link rel="stylesheet" href="../assets/assets/css/core/libs.min.css" />
-        
+
         <!-- flaticon css -->
         <link rel="stylesheet" href="../assets/assets/vendor/flaticon/css/flaticon.css" />
-        
+
         <!-- font-awesome css -->
         <link rel="stylesheet" href="../assets/assets/vendor/font-awesome/css/all.min.css" />
-        
+
         <!-- Flatpickr css -->
         <link rel="stylesheet" href="../assets/assets/vendor/flatpickr/dist/flatpickr.min.css" />
-        
+
         <link rel="stylesheet" href="../assets/assets/vendor/sheperd/dist/css/sheperd.css">
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
         <!-- Kivicare Design System Css -->
         <link rel="stylesheet" href="../assets/assets/css/kivicare.min.css?v=1.4.1" />
-        
+
         <!-- Custom Css -->
         <link rel="stylesheet" href="../assets/assets/css/custom.min.css?v=1.4.1" />
-        
+
         <!-- RTL Css -->
         <link rel="stylesheet" href="../assets/assets/css/rtl.min.css?v=1.4.1"/>
-        
+
         <!-- Customizer Css -->
         <link rel="stylesheet" href="../assets/assets/css/customizer.min.css?v=1.4.1"/>
-        
+
         <!-- Google Font -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">    </head>
+        <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+
+        <!-- Custom CSS for Doctor Search -->
+        <style>
+            .hover-shadow {
+                transition: all 0.3s ease;
+            }
+
+            .hover-shadow:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+            }
+
+            .transition-all {
+                transition: all 0.3s ease;
+            }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+            }
+
+            .btn-outline-primary:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+            }
+
+            .card {
+                border-radius: 15px;
+                overflow: hidden;
+            }
+
+            .avatar {
+                transition: transform 0.3s ease;
+            }
+
+            .avatar:hover {
+                transform: scale(1.05);
+            }
+
+            .badge {
+                font-size: 0.85rem;
+            }
+
+            .search-container {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-radius: 15px;
+            }
+
+            .form-control-lg, .form-select-lg {
+                border-radius: 10px;
+                border: 2px solid #e9ecef;
+            }
+
+            .form-control-lg:focus, .form-select-lg:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+            }
+
+            .btn-lg {
+                border-radius: 10px;
+                font-weight: 500;
+            }
+
+            .text-muted {
+                color: #6c757d !important;
+            }
+
+            .spinner-border {
+                width: 3rem;
+                height: 3rem;
+            }
+
+            @media (max-width: 768px) {
+                .search-container .row {
+                    gap: 1rem;
+                }
+
+                .form-control-lg, .form-select-lg {
+                    font-size: 1rem;
+                }
+            }
+
+            /* Highlight styles */
+            mark.bg-warning {
+                background-color: #fff3cd !important;
+                color: #856404;
+                padding: 2px 4px;
+                border-radius: 3px;
+                font-weight: bold;
+            }
+
+            /* Search results animation */
+            .card {
+                animation: fadeInUp 0.3s ease-out;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        </style>    </head>
     <body class=" full-screen ">
         <!-- loader Start -->
         <div id="loading">
@@ -66,7 +173,7 @@
                     <nav class="nav navbar navbar-expand-xl navbar-light iq-navbar patient-header">
                        <div class="container-fluid navbar-inner">
                           <a href="./index.html" class="navbar-brand ms-0 me-5">
-                             
+
                              <!--Logo start-->
                              <div class="logo-main">
                                  <img class="logo-normal img-fluid" src="../assets/assets/images/logo.png" height="30" alt="logo">
@@ -673,14 +780,67 @@
     <h1 class="mb-3">Hello! Amine Steward</h1>
     <span class="mx-0 text-capitalize">Have a nice day. don't forget to take care of your self.</span>
 </div>
-<div class="row mb-3">
-    <div class="col-12 col-md-4">
-        <select id="departmentFilter" class="form-select">
-            <option value="">Tất cả chuyên khoa</option>
-            <!-- Các option chuyên khoa sẽ được render bằng JS -->
-        </select>
+
+<!-- Enhanced Search and Filter Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-0 search-container">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-8 col-sm-12 mb-3 mb-lg-0">
+                        <div class="position-relative">
+                            <input type="text" id="searchInput" class="form-control form-control-lg ps-5"
+                                   placeholder="Nhập tên bác sĩ (VD: nguyen, tran, le...) hoặc chuyên khoa"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="Nhấn Ctrl+K để tìm kiếm nhanh, Esc để xóa. Tìm kiếm không phân biệt dấu tiếng Việt"
+                                   oninput="if(window.filterDoctors) window.filterDoctors()"
+                                   onchange="if(window.filterDoctors) window.filterDoctors()">
+                            <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-3 mb-lg-0">
+                        <select id="departmentFilter" class="form-select form-select-lg"
+                                onchange="if(window.filterDoctors) window.filterDoctors()">
+                            <option value="">Tất cả chuyên khoa</option>
+                            <!-- Các option chuyên khoa sẽ được render bằng JS -->
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-12 col-sm-6">
+                        <button id="clearFilters" class="btn btn-outline-secondary btn-lg w-100"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title="Nhấn Ctrl+L để xóa tất cả bộ lọc"
+                                onclick="if(window.clearAllFilters) window.clearAllFilters()">
+                            <i class="fas fa-times me-2"></i>Xóa bộ lọc
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Results Summary -->
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <span id="resultsCount" class="text-muted">Đang tải...</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small">Sắp xếp:</span>
+                <select id="sortSelect" class="form-select form-select-sm" style="width: auto;"
+                        onchange="if(window.sortDoctors) { window.sortDoctors(); if(window.renderDoctors) window.renderDoctors(window.filteredDoctors || []); }">
+                    <option value="name">Tên A-Z</option>
+                    <option value="name-desc">Tên Z-A</option>
+                    <option value="department">Chuyên khoa</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row mt-5 mb-5" id="doctorList">
     <!-- Danh sách bác sĩ sẽ được render ở đây -->
 </div>
@@ -833,13 +993,13 @@
                                         </div>
                                     </div>
                                 </div>
-        
+
                                 <!-- Theme end here -->
-        
+
                                 <hr class="hr-horizontal">
-        
+
                                 <!-- Color customizer start here -->
-        
+
                                 <div>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <h6 class="mt-4 mb-3">Color Customizer</h6>
@@ -896,7 +1056,7 @@
                                             <label for="custom-info-color">Info</label>
                                             <input name="theme_color" data-extra="info" type="color"
                                                 id="custom-info-color" value="#08B1BA" data-setting="color">
-                                        </div>                                
+                                        </div>
                                     </div>
                                     <div class="grid-cols-5 mb-4 d-grid gap-3">
                                         <div data-setting="radio">
@@ -966,11 +1126,11 @@
                                         </div>
                                     </div>
                                 </div>
-        
+
                                 <!-- Color customizer end here -->
-        
+
                                 <!-- Active Menu Style end here -->
-        
+
                                 <hr class="hr-horizontal">
                                 <!-- Navbar style start here -->
                                 <div>
@@ -1023,7 +1183,7 @@
                                     </div>
                                 </div>
                                 <!-- Navbar style end here -->
-        
+
                                 <hr class="hr-horizontal">
                                 <!-- Card style start here -->
                                 <div class="mb-4">
@@ -1059,10 +1219,10 @@
                                     </div>
                                 </div>
                                 <!-- Card style end here -->
-        
-        
+
+
                                 <hr class="hr-horizontal">
-        
+
                                 <!-- Page Animation start here -->
                                 <div class="mt-4 mb-3">
                                     <h6 class="d-inline-block mb-0 me-2">Footer </h6>
@@ -1135,7 +1295,7 @@
                                             </select>
                                         </div>
                                     </div>
-        
+
                                     <div>
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <div class="label">
@@ -1150,7 +1310,7 @@
                                         </div>
                                     </div>
                                 </div>
-        
+
                                 <!-- Page container start here -->
                                 <div>
                                     <h6 class="d-inline-block mb-3 me-2">Page Style </h6>
@@ -1176,9 +1336,9 @@
                                     </div>
                                 </div>
                                 <!-- Page container start here -->
-        
+
                                 <!-- Style appearance start here -->
-        
+
                                 <div>
                                     <h6 class="d-inline-block mb-3 me-2">Style Appearance </h6>
                                 </div>
@@ -1200,9 +1360,9 @@
                                         <label class="btn btn-border d-block" for="theme-style-appearance-sharp">Sharp</label>
                                     </div>
                                 </div>
-        
+
                                 <!-- Style appearance end here -->
-        
+
                                 <!-- Page Animation start here -->
                                 <div>
                                     <h6 class="d-inline-block mb-3 me-2">Page Transition </h6>
@@ -1220,7 +1380,7 @@
                                     </div>
                                 </div>
                                 <!-- Page Animation start here -->
-        
+
                                 <div>
                                     <h6 class="mb-3 d-inline-block">Storage</h6>
                                     <span data-bs-toggle="tooltip" data-bs-placement="right"
@@ -1256,7 +1416,7 @@
             </div>
         </div>
         <!-- Settings sidebar end here -->
-        
+
         <a class="btn btn-fixed-end btn-warning btn-icon btn-setting" id="settingbutton" data-bs-toggle="offcanvas"
             data-bs-target="#live-customizer" role="button" aria-controls="live-customizer">
             <svg class="icon-24 animated-rotate" width="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1273,7 +1433,7 @@
             <div class="modal fade setting-modal" id="setting-modal">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content rounded-0 p-sm-5 p-4">
-            
+
                         <!-- Modal Header -->
                         <div class="modal-header p-0 pb-3 mb-3 border-bottom">
                             <h3 class="modal-title">Settings</h3>
@@ -1298,7 +1458,7 @@
                                 </svg>
                             </a>
                         </div>
-            
+
                         <!-- Modal body -->
                         <div class="modal-body p-0">
                             <!-- Nav tabs -->
@@ -1353,7 +1513,7 @@
                                     </a>
                                 </li>
                             </ul>
-            
+
                             <!-- Tab panes -->
                             <div class="tab-content mt-4">
                                 <div class="tab-pane fade show active" id="setting-content-1">
@@ -1371,7 +1531,7 @@
                                                     <p class="m-0">Upload A New Image.</p>
                                                 </div>
                                             </div>
-            
+
                                             <button type="button" class="btn btn-primary">
                                                 <span class="btn-inner">
                                                     <span class="text d-inline-block align-middle">Save Changes</span>
@@ -1417,7 +1577,7 @@
                                                 <h4 class="mb-2">Password</h4>
                                                 <p class="m-0">Update Or Change Your Current Password. </p>
                                             </div>
-            
+
                                             <button type="button" class="btn btn-primary">
                                                 <span class="btn-inner">
                                                     <span class="text d-inline-block align-middle">Change Password</span>
@@ -1515,29 +1675,29 @@
         <!-- Tour plugin Start -->
         <script src="../assets/assets/vendor/sheperd/dist/js/sheperd.min.js"></script>
         <script src="../assets/assets/js/plugins/tour.js" defer></script>
-        
+
         <!-- Flatpickr Script -->
         <script src="../assets/assets/vendor/flatpickr/dist/flatpickr.min.js"></script>
         <script src="../assets/assets/js/plugins/flatpickr.js" defer></script>
-        
-        
-        
+
+
+
         <!-- Slider-tab Script -->
         <script src="../assets/assets/js/plugins/slider-tabs.js"></script>
-        
-        
+
+
         <!-- fslightbox Script -->
         <script src="../assets/assets/js/plugins/fslightbox.js" defer></script>
-        
-        
-        
-        
+
+
+
+
           <!-- Select2 Script -->
           <script src="../assets/assets/js/plugins/select2.js" defer></script>
-        
-        
-        
-        
+
+
+
+
         <!-- Lodash Utility -->
         <script src="../assets/assets/vendor/lodash/lodash.min.js"></script>
         <!-- Utilities Functions -->
@@ -1557,6 +1717,8 @@
         <script src="../assets/assets/js/kivicare-advance.js?v=1.4.1" defer></script>
         <script src="../assets/assets/js/sidebar.js?v=1.4.1" defer></script>
         <script src="../assets/jslogic/listdoctors.js" defer></script>
+        <!-- Test script for debugging -->
+        <script src="../assets/jslogic/test-events.js" defer></script>
         <!-- Icons -->
         <script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>
     </body>
