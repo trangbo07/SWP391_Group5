@@ -19,7 +19,7 @@ public class DoctorListServlet extends HttpServlet {
         String path = req.getServletPath();
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        
+
         if ("/api/doctors/departments".equals(path)) {
             List<String> departments = doctorDAO.getAllDepartments();
             mapper.writeValue(resp.getWriter(), departments);

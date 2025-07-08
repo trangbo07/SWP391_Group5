@@ -17,7 +17,7 @@ public class DoctorDAO {
         String sql = """
         SELECT d.doctor_id, d.full_name, d.department, d.eduLevel, d.phone, a.email, a.role 
         FROM Doctor d
-        JOIN AccountStaff a on d.doctor_id = a.account_staff_id
+        JOIN AccountStaff a on d.account_staff_id = a.account_staff_id
         WHERE a.Status = 'Enable' 
         """;
 
@@ -104,7 +104,7 @@ public class DoctorDAO {
         String sql = """
         SELECT d.doctor_id, d.full_name, d.department, d.eduLevel, d.phone, a.email, a.role 
         FROM Doctor d
-        JOIN AccountStaff a on d.doctor_id = a.account_staff_id
+        JOIN AccountStaff a on d.account_staff_id = a.account_staff_id
         WHERE d.doctor_id = ? AND a.Status = 'Enable'
         """;
 
