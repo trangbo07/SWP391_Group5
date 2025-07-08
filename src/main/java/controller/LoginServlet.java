@@ -62,6 +62,7 @@ public class LoginServlet extends HttpServlet {
                         break;
                     case "AdminBusiness":
                         redirectUrl = "home-adminbusiness.html";
+                        session.setAttribute("adminBusinessId", staff.getAccountStaffId());
                         break;
                 }
             } else if (account instanceof AccountPharmacist) {

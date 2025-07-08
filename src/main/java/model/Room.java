@@ -1,13 +1,11 @@
 package model;
 
-import lombok.*;
-
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class Room {
-    private int room_id;
-    private String room_name, department, status;
+    private int roomId;
+    private String roomName;
+
+    public int getRoomId() { return roomId; }
+    public void setRoomId(int roomId) { this.roomId = roomId; }
+    public String getRoomName() { return roomName; }
+    public void setRoomName(String roomName) { this.roomName = roomName; }
 }

@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     </td>
     <td>${r.clinicName}</td>
     <td>${r.reason}</td>
-    <td>${r.note || "-------"}</td>
     <td>
       <a href="diagnosis-patient.html?patientId=${patientId}" class="d-inline-block pe-2" title="Xem chuẩn đoán">
         <span class="text-info"><i class="bi bi-clipboard2-heart"></i></span>

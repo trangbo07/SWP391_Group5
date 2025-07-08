@@ -235,27 +235,27 @@ public class AccountStaffDAO {
     public List<Doctor> getAllDoctors() {
         List<Doctor> doctors = new ArrayList<>();
         String sql = "SELECT * FROM Doctor ORDER BY full_name";
-        
+
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            
+
             while (rs.next()) {
                 Doctor doctor = new Doctor(
-                    rs.getInt("doctor_id"),
-                    rs.getInt("account_staff_id"),
-                    rs.getString("full_name"),
-                    rs.getString("department"),
-                    rs.getString("phone"),
-                    rs.getString("eduLevel")
+                        rs.getInt("doctor_id"),
+                        rs.getInt("account_staff_id"),
+                        rs.getString("full_name"),
+                        rs.getString("department"),
+                        rs.getString("phone"),
+                        rs.getString("eduLevel")
                 );
                 doctors.add(doctor);
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return doctors;
     }
 
