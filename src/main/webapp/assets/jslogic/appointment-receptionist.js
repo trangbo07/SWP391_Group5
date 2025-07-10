@@ -164,22 +164,25 @@ function renderAppointments() {
                 </div>
             </td>
             <td>
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-sm btn-outline-primary" 
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-primary text-white select-patient-btn" 
                             onclick="viewAppointmentDetail(${appointment.appointment_id})" 
-                            title="View Details">
-                        <i class="fa fa-eye"></i>
+                            data-appointment-id="${appointment.appointment_id}" 
+                            data-action="view">
+                        <i class="fas fa-eye me-1"></i>View
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-warning" 
+                    <button type="button" class="btn btn-warning text-white select-patient-btn" 
                             onclick="editAppointment(${appointment.appointment_id})" 
-                            title="Edit">
-                        <i class="fa fa-edit"></i>
+                            data-appointment-id="${appointment.appointment_id}" 
+                            data-action="edit">
+                        <i class="fas fa-edit me-1"></i>Edit
                     </button>
                     ${appointment.status === 'Pending' ? `
-                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                        <button type="button" class="btn btn-secondary text-white select-patient-btn" 
                                 onclick="cancelAppointment(${appointment.appointment_id})" 
-                                title="Cancel">
-                            <i class="fa fa-times"></i>
+                                data-appointment-id="${appointment.appointment_id}" 
+                                data-action="cancel">
+                            <i class="fas fa-times-circle me-1"></i>Cancel
                         </button>
                     ` : ''}
                 </div>
