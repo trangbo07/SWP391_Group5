@@ -6,9 +6,11 @@ import dao.AnnouncementDAO;
 import dto.AnnouncementDTO;
 import dto.JsonResponse;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.AccountStaff;
+import model.AdminBusiness;
 import model.AdminSystem;
 import util.NormalizeUtil;
 
@@ -16,6 +18,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,  // 1MB
+        maxFileSize = 5 * 1024 * 1024,    // 5MB
+        maxRequestSize = 10 * 1024 * 1024 // 10MB
+)
 @WebServlet("/api/admin/announcements")
 public class Announcement4AdminServlet extends HttpServlet {
     private final AnnouncementDAO dao = new AnnouncementDAO();
@@ -42,21 +49,10 @@ public class Announcement4AdminServlet extends HttpServlet {
                     int adminId = 0;
 
                     if ("me".equalsIgnoreCase(status)) {
-                        if (session != null && session.getAttribute("account_staff_id") != null) {
-                            int accountStaffId = ((AccountStaff)session.getAttribute("user")).getAccountStaffId();
-                            System.out.println(accountStaffId);
-                            AccountStaffDAO daoStaff = new AccountStaffDAO();
-                            Object adminObj = daoStaff.getOStaffByStaffId(accountStaffId, "AdminSys");
-
-                            if (adminObj instanceof AdminSystem) {
-                                AdminSystem admin = (AdminSystem) adminObj;
-                                adminId = admin.getAdmin_id();
-                            }
-                        }
+                        adminId = getAdminIdFromSession(req.getSession(false));
                     } else {
                         adminId = 0;
                     }
-                    System.out.println(adminId);
 
                     keyword = NormalizeUtil.normalizeKeyword(keyword);
 
@@ -95,14 +91,8 @@ public class Announcement4AdminServlet extends HttpServlet {
                     String content = req.getParameter("content");
 
                     HttpSession session = req.getSession(false);
-                    Integer adminId = (session != null && session.getAttribute("userId") != null)
-                            ? (Integer) session.getAttribute("userId")
-                            : null;
-
-                    if (adminId == null) {
-                        out.print(gson.toJson(new JsonResponse(false, "Unauthorized")));
-                        return;
-                    }
+                    int adminId = 0;
+                    adminId = getAdminIdFromSession(req.getSession(false));
 
                     boolean success = dao.createAnnouncement(title, content, adminId);
                     res = new JsonResponse(success, success ? "Created successfully" : "Create failed");
@@ -110,7 +100,7 @@ public class Announcement4AdminServlet extends HttpServlet {
                 }
 
                 case "update" -> {
-                    int id = Integer.parseInt(req.getParameter("announcement_id"));
+                    int id = Integer.parseInt(req.getParameter("announcementId"));
                     String title = req.getParameter("title");
                     String content = req.getParameter("content");
 
@@ -137,4 +127,26 @@ public class Announcement4AdminServlet extends HttpServlet {
             out.print(gson.toJson(new JsonResponse(false, "Server error: " + e.getMessage())));
         }
     }
+
+    private int getAdminIdFromSession(HttpSession session) {
+        if (session == null) return 0;
+
+        Object user = session.getAttribute("user");
+        if (!(user instanceof AccountStaff staff)) return 0;
+
+        AccountStaffDAO daoStaff = new AccountStaffDAO();
+
+        Object adminObj = daoStaff.getOStaffByStaffId(staff.getAccountStaffId(), "AdminSystem");
+        if (adminObj instanceof AdminSystem adminSys) {
+            return adminSys.getAdmin_id();
+        }
+
+        adminObj = daoStaff.getOStaffByStaffId(staff.getAccountStaffId(), "AdminBusiness");
+        if (adminObj instanceof AdminBusiness adminBiz) {
+            return adminBiz.getAdmin_id();
+        }
+
+        return 0;
+    }
+
 }

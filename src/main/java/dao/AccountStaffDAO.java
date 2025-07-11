@@ -153,17 +153,23 @@ public class AccountStaffDAO {
             case "Doctor" -> "Doctor";
             case "Nurse" -> "Nurse";
             case "Receptionist" -> "Receptionist";
-            case "AdminSystem" -> "AdminSystem";
-            case "AdminBusiness" -> "AdminBusiness";
+            case "AdminSystem", "AdminBusiness" -> "Admin"; // gộp bảng Admin
             default -> null;
         };
 
         if (roleTable == null) return null;
 
         try {
-            String sql = "SELECT * FROM " + roleTable + " WHERE account_staff_id = ?";
+            String sql;
+            if (role.equals("AdminSystem") || role.equals("AdminBusiness")) {
+                sql = "SELECT * FROM Admin WHERE account_staff_id = ?";
+            } else {
+                sql = "SELECT * FROM " + roleTable + " WHERE account_staff_id = ?";
+            }
+
             PreparedStatement stmt = db.getConnection().prepareStatement(sql);
             stmt.setInt(1, account_staff_id);
+
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
