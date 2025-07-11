@@ -100,10 +100,14 @@ public class AnnouncementDAO {
                 params.add(adminId);
             }
 
-            // Nếu có từ khóa tìm kiếm
             if (keyword != null && !keyword.trim().isEmpty()) {
-                sql.append(" AND (a.title LIKE ? OR a.content LIKE ?)");
-                String kw = "%" + keyword.trim() + "%";
+                sql.append("""
+                AND (
+                    a.title COLLATE Latin1_General_CI_AI LIKE ? OR
+                    a.content COLLATE Latin1_General_CI_AI LIKE ?
+                )
+            """);
+                String kw = "%" + keyword.trim().replaceAll("\\s+", " ") + "%";
                 params.add(kw);
                 params.add(kw);
             }
