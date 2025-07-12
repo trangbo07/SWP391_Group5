@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import dao.DBContext;
 
 public class ReportDAO {
@@ -502,18 +503,24 @@ public class ReportDAO {
             
             // Get top revenue sources
             List<Map<String, Object>> topServices = getServiceUsageReport(startDate, endDate);
-            summary.put("top_revenue_services", topServices.stream().limit(5).toArray());
+            // Fix: Use collect to List instead of toArray() to avoid IndexOutOfBoundsException
+            List<Map<String, Object>> limitedTopServices = topServices.stream()
+                .limit(5)
+                .collect(Collectors.toList());
+            summary.put("top_revenue_services", limitedTopServices);
             
             // Get appointment statistics
             Map<String, Object> appointmentData = getPatientVisitReport(startDate, endDate);
             summary.putAll(appointmentData);
         } catch (Exception e) {
             System.err.println("Error in getFinancialSummary: " + e.getMessage());
+            e.printStackTrace(); // Add stack trace for better debugging
             // Return some default data
             summary.put("total_revenue", 50000000.0);
             summary.put("total_invoices", 100);
             summary.put("total_patients", 150);
             summary.put("completion_rate", 85.0);
+            summary.put("top_revenue_services", new ArrayList<>());
         }
         
         return summary;
