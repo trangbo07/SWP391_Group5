@@ -10,5 +10,9 @@
         <servlet-name>VnPayServlet</servlet-name>
         <servlet-class>controller.VnPayServlet</servlet-class>
     </servlet>
-    
+    <session-config>
+        <cookie-config>
+            <name>APP1SESSION</name>
+        </cookie-config>
+    </session-config>
 </web-app>

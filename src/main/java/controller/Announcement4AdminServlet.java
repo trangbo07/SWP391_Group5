@@ -12,6 +12,7 @@ import jakarta.servlet.http.*;
 import model.AccountStaff;
 import model.AdminBusiness;
 import model.AdminSystem;
+import socket.AnnouncementSocket;
 import util.NormalizeUtil;
 
 import java.io.IOException;
@@ -94,7 +95,14 @@ public class Announcement4AdminServlet extends HttpServlet {
                     int adminId = 0;
                     adminId = getAdminIdFromSession(req.getSession(false));
 
-                    boolean success = dao.createAnnouncement(title, content, adminId);
+                    int newId = dao.createAnnouncement(title, content, adminId);
+                    boolean success = newId > 0;
+
+                    if (success) {
+                        AnnouncementDTO dto = dao.getAnnouncementByAnnouncementId(newId);
+                        AnnouncementSocket.broadcastNewAnnouncement(dto);
+                    }
+
                     res = new JsonResponse(success, success ? "Created successfully" : "Create failed");
                     out.print(gson.toJson(res));
                 }
@@ -105,6 +113,12 @@ public class Announcement4AdminServlet extends HttpServlet {
                     String content = req.getParameter("content");
 
                     boolean success = dao.updateAnnouncement(id, title, content);
+
+                    if (success) {
+                        AnnouncementDTO dto = dao.getAnnouncementByAnnouncementId(id);
+                        AnnouncementSocket.broadcastNewAnnouncement(dto);
+                    }
+
                     res = new JsonResponse(success, success ? "Updated successfully" : "Update failed");
                     out.print(gson.toJson(res));
                 }
@@ -112,6 +126,13 @@ public class Announcement4AdminServlet extends HttpServlet {
                 case "delete" -> {
                     int id = Integer.parseInt(req.getParameter("announcement_id"));
                     boolean success = dao.deleteAnnouncement(id);
+
+                    if (success) {
+                        AnnouncementDTO dto = new AnnouncementDTO();
+                        dto.setAnnouncementId(id);
+                        AnnouncementSocket.broadcastDeleteAnnouncement(id);
+                    }
+
                     res = new JsonResponse(success, success ? "Deleted successfully" : "Delete failed");
                     out.print(gson.toJson(res));
                 }
