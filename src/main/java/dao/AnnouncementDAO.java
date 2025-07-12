@@ -2,13 +2,15 @@ package dao;
 
 import dto.AnnouncementDTO;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AnnouncementDAO {
-   DBContext db = dao.DBContext.getInstance();
+    DBContext db = dao.DBContext.getInstance();
 
     public List<AnnouncementDTO> getAllAnnouncements() {
         List<AnnouncementDTO> announcements = new ArrayList<>();
@@ -50,21 +52,31 @@ public class AnnouncementDAO {
         return announcements.isEmpty() ? null : announcements;
     }
 
-    public boolean createAnnouncement(String title, String content, int adminId) {
+    public int createAnnouncement(String title, String content, int adminId) {
         String sql = """
-            INSERT INTO InternalAnnouncement (title, content, created_at, created_by_admin)
-            VALUES (?, ?, GETDATE(), ?)
-        """;
+        INSERT INTO InternalAnnouncement (title, content, created_at, created_by_admin)
+        VALUES (?, ?, GETDATE(), ?)
+    """;
 
-        try (PreparedStatement ps = db.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement ps = db.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, title);
             ps.setString(2, content);
             ps.setInt(3, adminId);
+
             int affectedRows = ps.executeUpdate();
-            return affectedRows > 0;
+
+            if (affectedRows == 0) return -1;
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    return -1;
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 
@@ -237,6 +249,56 @@ public class AnnouncementDAO {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<AnnouncementDTO> getLatestAnnouncements(int limit) {
+        if (limit <= 0) limit = 5;   // fallback an toàn
+
+        List<AnnouncementDTO> announcements = new ArrayList<>();
+
+        try {
+            String sql = """
+            SELECT TOP (?) a.announcement_id, a.title, a.content,
+                   a.created_at, a.created_by_admin,
+                   s.full_name, s.department, s.phone, s.account_staff_id
+            FROM InternalAnnouncement a
+            JOIN Admin s ON a.created_by_admin = s.admin_id
+            ORDER BY a.created_at DESC
+        """;
+
+            PreparedStatement statement = db.getConnection().prepareStatement(sql);
+            statement.setInt(1, limit);
+
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                AnnouncementDTO announcement = new AnnouncementDTO(
+                        rs.getInt("announcement_id"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getString("created_at"),
+                        rs.getInt("created_by_admin"),
+                        rs.getString("full_name"),
+                        rs.getString("department"),
+                        rs.getString("phone"),
+                        rs.getInt("account_staff_id")
+                );
+                announcements.add(announcement);
+            }
+
+            rs.close();
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return announcements.isEmpty() ? null : announcements;
+    }
+
+
+    public List<AnnouncementDTO> getLatestAnnouncements() {
+        return getLatestAnnouncements(5);
     }
 
 }

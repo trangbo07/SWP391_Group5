@@ -24,6 +24,9 @@ public class AnnouncementDTO {
         this.accountStaffId = accountStaffId;
     }
 
+    public AnnouncementDTO() {
+    }
+
     public int getAnnouncementId() {
         return announcementId;
     }
