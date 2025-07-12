@@ -462,7 +462,7 @@ function validateDoctorForm() {
 
     const fullNameRegex = /^[A-Za-zÀ-ỹ]{2,}(?: [A-Za-zÀ-ỹ]{2,})+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\d{10,15}$/;
+    const phoneRegex = /^0\d{9}$/;
 
     const errors = [];
 
@@ -481,7 +481,7 @@ function validateDoctorForm() {
     }
 
     if (!phoneRegex.test(phone)) {
-        errors.push("Phone must be 10–15 digits.");
+        errors.push("Phone must be exactly 10 digits and start with 0.");
     }
 
     if (!department) {

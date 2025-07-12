@@ -1,0 +1,138 @@
+/* Fix responsive cho menu login/logout */
+@media (max-width: 1199.98px) {
+    /* Đảm bảo layout navbar header đúng */
+    .landing-header {
+        position: relative;
+        align-items: center !important;
+        min-height: 60px;
+    }
+    
+    /* Container logo để căn chỉnh */
+    .landing-header > .d-flex:first-child {
+        align-items: center !important;
+        height: 60px;
+    }
+    
+    /* Đảm bảo right-panel có cùng chiều cao với phần logo */
+    .right-panel {
+        display: flex;
+        align-items: center !important;
+        justify-content: center;
+        flex-direction: row;
+        position: relative;
+        margin-left: auto;
+        height: 60px;
+    }
+    
+    /* Style cho toggle button ở bên phải - thẳng hàng với logo */
+    .navbar-toggler {
+        border: none;
+        padding: 8px;
+        margin: 0;
+        order: 1;
+        height: 48px;
+        width: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    /* Responsive cho navbar collapse */
+    .navbar-collapse {
+        background: white;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        margin-top: 10px;
+        padding: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        order: 2;
+        width: 300px;
+        min-width: 250px;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 5px);
+        z-index: 1000;
+        transform: translateX(100%);
+        opacity: 0;
+        transition: all 0.3s ease-in-out;
+        pointer-events: none;
+    }
+    
+    /* Animation khi menu được mở */
+    .navbar-collapse.show {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+    
+    /* Style cho nút login/logout trên mobile */
+    .navbar-collapse .d-flex {
+        flex-direction: column;
+        gap: 10px !important;
+        width: 100%;
+    }
+    
+    .navbar-collapse .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    /* Custom màu cho nút Sign in */
+    .navbar-collapse .btn-success {
+        background-color: #f68685 !important;
+        border-color: #f68685 !important;
+    }
+    
+    .navbar-collapse .btn-success:hover {
+        background-color: #f56565 !important;
+        border-color: #f56565 !important;
+    }
+    
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+}
+
+/* Style cho toggle button */
+.navbar-toggler {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.navbar-toggler:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.navbar-toggler .navbar-toggler-btn .navbar-toggler-icon {
+    background-color: var(--bs-primary, #007bff);
+}
+
+.navbar-toggler .navbar-toggler-btn .navbar-toggler-icon::before,
+.navbar-toggler .navbar-toggler-btn .navbar-toggler-icon::after {
+    background-color: var(--bs-primary, #007bff);
+}
+
+/* Thêm hiệu ứng khi menu đang mở */
+.navbar-toggler[aria-expanded="true"] {
+    background: rgba(0, 123, 255, 0.1);
+    border-color: var(--bs-primary, #007bff);
+}
+
+/* Custom màu cho nút Sign in trên tất cả thiết bị */
+.btn-success {
+    background-color: #f68685 !important;
+    border-color: #f68685 !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+    background-color: #f56565 !important;
+    border-color: #f56565 !important;
+    box-shadow: 0 0 0 0.2rem rgba(246, 134, 133, 0.25) !important;
+} 

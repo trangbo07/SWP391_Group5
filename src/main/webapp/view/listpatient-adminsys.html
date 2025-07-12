@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="en" class="theme-fs-sm" data-bs-theme="light" data-bs-theme-color="default" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title data-setting="app_name" data-rightJoin=" - Patient Managerment">Patient Managerment</title>
+    <meta name="description"
+          content="KiviCare is a revolutionary Bootstrap Admin Dashboard Template and UI Components Library. The Admin Dashboard Template and UI Component features 8 modules.">
+    <meta name="keywords"
+          content="premium, admin, dashboard, template, bootstrap 5, clean ui, Kivicare, admin dashboard,responsive dashboard, optimized dashboard,">
+    <meta name="author" content="Iqonic Design">
+    <meta name="DC.title" content="Patient Managerment">
+    <!-- Config Options -->
+    <meta name="setting_options"
+          content='{&quot;saveLocal&quot;:&quot;sessionStorage&quot;,&quot;storeKey&quot;:&quot;kivicare&quot;,&quot;setting&quot;:{&quot;app_name&quot;:{&quot;value&quot;:&quot;KiviCare&quot;},&quot;theme_scheme_direction&quot;:{&quot;value&quot;:&quot;ltr&quot;},&quot;theme_scheme&quot;:{&quot;value&quot;:&quot;light&quot;},&quot;theme_style_appearance&quot;:{&quot;value&quot;:[&quot;theme-default&quot;]},&quot;theme_color&quot;:{&quot;value&quot;:&quot;default&quot;},&quot;theme_transition&quot;:{&quot;value&quot;:&quot;theme-with-animation&quot;},&quot;theme_font_size&quot;:{&quot;value&quot;:&quot;theme-fs-sm&quot;},&quot;page_layout&quot;:{&quot;value&quot;:&quot;container-fluid&quot;},&quot;header_navbar&quot;:{&quot;value&quot;:&quot;default&quot;},&quot;header_banner&quot;:{&quot;value&quot;:&quot;default&quot;},&quot;sidebar_color&quot;:{&quot;value&quot;:&quot;sidebar-white&quot;},&quot;card_color&quot;:{&quot;value&quot;:&quot;card-default&quot;},&quot;sidebar_type&quot;:{&quot;value&quot;:[]},&quot;sidebar_menu_style&quot;:{&quot;value&quot;:&quot;text-hover&quot;},&quot;footer&quot;:{&quot;value&quot;:&quot;default&quot;},&quot;body_font_family&quot;:{&quot;value&quot;:null},&quot;heading_font_family&quot;:{&quot;value&quot;:null}}}'>
+    <!-- Google Font Api KEY-->
+    <meta name="google_font_api" content="AIzaSyBG58yNdAjc20_8jAvLNSVi9E4Xhwjau_k">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../assets/assets/images/favicon.ico"/>
+
+    <!-- Library / Plugin Css Build -->
+    <link rel="stylesheet" href="../assets/assets/css/core/libs.min.css"/>
+
+    <!-- flaticon css -->
+    <link rel="stylesheet" href="../assets/assets/vendor/flaticon/css/flaticon.css"/>
+
+    <!-- font-awesome css -->
+    <link rel="stylesheet" href="../assets/assets/vendor/font-awesome/css/all.min.css"/>
+
+    <!-- Flatpickr css -->
+    <link rel="stylesheet" href="../assets/assets/vendor/flatpickr/dist/flatpickr.min.css"/>
+
+    <link rel="stylesheet" href="../assets/assets/vendor/sheperd/dist/css/sheperd.css">
+
+    <!-- Sweetlaert2 css -->
+    <link rel="stylesheet" href="../assets/assets/vendor/sweetalert2/dist/sweetalert2.min.css"/>
+
+    <!-- Kivicare Design System Css -->
+    <link rel="stylesheet" href="../assets/assets/css/kivicare.min.css?v=1.4.1"/>
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="../assets/assets/css/custom.min.css?v=1.4.1"/>
+
+    <!-- RTL Css -->
+    <link rel="stylesheet" href="../assets/assets/css/rtl.min.css?v=1.4.1"/>
+
+    <!-- Customizer Css -->
+    <link rel="stylesheet" href="../assets/assets/css/customizer.min.css?v=1.4.1"/>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap"
+          rel="stylesheet">
+    <style>
+        #doctorViewCanvas {
+            width: 500px;
+        }
+
+        #doctorViewCanvas .offcanvas-footer {
+            padding: 1rem;
+            border-top: 1px solid #dee2e6;
+        }
+
+        #doctorViewCanvas .offcanvas-footer .btn {
+            flex: 1;
+        }
+    </style>
+</head>
+<body class="  ">
+<!-- loader Start -->
+<div id="loading">
+    <div class="loader simple-loader">
+        <div class="loader-body">
+            <img src="../assets/assets/images/loader.gif" alt="loader" class="light-loader img-fluid " width="200">
+        </div>
+    </div>
+</div>
+<!-- loader END -->
+<aside class="sidebar sidebar-base sidebar-white text-hover" id="first-tour" data-toggle="main-sidebar"
+       data-sidebar="responsive">
+    <div class="sidebar-header d-flex align-items-center justify-content-start position-relative">
+        <a href="home-adminsys.html" class="navbar-brand">
+
+            <!--Logo start-->
+            <div class="logo-main">
+                <img class="logo-normal img-fluid" src="../assets/assets/images/logo.png" height="30" alt="logo">
+                <img class="logo-normal dark-normal img-fluid" src="../assets/assets/images/logo-dark.png" height="30"
+                     alt="logo">
+                <img class="logo-normal white-normal img-fluid" src="../assets/assets/images/logo-white.png" height="30"
+                     alt="logo">
+                <img class="logo-mini img-fluid" src="../assets/assets/images/logo-mini.png" height="30" alt="logo">
+                <img class="logo-mini dark-mini img-fluid" src="../assets/assets/images/logo-mini-dark.png" height="30"
+                     alt="logo">
+                <img class="logo-mini white-mini img-fluid" src="../assets/assets/images/logo-mini-white.png"
+                     height="30" alt="logo">
+            </div>
+            <!--logo End-->        </a>
+        <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
+            <i class="icon">
+                <svg class="icon-20 icon-arrow" width="20" viewBox="0 0 24 24" fill="none"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.5 19L8.5 12L15.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                          stroke-linejoin="round"></path>
+                </svg>
+            </i>
+        </div>
+    </div>
+    <div class="sidebar-body pt-0 data-scrollbar" data-scrollbar="true" tabindex="-1"
+         style="overflow: hidden; outline: none;">
+        <div class="scroll-content">
+            <div class="sidebar-list">
+                <!-- Sidebar Menu Start -->
+                <ul class="navbar-nav iq-main-menu" id="sidebar-menu">
+                    <li class="nav-item static-item">
+                        <a class="nav-link static-item disabled text-start" href="#" tabindex="-1">
+                            <span class="default-icon">Home</span>
+                            <span class="mini-icon" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">-</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="home-adminsys.html">
+                            <i class="icon" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Dashboard" data-bs-original-title="Dashboard">
+                                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.14373 20.7821V17.7152C9.14372 16.9381 9.77567 16.3067 10.5584 16.3018H13.4326C14.2189 16.3018 14.8563 16.9346 14.8563 17.7152V20.7732C14.8562 21.4473 15.404 21.9951 16.0829 22H18.0438C18.9596 22.0023 19.8388 21.6428 20.4872 21.0007C21.1356 20.3586 21.5 19.4868 21.5 18.5775V9.86585C21.5 9.13139 21.1721 8.43471 20.6046 7.9635L13.943 2.67427C12.7785 1.74912 11.1154 1.77901 9.98539 2.74538L3.46701 7.9635C2.87274 8.42082 2.51755 9.11956 2.5 9.86585V18.5686C2.5 20.4637 4.04738 22 5.95617 22H7.87229C8.19917 22.0023 8.51349 21.8751 8.74547 21.6464C8.97746 21.4178 9.10793 21.1067 9.10792 20.7821H9.14373Z" fill="currentColor"></path>
+                                </svg>
+                            </i>
+                            <i class="sidenav-mini-icon" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Admin Dashboard">DD</i>
+                            <span class="item-name">Admin Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="hr-horizontal">
+                    </li>
+                    <li class="nav-item static-item">
+                        <a class="nav-link static-item disabled text-start" href="#" tabindex="-1">
+                            <span class="default-icon">Account</span>
+                            <span class="mini-icon" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Account"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link active" data-bs-toggle="collapse" href="#staff" role="button" aria-expanded="true">
+                            <i class="icon" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Staff" data-bs-original-title="Staff">
+
+                                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.59151 15.2068C13.2805 15.2068 16.4335 15.7658 16.4335 17.9988C16.4335 20.2318 13.3015 20.8068 9.59151 20.8068C5.90151 20.8068 2.74951 20.2528 2.74951 18.0188C2.74951 15.7848 5.88051 15.2068 9.59151 15.2068Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.59157 12.0198C7.16957 12.0198 5.20557 10.0568 5.20557 7.63476C5.20557 5.21276 7.16957 3.24976 9.59157 3.24976C12.0126 3.24976 13.9766 5.21276 13.9766 7.63476C13.9856 10.0478 12.0356 12.0108 9.62257 12.0198H9.59157Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path d="M16.4829 10.8815C18.0839 10.6565 19.3169 9.28253 19.3199 7.61953C19.3199 5.98053 18.1249 4.62053 16.5579 4.36353" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path d="M18.5952 14.7322C20.1462 14.9632 21.2292 15.5072 21.2292 16.6272C21.2292 17.3982 20.7192 17.8982 19.8952 18.2112" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </i>
+                            <span class="item-name">Staff</span>
+                            <i class="right-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" class="icon-18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <ul class="sub-nav collapse show" id="staff" data-bs-parent="#sidebar-menu">
+                            <li class="nav-item active">
+                                <a class="nav-link active" href="listdoctors-adminsys.html">
+                                    <i class="icon" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Doctor" data-bs-original-title="Doctor">
+                                        <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M15.7729 9.30504V6.27304C15.7729 4.18904 14.0839 2.50004 12.0009 2.50004C9.91694 2.49104 8.21994 4.17204 8.21094 6.25604V6.27304V9.30504" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M16.7422 21.0004H7.25778C4.90569 21.0004 3 19.0954 3 16.7454V11.2294C3 8.87937 4.90569 6.97437 7.25778 6.97437H16.7422C19.0943 6.97437 21 8.87937 21 11.2294V16.7454C21 19.0954 19.0943 21.0004 16.7422 21.0004Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </i>
+                                    <i class="sidenav-mini-icon" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Doctor">D</i>
+                                    <span class="item-name">Doctor</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="listrecep-adminsys.html">
+                                    <i class="icon" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Receptionist" data-bs-original-title="Receptionist">
+
+                                        <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M3.09277 9.40421H20.9167" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M16.442 13.3097H16.4512" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M12.0045 13.3097H12.0137" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M7.55818 13.3097H7.56744" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M16.442 17.1962H16.4512" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M12.0045 17.1962H12.0137" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M7.55818 17.1962H7.56744" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M16.0433 2V5.29078" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M7.96515 2V5.29078" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M16.2383 3.5791H7.77096C4.83427 3.5791 3 5.21504 3 8.22213V17.2718C3 20.3261 4.83427 21.9999 7.77096 21.9999H16.229C19.175 21.9999 21 20.3545 21 17.3474V8.22213C21.0092 5.21504 19.1842 3.5791 16.2383 3.5791Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+
+                                    </i>
+                                    <i class="sidenav-mini-icon" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Receptionist">R</i>
+                                    <span class="item-name">Receptionist</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="listadmin-adminsys.html">
+                                    <i class="icon" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Admin" data-bs-original-title="Admin">
+                                        <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M20.8064 7.62361L20.184 6.54352C19.6574 5.6296 18.4905 5.31432 17.5753 5.83872V5.83872C17.1397 6.09534 16.6198 6.16815 16.1305 6.04109C15.6411 5.91402 15.2224 5.59752 14.9666 5.16137C14.8021 4.88415 14.7137 4.56839 14.7103 4.24604V4.24604C14.7251 3.72922 14.5302 3.2284 14.1698 2.85767C13.8094 2.48694 13.3143 2.27786 12.7973 2.27808H11.5433C11.0367 2.27807 10.5511 2.47991 10.1938 2.83895C9.83644 3.19798 9.63693 3.68459 9.63937 4.19112V4.19112C9.62435 5.23693 8.77224 6.07681 7.72632 6.0767C7.40397 6.07336 7.08821 5.98494 6.81099 5.82041V5.82041C5.89582 5.29601 4.72887 5.61129 4.20229 6.52522L3.5341 7.62361C3.00817 8.53639 3.31916 9.70261 4.22975 10.2323V10.2323C4.82166 10.574 5.18629 11.2056 5.18629 11.8891C5.18629 12.5725 4.82166 13.2041 4.22975 13.5458V13.5458C3.32031 14.0719 3.00898 15.2353 3.5341 16.1454V16.1454L4.16568 17.2346C4.4124 17.6798 4.82636 18.0083 5.31595 18.1474C5.80554 18.2866 6.3304 18.2249 6.77438 17.976V17.976C7.21084 17.7213 7.73094 17.6516 8.2191 17.7822C8.70725 17.9128 9.12299 18.233 9.37392 18.6717C9.53845 18.9489 9.62686 19.2646 9.63021 19.587V19.587C9.63021 20.6435 10.4867 21.5 11.5433 21.5H12.7973C13.8502 21.5001 14.7053 20.6491 14.7103 19.5962V19.5962C14.7079 19.088 14.9086 18.6 15.2679 18.2407C15.6272 17.8814 16.1152 17.6807 16.6233 17.6831C16.9449 17.6917 17.2594 17.7798 17.5387 17.9394V17.9394C18.4515 18.4653 19.6177 18.1544 20.1474 17.2438V17.2438L20.8064 16.1454C21.0615 15.7075 21.1315 15.186 21.001 14.6964C20.8704 14.2067 20.55 13.7894 20.1108 13.5367V13.5367C19.6715 13.284 19.3511 12.8666 19.2206 12.3769C19.09 11.8873 19.16 11.3658 19.4151 10.928C19.581 10.6383 19.8211 10.3982 20.1108 10.2323V10.2323C21.0159 9.70289 21.3262 8.54349 20.8064 7.63277V7.63277V7.62361Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <circle cx="12.1747" cy="11.8891" r="2.63616" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></circle>
+                                        </svg>
+                                    </i>
+                                    <i class="sidenav-mini-icon" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Admin">AS</i>
+                                    <span class="item-name">Admin</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="listaccountpatient-adminsys.html">
+                            <i>
+                                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17.8877 10.8967C19.2827 10.7007 20.3567 9.50473 20.3597 8.05573C20.3597 6.62773 19.3187 5.44373 17.9537 5.21973" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path d="M19.7285 14.2505C21.0795 14.4525 22.0225 14.9255 22.0225 15.9005C22.0225 16.5715 21.5785 17.0075 20.8605 17.2815" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.8867 14.6638C8.67273 14.6638 5.92773 15.1508 5.92773 17.0958C5.92773 19.0398 8.65573 19.5408 11.8867 19.5408C15.1007 19.5408 17.8447 19.0588 17.8447 17.1128C17.8447 15.1668 15.1177 14.6638 11.8867 14.6638Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.8869 11.888C13.9959 11.888 15.7059 10.179 15.7059 8.069C15.7059 5.96 13.9959 4.25 11.8869 4.25C9.7779 4.25 8.0679 5.96 8.0679 8.069C8.0599 10.171 9.7569 11.881 11.8589 11.888H11.8869Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path d="M5.88509 10.8967C4.48909 10.7007 3.41609 9.50473 3.41309 8.05573C3.41309 6.62773 4.45409 5.44373 5.81909 5.21973" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path d="M4.044 14.2505C2.693 14.4525 1.75 14.9255 1.75 15.9005C1.75 16.5715 2.194 17.0075 2.912 17.2815" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </i><span class="item-name">Patient</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="listpharmacist-adminsys.html">
+                            <i>
+                                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.2777 13.8894C17.9524 13.8894 18.5188 14.4462 18.4156 15.1125C17.8103 19.0325 14.4545 21.9431 10.4072 21.9431C5.92928 21.9431 2.2998 18.3136 2.2998 13.8368C2.2998 10.1483 5.10191 6.71255 8.25665 5.9357C8.93454 5.76834 9.62928 6.24518 9.62928 6.94307C9.62928 11.6715 9.78823 12.8947 10.6861 13.5599C11.584 14.2252 12.6398 13.8894 17.2777 13.8894Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M21.6921 9.9517C21.7458 6.9138 18.0142 2.01696 13.4669 2.10117C13.1132 2.10749 12.83 2.40222 12.8142 2.75485C12.6995 5.25275 12.8542 8.48959 12.9406 9.95696C12.9669 10.4138 13.3258 10.7727 13.7816 10.7991C15.29 10.8854 18.6448 11.0033 21.1069 10.6306C21.4416 10.5801 21.6869 10.2896 21.6921 9.9517Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </i><span class="item-name">Pharmacist</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="hr-horizontal">
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="announcement-adminsys.html">
+                            <i>
+                                <svg class="icon-20" width="19" height="22" viewBox="0 0 19 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <mask style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="19" height="18">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.15527e-05 0H18.497V17.348H9.15527e-05V0Z" fill="white"></path>
+                                    </mask>
+                                    <g>
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M9.2471 1.5C5.75211 1.5 3.3161 4.238 3.3161 6.695C3.3161 8.774 2.7391 9.735 2.2291 10.583C1.8201 11.264 1.4971 11.802 1.4971 12.971C1.6641 14.857 2.90911 15.848 9.2471 15.848C15.5501 15.848 16.8341 14.813 17.0001 12.906C16.9971 11.802 16.6741 11.264 16.2651 10.583C15.7551 9.735 15.1781 8.774 15.1781 6.695C15.1781 4.238 12.7421 1.5 9.2471 1.5ZM9.2471 17.348C4.5711 17.348 0.345105 17.018 0.000104907 13.035C-0.00289509 11.387 0.500105 10.549 0.944105 9.811C1.3931 9.063 1.8161 8.358 1.8161 6.695C1.8161 3.462 4.8021 0 9.2471 0C13.6921 0 16.6781 3.462 16.6781 6.695C16.6781 8.358 17.1011 9.063 17.5501 9.811C17.9941 10.549 18.4971 11.387 18.4971 12.971C18.1481 17.018 13.9231 17.348 9.2471 17.348Z" fill="currentColor"></path>
+                                    </g>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.1983 21.5001H9.1963C8.0753 21.4991 7.0143 21.0051 6.2093 20.1081C5.9323 19.8011 5.9573 19.3261 6.2653 19.0501C6.5733 18.7721 7.0473 18.7971 7.3243 19.1061C7.8423 19.6831 8.5073 20.0001 9.1973 20.0001H9.1983C9.8913 20.0001 10.5593 19.6831 11.0783 19.1051C11.3563 18.7981 11.8303 18.7731 12.1373 19.0501C12.4453 19.3271 12.4703 19.8021 12.1933 20.1091C11.3853 21.0061 10.3223 21.5001 9.1983 21.5001Z" fill="currentColor"></path>
+                                </svg>
+                            </i><span class="item-name">Announcement</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <hr class="hr-horizontal">
+                    </li>
+
+                    <li class="nav-item static-item">
+                        <a class="nav-link static-item disabled text-start" href="#" tabindex="-1">
+                            <span class="default-icon">settings</span>
+                            <span class="mini-icon" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Elements">-</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="./helpsupport.html">
+                            <i class="icon" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Help &amp; Support" data-bs-original-title="Help &amp; Support">
+                                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.4" d="M16.34 1.99976H7.67C4.28 1.99976 2 4.37976 2 7.91976V16.0898C2 19.6198 4.28 21.9998 7.67 21.9998H16.34C19.73 21.9998 22 19.6198 22 16.0898V7.91976C22 4.37976 19.73 1.99976 16.34 1.99976Z" fill="currentColor"></path>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.1246 8.18921C11.1246 8.67121 11.5156 9.06421 11.9946 9.06421C12.4876 9.06421 12.8796 8.67121 12.8796 8.18921C12.8796 7.70721 12.4876 7.31421 12.0046 7.31421C11.5196 7.31421 11.1246 7.70721 11.1246 8.18921ZM12.8696 11.362C12.8696 10.88 12.4766 10.487 11.9946 10.487C11.5126 10.487 11.1196 10.88 11.1196 11.362V15.782C11.1196 16.264 11.5126 16.657 11.9946 16.657C12.4766 16.657 12.8696 16.264 12.8696 15.782V11.362Z" fill="currentColor"></path>
+                                </svg>
+                            </i>
+                            <span class="item-name">Help &amp; Support</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="./setting.html">
+                            <i class="icon" data-bs-toggle="tooltip" data-bs-placement="right" aria-label="Setting" data-bs-original-title="Setting">
+                                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12.0122 14.8299C10.4077 14.8299 9.10986 13.5799 9.10986 12.0099C9.10986 10.4399 10.4077 9.17993 12.0122 9.17993C13.6167 9.17993 14.8839 10.4399 14.8839 12.0099C14.8839 13.5799 13.6167 14.8299 12.0122 14.8299Z" fill="currentColor"></path>
+                                    <path opacity="0.4" d="M21.2301 14.37C21.036 14.07 20.76 13.77 20.4023 13.58C20.1162 13.44 19.9322 13.21 19.7687 12.94C19.2475 12.08 19.5541 10.95 20.4228 10.44C21.4447 9.87 21.7718 8.6 21.179 7.61L20.4943 6.43C19.9118 5.44 18.6344 5.09 17.6226 5.67C16.7233 6.15 15.5685 5.83 15.0473 4.98C14.8838 4.7 14.7918 4.4 14.8122 4.1C14.8429 3.71 14.7203 3.34 14.5363 3.04C14.1582 2.42 13.4735 2 12.7172 2H11.2763C10.5302 2.02 9.84553 2.42 9.4674 3.04C9.27323 3.34 9.16081 3.71 9.18125 4.1C9.20169 4.4 9.10972 4.7 8.9462 4.98C8.425 5.83 7.27019 6.15 6.38109 5.67C5.35913 5.09 4.09191 5.44 3.49917 6.43L2.81446 7.61C2.23194 8.6 2.55897 9.87 3.57071 10.44C4.43937 10.95 4.74596 12.08 4.23498 12.94C4.06125 13.21 3.87729 13.44 3.59115 13.58C3.24368 13.77 2.93709 14.07 2.77358 14.37C2.39546 14.99 2.4159 15.77 2.79402 16.42L3.49917 17.62C3.87729 18.26 4.58245 18.66 5.31825 18.66C5.66572 18.66 6.0745 18.56 6.40153 18.36C6.65702 18.19 6.96361 18.13 7.30085 18.13C8.31259 18.13 9.16081 18.96 9.18125 19.95C9.18125 21.1 10.1215 22 11.3069 22H12.6968C13.872 22 14.8122 21.1 14.8122 19.95C14.8429 18.96 15.6911 18.13 16.7029 18.13C17.0299 18.13 17.3365 18.19 17.6022 18.36C17.9292 18.56 18.3278 18.66 18.6855 18.66C19.411 18.66 20.1162 18.26 20.4943 17.62L21.2097 16.42C21.5776 15.75 21.6083 14.99 21.2301 14.37Z" fill="currentColor"></path>
+                                </svg>
+                            </i>
+                            <span class="item-name">Setting</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="hr-horizontal">
+                    </li>
+                </ul>
+                <!-- Sidebar Menu End -->        </div>
+        </div>
+        <div class="scrollbar-track scrollbar-track-x" style="display: none;">
+            <div class="scrollbar-thumb scrollbar-thumb-x"
+                 style="width: 215px; transform: translate3d(0px, 0px, 0px);"></div>
+        </div>
+        <div class="scrollbar-track scrollbar-track-y" style="display: none;">
+            <div class="scrollbar-thumb scrollbar-thumb-y"
+                 style="height: 491px; transform: translate3d(0px, 0px, 0px);"></div>
+        </div>
+    </div>
+    <div class="sidebar-footer"></div>
+</aside>
+<main class="main-content">
+    <div class="position-relative ">
+        <!--Nav Start-->
+        <nav class="nav navbar navbar-expand-xl navbar-light iq-navbar">
+            <div class="container-fluid navbar-inner">
+                <a href="home-adminsys.html" class="navbar-brand">
+
+                    <!--Logo start-->
+                    <div class="logo-main">
+                        <img class="logo-normal img-fluid" src="../assets/assets/images/logo.png" height="30"
+                             alt="logo">
+                        <img class="logo-normal dark-normal img-fluid" src="../assets/assets/images/logo-dark.png"
+                             height="30" alt="logo">
+                        <img class="logo-normal white-normal img-fluid" src="../assets/assets/images/logo-white.png"
+                             height="30" alt="logo">
+                        <img class="logo-mini img-fluid" src="../assets/assets/images/logo-mini.png" height="30"
+                             alt="logo">
+                        <img class="logo-mini dark-mini img-fluid" src="../assets/assets/images/logo-mini-dark.png"
+                             height="30" alt="logo">
+                        <img class="logo-mini white-mini img-fluid" src="../assets/assets/images/logo-mini-white.png"
+                             height="30" alt="logo">
+                    </div>
+                    <!--logo End-->      </a>
+                <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
+                    <i class="icon d-flex">
+                        <svg class="icon-20" width="20" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                  d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"/>
+                        </svg>
+                    </i>
+                </div>
+                <div class="d-flex align-items-center justify-content-between product-offcanvas">
+                    <div class="offcanvas offcanvas-end shadow-none iq-product-menu-responsive" tabindex="-1"
+                         id="offcanvasBottomNav">
+                        <div class="offcanvas-body">
+                            <ul class="iq-nav-menu list-unstyled">
+                                <li class="nav-item">
+                                    <a class="nav-link menu-arrow justify-content-start active"
+                                       href="home-adminsys.html">
+                                        <span class="nav-text">Home</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <button id="navbar-toggle" class="navbar-toggler px-0" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                                <span class="navbar-toggler-btn">
+                                   <span class="navbar-toggler-icon"></span>
+                                </span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="mb-2 navbar-nav ms-auto align-items-center navbar-list mb-lg-0">
+                        <li class="nav-item dropdown me-0 me-xl-3">
+                            <div class="d-flex align-items-center mr-2 iq-font-style" role="group"
+                                 aria-label="First group"
+                                 data-setting="radio">
+                                <input type="radio" class="btn-check" name="theme_font_size" value="theme-fs-sm"
+                                       id="font-size-sm">
+                                <label for="font-size-sm" class="btn btn-border border-0 btn-icon btn-sm"
+                                       data-bs-toggle="tooltip"
+                                       title="Font size 14px" data-bs-placement="bottom">
+                                    <span class="mb-0 h6" style="color: inherit !important;">A</span>
+                                </label>
+                                <input type="radio" class="btn-check" name="theme_font_size" value="theme-fs-md"
+                                       id="font-size-md">
+                                <label for="font-size-md" class="btn btn-border border-0 btn-icon"
+                                       data-bs-toggle="tooltip"
+                                       title="Font size 16px" data-bs-placement="bottom">
+                                    <span class="mb-0 h4" style="color: inherit !important;">A</span>
+                                </label>
+                                <input type="radio" class="btn-check" name="theme_font_size" value="theme-fs-lg"
+                                       id="font-size-lg">
+                                <label for="font-size-lg" class="btn btn-border border-0 btn-icon"
+                                       data-bs-toggle="tooltip"
+                                       title="Font size 18px" data-bs-placement="bottom">
+                                    <span class="mb-0 h1" style="color: inherit !important;">A</span>
+                                </label>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown iq-responsive-menu d-block d-xl-none">
+                            <div class="btn btn-sm px-0 border-0" id="navbarDropdown-search-11" role="button"
+                                 data-bs-toggle="dropdown" aria-expanded="false">
+                                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="11.7669" cy="11.7666" r="8.98856" stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round" stroke-linejoin="round"></circle>
+                                    <path d="M18.0186 18.4851L21.5426 22" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link" id="notification-drop" data-bs-toggle="dropdown">
+                                <div class="nav-list-icon">
+                                    <div class="btn-inner">
+                                        <svg class="icon-20" width="19" height="22" viewBox="0 0 19 22" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <mask style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0"
+                                                  width="19"
+                                                  height="18">
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                      d="M9.15527e-05 0H18.497V17.348H9.15527e-05V0Z" fill="white"/>
+                                            </mask>
+                                            <g>
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                      d="M9.2471 1.5C5.75211 1.5 3.3161 4.238 3.3161 6.695C3.3161 8.774 2.7391 9.735 2.2291 10.583C1.8201 11.264 1.4971 11.802 1.4971 12.971C1.6641 14.857 2.90911 15.848 9.2471 15.848C15.5501 15.848 16.8341 14.813 17.0001 12.906C16.9971 11.802 16.6741 11.264 16.2651 10.583C15.7551 9.735 15.1781 8.774 15.1781 6.695C15.1781 4.238 12.7421 1.5 9.2471 1.5ZM9.2471 17.348C4.5711 17.348 0.345105 17.018 0.000104907 13.035C-0.00289509 11.387 0.500105 10.549 0.944105 9.811C1.3931 9.063 1.8161 8.358 1.8161 6.695C1.8161 3.462 4.8021 0 9.2471 0C13.6921 0 16.6781 3.462 16.6781 6.695C16.6781 8.358 17.1011 9.063 17.5501 9.811C17.9941 10.549 18.4971 11.387 18.4971 12.971C18.1481 17.018 13.9231 17.348 9.2471 17.348Z"
+                                                      fill="currentColor"/>
+                                            </g>
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                  d="M9.1983 21.5001H9.1963C8.0753 21.4991 7.0143 21.0051 6.2093 20.1081C5.9323 19.8011 5.9573 19.3261 6.2653 19.0501C6.5733 18.7721 7.0473 18.7971 7.3243 19.1061C7.8423 19.6831 8.5073 20.0001 9.1973 20.0001H9.1983C9.8913 20.0001 10.5593 19.6831 11.0783 19.1051C11.3563 18.7981 11.8303 18.7731 12.1373 19.0501C12.4453 19.3271 12.4703 19.8021 12.1933 20.1091C11.3853 21.0061 10.3223 21.5001 9.1983 21.5001Z"
+                                                  fill="currentColor"/>
+                                        </svg>
+                                        <span class="bg-danger dots"></span>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="p-0 sub-drop dropdown-menu dropdown-menu-end"
+                                 aria-labelledby="notification-drop">
+                                <div class="m-0 shadow-none card">
+                                    <div class="py-3 card-header d-flex justify-content-between bg-primary mb-0">
+                                        <div class="header-title">
+                                            <h5 class="mb-0 text-white">All Notifications</h5>
+                                        </div>
+                                    </div>
+                                    <div class="p-0 card-body">
+                                        <a href="#" class="iq-sub-card">
+                                            <div class="d-flex align-items-center">
+                                                <img class="p-1 avatar-40 rounded-pill bg-primary-subtle"
+                                                     src="../assets/assets/images/shapes/01.png" loading="lazy"/>
+                                                <div class="ms-3 flex-grow-1 text-start">
+                                                    <h6 class="mb-0 ">Emma Watson Bni</h6>
+                                                    <p class="mb-0">95 MB</p>
+                                                </div>
+                                                <small class="float-end font-size-12">Just Now</small>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="iq-sub-card">
+                                            <div class="d-flex align-items-center">
+                                                <img class="p-1 avatar-40 rounded-pill bg-primary-subtle"
+                                                     src="../assets/assets/images/shapes/02.png" loading="lazy"/>
+                                                <div class="ms-3 flex-grow-1 text-start">
+                                                    <h6 class="mb-0 ">New customer is join</h6>
+                                                    <p class="mb-0">Cyst Bni</p>
+                                                </div>
+                                                <small class="float-end font-size-12">5 days ago</small>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="iq-sub-card">
+                                            <div class="d-flex align-items-center">
+                                                <img class="p-1 avatar-40 rounded-pill bg-primary-subtle"
+                                                     src="../assets/assets/images/shapes/03.png" loading="lazy"/>
+                                                <div class="ms-3 flex-grow-1 text-start">
+                                                    <h6 class="mb-0 ">Two customer is left</h6>
+                                                    <p class="mb-0">Cyst Bni</p>
+                                                </div>
+                                                <small class="float-end font-size-12">2 days ago</small>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="iq-sub-card">
+                                            <div class="d-flex align-items-center">
+                                                <img class="p-1 avatar-40 rounded-pill bg-primary-subtle"
+                                                     src="../assets/assets/images/shapes/04.png" loading="lazy"/>
+                                                <div class="ms-3 flex-grow-1 text-start">
+                                                    <h6 class="mb-0 ">New Mail from Fenny</h6>
+                                                    <p class="mb-0">Cyst Bni</p>
+                                                </div>
+                                                <small class="float-end font-size-12">3 days ago</small>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item iq-full-screen d-none d-xl-block" id="fullscreen-item">
+                            <a href="#" class="nav-link" id="btnFullscreen" data-bs-toggle="dropdown">
+                                <div class="icon nav-list-icon">
+                                         <span class="btn-inner">
+                                            <svg class="normal-screen icon-20" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                               <path d="M18.5528 5.99656L13.8595 10.8961" stroke="currentColor"
+                                                     stroke-width="1.5"
+                                                     stroke-linecap="round" stroke-linejoin="round"></path>
+                                               <path d="M14.8016 5.97618L18.5524 5.99629L18.5176 9.96906"
+                                                     stroke="currentColor"
+                                                     stroke-width="1.5" stroke-linecap="round"
+                                                     stroke-linejoin="round"></path>
+                                               <path d="M5.8574 18.896L10.5507 13.9964" stroke="currentColor"
+                                                     stroke-width="1.5"
+                                                     stroke-linecap="round" stroke-linejoin="round"></path>
+                                               <path d="M9.60852 18.9164L5.85775 18.8963L5.89258 14.9235"
+                                                     stroke="currentColor"
+                                                     stroke-width="1.5" stroke-linecap="round"
+                                                     stroke-linejoin="round"></path>
+                                            </svg>
+                                            <svg class="full-normal-screen d-none icon-20" width="24" height="24"
+                                                 viewBox="0 0 24 24"
+                                                 fill="none" xmlns="http://www.w3.org/2000/svg">
+                                               <path d="M13.7542 10.1932L18.1867 5.79319" stroke="currentColor"
+                                                     stroke-width="1.5"
+                                                     stroke-linecap="round" stroke-linejoin="round"></path>
+                                               <path d="M17.2976 10.212L13.7547 10.1934L13.7871 6.62518"
+                                                     stroke="currentColor"
+                                                     stroke-width="1.5" stroke-linecap="round"
+                                                     stroke-linejoin="round"></path>
+                                               <path d="M10.4224 13.5726L5.82149 18.1398" stroke="currentColor"
+                                                     stroke-width="1.5"
+                                                     stroke-linecap="round" stroke-linejoin="round"></path>
+                                               <path d="M6.74391 13.5535L10.4209 13.5723L10.3867 17.2755"
+                                                     stroke="currentColor"
+                                                     stroke-width="1.5" stroke-linecap="round"
+                                                     stroke-linejoin="round"></path>
+                                            </svg>
+                                         </span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown" id="itemdropdown1">
+                            <a class="py-0 nav-link d-flex align-items-center" href="#" id="navbarDropdown"
+                               role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="icon-40">
+                                         <span class="btn-inner d-inline-block position-relative">
+                                            <img src="../assets/assets/images/avatars/14.png"
+                                                 class="img-fluid rounded-circle object-fit-cover" alt="icon">
+                                            <span
+                                                    class="bg-success p-1 rounded-circle position-absolute end-0 bottom-0 border border-3 border-white"></span>
+                                         </span>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="profile-admin-system.html">Profile</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="./app/user-privacy-setting.html">Privacy Setting</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" id="logoutBtn">Logout</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>          <!--Nav End-->
+    </div>
+    <div class="content-inner container-fluid pb-0" id="page_layout">
+        <div id="alertContainer"></div>
+
+        <!-- Patien - Manager-->
+        <!-- Patient Manager Section -->
+        <div class="card" id="patientManagerCard" style="display: block;">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-user-injured me-2"></i> Patient List
+                </h4>
+            </div>
+            <div class="card-body">
+
+                <!-- Controls -->
+                <!-- Top Controls -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <button class="btn btn-outline-secondary" id="btnBackToAccount">
+                            <i class="fas fa-arrow-left me-1"></i> Back to Account
+                        </button>
+                        <button class="btn btn-primary" id="btnAddPatient">
+                            <i class="fas fa-plus me-1"></i> Add Account Patient
+                        </button>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary" id="btnReverseList">
+                            <i class="fas fa-sort-amount-down-alt me-1"></i> Reverse List
+                        </button>
+
+                        <div>
+                            <label for="selectPageSize" class="form-label me-2 mb-0">Show:</label>
+                            <select id="selectPageSize" class="form-select d-inline-block w-auto">
+                                <option value="5" selected>5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                            <span>entries</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner"></div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12 d-flex">
+                        <select class="form-select me-2" id="filterGender" style="max-width: 300px;">
+                            <option value="">All Gender</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+
+                        <input type="text" id="searchInput" class="form-control ms-auto"
+                               placeholder="Search Name..." style="max-width: 300px;">
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>DOB</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="patientTableBody">
+                        <!-- Rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-sm-6">
+                        <span id="patientPaginationInfo">Showing 0 to 0 of 0 entries</span>
+                    </div>
+                    <div class="col-sm-6 text-sm-end">
+                        <div class="d-inline-flex align-items-center gap-3">
+                            <a href="#" id="btnPreviousPage" class="text-body link-primary">
+                                <svg class="icon-20" width="32" viewBox="0 0 24 24" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15.5 19L8.5 12L15.5 5" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                                <span class="align-middle">Previous</span>
+                            </a>
+                            <a href="#" id="btnNextPage" class="text-body link-primary">
+                                <span class="align-middle">Next</span>
+                                <svg class="icon-20" width="32" viewBox="0 0 24 24" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.5 5L15.5 12L8.5 19" stroke="currentColor" stroke-width="1.5"
+                                          stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Form Card -->
+        <div class="card mt-4" id="patientFormCard" style="display: none;">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-user-edit me-2"></i> Patient Form
+                </h4>
+            </div>
+
+            <div class="card-body">
+
+                <ul class="nav nav-tabs mb-3" id="patientFormTab" role="tablist" style="display: none">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="add-new-tab" data-bs-toggle="tab"
+                                data-bs-target="#add-new-pane" type="button" role="tab">
+                            Add new patient
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="add-existing-tab" data-bs-toggle="tab"
+                                data-bs-target="#add-existing-pane" type="button" role="tab">
+                            Link existing patients
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="patientFormContent">
+                    <div class="tab-pane fade show active" id="add-new-pane" role="tabpanel">
+                        <form id="patientForm">
+                            <input type="hidden" id="patientId" name="patientId">
+                            <input type="hidden" id="patientAccountPatientId" name="accountPatientId">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="patientFullName" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="patientFullName" name="fullName">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="patientDob" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="patientDob" name="dob">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="patientGender" class="form-label">Gender</label>
+                                        <select class="form-select" id="patientGender" name="gender">
+                                            <option value="" disabled selected>-Select Gender-</option>
+                                            <option value="Nam">Nam</option>
+                                            <option value="Nữ">Nữ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="patientPhone" class="form-label">Phone</label>
+                                        <input type="text" class="form-control" id="patientPhone" name="phone">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="patientAddress" class="form-label">Address</label>
+                                        <textarea class="form-control" id="patientAddress" name="address"
+                                                  rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-3 mt-3">
+                                <button type="button" class="btn btn-secondary" id="cancelPatientForm">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Patient
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="tab-pane fade" id="add-existing-pane" role="tabpanel">
+
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="searchExistingPatient"
+                                   placeholder="Search patient by Name">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="fs-5" for="existingPatientList">Select patients that can now be added account</label>
+                            <div id="existingPatientList" class="form-group mb-3"
+                                 style="max-height: 300px; overflow-y: auto;">
+
+                            </div>
+
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-sm-6">
+                                <span id="existingPatientInfo">Showing 0 to 0 of 0 entries</span>
+                            </div>
+                            <div class="col-sm-6 text-sm-end">
+                                <div class="d-inline-flex align-items-center gap-3">
+                                    <a href="#" id="btnPreviousExisting" class="text-body link-primary">
+                                        <svg class="icon-20" width="32" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M15.5 19L8.5 12L15.5 5" stroke="currentColor" stroke-width="1.5"
+                                                  stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                        <span class="align-middle">Previous</span>
+                                    </a>
+                                    <a href="#" id="btnNextPageExisting" class="text-body link-primary">
+                                        <span class="align-middle">Next</span>
+                                        <svg class="icon-20" width="32" viewBox="0 0 24 24" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8.5 5L15.5 12L8.5 19" stroke="currentColor" stroke-width="1.5"
+                                                  stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-end gap-3">
+                            <button type="button" class="btn btn-secondary" id="cancelPatientForm2">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </button>
+                            <button type="button" class="btn btn-primary" id="btnAttachExistingPatient">
+                                <i class="fas fa-link me-2"></i>Add to Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+    <!-- Footer Section Start -->
+    <footer class="footer">
+        <div class="footer-body">
+            <ul class="left-panel list-inline mb-0 p-0">
+                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Privacy
+                    Policy</a></li>
+                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Terms of
+                    Use</a></li>
+            </ul>
+            <h6 class="right-panel mb-0">
+                ©
+                <script>document.write(new Date().getFullYear())</script>
+                <span data-setting="app_name">KiviCare</span> with
+                <span class="text-danger">
+                            <svg class="icon-16" width="15" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M15.85 2.50065C16.481 2.50065 17.111 2.58965 17.71 2.79065C21.401 3.99065 22.731 8.04065 21.62 11.5806C20.99 13.3896 19.96 15.0406 18.611 16.3896C16.68 18.2596 14.561 19.9196 12.28 21.3496L12.03 21.5006L11.77 21.3396C9.48102 19.9196 7.35002 18.2596 5.40102 16.3796C4.06102 15.0306 3.03002 13.3896 2.39002 11.5806C1.26002 8.04065 2.59002 3.99065 6.32102 2.76965C6.61102 2.66965 6.91002 2.59965 7.21002 2.56065H7.33002C7.61102 2.51965 7.89002 2.50065 8.17002 2.50065H8.28002C8.91002 2.51965 9.52002 2.62965 10.111 2.83065H10.17C10.21 2.84965 10.24 2.87065 10.26 2.88965C10.481 2.96065 10.69 3.04065 10.89 3.15065L11.27 3.32065C11.3618 3.36962 11.4649 3.44445 11.554 3.50912C11.6104 3.55009 11.6612 3.58699 11.7 3.61065C11.7163 3.62028 11.7329 3.62996 11.7496 3.63972C11.8354 3.68977 11.9247 3.74191 12 3.79965C13.111 2.95065 14.46 2.49065 15.85 2.50065ZM18.51 9.70065C18.92 9.68965 19.27 9.36065 19.3 8.93965V8.82065C19.33 7.41965 18.481 6.15065 17.19 5.66065C16.78 5.51965 16.33 5.74065 16.18 6.16065C16.04 6.58065 16.26 7.04065 16.68 7.18965C17.321 7.42965 17.75 8.06065 17.75 8.75965V8.79065C17.731 9.01965 17.8 9.24065 17.94 9.41065C18.08 9.58065 18.29 9.67965 18.51 9.70065Z"
+                                      fill="currentColor"></path>
+                            </svg>
+                        </span> By <a href="https://iqonic.design/" target="_blank">IQONIC Design</a>.
+            </h6>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+</main>
+
+<!-- Library Bundle Script -->
+<script src="../assets/assets/js/core/libs.min.js"></script>
+<!-- Plugin Scripts -->
+<!-- Tour plugin Start -->
+<script src="../assets/assets/vendor/sheperd/dist/js/sheperd.min.js"></script>
+<script src="../assets/assets/js/plugins/tour.js" defer></script>
+
+<!-- Flatpickr Script -->
+<script src="../assets/assets/vendor/flatpickr/dist/flatpickr.min.js"></script>
+<script src="../assets/assets/js/plugins/flatpickr.js" defer></script>
+
+
+<!-- Slider-tab Script -->
+<script src="../assets/assets/js/plugins/slider-tabs.js"></script>
+
+
+<!-- fslightbox Script -->
+<script src="../assets/assets/js/plugins/fslightbox.js" defer></script>
+
+
+<!-- Sweet-alert Script -->
+<script src="../assets/assets/vendor/sweetalert2/dist/sweetalert2.min.js" async></script>
+<script src="../assets/assets/js/plugins/sweet-alert.js" defer></script>
+
+<!-- Select2 Script -->
+<script src="../assets/assets/js/plugins/select2.js" defer></script>
+
+
+<!-- Lodash Utility -->
+<script src="../assets/assets/vendor/lodash/lodash.min.js"></script>
+<!-- Utilities Functions -->
+<script src="../assets/assets/js/iqonic-script/utility.min.js"></script>
+<!-- Settings Script -->
+<script src="../assets/assets/js/iqonic-script/setting.min.js"></script>
+<!-- Settings Init Script -->
+<script src="../assets/assets/js/setting-init.js"></script>
+<!-- External Library Bundle Script -->
+<script src="../assets/assets/js/core/external.min.js"></script>
+<!-- Widgetchart Script -->
+<script src="../assets/assets/js/charts/widgetcharts.js?v=1.4.1" defer></script>
+<!-- Dashboard Script -->
+<script src="../assets/assets/js/charts/dashboard.js?v=1.4.1" defer></script>
+<!-- Hopeui Script -->
+<script src="../assets/assets/js/kivicare.js?v=1.4.1" defer></script>
+<script src="../assets/assets/js/kivicare-advance.js?v=1.4.1" defer></script>
+<script src="../assets/assets/js/sidebar.js?v=1.4.1" defer></script>
+
+<!-- Icons -->
+<!--<script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>-->
+<script src="../assets/jslogic/loadexistpatient.js" defer></script>
+<script src="../assets/jslogic/patient-adminsys.js" defer></script>
+<script src="../assets/jslogic/sidebar-active.js" defer></script>
+<script src="../assets/jslogic/logout.js" defer></script>
+</body>
+</html>

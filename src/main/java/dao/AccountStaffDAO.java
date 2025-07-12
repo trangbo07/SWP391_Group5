@@ -153,17 +153,23 @@ public class AccountStaffDAO {
             case "Doctor" -> "Doctor";
             case "Nurse" -> "Nurse";
             case "Receptionist" -> "Receptionist";
-            case "AdminSystem" -> "AdminSystem";
-            case "AdminBusiness" -> "AdminBusiness";
+            case "AdminSystem", "AdminBusiness" -> "Admin"; // gộp bảng Admin
             default -> null;
         };
 
         if (roleTable == null) return null;
 
         try {
-            String sql = "SELECT * FROM " + roleTable + " WHERE account_staff_id = ?";
+            String sql;
+            if (role.equals("AdminSystem") || role.equals("AdminBusiness")) {
+                sql = "SELECT * FROM Admin WHERE account_staff_id = ?";
+            } else {
+                sql = "SELECT * FROM " + roleTable + " WHERE account_staff_id = ?";
+            }
+
             PreparedStatement stmt = db.getConnection().prepareStatement(sql);
             stmt.setInt(1, account_staff_id);
+
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
@@ -235,27 +241,27 @@ public class AccountStaffDAO {
     public List<Doctor> getAllDoctors() {
         List<Doctor> doctors = new ArrayList<>();
         String sql = "SELECT * FROM Doctor ORDER BY full_name";
-        
+
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            
+
             while (rs.next()) {
                 Doctor doctor = new Doctor(
-                    rs.getInt("doctor_id"),
-                    rs.getInt("account_staff_id"),
-                    rs.getString("full_name"),
-                    rs.getString("department"),
-                    rs.getString("phone"),
-                    rs.getString("eduLevel")
+                        rs.getInt("doctor_id"),
+                        rs.getInt("account_staff_id"),
+                        rs.getString("full_name"),
+                        rs.getString("department"),
+                        rs.getString("phone"),
+                        rs.getString("eduLevel")
                 );
                 doctors.add(doctor);
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return doctors;
     }
 

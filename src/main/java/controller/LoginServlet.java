@@ -42,8 +42,7 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", account);
 
-            // Xử lý redirectUrl theo role nếu là staff
-            String redirectUrl = "view/home.html"; // default fallback
+            String redirectUrl = "view/home.html";
 
             if (account instanceof AccountStaff staff) {
                 String role = staff.getRole();
@@ -62,6 +61,7 @@ public class LoginServlet extends HttpServlet {
                         break;
                     case "AdminBusiness":
                         redirectUrl = "home-adminbusiness.html";
+                        session.setAttribute("adminBusinessId", staff.getAccountStaffId());
                         break;
                 }
             } else if (account instanceof AccountPharmacist) {

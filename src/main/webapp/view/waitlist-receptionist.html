@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en" class="theme-fs-sm" data-bs-theme="light" data-bs-theme-color="default" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Waitlist Management - Clinic Management System</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../assets/assets/images/favicon.ico" />
+    
+    <!-- Library / Plugin Css Build -->
+    <link rel="stylesheet" href="../assets/assets/css/core/libs.min.css" />
+    
+    <!-- flaticon css -->
+    <link rel="stylesheet" href="../assets/assets/vendor/flaticon/css/flaticon.css" />
+    
+    <!-- font-awesome css -->
+    <link rel="stylesheet" href="../assets/assets/vendor/font-awesome/css/all.min.css" />
+    
+    <!-- Flatpickr css -->
+    <link rel="stylesheet" href="../assets/assets/vendor/flatpickr/dist/flatpickr.min.css" />
+    
+    <!-- DataTables css -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    
+    <!-- Kivicare Design System Css -->
+    <link rel="stylesheet" href="../assets/assets/css/kivicare.min.css?v=1.4.1" />
+    
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="../assets/assets/css/custom.min.css?v=1.4.1" />
+    
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- loader Start -->
+    <div id="loading">
+        <div class="loader simple-loader">
+            <div class="loader-body">
+                <img src="../assets/assets/images/loader.gif" alt="loader" class="light-loader img-fluid" width="200">
+            </div>
+        </div>
+    </div>
+    <!-- loader END -->
+    
+    <aside class="sidebar sidebar-base" id="first-tour" data-toggle="main-sidebar" data-sidebar="responsive">
+        <div class="sidebar-header d-flex align-items-center justify-content-start">
+            <a href="home-receptionist.html" class="navbar-brand">
+                <!--Logo start-->
+                <div class="logo-main">
+                    <img class="logo-normal img-fluid" src="../assets/assets/images/logo.png" height="30" alt="logo">
+                    <img class="logo-mini img-fluid" src="../assets/assets/images/logo-mini.png" height="30" alt="logo">
+                </div>
+                <!--logo End-->
+            </a>
+            <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
+                <i class="icon">
+                    <svg class="icon-20" width="20" viewBox="0 0 24 24">
+                        <path d="M15.5 19L8.5 12L15.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </i>
+            </div>
+        </div>
+        <div class="sidebar-body pt-0 data-scrollbar">
+            <div class="sidebar-list">
+                <!-- Sidebar Menu Start -->
+                <ul class="navbar-nav iq-main-menu" id="sidebar-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home-receptionist.html">
+                            <i class="icon">
+                                <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.14373 20.7821V17.7152C9.14372 16.9381 9.77567 16.3067 10.5584 16.3018H13.4326C14.2189 16.3018 14.8563 16.9346 14.8563 17.7152V20.7732C14.8562 21.4473 15.404 21.9951 16.0829 22H18.0438C18.9596 22.0023 19.8388 21.6428 20.4872 21.0007C21.1356 20.3586 21.5 19.4868 21.5 18.5775V9.86585C21.5 9.13139 21.1721 8.43471 20.6046 7.9635L13.943 2.67427C12.7785 1.74912 11.1154 1.77901 9.98539 2.74538L3.46701 7.9635C2.87274 8.42082 2.51755 9.11956 2.5 9.86585V18.5686C2.5 20.4637 4.04738 22 5.95617 22H7.87229C8.19917 22.0023 8.51349 21.8751 8.74547 21.6464C8.97746 21.4178 9.10793 21.1067 9.10792 20.7821H9.14373Z" fill="currentColor"></path>
+                                </svg>
+                            </i>
+                            <span class="item-name">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="appointment-receptionist.html">
+                            <i class="icon">
+                                <svg width="20" class="icon-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3 16.87V9.25699H21V16.931C21 20.07 19.0241 22 15.8628 22H8.12733C4.99561 22 3 20.03 3 16.87ZM7.95938 14.41C7.50494 14.431 7.12953 14.07 7.10977 13.611C7.10977 13.151 7.46542 12.771 7.91987 12.75C8.36443 12.75 8.72997 13.101 8.73985 13.55C8.7596 14.011 8.40395 14.391 7.95938 14.41Z" fill="currentColor"/>
+                                </svg>
+                            </i>
+                            <span class="item-name">Appointments</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="waitlist-receptionist.html">
+                            <i class="icon">
+                                <svg width="20" class="icon-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.9488 14.54C8.49884 14.54 5.58789 15.1038 5.58789 17.2795C5.58789 19.4562 8.51765 20.0001 11.9488 20.0001C15.3988 20.0001 18.3098 19.4364 18.3098 17.2606C18.3098 15.084 15.38 14.54 11.9488 14.54Z" fill="currentColor"></path>
+                                    <path opacity="0.4" d="M11.949 12.467C14.2851 12.467 16.1583 10.5831 16.1583 8.23351C16.1583 5.88306 14.2851 4 11.949 4C9.61293 4 7.73975 5.88306 7.73975 8.23351C7.73975 10.5831 9.61293 12.467 11.949 12.467Z" fill="currentColor"></path>
+                                </svg>
+                            </i>
+                            <span class="item-name">Waitlist</span>
+                        </a>
+                    </li>
+                </ul>
+                <!-- Sidebar Menu End -->
+            </div>
+        </div>
+    </aside>
+    
+    <main class="main-content">
+        <div class="position-relative">
+            <nav class="nav navbar navbar-expand-lg navbar-light iq-navbar">
+                <div class="container-fluid navbar-inner">
+                    <a href="home-receptionist.html" class="navbar-brand">
+                        <h4 class="logo-title">Waitlist Management</h4>
+                    </a>
+                    <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
+                        <i class="icon">
+                            <svg width="20px" class="icon-20" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path>
+                            </svg>
+                        </i>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="container-fluid content-inner mt-n5 py-0">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title">Patient Waitlist</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="waitlist-table" class="table table-striped" role="grid">
+                                    <thead>
+                                        <tr class="ligth">
+                                            <th>Waitlist ID</th>
+                                            <th>Patient Name</th>
+                                            <th>Doctor Name</th>
+                                            <th>Room</th>
+                                            <th>Status</th>
+                                            <th>Registered At</th>
+                                            <th>Estimated Time</th>
+                                            <th>Visit Type</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Library Bundle Script -->
+    <script src="../assets/assets/js/core/libs.min.js"></script>
+    
+    <!-- Plugin Scripts -->
+    <script src="../assets/assets/vendor/flatpickr/dist/flatpickr.min.js"></script>
+    
+    <!-- Slider-tab Script -->
+    <script src="../assets/assets/js/plugins/slider-tabs.js"></script>
+    
+    <!-- Lodash Utility -->
+    <script src="../assets/assets/vendor/lodash/lodash.min.js"></script>
+    
+    <!-- Utilities Functions -->
+    <script src="../assets/assets/js/iqonic-script/utility.js"></script>
+    
+    <!-- Settings Script -->
+    <script src="../assets/assets/js/iqonic-script/setting.js"></script>
+    
+    <!-- External Library Bundle Script -->
+    <script src="../assets/assets/js/core/external.min.js"></script>
+    
+    <!-- Widgetchart Script -->
+    <script src="../assets/assets/js/charts/widgetcharts.js"></script>
+    
+    <!-- Dashboard Script -->
+    <script src="../assets/assets/js/charts/dashboard.js"></script>
+    
+    <!-- Kivicare Script -->
+    <script src="../assets/assets/js/kivicare.js"></script>
+    <script src="../assets/assets/js/kivicare-menu.js"></script>
+    
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Custom Script for Waitlist -->
+    <script src="../assets/jslogic/waitlist-receptionist.js"></script>
+</body>
+</html> 
