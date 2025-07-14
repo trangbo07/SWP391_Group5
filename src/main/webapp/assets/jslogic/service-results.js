@@ -1555,7 +1555,6 @@ enhancedStyles.textContent = `
     .result-text {
         line-height: 1.6;
         color: #495057;
-        white-space: pre-wrap;
     }
     
     .result-actions {

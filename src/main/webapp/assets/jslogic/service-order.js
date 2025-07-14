@@ -308,6 +308,7 @@ async function viewTestResults(waitlistId, patientId) {
 // Hàm hiển thị alert
 function showAlert(message, type) {
     const alertContainer = document.getElementById("alertContainer");
+    if (!alertContainer) return; // Nếu không có alertContainer thì không làm gì cả
 
     const alertHtml = `
         <div class="alert alert-${type} alert-dismissible fade show" role="alert">
