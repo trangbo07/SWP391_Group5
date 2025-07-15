@@ -50,9 +50,6 @@ public class LoginServlet extends HttpServlet {
                     case "Doctor":
                         redirectUrl = "home-doctor.html";
                         break;
-                    case "Nurse":
-                        redirectUrl = "home-nurse.html";
-                        break;
                     case "Receptionist":
                         redirectUrl = "home-receptionist.html";
                         break;

@@ -185,17 +185,6 @@ public class AccountStaffDAO {
                         );
                         staffObject = doctor;
                     }
-                    case "Nurse" -> {
-                        Nurse nurse = new Nurse(
-                                rs.getInt("nurse_id"),
-                                rs.getInt("account_staff_id"),
-                                rs.getString("full_name"),
-                                rs.getString("department"),
-                                rs.getString("phone"),
-                                rs.getString("eduLevel")
-                        );
-                        staffObject = nurse;
-                    }
                     case "Receptionist" -> {
                         Receptionist receptionist = new Receptionist(
                                 rs.getInt("receptionist_id"),

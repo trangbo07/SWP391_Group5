@@ -1,11 +1,11 @@
-document.addEventListener('DOMContentLoaded', () => {
-    loadAnnouncements();
-    setupWebSocket();
-});
-
 let announcements = [];
 const wsUrl = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws/announcements';
 let ws;
+const MAX_DISPLAY = 5;
+
+function normalizeIsRead(raw) {
+    return raw === true;
+}
 
 async function loadAnnouncements() {
     const bodyEl = document.getElementById('announcementDropdownBody');
@@ -14,9 +14,15 @@ async function loadAnnouncements() {
     try {
         const res  = await fetch('/api/announcements');
         const json = await res.json();
-        announcements = Array.isArray(json) ? json : json.data || [];
 
-        renderAnnouncements(announcements);
+        announcements = (Array.isArray(json) ? json : json.data || [])
+            .map(a => ({
+                ...a,
+                isRead: normalizeIsRead(a.isRead)
+            }));
+
+        renderNewAnnouncements(announcements);
+        updateUnreadCounter();
     } catch (err) {
         console.error('Load announcement failed:', err);
         bodyEl.innerHTML =
@@ -24,43 +30,48 @@ async function loadAnnouncements() {
     }
 }
 
-function renderAnnouncements(list) {
+function renderNewAnnouncements(list) {
     const bodyEl = document.getElementById('announcementDropdownBody');
     if (!bodyEl) return;
 
-    if (list.length === 0) {
+    const viewList = list.slice(0, MAX_DISPLAY);
+
+    if (viewList.length === 0) {
         bodyEl.innerHTML =
             '<div class="p-3 text-center text-muted">Chưa có thông báo</div>';
         return;
     }
 
-    bodyEl.innerHTML = list.map(a => `
-        <div class="d-flex gap-2 p-3 border-bottom hover-light announcement-item"
-             data-id="${a.announcementId}"
-             data-title="${a.title}"
-             data-content="${a.content}"
-             data-created="${a.createdAt}"
-             data-author="${a.createdBy ?? a.fullName ?? ''}">
-            <div class="flex-grow-1">
-                <h6 class="mb-1 fw-semibold text-truncate"
-                    style="max-width: 240px;"
-                    title="${a.title}">
-                    ${a.title}
-                </h6>
-                <small class="d-block text-truncate text-body-secondary"
-                       style="max-width: 240px;"
-                       title="${a.content}">
-                    ${a.content}
-                </small>
-                <small class="text-muted fst-italic">
-                    ${formatDate(a.createdAt)}
-                </small>
-            </div>
-        </div>
-    `).join('');
+    bodyEl.innerHTML = viewList.map(a => {
+        const isUnread = a.isRead === false;
+        const boldClass = isUnread ? 'fw-bold text-dark' : '';
+        const textSecondaryClass = isUnread ? '' : 'text-body-secondary';
 
-    // Gán lại sự kiện click modal (do innerHTML thay đổi)
-    bodyEl.onclick = (e) => {
+        return `
+            <div class="d-flex gap-2 p-3 border-bottom hover-light announcement-item ${boldClass}"
+                 data-id="${a.announcementId}"
+                 data-title="${a.title}"
+                 data-content="${a.content}"
+                 data-created="${a.createdAt}"
+                 data-author="${a.createdBy ?? a.fullName ?? ''}">
+                <div class="flex-grow-1">
+                    <h6 class="mb-1 text-truncate ${boldClass}" style="max-width:240px;" title="${a.title}">
+                        ${a.title}
+                    </h6>
+                    <small class="d-block text-truncate ${textSecondaryClass}" style="max-width:240px;" title="${a.content}">
+                        ${a.content}
+                    </small>
+                    <small class="text-muted fst-italic">
+                        ${formatDate(a.createdAt)}
+                    </small>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    updateUnreadCounter();
+
+    bodyEl.onclick = async (e) => {
         const item = e.target.closest('.announcement-item');
         if (!item) return;
 
@@ -70,10 +81,49 @@ function renderAnnouncements(list) {
             item.dataset.created,
             item.dataset.author
         );
+
+        const id = item.dataset.id;
+        if (!id) return;
+
+        try {
+            const res = await fetch(`/api/announcements`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `action=markRead&id=${encodeURIComponent(id)}`
+            });
+
+            if (res.ok) {
+                item.classList.remove('unread', 'fw-bold', 'text-dark');
+
+                const titleEl = item.querySelector('h6');
+                if (titleEl) {
+                    titleEl.classList.remove('fw-bold', 'text-dark');
+                }
+
+                item.querySelector('.badge-new')?.remove();
+
+                const counter = document.getElementById('announcementCounter');
+                if (counter) {
+                    const num = parseInt(counter.textContent || '0', 10) - 1;
+                    counter.textContent = num > 0 ? num : '';
+                }
+
+                const idx = announcements.findIndex(a => a.announcementId == id);
+                if (idx >= 0) announcements[idx].isRead = true;
+                loadAnnouncements();
+                updateUnreadCounter();
+            } else {
+                console.error('Mark-read failed:', await res.text());
+            }
+        } catch (err) {
+            console.error('Mark‑read error', err);
+        }
     };
 }
 
-function setupWebSocket() {
+function setupWebSocketDropdown() {
     ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
@@ -85,8 +135,8 @@ function setupWebSocket() {
             const msg = JSON.parse(event.data);
             switch (msg.type) {
                 case 'full':
-                    announcements = msg.data || [];
-                    renderAnnouncements(announcements);
+                    announcements = (msg.data || []).map(normalizeAnnouncement);
+                    renderNewAnnouncements(announcements);
                     break;
                 case 'new':
                     handleNewAnnouncement(msg.data);
@@ -104,7 +154,7 @@ function setupWebSocket() {
 
     ws.onclose = () => {
         console.log('WebSocket disconnected, retry in 3s');
-        setTimeout(setupWebSocket, 3000); // thử reconnect
+        setTimeout(setupWebSocketDropdown, 3000); // thử reconnect
     };
 
     ws.onerror = (err) => {
@@ -116,7 +166,8 @@ function setupWebSocket() {
 function handleDeleteAnnouncement(id) {
     if (!id) return;
     announcements = announcements.filter(a => a.announcementId !== id);
-    renderAnnouncements(announcements);
+    renderNewAnnouncements(announcements);
+    updateUnreadCounter();
 }
 
 function handleNewAnnouncement(newAnnouncement) {
@@ -130,7 +181,8 @@ function handleNewAnnouncement(newAnnouncement) {
         announcements.unshift(newAnnouncement);
     }
 
-    renderAnnouncements(announcements);
+    renderNewAnnouncements(announcements);
+    updateUnreadCounter();
 }
 
 function showAnnouncementModal(title, content, createdAt, author) {
@@ -158,3 +210,22 @@ function formatDate(iso) {
         year:  'numeric'
     });
 }
+
+function updateUnreadCounter() {
+    const counterEl = document.getElementById('announcementCounter');
+    if (!counterEl) return;
+
+    const unread = announcements.filter(a => !a.isRead).length;
+
+    if (unread > 0) {
+        counterEl.textContent = unread > 99 ? '99+' : unread;
+        counterEl.style.display = 'inline-block';
+    } else {
+        counterEl.style.display = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadAnnouncements();
+    setupWebSocketDropdown();
+});
