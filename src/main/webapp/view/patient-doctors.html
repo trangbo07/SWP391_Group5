@@ -1746,7 +1746,6 @@
             <form id="bookAppointmentForm">
                <input type="hidden" id="appointmentDoctorId">
                <div class="mb-3">
-               <div class="mb-3">
                   <label for="appointmentDoctorName" class="form-label">Bác sĩ</label>
                   <input type="text" class="form-control" id="appointmentDoctorName" readonly>
                </div>
@@ -1768,6 +1767,11 @@
                   <div id="time-slots"></div>
                </div>
                <!-- Thêm các trường khác nếu cần -->
+               <div class="mb-3">
+                  <label for="appointmentNote" class="form-label">Ghi chú cho bác sĩ (nếu có)</label>
+                  <textarea class="form-control" id="appointmentNote" rows="2" placeholder="Nhập ghi chú..." maxlength="255"></textarea>
+               </div>
+               <input type="hidden" id="appointmentPatientId" value="${sessionScope.patientId}" />
                <button id="confirmBookingBtn" type="button" class="btn btn-primary mt-3" disabled>
                    <i class="fas fa-check-circle me-2"></i>Xác nhận đặt lịch
               </button>
@@ -1793,4 +1797,12 @@
   </div>
 </div>
 <!-- End Doctor Detail Modal -->
+
+<script>
+    window.patientIdFromSession = "${sessionScope.patientId}";
+</script>
+
+
+```
+</script>
 

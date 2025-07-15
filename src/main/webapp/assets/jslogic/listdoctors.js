@@ -1,26 +1,19 @@
-// ✅ KHÔNG lặp lại DOMContentLoaded và lặp lại listener `click` nữa. Gộp và rút gọn lại
-
-// Hàm xử lý DOMContentLoaded chính
-async function initDoctorPage() {
+window.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById("doctorList");
     const departmentFilter = document.getElementById("departmentFilter");
     const searchInput = document.getElementById("searchInput");
     const clearFiltersBtn = document.getElementById("clearFilters");
     const resultsCount = document.getElementById("resultsCount");
     const sortSelect = document.getElementById("sortSelect");
-    const filterAvailableBtn = document.getElementById("filterAvailableDoctors"); // Thêm dòng này
+    const filterAvailableBtn = document.getElementById("filterAvailableDoctors");
 
     let allDoctors = [];
     let filteredDoctors = [];
     let searchTimeout;
+    let patientIdFromSession = "";
 
-    const removeVietnameseTones = (str) => {
-        return str.normalize("NFD")
-            .replace(/\u0300-\u036f/g, "")
-            .replace(/đ/g, "d")
-            .replace(/Đ/g, "D")
-            .toLowerCase();
-    };
+    const removeVietnameseTones = (str) =>
+        str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
 
     async function fetchDepartments() {
         try {
@@ -46,7 +39,6 @@ async function initDoctorPage() {
             updateResultsCount();
         } catch (err) {
             container.innerHTML = `<div class="col-12 text-center text-danger">Không thể tải danh sách bác sĩ.</div>`;
-            console.error(err);
         }
     }
 
@@ -54,7 +46,8 @@ async function initDoctorPage() {
         const rawSearch = searchInput.value.trim();
         const searchTerm = removeVietnameseTones(rawSearch);
         const selectedDepartment = departmentFilter.value;
-        if (/^\\d+$/.test(rawSearch)) {
+
+        if (/^\d+$/.test(rawSearch)) {
             filteredDoctors = [];
             renderDoctors(filteredDoctors);
             updateResultsCount();
@@ -62,17 +55,14 @@ async function initDoctorPage() {
         }
 
         if (searchTerm || selectedDepartment) {
-            container.innerHTML = `
-            <div class="col-12 text-center py-4">
+            container.innerHTML = `<div class="col-12 text-center py-4">
                 <div class="spinner-border text-primary mb-2" role="status"></div>
                 <h6>Đang tìm kiếm bác sĩ...</h6>
-            </div>
-        `;
+            </div>`;
         }
 
         setTimeout(() => {
             filteredDoctors = allDoctors.filter(d => {
-                // Chỉ so sánh với tên
                 const normalizedName = removeVietnameseTones(d.fullName);
                 const matchesSearch = !searchTerm || normalizedName.includes(searchTerm);
                 const matchesDepartment = !selectedDepartment || d.department === selectedDepartment;
@@ -125,7 +115,6 @@ async function initDoctorPage() {
         }
 
         const searchTerm = searchInput.value.trim();
-
         container.innerHTML = doctors.map(d => {
             let highlightedName = d.fullName;
             if (searchTerm) {
@@ -164,14 +153,13 @@ async function initDoctorPage() {
         updateResultsCount();
         searchInput.focus();
     }
-
     window.clearAllFilters = clearAllFilters;
 
+    // Sự kiện lọc & tìm kiếm
     searchInput?.addEventListener('input', () => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(filterDoctors, 300);
     });
-
     searchInput?.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
             searchInput.value = '';
@@ -179,7 +167,6 @@ async function initDoctorPage() {
             searchInput.blur();
         }
     });
-
     departmentFilter?.addEventListener('change', filterDoctors);
     sortSelect?.addEventListener('change', () => {
         sortDoctors();
@@ -198,7 +185,7 @@ async function initDoctorPage() {
         }
     });
 
-    document.addEventListener('click', async function(e) {
+    document.addEventListener('click', async function (e) {
         if (e.target.classList.contains('view-profile-btn')) {
             const doctorId = e.target.getAttribute('data-id');
             const modalBody = document.getElementById('doctorDetailModalBody');
@@ -240,23 +227,20 @@ async function initDoctorPage() {
                     </div>
                 </div>`;
 
-                const bookBtn = document.getElementById('bookAppointmentBtn');
-                if (bookBtn) {
-                    bookBtn.addEventListener('click', () => {
-                        bootstrap.Modal.getOrCreateInstance(document.getElementById('doctorDetailModal')).hide();
-                        document.getElementById('bookAppointmentForm').reset();
-                        document.getElementById('appointmentDoctorName').value = doctor.fullName;
-                        document.getElementById('appointmentDoctorId').value = doctor.doctorId;
+                document.getElementById('bookAppointmentBtn')?.addEventListener('click', () => {
+                    bootstrap.Modal.getOrCreateInstance(document.getElementById('doctorDetailModal')).hide();
+                    document.getElementById('bookAppointmentForm')?.reset();
+                    document.getElementById('appointmentDoctorName').value = doctor.fullName;
+                    document.getElementById('appointmentDoctorId').value = doctor.doctorId;
 
-                        const bookModal = new bootstrap.Modal(document.getElementById('bookAppointmentModal'));
-                        bookModal.show();
+                    const bookModal = new bootstrap.Modal(document.getElementById('bookAppointmentModal'));
+                    bookModal.show();
 
-                        const shift = document.getElementById('appointmentShift').value;
-                        const workingDate = document.getElementById('appointmentDate').value;
-                        if (shift && workingDate) checkDoctorSchedule(doctor.doctorId, workingDate, shift);
-                    });
-                }
-            } catch (err) {
+                    const shift = document.getElementById('appointmentShift').value;
+                    const workingDate = document.getElementById('appointmentDate').value;
+                    if (shift && workingDate) checkDoctorSchedule(doctor.doctorId, workingDate, shift);
+                });
+            } catch {
                 modalBody.innerHTML = `<div class="text-danger text-center py-4">
                     <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
                     <h5>Không thể tải thông tin bác sĩ</h5>
@@ -265,52 +249,121 @@ async function initDoctorPage() {
         }
     });
 
+    // Lấy patientId từ session
+    try {
+        const res = await fetch("/api/session/patient");
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        patientIdFromSession = data.patientId;
+        window.patientIdFromSession = patientIdFromSession;
+
+        const input = document.getElementById('appointmentPatientId') || document.createElement('input');
+        input.type = 'hidden';
+        input.id = 'appointmentPatientId';
+        input.value = patientIdFromSession;
+        document.getElementById('bookAppointmentForm')?.appendChild(input);
+    } catch {
+        alert("Bạn chưa đăng nhập hoặc không phải tài khoản bệnh nhân!");
+    }
+
+    // Sự kiện check lịch tự động
+    const shiftSelect = document.getElementById('appointmentShift');
+    const dateInput = document.getElementById('appointmentDate');
+    const doctorIdEl = document.getElementById('appointmentDoctorId');
+
+    const handleShiftOrDateChange = () => {
+        const shift = shiftSelect?.value;
+        const date = dateInput?.value;
+        const docId = doctorIdEl?.value;
+        if (shift && date && docId) checkDoctorSchedule(docId, date, shift);
+    };
+
+    shiftSelect?.addEventListener('change', handleShiftOrDateChange);
+    dateInput?.addEventListener('change', handleShiftOrDateChange);
+
+    // Nút xác nhận đặt lịch
+    document.getElementById('confirmBookingBtn')?.addEventListener('click', () => {
+        const doctorId = doctorIdEl?.value;
+        const patientId = document.getElementById('appointmentPatientId')?.value;
+        const date = dateInput?.value;
+        const shift = shiftSelect?.value;
+        const timeSlot = document.getElementById('selectedTimeSlot')?.value;
+        const note = document.getElementById('appointmentNote')?.value || "";
+
+        if (!doctorId || !patientId || !date || !shift || !timeSlot) {
+            alert("Vui lòng điền đầy đủ thông tin.");
+            return;
+        }
+
+        fetch('/api/book-appointment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ doctorId, patientId, workingDate: date, shift, timeSlot, note })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    bootstrap.Modal.getOrCreateInstance(document.getElementById('bookAppointmentModal')).hide();
+                    document.getElementById('bookAppointmentForm')?.reset();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Đặt lịch thành công!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lịch đã bị trùng vui lòng đặt lại!',
+                        text: 'Vui lòng thử lại.'
+                    });
+                }
+            })
+            .catch(() => alert("Có lỗi xảy ra!"));
+    });
+
+    filterAvailableBtn?.addEventListener("click", async () => {
+        container.innerHTML = `<div class="col-12 text-center py-4">
+            <div class="spinner-border text-primary mb-2" role="status"></div>
+            <h6>Đang tải danh sách bác sĩ có lịch làm việc...</h6>
+        </div>`;
+        try {
+            const res = await fetch("/api/doctors/available");
+            filteredDoctors = await res.json();
+            renderDoctors(filteredDoctors);
+            updateResultsCount();
+        } catch {
+            container.innerHTML = `<div class="col-12 text-center text-danger">Không thể tải danh sách bác sĩ có lịch làm việc.</div>`;
+        }
+    });
+
     await fetchDepartments();
     await loadDoctors();
+});
 
-    // Gắn sự kiện cho nút lọc bác sĩ có lịch làm việc
-    if (filterAvailableBtn) {
-        filterAvailableBtn.addEventListener("click", async () => {
-            container.innerHTML = `
-                <div class="col-12 text-center py-4">
-                    <div class="spinner-border text-primary mb-2" role="status"></div>
-                    <h6>Đang tải danh sách bác sĩ có lịch làm việc...</h6>
-                </div>
-            `;
-            try {
-                const res = await fetch("/api/doctors/available");
-                const doctors = await res.json();
-                filteredDoctors = doctors;
-                renderDoctors(filteredDoctors);
-                updateResultsCount();
-            } catch (err) {
-                container.innerHTML = `<div class="col-12 text-center text-danger">Không thể tải danh sách bác sĩ có lịch làm việc.</div>`;
-            }
-        });
-    }
-}
-
+// Hàm tạo slot giờ theo ca
 function generateTimeSlots(shift) {
-    let slots = [];
-    let start = shift === 'morning' || shift === 'Sáng' ? 8 * 60 : 13 * 60;
-    let end = shift === 'morning' || shift === 'Sáng' ? 11 * 60 : 17 * 60;
-
-    for (let time = start; time < end; time += 30) {
-        const hour = Math.floor(time / 60);
-        const minute = time % 60;
-        slots.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
+    const s = (shift || '').toLowerCase();
+    let start = s === 'morning' || s === 'sáng' ? 8 * 60 : 13 * 60;
+    let end = s === 'morning' || s === 'sáng' ? 11 * 60 : 17 * 60;
+    const slots = [];
+    for (let t = start; t < end; t += 30) {
+        const h = Math.floor(t / 60).toString().padStart(2, '0');
+        const m = (t % 60).toString().padStart(2, '0');
+        slots.push(`${h}:${m}`);
     }
     return slots;
 }
 
+// Hàm kiểm tra lịch bác sĩ
 function checkDoctorSchedule(doctorId, workingDate, shift) {
     fetch(`/api/check-doctor-schedule?doctorId=${doctorId}&workingDate=${workingDate}&shift=${shift}`)
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
             const container = document.getElementById('time-slots');
             const confirmBtn = document.getElementById('confirmBookingBtn');
             container.innerHTML = '';
-            confirmBtn.disabled = true; // Reset nút xác nhận
+            confirmBtn.disabled = true;
 
             if (data.exists) {
                 generateTimeSlots(shift).forEach(slot => {
@@ -318,120 +371,17 @@ function checkDoctorSchedule(doctorId, workingDate, shift) {
                     btn.type = 'button';
                     btn.textContent = slot;
                     btn.className = "btn btn-outline-primary m-1";
-
                     btn.addEventListener('click', () => {
-                        // Remove active từ các nút khác
                         document.querySelectorAll('#time-slots button').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
-
-                        // Gán giá trị giờ vào input ẩn
-                        const selectedTimeInput = document.getElementById('selectedTimeSlot');
-                        if (selectedTimeInput) selectedTimeInput.value = slot;
-
-                        // Bật nút xác nhận
+                        document.getElementById('selectedTimeSlot').value = slot;
                         confirmBtn.disabled = false;
                     });
-
                     container.appendChild(btn);
                 });
             } else {
                 container.textContent = 'Không có lịch cho bác sĩ này!';
             }
         })
-        .catch(err => console.error("Lỗi khi kiểm tra lịch bác sĩ:", err));
+        .catch(err => console.error("Lỗi kiểm tra lịch:", err));
 }
-
-// Gắn sự kiện tự động kiểm tra lịch khi thay đổi shift hoặc ngày
-window.addEventListener("DOMContentLoaded", () => {
-    initDoctorPage();
-
-    const shiftSelect = document.getElementById('appointmentShift');
-    const dateInput = document.getElementById('appointmentDate');
-
-    function handleShiftOrDateChange() {
-        const shift = shiftSelect.value;
-        const workingDate = dateInput.value;
-        const doctorId = document.getElementById('appointmentDoctorId').value;
-        if (shift && workingDate && doctorId) checkDoctorSchedule(doctorId, workingDate, shift);
-    }
-
-    shiftSelect?.addEventListener('change', handleShiftOrDateChange);
-    dateInput?.addEventListener('change', handleShiftOrDateChange);
-});
-window.addEventListener("DOMContentLoaded", () => {
-    const searchInput = document.getElementById("searchInput");
-    if (!searchInput) {
-        console.error("Không tìm thấy input #searchInput");
-        return;
-    }
-    let searchTimeout;
-    searchInput.addEventListener('input', () => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(filterDoctors, 300);
-    });
-});
-
-window.addEventListener("DOMContentLoaded", () => {
-    initDoctorPage();
-
-    // Sự kiện auto check lịch khi đổi ca/ngày
-    const shiftSelect = document.getElementById('appointmentShift');
-    const dateInput = document.getElementById('appointmentDate');
-    function handleShiftOrDateChange() {
-        const shift = shiftSelect?.value;
-        const workingDate = dateInput?.value;
-        const doctorId = document.getElementById('appointmentDoctorId')?.value;
-        if (shift && workingDate && doctorId) {
-            checkDoctorSchedule(doctorId, workingDate, shift);
-        }
-    }
-    shiftSelect?.addEventListener('change', handleShiftOrDateChange);
-    dateInput?.addEventListener('change', handleShiftOrDateChange);
-
-    // ✅ Gắn sự kiện xác nhận đặt lịch
-    const confirmBtn = document.getElementById('confirmBookingBtn');
-    if (confirmBtn) {
-        confirmBtn.addEventListener('click', () => {
-            const doctorIdEl = document.getElementById('appointmentDoctorId');
-            const workingDateEl = document.getElementById('appointmentDate');
-            const shiftEl = document.getElementById('appointmentShift');
-            const timeSlotEl = document.getElementById('selectedTimeSlot');
-
-            if (!doctorIdEl || !workingDateEl || !shiftEl || !timeSlotEl) {
-                alert("Thiếu phần tử trong DOM. Vui lòng mở đúng modal.");
-                return;
-            }
-
-            const doctorId = doctorIdEl.value;
-            const workingDate = workingDateEl.value;
-            const shift = shiftEl.value;
-            const timeSlot = timeSlotEl.value;
-
-            if (!doctorId || !workingDate || !shift || !timeSlot) {
-                alert("Vui lòng chọn đầy đủ thông tin.");
-                return;
-            }
-
-            fetch('/api/book-appointment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ doctorId, workingDate, shift, timeSlot })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("Đặt lịch thành công!");
-                        bootstrap.Modal.getOrCreateInstance(document.getElementById('bookAppointmentModal')).hide();
-                    } else {
-                        alert("Đặt lịch thất bại. Vui lòng thử lại.");
-                    }
-                })
-                .catch(err => {
-                    console.error("Lỗi khi đặt lịch:", err);
-                    alert("Có lỗi xảy ra!");
-                });
-        });
-    } else {
-        console.warn("Không tìm thấy nút #confirmBookingBtn trong DOM.");
-    }
-});
