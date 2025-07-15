@@ -9,43 +9,8 @@ import java.util.List;
 
 public class DoctorDAO {
 
-    public static List<DoctorDTO> getDoctorsWithUpcomingSchedule() {
-        List<DoctorDTO> list = new ArrayList<>();
 
-        String sql = """
-         SELECT DISTINCT *
-         FROM Doctor d
-         JOIN DoctorSchedule ds ON d.doctor_id = ds.doctor_id
-         Join AccountStaff ac on d.account_staff_id = ac.account_staff_id
-         WHERE ds.is_available = 1
-         AND ds.working_date > CAST(GETDATE() AS DATE)
-        """;
 
-        try (Connection conn = DBContext.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                DoctorDTO dto = new DoctorDTO(
-                        rs.getInt("doctor_id"),
-                        rs.getString("full_name"),
-                        rs.getString("department"),
-                        rs.getString("eduLevel"),
-                        "/assets/assets/images/doctor/" + rs.getInt("doctor_id") + ".webp", // ảnh tự động
-                        rs.getString("phone"),
-                        rs.getString("email"),
-                        rs.getString("role")
-                );
-                list.add(dto);
-            }
-
-        } catch (Exception e) {
-            System.err.println("Error in getAllDoctorDTOs: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        return list;
-    }
     public List<DoctorDTO> getAllDoctorDTOs() {
         List<DoctorDTO> list = new ArrayList<>();
 

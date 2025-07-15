@@ -318,7 +318,7 @@ async function assignServices(waitlistId, patientId) {
 async function viewTestResults(waitlistId, patientId) {
     try {
         console.log('Viewing test results for:', { waitlistId, patientId });
-        
+
         // Lấy thông tin chi tiết của waitlist để có medicine_record_id
         const waitlistResponse = await fetch(`/api/doctor/waitlist?action=detail&id=${waitlistId}`, {
             method: 'GET',
@@ -753,73 +753,73 @@ window.assignServices = assignServices;
 window.displayEmptyState = displayEmptyState;
 
 
-    // Ensure all required functions are available immediately
-    window.loadServiceOrderWaitlist = window.loadServiceOrderWaitlist || function() {
-        console.log('Loading service order waitlist...');
-        // Will be defined by service-order.js
-    };
-    
-    window.loadMyServiceOrders = window.loadMyServiceOrders || function() {
-        console.log('Loading my service orders...');
-        // Will be defined by service-order.js
-    };
-    
-    window.searchServiceOrder = window.searchServiceOrder || function() {
-        console.log('Searching service order...');
-        // Will be defined by service-order.js
-    };
-    
-    window.searchByMedicineRecord = window.searchByMedicineRecord || function() {
-        console.log('Searching by medicine record...');
-        // Will be defined by service-order.js
-    };
-    
-    window.searchByPatientName = window.searchByPatientName || function() {
-        console.log('Searching by patient name...');
-        // Will be defined by service-order.js
-    };
-    
-    window.loadDoctorHistory = window.loadDoctorHistory || function() {
-        console.log('Loading doctor history...');
-        // Will be defined by service-order.js
-    };
-    
-    window.demoGetServiceOrderDetails = window.demoGetServiceOrderDetails || function() {
-        console.log('Demo: Get service order details');
-        // Will be defined by service-order.js
-    };
-    
-    window.demoGetPatientHistory = window.demoGetPatientHistory || function() {
-        console.log('Demo: Get patient history');
-        // Will be defined by service-order.js
-    };
-    
-    window.demoGetDoctorHistory = window.demoGetDoctorHistory || function() {
-        console.log('Demo: Get doctor history');
-        // Will be defined by service-order.js
-    };
-    
-    window.demoSearchByPatientName = window.demoSearchByPatientName || function() {
-        console.log('Demo: Search by patient name');
-        // Will be defined by service-order.js
-    };
-    
-    window.runDebugTests = window.runDebugTests || function() {
-        console.log('Running debug tests...');
-        // Will be defined by service-order.js
-    };
-    
-    window.printServiceOrder = window.printServiceOrder || function() {
-        console.log('Printing service order...');
-        window.print();
-    };
-    
-    // Additional UI Functions
-    function showStatistics() {
-        // Create a beautiful statistics modal
-        const modal = document.createElement('div');
-        modal.className = 'statistics-modal';
-        modal.innerHTML = `
+// Ensure all required functions are available immediately
+window.loadServiceOrderWaitlist = window.loadServiceOrderWaitlist || function() {
+    console.log('Loading service order waitlist...');
+    // Will be defined by service-order.js
+};
+
+window.loadMyServiceOrders = window.loadMyServiceOrders || function() {
+    console.log('Loading my service orders...');
+    // Will be defined by service-order.js
+};
+
+window.searchServiceOrder = window.searchServiceOrder || function() {
+    console.log('Searching service order...');
+    // Will be defined by service-order.js
+};
+
+window.searchByMedicineRecord = window.searchByMedicineRecord || function() {
+    console.log('Searching by medicine record...');
+    // Will be defined by service-order.js
+};
+
+window.searchByPatientName = window.searchByPatientName || function() {
+    console.log('Searching by patient name...');
+    // Will be defined by service-order.js
+};
+
+window.loadDoctorHistory = window.loadDoctorHistory || function() {
+    console.log('Loading doctor history...');
+    // Will be defined by service-order.js
+};
+
+window.demoGetServiceOrderDetails = window.demoGetServiceOrderDetails || function() {
+    console.log('Demo: Get service order details');
+    // Will be defined by service-order.js
+};
+
+window.demoGetPatientHistory = window.demoGetPatientHistory || function() {
+    console.log('Demo: Get patient history');
+    // Will be defined by service-order.js
+};
+
+window.demoGetDoctorHistory = window.demoGetDoctorHistory || function() {
+    console.log('Demo: Get doctor history');
+    // Will be defined by service-order.js
+};
+
+window.demoSearchByPatientName = window.demoSearchByPatientName || function() {
+    console.log('Demo: Search by patient name');
+    // Will be defined by service-order.js
+};
+
+window.runDebugTests = window.runDebugTests || function() {
+    console.log('Running debug tests...');
+    // Will be defined by service-order.js
+};
+
+window.printServiceOrder = window.printServiceOrder || function() {
+    console.log('Printing service order...');
+    window.print();
+};
+
+// Additional UI Functions
+function showStatistics() {
+    // Create a beautiful statistics modal
+    const modal = document.createElement('div');
+    modal.className = 'statistics-modal';
+    modal.innerHTML = `
             <div class="statistics-content">
                 <div class="statistics-header">
                     <h4><i class="fas fa-chart-line me-2"></i>Service Order Statistics</h4>
@@ -865,10 +865,10 @@ window.displayEmptyState = displayEmptyState;
                 </div>
             </div>
         `;
-        
-        // Add styles for the modal
-        const style = document.createElement('style');
-        style.textContent = `
+
+    // Add styles for the modal
+    const style = document.createElement('style');
+    style.textContent = `
             .statistics-modal {
                 position: fixed;
                 top: 0;
@@ -982,65 +982,65 @@ window.displayEmptyState = displayEmptyState;
                 to { transform: translateY(0); opacity: 1; }
             }
         `;
-        
-        document.head.appendChild(style);
-        document.body.appendChild(modal);
+
+    document.head.appendChild(style);
+    document.body.appendChild(modal);
+}
+
+function refreshAllData() {
+    // Show loading animation
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    if (loadingSpinner) {
+        loadingSpinner.style.display = 'flex';
     }
-    
-    function refreshAllData() {
-        // Show loading animation
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.style.display = 'flex';
-        }
-        
-        // Add smooth refresh animation
-        document.body.style.opacity = '0.8';
-        setTimeout(() => {
-            location.reload();
-        }, 500);
-    }
-    
-    // Enhanced smooth scrolling and animations
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add smooth scrolling to all internal links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+
+    // Add smooth refresh animation
+    document.body.style.opacity = '0.8';
+    setTimeout(() => {
+        location.reload();
+    }, 500);
+}
+
+// Enhanced smooth scrolling and animations
+document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth scrolling to all internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
         });
-        
-        // Add entrance animations to cards
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animation = 'slideInUp 0.6s ease forwards';
-                }
-            });
-        }, observerOptions);
-        
-        // Observe all cards
-        document.querySelectorAll('.modern-card, .action-card, .search-section').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            observer.observe(card);
+    });
+
+    // Add entrance animations to cards
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'slideInUp 0.6s ease forwards';
+            }
         });
-        
-        // Add CSS for entrance animations
-        const animationStyle = document.createElement('style');
-        animationStyle.textContent = `
+    }, observerOptions);
+
+    // Observe all cards
+    document.querySelectorAll('.modern-card, .action-card, .search-section').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        observer.observe(card);
+    });
+
+    // Add CSS for entrance animations
+    const animationStyle = document.createElement('style');
+    animationStyle.textContent = `
             @keyframes slideInUp {
                 to {
                     opacity: 1;
@@ -1061,36 +1061,36 @@ window.displayEmptyState = displayEmptyState;
                 color: #667eea;
             }
         `;
-        document.head.appendChild(animationStyle);
-        
-        // Add keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Ctrl + F to focus search
-            if (e.ctrlKey && e.key === 'f') {
-                e.preventDefault();
-                const searchInput = document.getElementById('serviceOrderIdInput');
-                if (searchInput) {
-                    searchInput.focus();
-                    document.getElementById('searchSection').scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
+    document.head.appendChild(animationStyle);
+
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl + F to focus search
+        if (e.ctrlKey && e.key === 'f') {
+            e.preventDefault();
+            const searchInput = document.getElementById('serviceOrderIdInput');
+            if (searchInput) {
+                searchInput.focus();
+                document.getElementById('searchSection').scrollIntoView({
+                    behavior: 'smooth'
+                });
             }
-            
-            // Ctrl + R to refresh
-            if (e.ctrlKey && e.key === 'r') {
-                e.preventDefault();
-                refreshAllData();
-            }
-        });
-        
-        // Add tooltips to buttons
-        document.querySelectorAll('.btn-modern, .btn-demo').forEach(btn => {
-            btn.addEventListener('mouseenter', function() {
-                const tooltip = document.createElement('div');
-                tooltip.className = 'tooltip-modern';
-                tooltip.textContent = this.getAttribute('title') || this.textContent;
-                tooltip.style.cssText = `
+        }
+
+        // Ctrl + R to refresh
+        if (e.ctrlKey && e.key === 'r') {
+            e.preventDefault();
+            refreshAllData();
+        }
+    });
+
+    // Add tooltips to buttons
+    document.querySelectorAll('.btn-modern, .btn-demo').forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip-modern';
+            tooltip.textContent = this.getAttribute('title') || this.textContent;
+            tooltip.style.cssText = `
                     position: absolute;
                     background: #2d3748;
                     color: white;
@@ -1104,18 +1104,18 @@ window.displayEmptyState = displayEmptyState;
                     transition: opacity 0.3s;
                     pointer-events: none;
                 `;
-                
-                document.body.appendChild(tooltip);
-                
-                const rect = this.getBoundingClientRect();
-                tooltip.style.left = rect.left + rect.width / 2 + 'px';
-                tooltip.style.top = rect.top - tooltip.offsetHeight - 10 + 'px';
-                
-                setTimeout(() => tooltip.style.opacity = '1', 100);
-                
-                this.addEventListener('mouseleave', function() {
-                    tooltip.remove();
-                }, { once: true });
-            });
+
+            document.body.appendChild(tooltip);
+
+            const rect = this.getBoundingClientRect();
+            tooltip.style.left = rect.left + rect.width / 2 + 'px';
+            tooltip.style.top = rect.top - tooltip.offsetHeight - 10 + 'px';
+
+            setTimeout(() => tooltip.style.opacity = '1', 100);
+
+            this.addEventListener('mouseleave', function() {
+                tooltip.remove();
+            }, { once: true });
         });
     });
+});

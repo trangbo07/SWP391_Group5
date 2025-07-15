@@ -57,24 +57,30 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Quick Actions Styles */
         .quick-action-btn {
             display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 10px;
-    height: 160px; /* Chiều cao cố định cho đồng đều */
-    justify-content: center;
-    text-decoration: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 10px;
+            height: 160px; /* Chiều cao cố định cho đồng đều */
+            justify-content: center;
+            text-decoration: none;
         }
 
         .quick-action-btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
         .quick-action-btn .btn-icon {
@@ -86,16 +92,16 @@
         }
 
         .quick-action-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 15px;
             transition: all 0.3s ease;
         }
 
         .quick-action-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -192,8 +198,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./appointment-doctor.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Appointment" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V8H19V19ZM7 10H12V15H7V10Z" fill="currentColor"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V8H19V19ZM7 10H12V15H7V10Z"
+                                      fill="currentColor"/>
                             </svg>
                         </i>
                         <span class="item-name">Appointment</span>
@@ -202,8 +210,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./examination.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Wait List" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z" fill="currentColor"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z"
+                                      fill="currentColor"/>
                             </svg>
                         </i>
                         <span class="item-name">Wait List</span>
@@ -212,9 +222,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./service-order.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Service Order" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="currentColor"/>
-                                <path d="M14 2C13.45 2 13 2.45 13 3S13.45 4 14 4H16V6H13C12.45 6 12 6.45 12 7S12.45 8 13 8H16V10H14C13.45 10 13 10.45 13 11S13.45 12 14 12H16V14H13C12.45 14 12 14.45 12 15S12.45 16 13 16H16V18H14C13.45 18 13 18.45 13 19S13.45 20 14 20H18C18.55 20 19 19.55 19 19V3C19 2.45 18.55 2 18 2H14Z" fill="currentColor"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"
+                                      fill="currentColor"/>
+                                <path d="M14 2C13.45 2 13 2.45 13 3S13.45 4 14 4H16V6H13C12.45 6 12 6.45 12 7S12.45 8 13 8H16V10H14C13.45 10 13 10.45 13 11S13.45 12 14 12H16V14H13C12.45 14 12 14.45 12 15S12.45 16 13 16H16V18H14C13.45 18 13 18.45 13 19S13.45 20 14 20H18C18.55 20 19 19.55 19 19V3C19 2.45 18.55 2 18 2H14Z"
+                                      fill="currentColor"/>
                             </svg>
                         </i>
                         <span class="item-name">Service Order</span>
@@ -223,8 +236,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./diagnosis.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Diagnosis" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z" fill="currentColor"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"
+                                      fill="currentColor"/>
                                 <path d="M11 7H13V17H11V7ZM7 11H17V13H7V11Z" fill="currentColor"/>
                             </svg>
                         </i>
@@ -237,8 +252,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./assigned-services.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Assigned Services" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M22 16V4C22 2.9 21.1 2 20 2H8C6.9 2 6 2.9 6 4V16C6 17.1 6.9 18 8 18H20C21.1 18 22 17.1 22 16ZM20 16H8V4H20V16Z" fill="currentColor"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 16V4C22 2.9 21.1 2 20 2H8C6.9 2 6 2.9 6 4V16C6 17.1 6.9 18 8 18H20C21.1 18 22 17.1 22 16ZM20 16H8V4H20V16Z"
+                                      fill="currentColor"/>
                                 <path d="M4 6H2V20C2 21.1 2.9 22 4 22H18V20H4V6Z" fill="currentColor"/>
                                 <path d="M10 6H18V8H10V6ZM10 10H16V12H10V10ZM10 14H18V16H10V14Z" fill="currentColor"/>
                             </svg>
@@ -249,8 +266,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./service-results.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Service Results" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                                      stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                      stroke-linejoin="round"/>
                             </svg>
                         </i>
                         <span class="item-name">Service Results</span>
@@ -621,37 +641,51 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="mb-2 navbar-nav ms-auto align-items-center navbar-list mb-lg-0">
                         <li class="nav-item dropdown">
-                            <a href="#" class="nav-link show" id="notification-drop" data-bs-toggle="dropdown" aria-expanded="true">
-                                <div class="nav-list-icon">
-                                    <div class="btn-inner">
-                                        <svg class="icon-20" width="19" height="22" viewBox="0 0 19 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <mask style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="19" height="18">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.15527e-05 0H18.497V17.348H9.15527e-05V0Z" fill="white"></path>
+                            <a href="#" class="nav-link show" id="notification-drop" data-bs-toggle="dropdown"
+                               aria-expanded="true">
+                                <div class="btn-action position-relative nav-list-icon">
+                                        <svg class="icon-20" width="19" height="22" viewBox="0 0 19 22" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <mask style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0"
+                                                  width="19" height="18">
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                      d="M9.15527e-05 0H18.497V17.348H9.15527e-05V0Z"
+                                                      fill="white"></path>
                                             </mask>
                                             <g>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.2471 1.5C5.75211 1.5 3.3161 4.238 3.3161 6.695C3.3161 8.774 2.7391 9.735 2.2291 10.583C1.8201 11.264 1.4971 11.802 1.4971 12.971C1.6641 14.857 2.90911 15.848 9.2471 15.848C15.5501 15.848 16.8341 14.813 17.0001 12.906C16.9971 11.802 16.6741 11.264 16.2651 10.583C15.7551 9.735 15.1781 8.774 15.1781 6.695C15.1781 4.238 12.7421 1.5 9.2471 1.5ZM9.2471 17.348C4.5711 17.348 0.345105 17.018 0.000104907 13.035C-0.00289509 11.387 0.500105 10.549 0.944105 9.811C1.3931 9.063 1.8161 8.358 1.8161 6.695C1.8161 3.462 4.8021 0 9.2471 0C13.6921 0 16.6781 3.462 16.6781 6.695C16.6781 8.358 17.1011 9.063 17.5501 9.811C17.9941 10.549 18.4971 11.387 18.4971 12.971C18.1481 17.018 13.9231 17.348 9.2471 17.348Z" fill="currentColor"></path>
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                      d="M9.2471 1.5C5.75211 1.5 3.3161 4.238 3.3161 6.695C3.3161 8.774 2.7391 9.735 2.2291 10.583C1.8201 11.264 1.4971 11.802 1.4971 12.971C1.6641 14.857 2.90911 15.848 9.2471 15.848C15.5501 15.848 16.8341 14.813 17.0001 12.906C16.9971 11.802 16.6741 11.264 16.2651 10.583C15.7551 9.735 15.1781 8.774 15.1781 6.695C15.1781 4.238 12.7421 1.5 9.2471 1.5ZM9.2471 17.348C4.5711 17.348 0.345105 17.018 0.000104907 13.035C-0.00289509 11.387 0.500105 10.549 0.944105 9.811C1.3931 9.063 1.8161 8.358 1.8161 6.695C1.8161 3.462 4.8021 0 9.2471 0C13.6921 0 16.6781 3.462 16.6781 6.695C16.6781 8.358 17.1011 9.063 17.5501 9.811C17.9941 10.549 18.4971 11.387 18.4971 12.971C18.1481 17.018 13.9231 17.348 9.2471 17.348Z"
+                                                      fill="currentColor"></path>
                                             </g>
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.1983 21.5001H9.1963C8.0753 21.4991 7.0143 21.0051 6.2093 20.1081C5.9323 19.8011 5.9573 19.3261 6.2653 19.0501C6.5733 18.7721 7.0473 18.7971 7.3243 19.1061C7.8423 19.6831 8.5073 20.0001 9.1973 20.0001H9.1983C9.8913 20.0001 10.5593 19.6831 11.0783 19.1051C11.3563 18.7981 11.8303 18.7731 12.1373 19.0501C12.4453 19.3271 12.4703 19.8021 12.1933 20.1091C11.3853 21.0061 10.3223 21.5001 9.1983 21.5001Z" fill="currentColor"></path>
+                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                  d="M9.1983 21.5001H9.1963C8.0753 21.4991 7.0143 21.0051 6.2093 20.1081C5.9323 19.8011 5.9573 19.3261 6.2653 19.0501C6.5733 18.7721 7.0473 18.7971 7.3243 19.1061C7.8423 19.6831 8.5073 20.0001 9.1973 20.0001H9.1983C9.8913 20.0001 10.5593 19.6831 11.0783 19.1051C11.3563 18.7981 11.8303 18.7731 12.1373 19.0501C12.4453 19.3271 12.4703 19.8021 12.1933 20.1091C11.3853 21.0061 10.3223 21.5001 9.1983 21.5001Z"
+                                                  fill="currentColor"></path>
                                         </svg>
-                                        <span class="bg-danger dots"></span>
-                                    </div>
+                                        <span id="announcementCounter"
+                                              class="badge-notification">0</span>
                                 </div>
                             </a>
-                            <div class="p-0 sub-drop dropdown-menu dropdown-menu-end" aria-labelledby="notification-drop" data-bs-popper="static">
-                                <div class="m-0 shadow-none card">
-                                    <div class="py-3 card-header d-flex justify-content-between bg-primary mb-0">
+                            <div class="p-0 sub-drop dropdown-menu dropdown-menu-end"
+                                 aria-labelledby="notification-drop" data-bs-popper="static">
+                                <div class="m-0 shadow-sm card border-0 rounded-3">
+                                    <!-- Header -->
+                                    <div class="py-3 card-header d-flex justify-content-between align-items-center bg-primary text-white rounded-top">
                                         <div class="header-title">
-                                            <h5 class="mb-0 text-white">All Announcements</h5>
+                                            <h6 class="mb-0 text-white">All Announcements</h6>
                                         </div>
+                                        <i class="fas fa-bell"></i>
                                     </div>
+
                                     <div class="p-0 card-body" id="announcementDropdownBody">
+
                                     </div>
-                                    <div class="card-footer text-center">
-                                        <a href="announcements-doctor.html">
+
+                                    <div class="card-footer text-center bg-light border-top">
+                                        <a href="announcements-doctor.html"
+                                           class="text-primary text-decoration-none fw-semibold">
                                             View more <i class="fas fa-angle-right ms-1"></i>
                                         </a>
                                     </div>
-
                                 </div>
                             </div>
                         </li>
@@ -784,7 +818,7 @@
                             </a>
                         </div>
                         <div id="scheduleContainer" class="mt-4 d-none">
-                              <h5>Doctor's Weekly Schedule</h5>
+                            <h5>Doctor's Weekly Schedule</h5>
                             <table class="table table-bordered text-center">
                                 <thead class="table-light">
                                 <tr>
@@ -801,15 +835,33 @@
                                 <tbody>
                                 <tr>
                                     <td>08:00 - 10:00</td>
-                                    <td>✅</td><td>✅</td><td></td><td>✅</td><td></td><td>✅</td><td></td>
+                                    <td>✅</td>
+                                    <td>✅</td>
+                                    <td></td>
+                                    <td>✅</td>
+                                    <td></td>
+                                    <td>✅</td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <td>10:00 - 12:00</td>
-                                    <td></td><td>✅</td><td>✅</td><td></td><td>✅</td><td></td><td></td>
+                                    <td></td>
+                                    <td>✅</td>
+                                    <td>✅</td>
+                                    <td></td>
+                                    <td>✅</td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <td>14:00 - 16:00</td>
-                                    <td>✅</td><td></td><td>✅</td><td></td><td></td><td></td><td>✅</td>
+                                    <td>✅</td>
+                                    <td></td>
+                                    <td>✅</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>✅</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -820,28 +872,35 @@
                             <h4 class="mb-4">Quick Actions</h4>
                             <div class="row g-3">
                                 <div class="col-md-3 col-sm-6">
-                                    <a href="./examination.html" class="btn btn-outline-primary w-100 py-3 text-center quick-action-btn">
-                                        <i class="fas fa-file-medical mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
+                                    <a href="./examination.html"
+                                       class="btn btn-outline-primary w-100 py-3 text-center quick-action-btn">
+                                        <i class="fas fa-file-medical mb-2 d-block btn-icon"
+                                           style="font-size: 1.5rem;"></i>
                                         <span class="d-block fw-bold">Wait List</span>
                                         <small class="text-muted">Manage patients</small>
                                     </a>
                                 </div>
                                 <div class="col-md-3 col-sm-6">
-                                    <a href="./service-order.html" class="btn btn-outline-success w-100 py-3 text-center quick-action-btn">
-                                        <i class="fas fa-clipboard-list mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
+                                    <a href="./service-order.html"
+                                       class="btn btn-outline-success w-100 py-3 text-center quick-action-btn">
+                                        <i class="fas fa-clipboard-list mb-2 d-block btn-icon"
+                                           style="font-size: 1.5rem;"></i>
                                         <span class="d-block fw-bold">Service Orders</span>
                                         <small class="text-muted">View orders</small>
                                     </a>
                                 </div>
                                 <div class="col-md-3 col-sm-6">
-                                    <a href="./diagnosis.html" class="btn btn-outline-info w-100 py-3 text-center quick-action-btn">
-                                        <i class="fas fa-notes-medical mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
+                                    <a href="./diagnosis.html"
+                                       class="btn btn-outline-info w-100 py-3 text-center quick-action-btn">
+                                        <i class="fas fa-notes-medical mb-2 d-block btn-icon"
+                                           style="font-size: 1.5rem;"></i>
                                         <span class="d-block fw-bold">Paraclinical</span>
                                         <small class="text-muted">Orders & Results</small>
                                     </a>
                                 </div>
                                 <div class="col-md-3 col-sm-6">
-                                    <a href="./assigned-services.html" class="btn btn-outline-warning w-100 py-3 text-center quick-action-btn">
+                                    <a href="./assigned-services.html"
+                                       class="btn btn-outline-warning w-100 py-3 text-center quick-action-btn">
                                         <i class="fas fa-tasks mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
                                         <span class="d-block fw-bold">Assigned Services</span>
                                         <small class="text-muted">My tasks</small>
@@ -2165,7 +2224,6 @@
     </svg>
 </a>        <!-- Live Customizer end -->
 <!-- Wrapper End-->
-
 
 
 <!-- Library Bundle Script -->

@@ -807,9 +807,6 @@
                         </select>
                     </div>
                     <div class="col-lg-3 col-md-12 col-sm-6">
-                       <button id="filterAvailableDoctors" class="btn btn-success btn-lg rounded-pill shadow-sm w-100 mb-2">
-                          <i class="fas fa-user-md me-2"></i>Bác sĩ có lịch làm việc
-                       </button>
                         <button id="clearFilters" class="btn btn-outline-secondary btn-lg w-100"
                                 data-bs-toggle="tooltip"
                                 data-bs-placement="top"
@@ -818,7 +815,6 @@
                             <i class="fas fa-times me-2"></i>Xóa bộ lọc
                         </button>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -1728,55 +1724,7 @@
     </body>
 </html>
 
-
-<!-- Icons -->
-<script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>
-</body>
-</html>
-<div class="modal fade" id="bookAppointmentModal" tabindex="-1" aria-labelledby="bookAppointmentModalLabel" aria-hidden="true">
-   <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-         <div class="modal-header bg-success text-white">
-            <h5 class="modal-title" id="bookAppointmentModalLabel">
-               <i class="fas fa-calendar-plus me-2"></i>Đặt lịch hẹn với bác sĩ
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-         </div>
-         <div class="modal-body">
-            <form id="bookAppointmentForm">
-               <input type="hidden" id="appointmentDoctorId">
-               <div class="mb-3">
-               <div class="mb-3">
-                  <label for="appointmentDoctorName" class="form-label">Bác sĩ</label>
-                  <input type="text" class="form-control" id="appointmentDoctorName" readonly>
-               </div>
-               <div class="mb-3">
-                  <label for="appointmentDate" class="form-label">Chọn ngày</label>
-                  <input type="date" class="form-control" id="appointmentDate" required>
-               </div>
-               <div class="mb-3">
-                  <label for="appointmentShift" class="form-label">Chọn ca</label>
-                  <select class="form-select" id="appointmentShift" required>
-                     <option value="">-- Chọn ca --</option>
-                     <option value="Morning">Sáng</option>
-                     <option value="Afternoon">Chiều</option>
-                  </select>
-               </div>
-               <div class="mb-3">
-                  <label class="form-label">Khung giờ khả dụng</label>
-                  <input type="hidden" id="selectedTimeSlot">
-                  <div id="time-slots"></div>
-               </div>
-               <!-- Thêm các trường khác nếu cần -->
-               <button id="confirmBookingBtn" type="button" class="btn btn-primary mt-3" disabled>
-                   <i class="fas fa-check-circle me-2"></i>Xác nhận đặt lịch
-              </button>
-             </form>
-         </div>
-      </div>
-   </div>
-</div>
-
+<!-- Doctor Detail Modal -->
 <div class="modal fade" id="doctorDetailModal" tabindex="-1" aria-labelledby="doctorDetailModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
@@ -1793,4 +1741,3 @@
   </div>
 </div>
 <!-- End Doctor Detail Modal -->
-
