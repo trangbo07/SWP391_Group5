@@ -57,24 +57,30 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Quick Actions Styles */
         .quick-action-btn {
             display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 10px;
-    height: 160px; /* Chiều cao cố định cho đồng đều */
-    justify-content: center;
-    text-decoration: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 10px;
+            height: 160px; /* Chiều cao cố định cho đồng đều */
+            justify-content: center;
+            text-decoration: none;
         }
 
         .quick-action-btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
         .quick-action-btn .btn-icon {
@@ -86,16 +92,16 @@
         }
 
         .quick-action-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 15px;
             transition: all 0.3s ease;
         }
 
         .quick-action-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -192,8 +198,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./appointment-doctor.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Appointment" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V8H19V19ZM7 10H12V15H7V10Z" fill="currentColor"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V8H19V19ZM7 10H12V15H7V10Z"
+                                      fill="currentColor"/>
                             </svg>
                         </i>
                         <span class="item-name">Appointment</span>
@@ -202,8 +210,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./examination.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Wait List" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z" fill="currentColor"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z"
+                                      fill="currentColor"/>
                             </svg>
                         </i>
                         <span class="item-name">Wait List</span>
@@ -212,9 +222,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./service-order.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Service Order" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="currentColor"/>
-                                <path d="M14 2C13.45 2 13 2.45 13 3S13.45 4 14 4H16V6H13C12.45 6 12 6.45 12 7S12.45 8 13 8H16V10H14C13.45 10 13 10.45 13 11S13.45 12 14 12H16V14H13C12.45 14 12 14.45 12 15S12.45 16 13 16H16V18H14C13.45 18 13 18.45 13 19S13.45 20 14 20H18C18.55 20 19 19.55 19 19V3C19 2.45 18.55 2 18 2H14Z" fill="currentColor"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"
+                                      fill="currentColor"/>
+                                <path d="M14 2C13.45 2 13 2.45 13 3S13.45 4 14 4H16V6H13C12.45 6 12 6.45 12 7S12.45 8 13 8H16V10H14C13.45 10 13 10.45 13 11S13.45 12 14 12H16V14H13C12.45 14 12 14.45 12 15S12.45 16 13 16H16V18H14C13.45 18 13 18.45 13 19S13.45 20 14 20H18C18.55 20 19 19.55 19 19V3C19 2.45 18.55 2 18 2H14Z"
+                                      fill="currentColor"/>
                             </svg>
                         </i>
                         <span class="item-name">Service Order</span>
@@ -223,8 +236,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./diagnosis.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Diagnosis" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z" fill="currentColor"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z"
+                                      fill="currentColor"/>
                                 <path d="M11 7H13V17H11V7ZM7 11H17V13H7V11Z" fill="currentColor"/>
                             </svg>
                         </i>
@@ -237,8 +252,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./assigned-services.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Assigned Services" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M22 16V4C22 2.9 21.1 2 20 2H8C6.9 2 6 2.9 6 4V16C6 17.1 6.9 18 8 18H20C21.1 18 22 17.1 22 16ZM20 16H8V4H20V16Z" fill="currentColor"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 16V4C22 2.9 21.1 2 20 2H8C6.9 2 6 2.9 6 4V16C6 17.1 6.9 18 8 18H20C21.1 18 22 17.1 22 16ZM20 16H8V4H20V16Z"
+                                      fill="currentColor"/>
                                 <path d="M4 6H2V20C2 21.1 2.9 22 4 22H18V20H4V6Z" fill="currentColor"/>
                                 <path d="M10 6H18V8H10V6ZM10 10H16V12H10V10ZM10 14H18V16H10V14Z" fill="currentColor"/>
                             </svg>
@@ -249,8 +266,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./service-results.html">
                         <i class="icon" data-bs-toggle="tooltip" title="Service Results" data-bs-placement="right">
-                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                                      stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                      stroke-linejoin="round"/>
                             </svg>
                         </i>
                         <span class="item-name">Service Results</span>
@@ -747,596 +767,112 @@
         </nav>            <!--Nav End-->
     </div>
     <div class="content-inner container-fluid pb-0" id="page_layout">
-
-        <div class="d-flex align-items-center mb-4 mb-4 pb-3 pt-3">
-            <svg class="icon-18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                        d="M9.15722 20.7714V17.7047C9.1572 16.9246 9.79312 16.2908 10.581 16.2856H13.4671C14.2587 16.2856 14.9005 16.9209 14.9005 17.7047V17.7047V20.7809C14.9003 21.4432 15.4343 21.9845 16.103 22H18.0271C19.9451 22 21.5 20.4607 21.5 18.5618V18.5618V9.83784C21.4898 9.09083 21.1355 8.38935 20.538 7.93303L13.9577 2.6853C12.8049 1.77157 11.1662 1.77157 10.0134 2.6853L3.46203 7.94256C2.86226 8.39702 2.50739 9.09967 2.5 9.84736V18.5618C2.5 20.4607 4.05488 22 5.97291 22H7.89696C8.58235 22 9.13797 21.4499 9.13797 20.7714V20.7714"
-                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-            <svg class="mx-1 icon-18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8.5 5L15.5 12L8.5 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                      stroke-linejoin="round"></path>
-            </svg>
-            <span class="head-title fw-500 mt-1">Dashboard</span>
-        </div>
         <div class="row">
-            <div class="col-lg-8">
-                <div class="d-flex align-items-center justify-content-between flex-sm-row flex-column-reverse">
-                    <div>
-                        <h1 class="fs-37">
-                            <span class="left-text text-capitalize fw-light">Hi, </span>
-                            <span class="right-text text-capitalize" id="doctor-name"></span>
-                        </h1>
-                        <p class="mb-5">Have a nice day at work. Progress is excellent!</p>
-                        <div class="d-flex align-items-center flex-wrap gap-3">
-                            <a class="btn btn-primary" onclick="toggleSchedule()">
-                        <span class="btn-inner">
-                            <span class="text d-inline-block align-middle">View Schedule</span>
-                            <span class="icon d-inline-block align-middle ms-1 ps-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"
-                                     fill="none">
-                                    <path
-                                            d="M7.32046 4.70834H4.74952V7.25698C4.74952 7.66734 4.41395 8 4 8C3.58605 8 3.25048 7.66734 3.25048 7.25698V4.70834H0.679545C0.293423 4.6687 0 4.34614 0 3.96132C0 3.5765 0.293423 3.25394 0.679545 3.21431H3.24242V0.673653C3.28241 0.290878 3.60778 0 3.99597 0C4.38416 0 4.70954 0.290878 4.74952 0.673653V3.21431H7.32046C7.70658 3.25394 8 3.5765 8 3.96132C8 4.34614 7.70658 4.6687 7.32046 4.70834Z"
-                                            fill="currentColor"/>
-                                </svg>
-                            </span>
-                        </span>
-                            </a>
-                            <a href="./appointment-doctor.html" class="btn btn-secondary">
-                        <span class="btn-inner">
-                            <span class="text d-inline-block align-middle">Appointment</span>
-                            <span class="icon d-inline-block align-middle ms-1 ps-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"
-                                     fill="none">
-                                    <path
-                                            d="M7.32046 4.70834H4.74952V7.25698C4.74952 7.66734 4.41395 8 4 8C3.58605 8 3.25048 7.66734 3.25048 7.25698V4.70834H0.679545C0.293423 4.6687 0 4.34614 0 3.96132C0 3.5765 0.293423 3.25394 0.679545 3.21431H3.24242V0.673653C3.28241 0.290878 3.60778 0 3.99597 0C4.38416 0 4.70954 0.290878 4.74952 0.673653V3.21431H7.32046C7.70658 3.25394 8 3.5765 8 3.96132C8 4.34614 7.70658 4.6687 7.32046 4.70834Z"
-                                            fill="currentColor"/>
-                                </svg>
-                            </span>
-                        </span>
-                            </a>
-                        </div>
-                        <div id="scheduleContainer" class="mt-4 d-none">
-                              <h5>Doctor's Weekly Schedule</h5>
-                            <table class="table table-bordered text-center">
-                                <thead class="table-light">
-                                <tr>
-                                    <th>Time Slot</th>
-                                    <th>Monday</th>
-                                    <th>Tuesday</th>
-                                    <th>Wednesday</th>
-                                    <th>Thursday</th>
-                                    <th>Friday</th>
-                                    <th>Saturday</th>
-                                    <th>Sunday</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>08:00 - 10:00</td>
-                                    <td>✅</td><td>✅</td><td></td><td>✅</td><td></td><td>✅</td><td></td>
-                                </tr>
-                                <tr>
-                                    <td>10:00 - 12:00</td>
-                                    <td></td><td>✅</td><td>✅</td><td></td><td>✅</td><td></td><td></td>
-                                </tr>
-                                <tr>
-                                    <td>14:00 - 16:00</td>
-                                    <td>✅</td><td></td><td>✅</td><td></td><td></td><td></td><td>✅</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Quick Actions Section -->
-                        <div class="mt-5">
-                            <h4 class="mb-4">Quick Actions</h4>
-                            <div class="row g-3">
-                                <div class="col-md-3 col-sm-6">
-                                    <a href="./examination.html" class="btn btn-outline-primary w-100 py-3 text-center quick-action-btn">
-                                        <i class="fas fa-file-medical mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
-                                        <span class="d-block fw-bold">Wait List</span>
-                                        <small class="text-muted">Manage patients</small>
-                                    </a>
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <a href="./service-order.html" class="btn btn-outline-success w-100 py-3 text-center quick-action-btn">
-                                        <i class="fas fa-clipboard-list mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
-                                        <span class="d-block fw-bold">Service Orders</span>
-                                        <small class="text-muted">View orders</small>
-                                    </a>
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <a href="./diagnosis.html" class="btn btn-outline-info w-100 py-3 text-center quick-action-btn">
-                                        <i class="fas fa-notes-medical mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
-                                        <span class="d-block fw-bold">Paraclinical</span>
-                                        <small class="text-muted">Orders & Results</small>
-                                    </a>
-                                </div>
-                                <div class="col-md-3 col-sm-6">
-                                    <a href="./assigned-services.html" class="btn btn-outline-warning w-100 py-3 text-center quick-action-btn">
-                                        <i class="fas fa-tasks mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
-                                        <span class="d-block fw-bold">Assigned Services</span>
-                                        <small class="text-muted">My tasks</small>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Settings & Help Section -->
-                        <div class="mt-4">
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <a href="./helpsupport.html" class="btn btn-outline-secondary w-100 py-2">
-                                        <i class="fas fa-question-circle me-2"></i>
-                                        <span>Help & Support</span>
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a href="./setting.html" class="btn btn-outline-dark w-100 py-2">
-                                        <i class="fas fa-cog me-2"></i>
-                                        <span>Settings</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div>
-                        <img class="img-fluid" src="../assets/images/docter/bacsic-removebg.png" alt="dr-profile"
-                             style="max-width: 200px; height: auto;"
-                             loading="lazy"/>
-                    </div>
-                </div>
-                <div class="row mt-5">
-                    <div class="col-md-4">
-                        <div class="card card-block card-stretch card-height overflow-hidden">
-                            <div class="card-body px-0 pb-0 text-center d-flex flex-column justify-content-end">
-                                <h5>Monthly Progress</h5>
-                                <h3 class="text-secondary counter mb-4" style="visibility: visible;">56%</h3>
-                                <div id="areachart"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card card-block card-stretch card-height overflow-hidden">
-                            <div class="card-body pb-0">
-                                <div class="d-flex justify-content-between">
-                                    <h5 class="mb-3">Today Appointment</h5>
-                                    <div class="dropdown lh-1">
-                                <span role="button" id="dropdownMenuTodayAppointment" data-bs-toggle="dropdown"
-                                      aria-expanded="false">
-                                    <svg width="3" height="20" viewBox="0 0 5 20" fill="none"
-                                         xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);">
-                                        <circle cx="2.5" cy="3" r="2.5" fill="currentColor"/>
-                                        <circle cx="2.5" cy="10" r="2.5" fill="currentColor"/>
-                                        <circle cx="2.5" cy="17" r="2.5" fill="currentColor"/>
-                                    </svg>
-                                </span>
-                                        <ul class="dropdown-menu dropdown-menu-soft-primary sub-dropdown"
-                                            aria-labelledby="dropdownMenuTodayAppointment">
-                                            <li><a class="dropdown-item active" href="#">View</a></li>
-                                            <li><a class="dropdown-item my-1" href="#">Delete</a></li>
-                                            <li><a class="dropdown-item" href="#">Edit</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center gap-3">
-                                    <h3 class="text-primary d-inline-block counter mb-0" style="visibility: visible;">
-                                        50</h3>
-                                    <span class="badge rounded-pill bg-success-subtle text-success p-2">+25.2%</span>
-                                </div>
-                            </div>
-                            <div class="card-bg position-relative mt-2">
-                                <img class="img-fluid float-end" src="../assets/assets/images/dashboard/finance.png"
-                                     alt="finance"
-                                     loading="lazy"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card card-block card-stretch card-height overflow-hidden">
-                            <div class="card-body pb-0">
-                                <div class="d-flex justify-content-between">
-                                    <h5 class="mb-3">Total patients</h5>
-                                    <div class="dropdown lh-1">
-                                <span role="button" id="dropdownMenuTotalPatients" data-bs-toggle="dropdown"
-                                      aria-expanded="false">
-                                    <svg width="3" height="20" viewBox="0 0 5 20" fill="none"
-                                         xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);">
-                                        <circle cx="2.5" cy="3" r="2.5" fill="currentColor"/>
-                                        <circle cx="2.5" cy="10" r="2.5" fill="currentColor"/>
-                                        <circle cx="2.5" cy="17" r="2.5" fill="currentColor"/>
-                                    </svg>
-                                </span>
-                                        <ul class="dropdown-menu dropdown-menu-soft-primary sub-dropdown"
-                                            aria-labelledby="dropdownMenuTotalPatients">
-                                            <li><a class="dropdown-item active" href="#">View</a></li>
-                                            <li><a class="dropdown-item my-1" href="#">Print</a></li>
-                                            <li><a class="dropdown-item" href="#">Download</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center gap-3">
-                                    <h3 class="text-primary d-inline-block counter mb-0" style="visibility: visible;">
-                                        20M</h3>
-                                    <span class="badge rounded-pill bg-success-subtle text-success p-2">+25.2%
-                                last week</span>
-                                </div>
-                            </div>
-                            <div class="card-bg position-relative mt-2">
-                                <img class="img-fluid float-end"
-                                     src="../assets/assets/images/dashboard/hand-holding-heart.png"
-                                     alt="finance" loading="lazy"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-3">
-                        <div>
-                            <h4>Upcoming Appointment</h4>
-                            <p class="mb-0">6 Appointment Today</p>
-                        </div>
-                        <div class="dropdown text-end f-none">
-                            <button class="dropdown btn btn-light-subtle border text-body py-2 px-3"
-                                    id="dropdownMenuAppointmentToday" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="fw-500">Today</span>
-                                <svg width="8" class="ms-1 transform-up" viewBox="0 0 12 8" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                          d="M6 5.08579L10.2929 0.792893C10.6834 0.402369 11.3166 0.402369 11.7071 0.792893C12.0976 1.18342 12.0976 1.81658 11.7071 2.20711L6.70711 7.20711C6.31658 7.59763 5.68342 7.59763 5.29289 7.20711L0.292893 2.20711C-0.0976311 1.81658 -0.0976311 1.18342 0.292893 0.792893C0.683418 0.402369 1.31658 0.402369 1.70711 0.792893L6 5.08579Z"
-                                          fill="currentColor"/>
-                                </svg>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-soft-primary sub-dropdown"
-                                aria-labelledby="dropdownMenuAppointmentToday">
-                                <li><a class="dropdown-item active" href="#">Monday</a></li>
-                                <li><a class="dropdown-item" href="#">Tuesday</a></li>
-                                <li><a class="dropdown-item" href="#">Wednesday</a></li>
-                                <li><a class="dropdown-item" href="#">Thursday</a></li>
-                                <li><a class="dropdown-item" href="#">Friday</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body pt-0">
-                        <div class="d-flex align-items-center mb-4 bg-primary-subtle px-3 py-3 px-lg-4 rounded">
-                            <h6 class="mb-0 text-primary f-none">10:00 AM</h6>
-                            <div class="border-start ps-3 ms-3 flex-grow-1">
-                                <h5>Emily Johnson</h5>
-                                <h6 class="mb-0">Reason: <span class="text-body fw-normal">Acne Treatment</span></h6>
-                            </div>
-                            <div>
-                                <button class="dropdown btn border-0 p-0">
-                                    <svg width="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8.5 5L15.5 12L8.5 19" stroke="currentColor" stroke-width="1.5"
-                                              stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center mb-4 bg-primary-subtle px-3 py-3 px-lg-4 rounded">
-                            <h6 class="mb-0 text-primary f-none">10:00 AM</h6>
-                            <div class="border-start ps-3 ms-3 flex-grow-1">
-                                <h5>Michael Rodriguez</h5>
-                                <h6 class="mb-0">Reason: <span class="text-body fw-normal">Tooth Cleaning</span></h6>
-                            </div>
-                            <div>
-                                <button class="dropdown btn border-0 p-0">
-                                    <svg width="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8.5 5L15.5 12L8.5 19" stroke="currentColor" stroke-width="1.5"
-                                              stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center bg-primary-subtle px-3 py-3 px-lg-4 rounded">
-                            <h6 class="mb-0 text-primary f-none">10:00 AM</h6>
-                            <div class="border-start ps-3 ms-3 flex-grow-1">
-                                <h5>Jessica Anderson</h5>
-                                <h6 class="mb-0">Reason: <span class="text-body fw-normal">Skin Whitening</span></h6>
-                            </div>
-                            <div>
-                                <button class="dropdown btn border-0 p-0">
-                                    <svg width="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8.5 5L15.5 12L8.5 19" stroke="currentColor" stroke-width="1.5"
-                                              stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                            <h4 class="card-title">Revenue</h4>
-                            <div class="d-flex align-items-center">
-                                <div class="dropdown text-end">
-                                    <button class="dropdown btn btn-light-subtle border text-body py-2 px-3"
-                                            id="dropdownMenuRevenue" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="fw-500">Month</span>
-                                        <svg width="8" class="ms-1 transform-up" viewBox="0 0 12 8" fill="none"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                  d="M6 5.08579L10.2929 0.792893C10.6834 0.402369 11.3166 0.402369 11.7071 0.792893C12.0976 1.18342 12.0976 1.81658 11.7071 2.20711L6.70711 7.20711C6.31658 7.59763 5.68342 7.59763 5.29289 7.20711L0.292893 2.20711C-0.0976311 1.81658 -0.0976311 1.18342 0.292893 0.792893C0.683418 0.402369 1.31658 0.402369 1.70711 0.792893L6 5.08579Z"
-                                                  fill="currentColor"/>
-                                        </svg>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-soft-primary sub-dropdown transform-month-dropdown"
-                                        aria-labelledby="dropdownMenuRevenue">
-                                        <li><a class="dropdown-item active" href="#">January</a></li>
-                                        <li><a class="dropdown-item" href="#">February</a></li>
-                                        <li><a class="dropdown-item" href="#">March</a></li>
-                                        <li><a class="dropdown-item" href="#">April</a></li>
+                        <div class="row align-items-center gy-3">
+                            <div class="col-md-4 col-lg-6 text-md-start">
+                                <h4>Announcements</h4>
+                                <p class="mb-0" id="countannoucement">0 new announcements</p>
+                            </div>
+                            <div class="col-md-8 col-lg-6">
+                                <div class="d-flex flex-column align-items-end gap-2">
+                                    <!-- Tabs -->
+                                    <ul class="nav nav-tabs d-inline-flex align-items-center gap-2 mb-0 px-0" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button
+                                                    class="nav-link btn btn-tab active"
+                                                    id="annAllTab"
+                                                    type="button"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#annAllPane"
+                                                    role="tab"
+                                                    aria-controls="annAllPane"
+                                                    aria-selected="true">
+                                                All
+                                            </button>
+                                        </li>
+                                        <!-- Read -->
+                                        <li class="nav-item" role="presentation">
+                                            <button
+                                                    class="nav-link btn btn-tab"
+                                                    id="annReadTab"
+                                                    type="button"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#annReadPane"
+                                                    role="tab"
+                                                    aria-controls="annReadPane"
+                                                    aria-selected="false"
+                                                    tabindex="-1">
+                                                Read
+                                            </button>
+                                        </li>
+                                        <!-- Unread -->
+                                        <li class="nav-item" role="presentation">
+                                            <button
+                                                    class="nav-link btn btn-tab"
+                                                    id="annUnreadTab"
+                                                    type="button"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#annUnreadPane"
+                                                    role="tab"
+                                                    aria-controls="annUnreadPane"
+                                                    aria-selected="false"
+                                                    tabindex="-1">
+                                                Unread
+                                            </button>
+                                        </li>
                                     </ul>
+
+                                    <!-- Search -->
+                                    <div class="position-relative" style="max-width: 276px; width: 100%;">
+                                        <input type="text" id="searchInput" class="form-control ps-4 pe-5" placeholder="Search..." style="height: 38px;" aria-label="Search">
+                                    </div>
+
+                                    <button id="markAllReadBtn" class="btn btn-sm btn-outline-primary" style="height: 38px;">
+                                        Mark all as read
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body py-0">
-                        <div id="appointment-line-chart" class="appointment-line-chart"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
-                        <h4 class="mb-0">Available Doctors</h4>
-                        <div class="dropdown text-end">
-                            <button class="dropdown btn border-0 p-0" id="dropdownMenuAvailableDoc"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                <span class="fw-500 d-inline-block align-middle">View All</span>
-                                <svg width="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                     class="transform-icon transform-down">
-                                    <path d="M8.5 5L15.5 12L8.5 19" stroke="currentColor" stroke-width="1.5"
-                                          stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-soft-primary sub-dropdown"
-                                aria-labelledby="dropdownMenuAvailableDoc">
-                                <li><a class="dropdown-item active" href="#">View</a></li>
-                                <li><a class="dropdown-item" href="#">Appointment</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body pt-0">
-                        <ul class="list-inline m-0 p-0">
-                            <li class="d-flex mb-4 align-items-center">
-                                <div>
-                                    <img class="img-fluid" src="../assets/assets/images/dashboard/draminelouis.png"
-                                         alt="Dr-profile" loading="lazy"/>
-                                </div>
-                                <div class="ms-4 flex-grow-1">
-                                    <h5>Dr.Amine Louis</h5>
-                                    <p class="mb-0">Skin Specialist</p>
-                                </div>
-                                <div>
-                                    <h6 class="text-primary mb-0">120 patients</h6>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-4 align-items-center">
-                                <div>
-                                    <img class="img-fluid" src="../assets/assets/images/dashboard/drKeinoshine.png"
-                                         alt="Dr-profile" loading="lazy"/>
-                                </div>
-                                <div class="ms-4 flex-grow-1">
-                                    <h5>Dr.Keino Shine</h5>
-                                    <p class="mb-0">Cardiologist</p>
-                                </div>
-                                <div>
-                                    <h6 class="text-primary mb-0">89 Patients</h6>
-                                </div>
-                            </li>
-                            <li class="d-flex align-items-center">
-                                <div>
-                                    <img class="img-fluid" src="../assets/assets/images/dashboard/drMaxwellena.png"
-                                         alt="Dr-profile" loading="lazy"/>
-                                </div>
-                                <div class="ms-4 flex-grow-1">
-                                    <h5>Dr.Maxwell Ena</h5>
-                                    <p class="mb-0">Orthopedics</p>
-                                </div>
-                                <div>
-                                    <h6 class="text-primary mb-0">106 patients</h6>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-3">
-                        <h4 class="mb-0">Transaction History</h4>
-                        <div class="dropdown text-end">
-                            <button class="dropdown btn border-0 p-0" id="dropdownMenuTransaction"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                <span class="fw-500 d-inline-block align-middle">View All</span>
-                                <svg width="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                     class="transform-icon transform-down">
-                                    <path d="M8.5 5L15.5 12L8.5 19" stroke="currentColor" stroke-width="1.5"
-                                          stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-soft-primary sub-dropdown transform-left-dropdown"
-                                aria-labelledby="dropdownMenuTransaction">
-                                <li><a class="dropdown-item active" href="#">View</a></li>
-                                <li><a class="dropdown-item" href="#">Delete</a></li>
-                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                <li><a class="dropdown-item" href="#">Print</a></li>
-                                <li><a class="dropdown-item" href="#">Download</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body pt-0">
-                        <ul class="list-inline m-0 p-0">
-                            <li
-                                    class="d-flex flex-wrap gap-sm-1 gap-3 align-items-center justify-content-between flex-sm-row flex-column text-sm-start text-center bg-primary-subtle p-3 mb-4 rounded">
-                                <div class="d-flex gap-3 align-items-center flex-sm-row flex-column">
-                                    <img class="img-fluid" src="../assets/assets/images/dashboard/angle-jonas.png"
-                                         alt="Dr-profile" loading="lazy"/>
-                                    <div>
-                                        <h5>Angle Jonas </h5>
-                                        <p class="mb-0 text-body">23 May,2023</p>
-                                    </div>
-                                </div>
-                                <h5 class="mb-0">$2.493</h5>
-                                <button class="badge bg-success-subtle text-success fw-500 px-3 py-2 border-0 me-sm-2 me-0">
-                                    Paid
-                                </button>
-                            </li>
-                            <li
-                                    class="d-flex flex-wrap gap-sm-1 gap-3 align-items-center justify-content-between flex-sm-row flex-column text-sm-start text-center bg-primary-subtle p-3 mb-4 rounded">
-                                <div class="d-flex gap-3 align-items-center flex-sm-row flex-column">
-                                    <img class="img-fluid" src="../assets/assets/images/dashboard/alexa-zander.png"
-                                         alt="Dr-profile" loading="lazy"/>
-                                    <div>
-                                        <h5>Alexa Zander</h5>
-                                        <p class="mb-0 text-body">06 June, 2023</p>
-                                    </div>
-                                </div>
-                                <h5 class="mb-0">$05.69</h5>
-                                <button class="badge bg-danger-subtle text-danger fw-500 px-3 py-2 border-0 me-sm-2 me-0">
-                                    Accept
-                                </button>
-                            </li>
-                            <li
-                                    class="d-flex flex-wrap gap-sm-1 gap-3 align-items-center justify-content-between flex-sm-row flex-column text-sm-start text-center bg-primary-subtle p-3 rounded">
-                                <div class="d-flex gap-3 align-items-center flex-sm-row flex-column">
-                                    <img class="img-fluid" src="../assets/assets/images/dashboard/angle-jonas.png"
-                                         alt="Dr-profile" loading="lazy"/>
-                                    <div>
-                                        <h5>Smith Rayan</h5>
-                                        <p class="mb-0 text-body">28 June, 2023</p>
-                                    </div>
-                                </div>
-                                <h5 class="mb-0">$20.49</h5>
-                                <button class="badge bg-success-subtle text-success fw-500 px-3 py-2 border-0 me-sm-2 me-0">
-                                    Paid
-                                </button>
-                            </li>
 
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-3">
-                        <h4 class="mb-0">Appointment Request</h4>
-                        <div class="dropdown text-end">
-                            <button class="dropdown btn border-0 p-0" id="dropdownMenuAppReq" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                <span class="fw-500 d-inline-block align-middle">View All</span>
-                                <svg width="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                     class="transform-icon transform-down">
-                                    <path d="M8.5 5L15.5 12L8.5 19" stroke="currentColor" stroke-width="1.5"
-                                          stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-soft-primary sub-dropdown"
-                                aria-labelledby="dropdownMenuAppReq">
-                                <li><a class="dropdown-item active" href="#">View</a></li>
-                                <li><a class="dropdown-item" href="#">Delete</a></li>
-                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                <li><a class="dropdown-item" href="#">Print</a></li>
-                                <li><a class="dropdown-item" href="#">Download</a></li>
-                            </ul>
+                    <!-- Announcement List -->
+                    <div class="card-body pt-0">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="annoucementTab" role="tabpanel">
+                                <ul class="list-group" id="announcementList">
+                                    <!-- Announcements will be injected here -->
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <div class="pt-0 card-body">
-                        <div class="table-responsive">
-                            <table class="table py-3 mb-0" role="grid" data-toggle="appointment_admin">
-                                <thead class="bg-primary-subtle">
-                                <tr class="text-dark">
-                                    <th class="border-bottom">No.</th>
-                                    <th class="border-bottom">Names</th>
-                                    <th class="border-bottom">Date</th>
-                                    <th class="border-bottom">Reason</th>
-                                    <th class="border-bottom">Type</th>
-                                    <th class="border-bottom">Staus</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <img src="../assets/assets/images/table/10.png"
-                                                 class="img-fluid flex-shrink-0 icon-40 object-fit-cover" alt="icon">
-                                            <h5 class="mb-0">Courtney Henry</h5>
-                                        </div>
-                                    </td>
-                                    <td>22 Mar, 2023</td>
-                                    <td>Acne Treatment</td>
-                                    <td>New Patient</td>
-                                    <td>
-                                        <button class="badge bg-success-subtle text-success fw-500 px-3 py-2 border-0 me-2">
-                                            Accept
-                                        </button>
-                                        <button class="badge bg-danger-subtle text-danger fw-500 px-3 py-2 border-0 me-2">
-                                            Cancel
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <img src="../assets/assets/images/table/11.png"
-                                                 class="img-fluid flex-shrink-0 icon-40 object-fit-cover" alt="icon">
-                                            <h5 class="mb-0">Jerome Bell</h5>
-                                        </div>
-                                    </td>
-                                    <td>16 June, 2023</td>
-                                    <td>Tooth Cleaning</td>
-                                    <td>Old Patient</td>
-                                    <td>
-                                        <button class="badge bg-success-subtle text-success fw-500 px-3 py-2 border-0 me-2">
-                                            Accept
-                                        </button>
-                                        <button class="badge bg-danger-subtle text-danger fw-500 px-3 py-2 border-0 me-2">
-                                            Cancel
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="border-0">
-                                    <td class="border-0">3</td>
-                                    <td class="border-0">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <img src="../assets/assets/images/table/12.png"
-                                                 class="img-fluid flex-shrink-0 icon-40 object-fit-cover" alt="icon">
-                                            <h5 class="mb-0">Darrell Steward</h5>
-                                        </div>
-                                    </td>
-                                    <td class="border-0">18 May, 2023</td>
-                                    <td class="border-0">Skin Whitening</td>
-                                    <td class="border-0">Old Patient</td>
-                                    <td class="border-0">
-                                        <button class="badge bg-success-subtle text-success fw-500 px-3 py-2 border-0 me-2">
-                                            Accept
-                                        </button>
-                                        <button class="badge bg-danger-subtle text-danger fw-500 px-3 py-2 border-0 me-2">
-                                            Cancel
-                                        </button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+
+                        <!-- Pagination -->
+                        <div class="row align-items-center mt-4">
+                            <div class="col-sm-6">
+                                <span id="paginationInfo">Showing 0 to 0 of 0 entries</span>
+                            </div>
+                            <div class="col-sm-6 text-sm-end mt-sm-0 mt-3">
+                                <div class="d-inline-flex align-items-center gap-3 flex-wrap card-navigation">
+                                    <a href="#" id="btnPreviousPage" class="text-body link-primary">
+                                        <svg class="icon-20" width="32" viewBox="0 0 24 24" fill="none">
+                                            <path d="M15.5 19L8.5 12L15.5 5" stroke="currentColor" stroke-width="1.5"
+                                                  stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                        <span class="align-middle">Previous</span>
+                                    </a>
+                                    <a href="#" id="btnNextPage" class="text-body link-primary">
+                                        <span class="align-middle">Next</span>
+                                        <svg class="icon-20" width="32" viewBox="0 0 24 24" fill="none">
+                                            <path d="M8.5 5L15.5 12L8.5 19" stroke="currentColor" stroke-width="1.5"
+                                                  stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </div> <!-- end card-body -->
                 </div>
             </div>
         </div>
@@ -2181,9 +1717,6 @@
 <!-- Wrapper End-->
 
 
-
-
-
 <!-- Library Bundle Script -->
 <script src="../assets/assets/js/core/libs.min.js"></script>
 <!-- Plugin Scripts -->
@@ -2228,8 +1761,8 @@
 <script src="../assets/assets/js/sidebar.js?v=1.4.1" defer></script>
 
 <script src="../assets/jslogic/logout.js" defer></script>
-<script src="../assets/jslogic/appointment-doctor.js" defer></script>
 <script src="../assets/jslogic/annoucement.js" defer></script>
+<script src="../assets/jslogic/annoucements-view.js" defer></script>
 <script src="../assets/jslogic/home-doctor.js" defer></script>
 </body>
 </html>
