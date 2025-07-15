@@ -1,9 +1,15 @@
 let serviceOrderWaitlist = [];
 
+// Phân trang
+let currentPage = 1;
+const pageSize = 10;
+let totalPages = 1;
+
 // Hàm khởi tạo trang
 async function initializeServiceOrderPage() {
     try {
         console.log('Initializing Service Order Page...');
+        setupPaginationEvents();
 
         // Load danh sách waitlist có status = InProgress và visittype = Initial
         await loadServiceOrderWaitlist();
@@ -129,42 +135,43 @@ function renderServiceOrderTable() {
 
     tableBody.innerHTML = '';
 
-    serviceOrderWaitlist.forEach((waitlist, index) => {
-        const statusClass = getStatusClass(waitlist.status);
+    // Tính toán phân trang
+    totalPages = Math.ceil(serviceOrderWaitlist.length / pageSize) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+    const startIdx = (currentPage - 1) * pageSize;
+    const endIdx = Math.min(startIdx + pageSize, serviceOrderWaitlist.length);
+    const pageData = serviceOrderWaitlist.slice(startIdx, endIdx);
 
+    pageData.forEach((waitlist, index) => {
+        const statusClass = getStatusClass(waitlist.status);
         const row = document.createElement("tr");
         row.className = "service-order-row";
-
         // Determine which button to show based on status and visittype
         let actionButton = '';
         const status = waitlist.status?.toLowerCase();
         const visittype = waitlist.visittype?.toLowerCase();
-        
         if (status === 'inprogress') {
-            // Show "Chỉ định" button for inprogress status
             actionButton = `
                 <button class="btn btn-success assign-service-btn" data-waitlist-id="${waitlist.waitlist_id}" data-patient-id="${waitlist.patient_id}">
                     <i class="fas fa-stethoscope me-1"></i>Chỉ định
                 </button>
             `;
         } else if (visittype === 'result' && status === 'waiting') {
-            // Show "View" button for result visittype with waiting status
             actionButton = `
                 <button class="btn btn-primary view-results-btn" data-waitlist-id="${waitlist.waitlist_id}" data-patient-id="${waitlist.patient_id}">
                     <i class="fas fa-eye me-1"></i>View
                 </button>
             `;
         } else {
-            // Show disabled state for other cases
             actionButton = `
                 <span class="text-muted">
                     <i class="fas fa-minus-circle me-1"></i>No action available
                 </span>
             `;
         }
-
         row.innerHTML = `
-            <td>${index + 1}</td>
+            <td>${startIdx + index + 1}</td>
             <td>
                 <div class="patient-info">
                     <div class="patient-name">${waitlist.full_name || 'N/A'}</div>
@@ -187,10 +194,51 @@ function renderServiceOrderTable() {
                 ${actionButton}
             </td>
         `;
-
         tableBody.appendChild(row);
     });
+
+    // Cập nhật thông tin phân trang
+    const paginationInfo = document.getElementById("paginationInfo");
+    if (paginationInfo) {
+        if (serviceOrderWaitlist.length === 0) {
+            paginationInfo.textContent = "Showing 0 entries";
+        } else {
+            paginationInfo.textContent = `Showing ${startIdx + 1} to ${endIdx} of ${serviceOrderWaitlist.length} entries`;
+        }
+    }
+
+    // Cập nhật trạng thái nút
+    const btnPrev = document.getElementById("btnPreviousPage");
+    const btnNext = document.getElementById("btnNextPage");
+    if (btnPrev) btnPrev.classList.toggle("disabled", currentPage === 1);
+    if (btnNext) btnNext.classList.toggle("disabled", currentPage === totalPages);
 }
+
+// Sự kiện chuyển trang
+function setupPaginationEvents() {
+    const btnPrev = document.getElementById("btnPreviousPage");
+    const btnNext = document.getElementById("btnNextPage");
+    if (btnPrev) {
+        btnPrev.onclick = function(e) {
+            e.preventDefault();
+            if (currentPage > 1) {
+                currentPage--;
+                renderServiceOrderTable();
+            }
+        };
+    }
+    if (btnNext) {
+        btnNext.onclick = function(e) {
+            e.preventDefault();
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderServiceOrderTable();
+            }
+        };
+    }
+}
+
+// Gọi setupPaginationEvents khi trang được khởi tạo
 
 // Hàm lấy class CSS cho status
 function getStatusClass(status) {
