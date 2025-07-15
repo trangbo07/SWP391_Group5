@@ -209,7 +209,6 @@ public class PatientDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
         return -1;
     }
 } 
