@@ -43,7 +43,10 @@ if (addBtn) addBtn.onclick = openDoctorListModal;
 async function loadAvailableRooms() {
     const res = await fetch('/api/rooms/available');
     const rooms = await res.json();
+    console.log(rooms); // Đã có
     const select = document.getElementById('roomId');
+    console.log(select); // Thêm dòng này
+    if (!select) alert('Không tìm thấy select#roomId trong DOM!');
     select.innerHTML = rooms.map(r => `<option value="${r.roomId}">${r.roomName}</option>`).join('');
 }
 
