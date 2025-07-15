@@ -112,7 +112,9 @@ public class AccountPatientDAOFA {
     public boolean isEmailOrUsernameDuplicated(String newUsername, String newEmail, String oldUsername, String oldEmail) {
         String sql = """
                     SELECT TOP 1 1
-                    FROM SELECT email, username FROM AccountPatient
+                    FROM (
+                        SELECT email, username FROM AccountPatient
+                    ) AS sub
                     WHERE (email = ? AND email != ?)
                        OR (username = ? AND username != ?)
                 """;

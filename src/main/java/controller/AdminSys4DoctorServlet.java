@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.AccountStaff;
+import util.ImageCheckUtil;
 import util.NormalizeUtil;
 
 import java.io.File;
@@ -126,17 +127,35 @@ public class AdminSys4DoctorServlet extends HttpServlet {
             String imagePath = "/assets/images/uploads/default.jpg"; // fallback
 
             if ("create".equals(action)) {
-                // Xử lý ảnh nếu có
                 Part imgPart = req.getPart("img");
+
                 if (imgPart != null && imgPart.getSize() > 0) {
-                    String fileName = Paths.get(imgPart.getSubmittedFileName()).getFileName().toString();
-                    String uploadDirPath = getServletContext().getRealPath("/assets/images/uploads");
+
+                    if (!ImageCheckUtil.isMimeAndSizeValid(imgPart) ||
+                            !ImageCheckUtil.isActualImage(imgPart)) {
+
+                        JsonResponse res = new JsonResponse(false,
+                                "Ảnh không hợp lệ.");
+                        out.print(gson.toJson(res));
+                        return;
+                    }
+
+                    String originalName = Paths.get(imgPart.getSubmittedFileName())
+                            .getFileName().toString();
+                    String ext = originalName.contains(".")
+                            ? originalName.substring(originalName.lastIndexOf('.'))
+                            : "";
+                    String fileName = java.util.UUID.randomUUID() + ext;           // tránh trùng tên
+
+                    String uploadDirPath = getServletContext()
+                            .getRealPath("/assets/images/uploads");
                     File uploadDir = new File(uploadDirPath);
                     if (!uploadDir.exists()) uploadDir.mkdirs();
 
                     String savedFilePath = uploadDirPath + File.separator + fileName;
                     imgPart.write(savedFilePath);
-                    imagePath = "/assets/images/uploads/" + fileName;
+
+                    imagePath = "/assets/images/uploads/" + fileName;               // path lưu DB
                 }
 
                 if (accountDAO.checkAccount(email)) {
@@ -173,15 +192,34 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 String oldImagePath = ((AccountStaff) accountStaffDAO.getAccountStaffById(Integer.parseInt(accountStaffId))).getImg();
 
                 Part imgPart = req.getPart("img");
+
                 if (imgPart != null && imgPart.getSize() > 0) {
-                    String fileName = Paths.get(imgPart.getSubmittedFileName()).getFileName().toString();
-                    String uploadDirPath = getServletContext().getRealPath("/assets/images/uploads");
+
+                    if (!ImageCheckUtil.isMimeAndSizeValid(imgPart) ||
+                            !ImageCheckUtil.isActualImage(imgPart)) {
+
+                        JsonResponse res = new JsonResponse(false,
+                                "Ảnh không hợp lệ.");
+                        out.print(gson.toJson(res));
+                        return;
+                    }
+
+                    String originalName = Paths.get(imgPart.getSubmittedFileName())
+                            .getFileName().toString();
+                    String ext = originalName.contains(".")
+                            ? originalName.substring(originalName.lastIndexOf('.'))
+                            : "";
+                    String fileName = java.util.UUID.randomUUID() + ext;           // tránh trùng tên
+
+                    String uploadDirPath = getServletContext()
+                            .getRealPath("/assets/images/uploads");
                     File uploadDir = new File(uploadDirPath);
                     if (!uploadDir.exists()) uploadDir.mkdirs();
 
                     String savedFilePath = uploadDirPath + File.separator + fileName;
                     imgPart.write(savedFilePath);
-                    imagePath = "/assets/images/uploads/" + fileName;
+
+                    imagePath = "/assets/images/uploads/" + fileName;               // path lưu DB
                 } else {
                     imagePath = oldImagePath;
                 }
