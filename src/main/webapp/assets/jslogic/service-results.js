@@ -210,7 +210,6 @@ function renderServiceResultsTable() {
                 <div class="patient-info">
                     <div class="patient-name"><i class="fas fa-user me-2"></i>${result.patient_name || 'N/A'}</div>
                     <div class="patient-details">
-                        Patient ID: ${result.patient_id || 'N/A'} | 
                         Prescribed by: You
                     </div>
                 </div>
@@ -332,7 +331,7 @@ async function viewDetailedResults(medicineRecordId, serviceOrderId) {
 }
 
 // Hàm hiển thị chi tiết kết quả xét nghiệm
-function displayDetailedResults(detailedResults, serviceOrderId) {
+async function displayDetailedResults(detailedResults, serviceOrderId) {
     const detailedSection = document.getElementById("detailedResultsSection");
     const detailedContent = document.getElementById("detailedResultsContent");
     
@@ -414,18 +413,13 @@ function displayDetailedResults(detailedResults, serviceOrderId) {
     }
 
     let contentHTML = headerHTML;
-    
-    Object.values(groupedResults).forEach(orderGroup => {
+    const orderGroups = Object.values(groupedResults);
+    for (const orderGroup of orderGroups) {
         const completedCount = orderGroup.results.filter(r => r.is_completed).length;
         const totalCount = orderGroup.results.length;
         const progressPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
         
         // Lấy thông tin bệnh nhân từ nhiều nguồn (orderGroup, results trong group, hoặc detailedResults đầu tiên)
-        console.log(`🔍 Order #${orderGroup.order_id} - Extracting patient info from:`);
-        console.log('  - orderGroup.patient_id:', orderGroup.patient_id);
-        console.log('  - orderGroup.results[0]?.patient_id:', orderGroup.results[0]?.patient_id);
-        console.log('  - detailedResults[0]?.patient_id:', detailedResults[0]?.patient_id);
-        
         const patientInfo = {
             patient_id: orderGroup.patient_id || 
                        (orderGroup.results[0] && orderGroup.results[0].patient_id) ||
@@ -438,9 +432,8 @@ function displayDetailedResults(detailedResults, serviceOrderId) {
                               (detailedResults[0] && detailedResults[0].medicineRecord_id) || 'N/A'
         };
         
-        console.log(`🔍 Order #${orderGroup.order_id} - Patient Info:`, patientInfo);
-        console.log(`🔍 Order #${orderGroup.order_id} - Raw orderGroup:`, orderGroup);
-        console.log(`🔍 Order #${orderGroup.order_id} - First result:`, orderGroup.results[0] || 'No results');
+        // Check if diagnosis exists for this medicineRecord_id
+        const diagnosisExists = await checkDiagnosisExists(patientInfo.medicineRecord_id);
         
         // Calculate total cost
         const totalCost = orderGroup.results.reduce((sum, r) => sum + (r.service_price || 0), 0);
@@ -580,21 +573,23 @@ function displayDetailedResults(detailedResults, serviceOrderId) {
                                 Sau khi hoàn thành các xét nghiệm, bạn có thể kết luận điều trị và tạo hóa đơn cho bệnh nhân
                             </small>
                         </div>
-                        <button class="btn btn-success btn-conclusion" 
-                                data-patient-id="${patientInfo.patient_id}"
-                                data-patient-name="${patientInfo.patient_name}"
-                                data-medicine-record-id="${patientInfo.medicineRecord_id}"
-                                data-service-order-id="${orderGroup.order_id}"
-                                ${progressPercentage < 100 ? 'disabled' : ''}
-                                title="Progress: ${progressPercentage}% (${completedCount}/${totalCount} tests completed)">
-                            <i class="fas fa-file-medical-alt me-2"></i>
-                            ${progressPercentage < 100 ? `Chờ hoàn thành xét nghiệm (${progressPercentage}%)` : 'Kết luận điều trị'}
-                        </button>
+                        ${diagnosisExists
+                            ? `<button class="btn btn-secondary" disabled><i class="fas fa-check me-2"></i>Đã kết luận</button>`
+                            : `<button class="btn btn-success btn-conclusion" 
+                                    data-patient-id="${patientInfo.patient_id}"
+                                    data-patient-name="${patientInfo.patient_name}"
+                                    data-medicine-record-id="${patientInfo.medicineRecord_id}"
+                                    data-service-order-id="${orderGroup.order_id}"
+                                    ${progressPercentage < 100 ? 'disabled' : ''}
+                                    title="Progress: ${progressPercentage}% (${completedCount}/${totalCount} tests completed)">
+                                <i class="fas fa-file-medical-alt me-2"></i>
+                                ${progressPercentage < 100 ? `Chờ hoàn thành xét nghiệm (${progressPercentage}%)` : 'Kết luận điều trị'}
+                            </button>`}
                     </div>
                 </div>
             </div>
         `;
-    });
+    }
 
     if (contentHTML === '') {
         contentHTML = `
@@ -636,16 +631,6 @@ function addResultEditListeners() {
             const patientName = conclusionBtn.getAttribute('data-patient-name');
             const medicineRecordId = conclusionBtn.getAttribute('data-medicine-record-id');
             const serviceOrderId = conclusionBtn.getAttribute('data-service-order-id');
-            
-            console.log('🔍 Conclusion button clicked:', {
-                patientId, patientName, medicineRecordId, serviceOrderId
-            });
-            console.log('🔍 Button data attributes:', {
-                'data-patient-id': conclusionBtn.getAttribute('data-patient-id'),
-                'data-patient-name': conclusionBtn.getAttribute('data-patient-name'),
-                'data-medicine-record-id': conclusionBtn.getAttribute('data-medicine-record-id'),
-                'data-service-order-id': conclusionBtn.getAttribute('data-service-order-id')
-            });
             
             showConclusionModal(patientId, patientName, medicineRecordId, serviceOrderId);
             return;
@@ -1762,6 +1747,19 @@ async function getCurrentDoctorId() {
 // Update the showConclusionModal function
 async function showConclusionModal(patientId, patientName, medicineRecordId, serviceOrderId) {
     try {
+        // Check if diagnosis already exists for this medicineRecordId
+        const diagnosisExists = await checkDiagnosisExists(medicineRecordId);
+        
+        if (diagnosisExists) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Đã kết luận',
+                text: 'Bệnh nhân này đã được kết luận điều trị. Không thể tạo kết luận mới.',
+                confirmButtonText: 'Đóng'
+            });
+            return;
+        }
+
         // Check if we have doctor ID
         if (!currentDoctorId) {
             throw new Error('Doctor ID not found. Please refresh the page.');
@@ -2172,17 +2170,6 @@ function submitConclusion() {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...';
 
-    // Log debug information
-    console.log('Submitting conclusion with:', {
-        patientId: currentConclusionData.patientId,
-        medicineRecordId: medicineRecordId,
-        conclusion: conclusion,
-        disease: disease,
-        treatmentPlan: treatmentPlan,
-        services: currentConclusionData.completedServices,
-        medications: currentConclusionData.medications
-    });
-
     // Step 1: Create new diagnosis
     fetch('/invoice-creation?action=updateDiagnosis', {
         method: 'POST',
@@ -2315,3 +2302,16 @@ window.clearDebugLogs = function() {
     console.clear();
     showAlert('Debug logs cleared', 'info');
 }; 
+
+// Utility function to check if a diagnosis exists for a medicineRecordId
+async function checkDiagnosisExists(medicineRecordId) {
+    try {
+        const response = await fetch(`/api/diagnosis/check?medicineRecordId=${medicineRecordId}`);
+        if (!response.ok) return false;
+        const data = await response.json();
+        return !!data.exists;
+    } catch (e) {
+        console.error('[ERROR] Failed to check diagnosis existence:', e);
+        return false;
+    }
+}

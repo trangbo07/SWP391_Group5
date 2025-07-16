@@ -149,4 +149,18 @@ public class DiagnosisDAO {
             }
         }
     }
+
+    // Check if a diagnosis exists for a given medicineRecordId
+    public boolean existsDiagnosisByMedicineRecordId(int medicineRecordId) {
+        String sql = "SELECT 1 FROM Diagnosis WHERE medicineRecord_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, medicineRecordId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
