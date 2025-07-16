@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Service Order - Patient Care</title>
+        <title>Đơn Dịch Vụ - Quản Lý Bệnh Nhân</title>
         <link rel="shortcut icon" href="../assets/assets/images/favicon.ico" />
         <link rel="stylesheet" href="../assets/assets/css/core/libs.min.css" />
         <link rel="stylesheet" href="../assets/assets/vendor/flaticon/css/flaticon.css" />
@@ -564,8 +564,8 @@
                 <!-- Breadcrumb -->
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="service-order.html"><i class="fas fa-arrow-left me-2"></i>Back to Service Order</a></li>
-                        <li class="breadcrumb-item active">Service Order Details</li>
+                        <li class="breadcrumb-item"><a href="service-order.html"><i class="fas fa-arrow-left me-2"></i>Quay lại Đơn Dịch Vụ</a></li>
+                        <li class="breadcrumb-item active">Chi Tiết Đơn Dịch Vụ</li>
                     </ol>
                 </nav>
 
@@ -577,7 +577,7 @@
                     <div class="card-header">
                         <h5 class="card-title">
                             <i class="fas fa-user-injured me-2"></i>
-                            Patient Information
+                            Thông Tin Bệnh Nhân
                         </h5>
                     </div>
                     <div class="card-body">
@@ -585,25 +585,25 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="info-item">
-                                        <span class="info-label">Patient ID:</span>
+                                        <span class="info-label">Mã bệnh nhân:</span>
                                         <span class="info-value" id="patientId">Loading...</span>
                                     </div>
                                     <div class="info-item">
-                                        <span class="info-label">Name:</span>
+                                        <span class="info-label">Họ tên:</span>
                                         <span class="info-value" id="patientName">Loading...</span>
                                     </div>
                                     <div class="info-item">
-                                        <span class="info-label">Age:</span>
+                                        <span class="info-label">Tuổi:</span>
                                         <span class="info-value" id="patientAge">Loading...</span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="info-item">
-                                        <span class="info-label">Gender:</span>
+                                        <span class="info-label">Giới tính:</span>
                                         <span class="info-value" id="patientGender">Loading...</span>
                                     </div>
                                     <div class="info-item">
-                                        <span class="info-label">Phone:</span>
+                                        <span class="info-label">Số điện thoại:</span>
                                         <span class="info-value" id="patientPhone">Loading...</span>
                                     </div>
                                 </div>
@@ -617,7 +617,7 @@
                     <div class="card-header">
                         <h5 class="card-title">
                             <i class="fas fa-stethoscope me-2"></i>
-                            Select Services
+                            Chọn Dịch Vụ
                         </h5>
                     </div>
                     <div class="card-body">
@@ -635,13 +635,13 @@
                         <div id="selectedServicesSection" class="selected-services" style="display: none;">
                             <h6 class="mb-3">
                                 <i class="fas fa-list-check me-2"></i>
-                                Selected Services
+                                Dịch Vụ Đã Chọn
                             </h6>
                             <div id="selectedServicesList">
                                 <!-- Selected services will be displayed here -->
                             </div>
                             <div class="total-amount">
-                                Total Amount: <span id="totalAmount">0</span> VND
+                                Tổng tiền: <span id="totalAmount">0</span> VNĐ
                             </div>
                         </div>
 
@@ -649,11 +649,11 @@
                         <div class="d-flex justify-content-between mt-4">
                             <button type="button" class="btn btn-secondary" onclick="skipServices()">
                                 <i class="fas fa-times me-2"></i>
-                                Skip Services
+                                Bỏ Qua Dịch Vụ
                             </button>
                             <button type="button" class="btn btn-success" onclick="createServiceOrder()">
                                 <i class="fas fa-check me-2"></i>
-                                Create Service Order
+                                Tạo Đơn Dịch Vụ
                             </button>
                         </div>
                     </div>

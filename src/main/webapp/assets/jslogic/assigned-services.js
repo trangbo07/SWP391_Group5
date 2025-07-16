@@ -18,7 +18,7 @@ function initializePage() {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('newAssignment') === 'true') {
         setTimeout(() => {
-            showAlert('You may have new services assigned to you!', 'info');
+            showAlert('Bạn có thể có các dịch vụ mới được giao!', 'info');
 
             // Show new assignment notification
             const notificationEl = document.getElementById('newAssignmentNotification');
@@ -66,7 +66,7 @@ async function fetchAndRenderServices(showLoadingAlert = false) {
 
     try {
         if (showLoadingAlert) {
-            showAlert('Refreshing assigned services...', 'info');
+            showAlert('Đang làm mới danh sách dịch vụ đã giao...', 'info');
         }
 
         servicesList.style.display = "none";
@@ -74,10 +74,10 @@ async function fetchAndRenderServices(showLoadingAlert = false) {
         noServicesMessage.classList.add("d-none");
 
         const response = await fetch('/api/doctor/service-order?action=getAssignedServices');
-        if (!response.ok) throw new Error('Failed to fetch assigned services from server.');
+        if (!response.ok) throw new Error('Không thể lấy danh sách dịch vụ đã giao từ máy chủ.');
 
         const result = await response.json();
-        if (!result.success) throw new Error(result.message || 'Failed to process assigned services data.');
+        if (!result.success) throw new Error(result.message || 'Không thể xử lý dữ liệu dịch vụ đã giao.');
 
         const previousCount = allAssignedServices.length;
         const rawData = result.data || [];
@@ -106,9 +106,9 @@ async function fetchAndRenderServices(showLoadingAlert = false) {
 
         // Check for new services
         if (showLoadingAlert && allAssignedServices.length > previousCount) {
-            showAlert(`Found ${allAssignedServices.length - previousCount} new assigned service(s)!`, 'success');
+            showAlert(`Tìm thấy ${allAssignedServices.length - previousCount} dịch vụ mới được giao!`, 'success');
         } else if (showLoadingAlert) {
-            showAlert('Assigned services refreshed successfully', 'success');
+            showAlert('Làm mới danh sách dịch vụ đã giao thành công', 'success');
         }
 
         applyFiltersAndRender();
@@ -119,7 +119,7 @@ async function fetchAndRenderServices(showLoadingAlert = false) {
         console.error("Error loading assigned services:", error);
 
         if (showLoadingAlert) {
-            showAlert('Failed to refresh assigned services', 'danger');
+            showAlert('Không thể làm mới danh sách dịch vụ đã giao', 'danger');
         }
     }
 }
@@ -140,7 +140,7 @@ function startAutoRefresh() {
         // Check if there are new services
         if (allAssignedServices.length > previousCount) {
             const newCount = allAssignedServices.length - previousCount;
-            showAlert(`🔔 ${newCount} new service(s) assigned to you!`, 'success');
+            showAlert(`🔔 Có ${newCount} dịch vụ mới được giao cho bạn!`, 'success');
         }
     }, AUTO_REFRESH_INTERVAL);
 
@@ -191,7 +191,7 @@ async function debugAssignedServices() {
         console.log('API URL:', '/api/doctor/service-order?action=getAssignedServices');
 
         if (!response.ok) {
-            throw new Error(`API Error: ${response.status}`);
+            throw new Error('Lỗi API: ' + response.status);
         }
 
         const result = await response.json();
@@ -232,22 +232,22 @@ async function debugAssignedServices() {
                     });
                 }
 
-                showAlert(`✅ Found ${services.length} assigned services (${pending.length} chưa khám, ${withResults.length} đã khám)`, 'success');
+                showAlert(`✅ Tìm thấy ${services.length} dịch vụ đã giao (${pending.length} chưa khám, ${withResults.length} đã khám)`, 'success');
 
                 // Force re-render with debug data
                 allAssignedServices = services;
                 applyFiltersAndRender();
 
             } else {
-                console.log('5. ❌ No assigned services found');
-                console.log('   Possible reasons:');
+                console.log('5. ❌ Không tìm thấy dịch vụ đã giao');
+                console.log('   Có thể do:');
                 console.log('   - Chưa có service order nào được assign cho doctor này');
                 console.log('   - Doctor ID không đúng');
                 console.log('   - Database chưa có data');
-                showAlert('⚠️ Không tìm thấy assigned services. Hãy tạo service order và assign cho bác sĩ này.', 'warning');
+                showAlert('⚠️ Không tìm thấy dịch vụ đã giao. Hãy tạo service order và assign cho bác sĩ này.', 'warning');
             }
         } else {
-            throw new Error(result.message || 'API returned success=false');
+            throw new Error('API trả về thành công=false');
         }
 
     } catch (error) {
@@ -625,12 +625,12 @@ async function saveTestResult() {
         console.log('Saving test result for service order item:', serviceOrderItemId);
 
         if (!serviceOrderItemId || !testResults.trim() || !resultStatus) {
-            showAlert('Please fill in all required fields: Test Results and Status.', 'danger');
+            showAlert('Vui lòng điền đầy đủ các trường bắt buộc: Kết quả xét nghiệm và Trạng thái.', 'danger');
             return;
         }
 
         if (testResults.trim().length < 10) {
-            showAlert('Test results must be at least 10 characters long.', 'warning');
+            showAlert('Kết quả xét nghiệm phải có ít nhất 10 ký tự.', 'warning');
             return;
         }
 
@@ -668,7 +668,7 @@ async function saveTestResult() {
         console.log('Save result:', result);
 
         if (result.success) {
-            showAlert('✅ Test results saved successfully!', 'success');
+            showAlert('Lưu kết quả xét nghiệm thành công!', 'success');
 
             // Close modal
             const modal = bootstrap.Modal.getInstance(document.getElementById("resultModal"));
@@ -681,12 +681,12 @@ async function saveTestResult() {
             form.reset();
 
         } else {
-            throw new Error(result.message || 'Failed to save test results');
+            throw new Error(result.message || 'Không thể lưu kết quả xét nghiệm');
         }
 
     } catch (error) {
         console.error("Error saving test result:", error);
-        showAlert(`❌ Failed to save test results: ${error.message}`, 'danger');
+        showAlert(`❌ Không thể lưu kết quả xét nghiệm: ${error.message}`, 'danger');
     } finally {
         // Reset UI
         saveButton.disabled = false;
@@ -731,7 +731,7 @@ function formatDateTime(dateTimeString) {
 }
 
 function logout() {
-    if (confirm('Are you sure you want to logout?')) {
+    if (confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
         window.location.href = '../index.html';
     }
 }

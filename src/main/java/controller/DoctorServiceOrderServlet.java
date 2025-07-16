@@ -91,12 +91,10 @@ public class DoctorServiceOrderServlet extends HttpServlet {
                 }
 
                 int serviceOrderId = Integer.parseInt(serviceOrderIdParam);
-                System.out.println("Getting service order details for ID: " + serviceOrderId);
 
                 Map<String, Object> serviceOrderDetails = serviceOrderDAO.getServiceOrderWithDetails(serviceOrderId);
 
                 if (serviceOrderDetails == null) {
-                    System.out.println("Service order not found for ID: " + serviceOrderId);
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     jsonResponse.put("success", false);
                     jsonResponse.put("message", "Service order not found");
@@ -104,20 +102,11 @@ public class DoctorServiceOrderServlet extends HttpServlet {
                     return;
                 }
 
-                System.out.println("Service order found: " + serviceOrderDetails);
-
                 List<Map<String, Object>> items = serviceOrderItemDAO.getServiceOrderItemsWithDetails(serviceOrderId);
-                System.out.println("Found " + items.size() + " items for service order " + serviceOrderId);
-
-                if (items.size() > 0) {
-                    System.out.println("First item: " + items.get(0));
-                }
 
                 double totalAmount = items.stream()
                     .mapToDouble(item -> (Double) item.get("service_price"))
                     .sum();
-
-                System.out.println("Total amount calculated: " + totalAmount);
 
                 Map<String, Object> result = new HashMap<>();
                 result.put("serviceOrder", serviceOrderDetails);
@@ -208,9 +197,7 @@ public class DoctorServiceOrderServlet extends HttpServlet {
                         return;
                     }
 
-                    System.out.println("Getting assigned services for doctor ID: " + doctor.getDoctor_id());
                     List<Map<String, Object>> assignedServices = serviceOrderItemDAO.getAssignedServicesByDoctorId(doctor.getDoctor_id());
-                    System.out.println("Found " + assignedServices.size() + " assigned services");
 
                     jsonResponse.put("success", true);
                     jsonResponse.put("data", assignedServices);
@@ -257,13 +244,11 @@ public class DoctorServiceOrderServlet extends HttpServlet {
 
                 try {
                     int orderId = Integer.parseInt(orderIdParam);
-                    System.out.println("Getting service order details for order ID: " + orderId);
 
                     // Lấy thông tin service order
                     Map<String, Object> serviceOrderDetails = serviceOrderDAO.getServiceOrderWithDetails(orderId);
 
                     if (serviceOrderDetails == null) {
-                        System.out.println("Service order not found for ID: " + orderId);
                         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                         jsonResponse.put("success", false);
                         jsonResponse.put("message", "Service order not found");
@@ -273,7 +258,6 @@ public class DoctorServiceOrderServlet extends HttpServlet {
 
                     // Lấy danh sách items của service order
                     List<Map<String, Object>> items = serviceOrderItemDAO.getServiceOrderItemsWithDetails(orderId);
-                    System.out.println("Found " + items.size() + " items for service order " + orderId);
 
                     // Tính tổng tiền
                     double totalAmount = 0.0;
@@ -283,8 +267,6 @@ public class DoctorServiceOrderServlet extends HttpServlet {
                             totalAmount += Double.parseDouble(priceObj.toString());
                         }
                     }
-
-                    System.out.println("Total amount calculated: " + totalAmount);
 
                     // Tạo response data
                     Map<String, Object> result = new HashMap<>();
@@ -298,7 +280,6 @@ public class DoctorServiceOrderServlet extends HttpServlet {
                     jsonResponse.put("message", "Service order details retrieved successfully");
 
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid order ID format: " + orderIdParam);
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     jsonResponse.put("success", false);
                     jsonResponse.put("message", "Invalid order ID format");
@@ -422,7 +403,6 @@ public class DoctorServiceOrderServlet extends HttpServlet {
                 // Lấy danh sách tất cả services có sẵn
                 try {
                     List<ListOfMedicalService> allServices = medicalServiceDAO.getAllServices();
-                    System.out.println("Retrieved " + allServices.size() + " services from database");
 
                     jsonResponse.put("success", true);
                     jsonResponse.put("data", allServices);
@@ -456,7 +436,6 @@ public class DoctorServiceOrderServlet extends HttpServlet {
             } else if ("getAllServiceOrders".equals(action)) {
                 // Lấy tất cả service orders (không giới hạn theo doctor)
                 try {
-                    System.out.println("Getting all service orders...");
                     
                     List<ServiceOrder> allServiceOrders = serviceOrderDAO.getAllServiceOrders();
                     List<Map<String, Object>> serviceOrdersWithDetails = new ArrayList<>();
@@ -483,13 +462,6 @@ public class DoctorServiceOrderServlet extends HttpServlet {
                         }
                     }
 
-                    System.out.println("Retrieved " + serviceOrdersWithDetails.size() + " service orders with details");
-
-                    jsonResponse.put("success", true);
-                    jsonResponse.put("data", serviceOrdersWithDetails);
-                    jsonResponse.put("message", "All service orders retrieved successfully");
-                    jsonResponse.put("totalCount", serviceOrdersWithDetails.size());
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -510,7 +482,6 @@ public class DoctorServiceOrderServlet extends HttpServlet {
                     }
 
                     int doctorId = doctor.getDoctor_id();
-                    System.out.println("Getting service orders for doctor ID: " + doctorId);
                     
                     List<ServiceOrder> myServiceOrders = serviceOrderDAO.getServiceOrdersByDoctorId(doctorId);
                     List<Map<String, Object>> serviceOrdersWithDetails = new ArrayList<>();
@@ -536,8 +507,6 @@ public class DoctorServiceOrderServlet extends HttpServlet {
                             serviceOrdersWithDetails.add(orderDetails);
                         }
                     }
-
-                    System.out.println("Retrieved " + serviceOrdersWithDetails.size() + " service orders for doctor " + doctorId);
 
                     jsonResponse.put("success", true);
                     jsonResponse.put("data", serviceOrdersWithDetails);
@@ -616,7 +585,6 @@ public class DoctorServiceOrderServlet extends HttpServlet {
             // Lấy waitlistId (có thể là String hoặc Integer)
             Object wlObj = requestData.get("waitlistId");
             Integer waitlistId = null;
-            System.out.println("Raw waitlistId object: " + wlObj + " (type: " + (wlObj != null ? wlObj.getClass().getSimpleName() : "null") + ")");
 
             if (wlObj instanceof Integer) {
                 waitlistId = (Integer) wlObj;
@@ -630,8 +598,6 @@ public class DoctorServiceOrderServlet extends HttpServlet {
                 // JSON có thể parse số thành Double
                 waitlistId = ((Double) wlObj).intValue();
             }
-
-            System.out.println("Parsed waitlistId: " + waitlistId);
 
             // Validation
             if (medicineRecordId == null || services == null || services.isEmpty()) {
