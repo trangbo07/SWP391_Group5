@@ -9,7 +9,7 @@ import java.sql.Timestamp; // ✅ đúng import
 @Getter
 @Setter
 public class PatientBookAppoinmentDTO {
-    private int appointmentId;         // ID tự tăng
+    private int appointmentId;
     private int doctorId;
     private int patientId;
     private Timestamp appointmentDatetime;
@@ -17,4 +17,5 @@ public class PatientBookAppoinmentDTO {
     private String shift;
     private String note;
     private String status;
+
 }

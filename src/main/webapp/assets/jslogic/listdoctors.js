@@ -256,7 +256,32 @@ window.addEventListener("DOMContentLoaded", async () => {
         const data = await res.json();
         patientIdFromSession = data.patientId;
         window.patientIdFromSession = patientIdFromSession;
+        try {
+            const res = await fetch("/api/session/patient");
+            if (!res.ok) throw new Error();
+            const data = await res.json();
+            patientIdFromSession = data.patientId;
+            window.patientIdFromSession = patientIdFromSession;
 
+            // 🟡 GỌI API danh sách bệnh nhân theo accountId
+            const patientRes = await fetch(`/api/patient/list-by-account?accountId=${patientIdFromSession}`);
+            const patients = await patientRes.json();
+
+            const patientSelect = document.getElementById('appointmentPatientId');
+            if (patientSelect && patients.length > 0) {
+                // Xóa option cũ (nếu có)
+                patientSelect.innerHTML = '<option disabled selected value="">-- Chọn bệnh nhân --</option>';
+                patients.forEach(patient => {
+                    const option = document.createElement('option');
+                    option.value = patient.patient_id;
+                    option.textContent = patient.full_name;
+                    patientSelect.appendChild(option);
+                });
+            }
+        } catch (e) {
+            alert("Bạn chưa đăng nhập hoặc không phải tài khoản bệnh nhân!");
+            console.error(e);
+        }
         const input = document.getElementById('appointmentPatientId') || document.createElement('input');
         input.type = 'hidden';
         input.id = 'appointmentPatientId';
@@ -305,18 +330,9 @@ window.addEventListener("DOMContentLoaded", async () => {
                 if (data.success) {
                     bootstrap.Modal.getOrCreateInstance(document.getElementById('bookAppointmentModal')).hide();
                     document.getElementById('bookAppointmentForm')?.reset();
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Đặt lịch thành công!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                    alert(data.message || "Đặt lịch thành công!");
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lịch đã bị trùng vui lòng đặt lại!',
-                        text: 'Vui lòng thử lại.'
-                    });
+                    alert(data.message || "Lịch đã bị trùng vui lòng đặt lại!\nVui lòng thử lại.");
                 }
             })
             .catch(() => alert("Có lỗi xảy ra!"));

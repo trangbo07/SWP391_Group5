@@ -694,6 +694,9 @@
                               <li class="nav-item" role="presentation">
                                  <button class="nav-link btn btn-tab" id="appointmentClosed" type="button" data-bs-toggle="tab" data-action="Cancelled" data-bs-target="#appointmentTab" role="tab" aria-selected="false">Cancelled</button>
                               </li>
+                              <li class="nav-item">
+                                 <button class="btn btn-info view-feedback-btn" data-doctor-id="123">Xem Feedback</button>
+                              </li>
                            </ul>
 
                            <!-- Search -->
@@ -832,9 +835,7 @@
                <textarea class="form-control" id="note" rows="3" readonly></textarea>
             </div>
 
-            <button class="btn btn-secondary text-white select-patient-btn cancelAppointmentBtn" data-action="cancel">
-               <i class="fas fa-times-circle me-1"></i>Cancel
-            </button>
+
          </div>
 
          <div class="offcanvas-footer border-top">
@@ -1762,6 +1763,25 @@
 <!--        <script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>-->
 <script src="../assets/jslogic/appoinment-patient.js" defer></script>
 <script src="../assets/jslogic/logout.js" defer></script>
+<script src="../assets/jslogic/feedback.js" defer></script>
 
 </body>
 </html>
+
+
+
+<!-- Modal hiển thị feedback -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title">Feedback của bạn</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+         </div>
+         <div class="modal-body" id="feedbackModalBody">
+            <!-- Nội dung sẽ được render bằng JavaScript -->
+         </div>
+      </div>
+   </div>
+</div>
+

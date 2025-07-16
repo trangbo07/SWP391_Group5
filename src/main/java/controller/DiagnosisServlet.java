@@ -34,7 +34,7 @@ public class DiagnosisServlet extends HttpServlet {
 
             int patientId = Integer.parseInt(idParam);
             DiagnosisPatientDAO dao = new DiagnosisPatientDAO();
-            List<DiagnosisPatient> list = dao.getPatientDiagnosis(patientId);
+            List<DiagnosisPatient> list = dao.getDiagnosisByAccountIdAndName(patientId);
 
             System.out.println("🧾 Diagnosis list size = " + (list == null ? "null" : list.size()));
             response.setContentType("application/json");

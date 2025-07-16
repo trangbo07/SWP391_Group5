@@ -1742,17 +1742,31 @@
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
+
          <div class="modal-body">
             <form id="bookAppointmentForm">
+               <!-- Doctor -->
                <input type="hidden" id="appointmentDoctorId">
                <div class="mb-3">
                   <label for="appointmentDoctorName" class="form-label">Bác sĩ</label>
                   <input type="text" class="form-control" id="appointmentDoctorName" readonly>
                </div>
+
+               <!-- Chọn BỆNH NHÂN (THAY VÌ hidden) -->
+               <div class="mb-3">
+                  <label for="appointmentPatientId" class="form-label">Chọn bệnh nhân</label>
+                  <select class="form-select" id="appointmentPatientId" required>
+                     <option disabled selected value="">-- Chọn bệnh nhân --</option>
+                     <!-- Các option sẽ được render bằng JS -->
+                  </select>
+               </div>
+
+               <!-- Ngày và ca -->
                <div class="mb-3">
                   <label for="appointmentDate" class="form-label">Chọn ngày</label>
                   <input type="date" class="form-control" id="appointmentDate" required>
                </div>
+
                <div class="mb-3">
                   <label for="appointmentShift" class="form-label">Chọn ca</label>
                   <select class="form-select" id="appointmentShift" required>
@@ -1761,21 +1775,24 @@
                      <option value="Afternoon">Chiều</option>
                   </select>
                </div>
+
+               <!-- Khung giờ -->
                <div class="mb-3">
                   <label class="form-label">Khung giờ khả dụng</label>
                   <input type="hidden" id="selectedTimeSlot">
                   <div id="time-slots"></div>
                </div>
-               <!-- Thêm các trường khác nếu cần -->
+
+               <!-- Ghi chú -->
                <div class="mb-3">
                   <label for="appointmentNote" class="form-label">Ghi chú cho bác sĩ (nếu có)</label>
                   <textarea class="form-control" id="appointmentNote" rows="2" placeholder="Nhập ghi chú..." maxlength="255"></textarea>
                </div>
-               <input type="hidden" id="appointmentPatientId" value="${sessionScope.patientId}" />
+
                <button id="confirmBookingBtn" type="button" class="btn btn-primary mt-3" disabled>
-                   <i class="fas fa-check-circle me-2"></i>Xác nhận đặt lịch
-              </button>
-             </form>
+                  <i class="fas fa-check-circle me-2"></i>Xác nhận đặt lịch
+               </button>
+            </form>
          </div>
       </div>
    </div>
