@@ -208,13 +208,13 @@ function renderServiceResultsTable() {
             <td>${index + 1}</td>
             <td>
                 <div class="patient-info">
-                    <div class="patient-name"><i class="fas fa-user me-2"></i>${result.patient_name || 'N/A'}</div>
+                    <div class="patient-name"><i class="fas fa-user me-2"></i>${result.patient_name || 'Không có dữ liệu'}</div>
                     <div class="patient-details">
-                        Prescribed by: You
+                        Bác sĩ chỉ định: Bạn
                     </div>
                 </div>
             </td>
-            <td><i class="fas fa-file-medical me-2"></i>Order #${result.service_order_id || 'N/A'}</td>
+            <td><i class="fas fa-file-medical me-2"></i>Đơn #${result.service_order_id || 'Không có'}</td>
             <td><i class="fas fa-calendar-plus me-2"></i>${formatDate(result.order_date)}</td>
             <td>
                 <div class="result-progress ${progressClass}">
@@ -225,8 +225,8 @@ function renderServiceResultsTable() {
                 </div>
                 <small class="text-muted">
                     <i class="fas fa-flask me-1"></i>
-                    ${result.completed_tests || 0}/${result.total_tests || 0} tests completed
-                    ${result.pending_tests > 0 ? ` | ${result.pending_tests} pending` : ''}
+                    ${result.completed_tests || 0}/${result.total_tests || 0} đã hoàn thành
+                    ${result.pending_tests > 0 ? ` | ${result.pending_tests} chờ xử lý` : ''}
                 </small>
             </td>
             <td>
@@ -240,11 +240,11 @@ function renderServiceResultsTable() {
                     <button class="btn btn-info btn-sm view-detailed-results-btn" 
                             data-service-order-id="${result.service_order_id}" 
                             data-medicine-record-id="${result.medicineRecord_id}">
-                        <i class="fas fa-microscope me-1"></i>View This Order
+                        <i class="fas fa-microscope me-1"></i>Xem đơn này
                     </button>
                     <button class="btn btn-success btn-sm view-all-results-btn" 
                             data-medicine-record-id="${result.medicineRecord_id}">
-                        <i class="fas fa-list-ul me-1"></i>View All Results
+                        <i class="fas fa-list-ul me-1"></i>Xem tất cả kết quả
                     </button>
                 </div>
             </td>
@@ -576,14 +576,14 @@ async function displayDetailedResults(detailedResults, serviceOrderId) {
                         ${diagnosisExists
                             ? `<button class="btn btn-secondary" disabled><i class="fas fa-check me-2"></i>Đã kết luận</button>`
                             : `<button class="btn btn-success btn-conclusion" 
-                                    data-patient-id="${patientInfo.patient_id}"
-                                    data-patient-name="${patientInfo.patient_name}"
-                                    data-medicine-record-id="${patientInfo.medicineRecord_id}"
-                                    data-service-order-id="${orderGroup.order_id}"
-                                    ${progressPercentage < 100 ? 'disabled' : ''}
-                                    title="Progress: ${progressPercentage}% (${completedCount}/${totalCount} tests completed)">
-                                <i class="fas fa-file-medical-alt me-2"></i>
-                                ${progressPercentage < 100 ? `Chờ hoàn thành xét nghiệm (${progressPercentage}%)` : 'Kết luận điều trị'}
+                                data-patient-id="${patientInfo.patient_id}"
+                                data-patient-name="${patientInfo.patient_name}"
+                                data-medicine-record-id="${patientInfo.medicineRecord_id}"
+                                data-service-order-id="${orderGroup.order_id}"
+                                ${progressPercentage < 100 ? 'disabled' : ''}
+                                title="Progress: ${progressPercentage}% (${completedCount}/${totalCount} tests completed)">
+                            <i class="fas fa-file-medical-alt me-2"></i>
+                            ${progressPercentage < 100 ? `Chờ hoàn thành xét nghiệm (${progressPercentage}%)` : 'Kết luận điều trị'}
                             </button>`}
                     </div>
                 </div>

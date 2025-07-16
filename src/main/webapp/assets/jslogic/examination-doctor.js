@@ -20,7 +20,7 @@ async function loadWaitlist() {
             }
         });
 
-        if (!response.ok) throw new Error('Failed to fetch waitlist');
+        if (!response.ok) throw new Error('Không thể tải danh sách chờ');
 
         const waitlists = await response.json();
         console.log(waitlists)
@@ -28,7 +28,7 @@ async function loadWaitlist() {
 
         if (!waitlists || waitlists.length === 0) {
             errorMessage.classList.remove("d-none");
-            errorMessage.innerHTML = '<i class="fas fa-info-circle me-2"></i>No patients in waitlist.';
+            errorMessage.innerHTML = '<i class="fas fa-info-circle me-2"></i>Không có bệnh nhân trong danh sách chờ.';
             return;
         }
 
@@ -40,7 +40,7 @@ async function loadWaitlist() {
         console.error("Error loading waitlist:", error);
         loadingSpinner.style.display = "none";
         errorMessage.classList.remove("d-none");
-        errorMessage.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Failed to load waitlist.';
+        errorMessage.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Không thể tải danh sách chờ.';
     }
 }
 
@@ -58,15 +58,15 @@ function renderWaitlistTable() {
 
         row.innerHTML = `
             <td>${index + 1}</td>
-            <td><i class="fas fa-user me-2"></i>${waitlist.patient_id || 'N/A'}</td>
-            <td><i class="fas fa-door-open me-2"></i>Room ${waitlist.room_id || 'N/A'}</td>
+            <td><i class="fas fa-user me-2"></i>${waitlist.patient_id || 'Không có'}</td>
+            <td><i class="fas fa-door-open me-2"></i>Phòng ${waitlist.room_id || 'Không có'}</td>
             <td><i class="fas fa-calendar-plus me-2"></i>${formatDate(waitlist.registered_at)}</td>
             <td><i class="fas fa-hourglass-start me-2"></i>${formatTime(waitlist.estimated_time)}</td>
             <td><i class="fas fa-calendar-check me-2"></i>${formatDateTime(waitlist.appointment_datetime)}</td>
-            <td><span class="${statusClass}">${waitlist.status || 'N/A'}</span></td>
-            <td><i class="fas fa-vial me-2"></i>${waitlist.visittype || 'N/A'}</td>
-            <td><i class="fas fa-sticky-note me-2"></i>${waitlist.note || 'No note'}</td>
-            <td><i class="fas fa-clock me-2"></i>${waitlist.shift || 'N/A'}</td>
+            <td><span class="${statusClass}">${getStatusText(waitlist.status) || 'Không xác định'}</span></td>
+            <td><i class="fas fa-vial me-2"></i>${getVisitTypeText(waitlist.visittype) || 'Không xác định'}</td>
+            <td><i class="fas fa-sticky-note me-2"></i>${waitlist.note || 'Không có ghi chú'}</td>
+            <td><i class="fas fa-clock me-2"></i>${waitlist.shift || 'Không có'}</td>
             <td>
                 ${generateActionButton(waitlist)}
             </td>
@@ -92,6 +92,24 @@ function getStatusClass(status) {
     }
 }
 
+function getStatusText(status) {
+    switch ((status || '').toLowerCase()) {
+        case 'waiting': return 'Chờ khám';
+        case 'inprogress': return 'Đang khám';
+        case 'skipped': return 'Bỏ qua';
+        case 'completed': return 'Đã khám';
+        default: return status || 'Không xác định';
+    }
+}
+
+function getVisitTypeText(type) {
+    switch ((type || '').toLowerCase()) {
+        case 'initial': return 'Khám ban đầu';
+        case 'result': return 'Tái khám';
+        default: return type || 'Không xác định';
+    }
+}
+
 // Hàm tạo button action phù hợp theo status và visit type
 function generateActionButton(waitlist) {
     const status = waitlist.status?.toLowerCase();
@@ -101,7 +119,7 @@ function generateActionButton(waitlist) {
     if (visitType === 'result') {
         return `
             <button class="btn btn-sm btn-warning" disabled>
-                <i class="fas fa-vial me-1"></i>Being Tested
+                <i class="fas fa-vial me-1"></i>Đang kiểm tra kết quả
             </button>
         `;
     }
@@ -110,54 +128,54 @@ function generateActionButton(waitlist) {
         case 'waiting':
             return `
                 <button class="btn btn-sm btn-primary select-patient-btn" data-waitlist-id="${waitlistId}">
-                    <i class="fas fa-stethoscope me-1"></i>Select
+                    <i class="fas fa-stethoscope me-1"></i>Chọn khám
                 </button>
             `;
 
         case 'inprogress':
             return `
                 <button class="btn btn-sm btn-info" disabled>
-                    <i class="fas fa-spinner fa-spin me-1"></i>In Progress
+                    Đang khám
                 </button>
             `;
 
         case 'completed':
             return `
                 <button class="btn btn-sm btn-success" disabled>
-                    <i class="fas fa-check-circle me-1"></i>Completed
+                    <i class="fas fa-check-circle me-1"></i>Hoàn thành
                 </button>
             `;
 
         case 'skipped':
             return `
                 <button class="btn btn-sm btn-secondary" disabled>
-                    <i class="fas fa-forward me-1"></i>Skipped
+                    <i class="fas fa-forward me-1"></i>Bỏ qua
                 </button>
             `;
 
         default:
             return `
                 <button class="btn btn-sm btn-outline-secondary" disabled>
-                    <i class="fas fa-question me-1"></i>Unknown
+                    <i class="fas fa-question me-1"></i>Không xác định
                 </button>
             `;
     }
 }
 
 function formatDate(dateStr) {
-    if (!dateStr) return 'N/A';
+    if (!dateStr) return 'Không có';
     const date = new Date(dateStr);
     return date.toLocaleDateString();
 }
 
 function formatTime(dateStr) {
-    if (!dateStr) return 'N/A';
+    if (!dateStr) return 'Không có';
     const date = new Date(dateStr);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
 function formatDateTime(dateStr) {
-    if (!dateStr) return 'N/A';
+    if (!dateStr) return 'Không có';
     const date = new Date(dateStr);
     return date.toLocaleString();
 }
@@ -173,25 +191,25 @@ async function selectPatientForExamination(waitlistId) {
             }
         });
 
-        if (!response.ok) throw new Error('Không lấy được thông tin chi tiết bệnh nhân');
+        if (!response.ok) throw new Error('Không thể lấy thông tin chi tiết bệnh nhân');
 
         const waitlist = await response.json();
         selectedWaitlist = waitlist;
 
         // Set thông tin bệnh nhân
-        document.getElementById("patientId").textContent = waitlist.patient_id ?? 'N/A';
-        document.getElementById("patientName").textContent = waitlist.full_name ?? 'N/A';
-        document.getElementById("patientAge").textContent = waitlist.dob ? calculateAge(waitlist.dob) : 'N/A';
-        document.getElementById("patientGender").textContent = waitlist.gender ?? 'N/A';
-        document.getElementById("patientPhone").textContent = waitlist.phone ?? 'N/A';
+        document.getElementById("patientId").textContent = waitlist.patient_id ?? 'Không có';
+        document.getElementById("patientName").textContent = waitlist.full_name ?? 'Không có';
+        document.getElementById("patientAge").textContent = waitlist.dob ? calculateAge(waitlist.dob) : 'Không có';
+        document.getElementById("patientGender").textContent = waitlist.gender ?? 'Không có';
+        document.getElementById("patientPhone").textContent = waitlist.phone ?? 'Không có';
 
         // Thông tin lịch hẹn
         const appointmentDate = waitlist.appointment_datetime;
         document.getElementById("appointmentInfo").textContent = appointmentDate
-            ? `${formatDate(appointmentDate)} at ${formatTime(appointmentDate)}`
-            : 'N/A';
+            ? `${formatDate(appointmentDate)} lúc ${formatTime(appointmentDate)}`
+            : 'Không có';
 
-        document.getElementById("patientNote").textContent = waitlist.note ?? 'N/A';
+        document.getElementById("patientNote").textContent = waitlist.note ?? 'Không có';
 
         // Gán ID cho form
         document.getElementById("selectedWaitlistId").value = waitlist.waitlist_id ?? '';
@@ -205,11 +223,11 @@ async function selectPatientForExamination(waitlistId) {
 
     } catch (error) {
         console.error(error);
-        showAlert('Không lấy được thông tin chi tiết bệnh nhân', 'danger');
+        showAlert('Không thể lấy thông tin chi tiết bệnh nhân', 'danger');
 
         // Reset thông tin về N/A
         ["patientId", "patientName", "patientAge", "patientGender", "patientPhone", "appointmentInfo", "patientNote"]
-            .forEach(id => document.getElementById(id).textContent = 'N/A');
+            .forEach(id => document.getElementById(id).textContent = 'Không có');
     }
 }
 
@@ -285,13 +303,13 @@ async function saveExamination(formData) {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to save examination');
+            throw new Error('Không thể lưu thông tin khám');
         }
 
         const result = await response.json();
 
         if (result.success) {
-            showAlert('Examination saved successfully!', 'success');
+            showAlert('Đã lưu thông tin khám thành công!', 'success');
 
             // Cập nhật trạng thái appointment thành InProgress
             await updateWaitlistStatus(examinationData.waitlistId, 'InProgress');
@@ -300,14 +318,14 @@ async function saveExamination(formData) {
             setTimeout(() => {
                 backToPatientSelection();
                 loadWaitlist();
-            }, 2000);
+            }, 1000);
         } else {
-            throw new Error(result.message || 'Failed to save examination');
+            throw new Error(result.message || 'Không thể lưu thông tin khám');
         }
 
     } catch (error) {
         console.error("Error saving examination:", error);
-        showAlert('Failed to save examination. Please try again.', 'danger');
+        showAlert('Không thể lưu thông tin khám. Vui lòng thử lại.', 'danger');
     }
 }
 
@@ -327,7 +345,7 @@ async function updateWaitlistStatus(waitlistId, status) {
         });
 
         if (!response.ok) {
-            console.error('Failed to update waitlist status');
+            console.error('Không thể cập nhật trạng thái waitlist');
         }
     } catch (error) {
         console.error("Error updating waitlist status:", error);
@@ -354,7 +372,7 @@ function showAlert(message, type) {
         if (alert) {
             alert.remove();
         }
-    }, 5000);
+    }, 500);
 }
 
 
@@ -387,12 +405,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
         if (!formData.get('symptomsDescription').trim()) {
-            showAlert('Please describe the symptoms', 'danger');
+            showAlert('Vui lòng mô tả triệu chứng', 'danger');
             return;
         }
 
         if (!formData.get('preliminaryDiagnosis').trim()) {
-            showAlert('Please enter preliminary diagnosis', 'danger');
+            showAlert('Vui lòng nhập chẩn đoán sơ bộ', 'danger');
             return;
         }
 
@@ -414,11 +432,11 @@ function validateExaminationForm(formData) {
     const errors = [];
 
     if (!formData.get('symptomsDescription').trim()) {
-        errors.push('Symptoms description is required');
+        errors.push('Mô tả triệu chứng là bắt buộc');
     }
 
     if (!formData.get('preliminaryDiagnosis').trim()) {
-        errors.push('Preliminary diagnosis is required');
+        errors.push('Chẩn đoán sơ bộ là bắt buộc');
     }
 
     return errors;
