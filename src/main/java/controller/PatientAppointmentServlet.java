@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import dao.FeedbackDAO;
 import dto.AppointmentpatientDTO;
 import dao.PatientAppointmentDAO;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -108,4 +110,5 @@ public class PatientAppointmentServlet extends HttpServlet {
     private static class RequestAction {
         String action;
     }
+
 }

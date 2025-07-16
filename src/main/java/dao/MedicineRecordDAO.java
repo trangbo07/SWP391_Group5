@@ -6,32 +6,37 @@ import java.sql.*;
 import java.util.*;
 
 public class MedicineRecordDAO {
-    public List<RecordSummaryDTO> getSummaryByPatientId(int patientId) {
+    public List<RecordSummaryDTO> getSummaryByPatientId(int acc_patientId) {
         List<RecordSummaryDTO> list = new ArrayList<>();
 
         String sql = """
-            SELECT 
+            SELECT
                 mr.medicineRecord_id,
                 d.full_name AS doctorName,
                 d.department AS clinicName,
                 diag.disease AS reason,
-                a.note
-            FROM MedicineRecords mr
+                a.note,
+                p.full_name AS patientName
+            FROM AccountPatient ap
+            JOIN Patient_AccountPatient pap ON ap.account_patient_id = pap.account_patient_id
+            JOIN Patient p ON pap.patient_id = p.patient_id
+            JOIN MedicineRecords mr ON p.patient_id = mr.patient_id
             JOIN Diagnosis diag ON diag.medicineRecord_id = mr.medicineRecord_id
             JOIN Doctor d ON diag.doctor_id = d.doctor_id
             LEFT JOIN Appointment a ON a.appointment_id = (
-                SELECT TOP 1 appointment_id FROM Appointment
-                WHERE patient_id = mr.patient_id
+                SELECT TOP 1 appointment_id
+                FROM Appointment
+                WHERE patient_id = p.patient_id
                 ORDER BY appointment_datetime DESC
             )
-            WHERE mr.patient_id = ?
-            ORDER BY mr.medicineRecord_id DESC
+            WHERE ap.account_patient_id = ?
+            ORDER BY mr.medicineRecord_id DESC;
         """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, patientId);
+            ps.setInt(1, acc_patientId);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
