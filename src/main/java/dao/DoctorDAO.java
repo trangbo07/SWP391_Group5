@@ -169,5 +169,22 @@ public class DoctorDAO {
 
         return null;
     }
+public boolean updateDoctorImage(int accountStaffId, String imageUrl) {
+    String sql = "UPDATE AccountStaff SET img = ? WHERE account_staff_id = ?";
 
+    try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, imageUrl);
+        ps.setInt(2, accountStaffId);
+
+        int rowsAffected = ps.executeUpdate();
+        return rowsAffected > 0;
+
+    } catch (Exception e) {
+        System.err.println("Error in updateDoctorImage: " + e.getMessage());
+        e.printStackTrace();
+        return false;
+    }
+}
 }

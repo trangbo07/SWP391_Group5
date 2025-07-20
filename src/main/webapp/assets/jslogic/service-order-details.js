@@ -1389,22 +1389,3 @@ async function updateWaitlistToSkipped(waitlistId) {
 async function updateWaitlistToCompleted(waitlistId) {
     return await updateWaitlistStatus(waitlistId, 'Hoàn thành');
 }
-
-// Demo function để test các cập nhật
-async function demoWaitlistStatusManagement() {
-    const waitlistId = prompt('Nhập Mã Danh Sách Chờ để quản lý trạng thái demo:');
-    if (!waitlistId) return;
-
-    const id = parseInt(waitlistId);
-
-    console.log('=== Demo Quản Lý Trạng Thái Danh Sách Chờ ===');
-    console.log('Các hàm có sẵn:');
-    console.log('- updateWaitlistStatus(waitlistId, "status")');
-    console.log('- updateWaitlistStatusAndVisittype(waitlistId, "status", "visittype")');
-    console.log('- updateWaitlistToWaiting(waitlistId) - Đặt trạng thái="Kết quả", visittype="Đang chờ"');
-    console.log('- updateWaitlistToInProgress(waitlistId) - Đặt trạng thái="Đang thực hiện"');
-    console.log('- updateWaitlistToSkipped(waitlistId) - Đặt trạng thái="Bỏ qua"');
-    console.log('- updateWaitlistToCompleted(waitlistId) - Đặt trạng thái="Hoàn thành"');
-
-    showAlert(`Các hàm demo sẵn sàng cho Mã Danh Sách Chờ: ${id}. Kiểm tra bảng điều khiển để xem các hàm có sẵn.`, 'info');
-}
