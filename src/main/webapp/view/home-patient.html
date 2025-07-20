@@ -34,7 +34,8 @@
 
     <style>
         #pagination {
-            margin-top: 20px;
+            margin-top: 30px;
+            margin-bottom: 60px; /* Đẩy lên khỏi footer */
             text-align: center;
         }
 
@@ -310,7 +311,92 @@
 
     <button id="department">Khám Chuyên Khoa</button>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const tbody = document.querySelector("#doctorFeedbackTable tbody");
+            const paginationDiv = document.createElement("div");
+            paginationDiv.id = "pagination";
+            document.body.appendChild(paginationDiv);
 
+            let currentPage = 1;
+            const rowsPerPage = 5;
+            let data = [];
+
+            try {
+                const response = await fetch("/api/doctor-feedback-top10");
+                if (!response.ok) throw new Error("Không thể tải dữ liệu.");
+                data = await response.json();
+
+                if (data.length === 0) {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `<td colspan="7">Không có dữ liệu phản hồi.</td>`;
+                    tbody.appendChild(row);
+                    return;
+                }
+
+                renderTable(data, currentPage);
+                renderPagination(data);
+
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu:", err);
+                const row = document.createElement("tr");
+                row.innerHTML = `<td colspan="7">Lỗi hệ thống khi lấy dữ liệu.</td>`;
+                tbody.appendChild(row);
+            }
+
+            function renderTable(data, page) {
+                tbody.innerHTML = ""; // Clear bảng
+                const start = (page - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                const paginatedItems = data.slice(start, end);
+
+                paginatedItems.forEach(doctor => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+          <td><img class="avatar" src="${doctor.img}" alt="Ảnh bác sĩ"></td>
+          <td>${doctor.fullName}</td>
+          <td>${doctor.department}</td>
+          <td>${doctor.phone}</td>
+          <td>${doctor.eduLevel}</td>
+          <td class="feedback">${doctor.content}</td>
+          <td class="created-at">${doctor.createdAt}</td>
+        `;
+                    row.style.cursor = "pointer";
+                    row.addEventListener("click", () => {
+                        // Lưu thông tin vào localStorage (hoặc sessionStorage)
+                        localStorage.setItem("selectedDoctor", JSON.stringify(doctor));
+
+                        // Mở trang chi tiết
+                        window.location.href = "./bookappoinmentdoctor.html"; // Đổi path nếu cần
+                    });
+                    tbody.appendChild(row);
+                });
+            }
+
+            function renderPagination(data) {
+                const pageCount = Math.ceil(data.length / rowsPerPage);
+                paginationDiv.innerHTML = "";
+
+                for (let i = 1; i <= pageCount; i++) {
+                    const btn = document.createElement("button");
+                    btn.innerText = i;
+                    btn.style.margin = "0 5px";
+                    btn.className = (i === currentPage) ? "active" : "";
+
+                    btn.addEventListener("click", () => {
+                        currentPage = i;
+                        renderTable(data, currentPage);
+                        renderPagination(data);
+                    });
+
+                    paginationDiv.appendChild(btn);
+                }
+            }
+        });
+        document.getElementById("department").addEventListener("click", () => {
+            window.location.href = "./departments.html";
+        });
+    </script>
   </div>
   <!-- Footer Section Start -->
     <footer class="footer">
@@ -392,89 +478,4 @@
 </body>
 </html>
 
-<script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        const tbody = document.querySelector("#doctorFeedbackTable tbody");
-        const paginationDiv = document.createElement("div");
-        paginationDiv.id = "pagination";
-        document.body.appendChild(paginationDiv);
 
-        let currentPage = 1;
-        const rowsPerPage = 5;
-        let data = [];
-
-        try {
-            const response = await fetch("/api/doctor-feedback-top10");
-            if (!response.ok) throw new Error("Không thể tải dữ liệu.");
-            data = await response.json();
-
-            if (data.length === 0) {
-                const row = document.createElement("tr");
-                row.innerHTML = `<td colspan="7">Không có dữ liệu phản hồi.</td>`;
-                tbody.appendChild(row);
-                return;
-            }
-
-            renderTable(data, currentPage);
-            renderPagination(data);
-
-        } catch (err) {
-            console.error("Lỗi khi tải dữ liệu:", err);
-            const row = document.createElement("tr");
-            row.innerHTML = `<td colspan="7">Lỗi hệ thống khi lấy dữ liệu.</td>`;
-            tbody.appendChild(row);
-        }
-
-        function renderTable(data, page) {
-            tbody.innerHTML = ""; // Clear bảng
-            const start = (page - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            const paginatedItems = data.slice(start, end);
-
-            paginatedItems.forEach(doctor => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-          <td><img class="avatar" src="${doctor.img}" alt="Ảnh bác sĩ"></td>
-          <td>${doctor.fullName}</td>
-          <td>${doctor.department}</td>
-          <td>${doctor.phone}</td>
-          <td>${doctor.eduLevel}</td>
-          <td class="feedback">${doctor.content}</td>
-          <td class="created-at">${doctor.createdAt}</td>
-        `;
-                row.style.cursor = "pointer";
-                row.addEventListener("click", () => {
-                    // Lưu thông tin vào localStorage (hoặc sessionStorage)
-                    localStorage.setItem("selectedDoctor", JSON.stringify(doctor));
-
-                    // Mở trang chi tiết
-                    window.location.href = "./bookappoinmentdoctor.html"; // Đổi path nếu cần
-                });
-                tbody.appendChild(row);
-            });
-        }
-
-        function renderPagination(data) {
-            const pageCount = Math.ceil(data.length / rowsPerPage);
-            paginationDiv.innerHTML = "";
-
-            for (let i = 1; i <= pageCount; i++) {
-                const btn = document.createElement("button");
-                btn.innerText = i;
-                btn.style.margin = "0 5px";
-                btn.className = (i === currentPage) ? "active" : "";
-
-                btn.addEventListener("click", () => {
-                    currentPage = i;
-                    renderTable(data, currentPage);
-                    renderPagination(data);
-                });
-
-                paginationDiv.appendChild(btn);
-            }
-        }
-    });
-    document.getElementById("department").addEventListener("click", () => {
-        window.location.href = "./departments.html";
-    });
-</script>

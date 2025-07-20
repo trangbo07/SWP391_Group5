@@ -29,6 +29,7 @@ public class DoctorListServlet extends HttpServlet {
                 try {
                     int id = Integer.parseInt(doctorId);
                     DoctorDTO doctor = doctorDAO.getDoctorDTOById(id);
+                    System.out.println("co anh chua" + doctor);
                     if (doctor != null) {
                         mapper.writeValue(resp.getWriter(), doctor);
                     } else {
