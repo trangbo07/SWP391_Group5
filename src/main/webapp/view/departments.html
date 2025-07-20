@@ -49,7 +49,6 @@
             background-color: #007bff;
             color: #fff;
         }
-
     </style>
 
 
@@ -282,62 +281,30 @@
         </nav>            <!--Nav End-->
     </div>
 
-    <div class="row pt-5">
-        <div class="col-lg-12 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-4">
-                            <label for="searchMedicine" class="form-label">Tên thuốc</label>
-                            <input type="text" class="form-control" id="searchMedicine" placeholder="Nhập tên thuốc">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="searchDoctor" class="form-label">Tên bác sĩ</label>
-                            <input type="text" class="form-control" id="searchDoctor" placeholder="Nhập tên bác sĩ">
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-secondary w-100" id="resetButton">Xóa lọc</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <h2>Chọn chuyên khoa</h2>
+    <input type="text" id="searchInput" placeholder="Tìm chuyên khoa..." style="margin-bottom: 10px; padding: 5px; width: 250px;">
+    <button id="clearFilterBtn">Xoá bộ lọc</button>
+    <div id="departmentButtons"></div>
+
+
     </div>
-
-    <!-- Table đơn thuốc -->
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Tên thuốc</th>
-            <th>Ngày kê</th>
-            <th>Liều lượng</th>
-            <th>Bác sĩ</th>
-            <th>Chi tiết</th>
-        </tr>
-        </thead>
-        <tbody id="prescription-table-body"></tbody>
-    </table>
-
-    <!-- Phân trang -->
-    <nav class="mt-3">
-        <ul id="pagination" class="pagination justify-content-center"></ul>
-    </nav>
     <!-- Footer Section Start -->
     <footer class="footer">
         <div class="footer-body">
             <ul class="left-panel list-inline mb-0 p-0">
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Chính sách bảo mật</a></li>
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Điều khoản sử dụng</a></li>
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/contact.html">Liên hệ</a></li>
+                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Privacy Policy</a></li>
+                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Terms of Use</a></li>
             </ul>
             <h6 class="right-panel mb-0">
-                © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span>.
-                Phát triển bởi
-                <a href="https://www.facebook.com/long.bao.303029" target="_blank">Bùi Bảo Long</a>.
+                © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span> with
+                <span class="text-danger">
+                            <svg class="icon-16" width="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.85 2.50065C16.481 2.50065 17.111 2.58965 17.71 2.79065C21.401 3.99065 22.731 8.04065 21.62 11.5806C20.99 13.3896 19.96 15.0406 18.611 16.3896C16.68 18.2596 14.561 19.9196 12.28 21.3496L12.03 21.5006L11.77 21.3396C9.48102 19.9196 7.35002 18.2596 5.40102 16.3796C4.06102 15.0306 3.03002 13.3896 2.39002 11.5806C1.26002 8.04065 2.59002 3.99065 6.32102 2.76965C6.61102 2.66965 6.91002 2.59965 7.21002 2.56065H7.33002C7.61102 2.51965 7.89002 2.50065 8.17002 2.50065H8.28002C8.91002 2.51965 9.52002 2.62965 10.111 2.83065H10.17C10.21 2.84965 10.24 2.87065 10.26 2.88965C10.481 2.96065 10.69 3.04065 10.89 3.15065L11.27 3.32065C11.3618 3.36962 11.4649 3.44445 11.554 3.50912C11.6104 3.55009 11.6612 3.58699 11.7 3.61065C11.7163 3.62028 11.7329 3.62996 11.7496 3.63972C11.8354 3.68977 11.9247 3.74191 12 3.79965C13.111 2.95065 14.46 2.49065 15.85 2.50065ZM18.51 9.70065C18.92 9.68965 19.27 9.36065 19.3 8.93965V8.82065C19.33 7.41965 18.481 6.15065 17.19 5.66065C16.78 5.51965 16.33 5.74065 16.18 6.16065C16.04 6.58065 16.26 7.04065 16.68 7.18965C17.321 7.42965 17.75 8.06065 17.75 8.75965V8.79065C17.731 9.01965 17.8 9.24065 17.94 9.41065C18.08 9.58065 18.29 9.67965 18.51 9.70065Z" fill="currentColor"></path>
+                            </svg>
+                        </span> By <a href="https://iqonic.design/" target="_blank">IQONIC Design</a>.
             </h6>
         </div>
     </footer>
-
     <!-- Footer Section End -->
 </main>
 <!-- Live Customizer start -->
@@ -403,143 +370,42 @@
 </html>
 
 <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        const tbody = document.getElementById("prescription-table-body");
-        const searchMedicine = document.getElementById("searchMedicine");
-        const searchDoctor = document.getElementById("searchDoctor");
-        const resetButton = document.getElementById("resetButton");
+    async function loadDepartments() {
+        const res = await fetch("/api/departments");
+        const departments = await res.json();
 
-        let fullData = [];
-        let currentPage = 1;
-        const rowsPerPage = 5;
-
-        // Lấy dữ liệu từ server
-        try {
-            const params = new URLSearchParams(window.location.search);
-            const patientId = params.get("patientId");
-
-            if (!patientId) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-danger">Không tìm thấy thông tin bệnh nhân!</td></tr>`;
-                return;
-            }
-            const response = await fetch(`/api/prescription?patientId=${patientId}`);
-            if (!response.ok) {
-                document.getElementById('prescription-table-body').innerHTML = '<span class="text-danger">Không tìm thấy đơn thuốc!</span>';
-                return;
-            }
-
-            fullData = await response.json();
-            renderTable(fullData);
-        } catch (error) {
-            console.error(error);
-            tbody.innerHTML = `<tr><td colspan="6" class="text-danger">Lỗi khi tải dữ liệu!</td></tr>`;
-        }
-
-        // Hàm render table có phân trang
-        function renderTable(data) {
-            tbody.innerHTML = '';
-            if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-danger">Không có đơn thuốc nào phù hợp!</td></tr>';
-                renderPagination(0);
-                return;
-            }
-
-            const start = (currentPage - 1) * rowsPerPage;
-            const pageData = data.slice(start, start + rowsPerPage);
-
-            pageData.forEach((row, index) => {
-                const globalIndex = start + index;
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-        <td>${row.medicine_name || ''}</td>
-        <td>${row.prescription_date || ''}</td>
-        <td>${row.dosage || ''}</td>
-        <td>${row.doctor_name || ''}</td>
-        <td><button class="btn btn-sm btn-primary" onclick="toggleDetails(${globalIndex})">Chi tiết</button></td>
-      `;
-                tbody.appendChild(tr);
-
-                const detailRow = document.createElement('tr');
-                detailRow.className = "prescription-detail";
-                detailRow.dataset.index = globalIndex;
-                detailRow.style.display = "none";
-                detailRow.innerHTML = `
-        <td colspan="5" class="bg-light">
-          <strong>Ghi chú:</strong> ${row.notes || 'Không có'}<br>
-          <strong>Số lượng:</strong> ${row.prescribed_quantity || 0}<br>
-          <strong>Giá:</strong> ${row.price ? row.price.toLocaleString() + 'đ' : '0đ'}
-        </td>
-      `;
-                tbody.appendChild(detailRow);
-            });
-
-            renderPagination(data.length);
-        }
-
-        window.toggleDetails = function(index) {
-            document.querySelectorAll(`.prescription-detail`).forEach(row => {
-                if (parseInt(row.dataset.index) === index) {
-                    row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
-                }
-            });
-        };
-
-        function renderPagination(totalItems) {
-            const pagination = document.getElementById("pagination");
-            pagination.innerHTML = '';
-            const totalPages = Math.ceil(totalItems / rowsPerPage);
-            if (totalPages <= 1) return;
-
-            const createItem = (label, page, disabled = false, active = false) => {
-                const li = document.createElement('li');
-                li.className = `page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}`;
-                const a = document.createElement('a');
-                a.className = 'page-link';
-                a.href = '#';
-                a.textContent = label;
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (!disabled) {
-                        currentPage = page;
-                        applyFilter();
-                    }
-                });
-                li.appendChild(a);
-                return li;
+        const container = document.getElementById("departmentButtons");
+        departments.forEach(dept => {
+            const btn = document.createElement("button");
+            btn.textContent = dept;
+            btn.style.margin = "8px";
+            btn.classList.add("dept-button");
+            btn.onclick = () => {
+                // Đi sang trang mới kèm query string
+                window.location.href = `./doctor-department.html?dept=${encodeURIComponent(dept)}`;
             };
+            container.appendChild(btn);
+        });
+    }
+    document.getElementById("searchInput").addEventListener("input", function () {
+        const keyword = this.value.toLowerCase();
+        const buttons = document.querySelectorAll(".dept-button");
 
-            pagination.appendChild(createItem("«", currentPage - 1, currentPage === 1));
-            for (let i = 1; i <= totalPages; i++) {
-                pagination.appendChild(createItem(i, i, false, currentPage === i));
-            }
-            pagination.appendChild(createItem("»", currentPage + 1, currentPage === totalPages));
-        }
-
-        function applyFilter() {
-            const nameFilter = searchMedicine.value.toLowerCase();
-            const doctorFilter = searchDoctor.value.toLowerCase();
-
-            const filtered = fullData.filter(row => {
-                const nameMatch = row.medicine_name?.toLowerCase().includes(nameFilter);
-                const doctorMatch = row.doctor_name?.toLowerCase().includes(doctorFilter);
-                return nameMatch && doctorMatch;
-            });
-
-            currentPage = 1;
-            renderTable(filtered);
-        }
-
-        function resetFilter() {
-            searchMedicine.value = '';
-            searchDoctor.value = '';
-            currentPage = 1;
-            renderTable(fullData);
-        }
-
-        searchMedicine.addEventListener("input", applyFilter);
-        searchDoctor.addEventListener("input", applyFilter);
-        resetButton.addEventListener("click", resetFilter);
+        buttons.forEach(btn => {
+            const deptName = btn.textContent.toLowerCase();
+            btn.style.display = deptName.includes(keyword) ? "inline-block" : "none";
+        });
     });
-</script>
 
+    document.getElementById("clearFilterBtn").addEventListener("click", function () {
+        const input = document.getElementById("searchInput");
+        input.value = "";
+
+        const buttons = document.querySelectorAll(".dept-button");
+        buttons.forEach(btn => {
+            btn.style.display = "inline-block";
+        });
+    });
+
+    loadDepartments();
+</script>

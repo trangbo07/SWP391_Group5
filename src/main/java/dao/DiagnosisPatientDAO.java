@@ -17,20 +17,19 @@ public class DiagnosisPatientDAO {
 
         try {
             String sql = """
-                SELECT
-                            p.full_name,
-                            p.dob,
-                            p.gender,
-                            d.disease,
-                            d.conclusion,
-                            d.treatment_plan
-                        FROM AccountPatient ap
-                        JOIN Patient_AccountPatient pap ON ap.account_patient_id = pap.account_patient_id
-                        JOIN Patient p ON pap.patient_id = p.patient_id
-                        JOIN MedicineRecords m ON p.patient_id = m.patient_id
-                        JOIN Diagnosis d ON d.medicineRecord_id = m.medicineRecord_id
-                        WHERE ap.account_patient_id = ?
-                        ORDER BY p.full_name;
+                                                    SELECT
+                                                        doc.full_name,
+                                                        p.dob,
+                                                        p.gender,
+                                                        d.disease,
+                                                        d.conclusion,
+                                                        d.treatment_plan
+                                                    FROM Patient p
+                                                    JOIN MedicineRecords m ON p.patient_id = m.patient_id
+                                                    JOIN Diagnosis d ON d.medicineRecord_id = m.medicineRecord_id
+                            						JOIN Doctor doc ON doc.doctor_id = d.doctor_id
+                                                    WHERE p.patient_id = ?
+                                                    ORDER BY doc.full_name;
             """;
 
             PreparedStatement statement = db.getConnection().prepareStatement(sql);
@@ -48,7 +47,7 @@ public class DiagnosisPatientDAO {
                 );
                 list.add(detail);
             }
-
+        System.out.println(list);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

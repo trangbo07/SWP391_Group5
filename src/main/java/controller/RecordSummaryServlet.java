@@ -2,6 +2,7 @@ package controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dao.MedicineRecordDAO;
+import dto.PatientDTO;
 import dto.RecordSummaryDTO;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -27,8 +28,8 @@ public class RecordSummaryServlet extends HttpServlet {
         AccountPatient account = (AccountPatient) session.getAttribute("user");
         int accountPatientId = account.getAccount_patient_id();
 
-        List<RecordSummaryDTO> list = dao.getSummaryByPatientId(accountPatientId);
-
+        List<PatientDTO> list = dao.getSummaryByPatientId(accountPatientId);
+        System.out.println(list);
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         mapper.writeValue(resp.getWriter(), list);

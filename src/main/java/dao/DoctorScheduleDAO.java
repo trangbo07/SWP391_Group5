@@ -1,6 +1,8 @@
 package dao;
 import dto.DoctorDTO;
 import dto.DoctorDetailsDTO;
+import dto.DoctorScheduleDTO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,28 +30,40 @@ public class DoctorScheduleDAO {
         return false;
     }
 
-    // Lấy danh sách các ngày giờ hẹn sắp tới của bác sĩ
-//    public List<Timestamp> getUpcomingAppointmentsByDoctorId(int doctorId) throws SQLException {
-//        List<Timestamp> result = new ArrayList<>();
-//        DBContext db = DBContext.getInstance();
-//        String sql = "SELECT DISTINCT ap.appointment_datetime " +
-//                "FROM Doctor d " +
-//                "JOIN Appointment ap ON d.doctor_id = ap.doctor_id " +
-//                "JOIN DoctorSchedule ds ON d.doctor_id = ds.doctor_id " +
-//                "JOIN AccountStaff ac ON d.account_staff_id = ac.account_staff_id " +
-//                "WHERE ds.is_available = 1 " +
-//                "AND ds.doctor_id = ? " +
-//                "AND ap.appointment_datetime > GETDATE() " +
-//                "ORDER BY ap.appointment_datetime";
-//        try (Connection conn = DBContext.getConnection();
-//             PreparedStatement ps = conn.prepareStatement(sql)) {
-//            ps.setInt(1, doctorId);
-//            try (ResultSet rs = ps.executeQuery()) {
-//                while (rs.next()) {
-//                    result.add(rs.getTimestamp("appointment_datetime"));
-//                }
-//            }
-//        }
-//        return result;
-//    }
+    public List<DoctorScheduleDTO> getScheduleNext7Days(int doctorId) {
+        List<DoctorScheduleDTO> list = new ArrayList<>();
+        DBContext db = DBContext.getInstance();
+        String sql = """
+            SELECT schedule_id, doctor_id, working_date, shift, room_id, is_available, note, admin_id
+            FROM DoctorSchedule
+            WHERE doctor_id = ?
+            AND working_date BETWEEN DATEADD(DAY, 1, CAST(GETDATE() AS DATE))
+            AND DATEADD(DAY, 7, CAST(GETDATE() AS DATE))
+        """;
+
+        try (Connection conn = db.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, doctorId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                DoctorScheduleDTO schedule = new DoctorScheduleDTO(
+                        rs.getInt("schedule_id"),
+                        rs.getInt("doctor_id"),
+                        rs.getString("working_date"),
+                        rs.getString("shift"),
+                        rs.getInt("room_id"),
+                        rs.getInt("is_available"),
+                        rs.getString("note"),
+                        rs.getInt("admin_id")
+                );
+                list.add(schedule);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 }

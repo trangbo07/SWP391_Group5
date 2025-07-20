@@ -53,15 +53,39 @@ public class PrescriptionDAO {
 
     public List<Map<String, Object>> getPrescriptionDetailsByPatientId(int patientId) {
         List<Map<String, Object>> list = new ArrayList<>();
-        String sql = "SELECT p.prescription_id, p.medicineRecord_id, p.doctor_id, p.prescription_date, p.status, " +
-                "pd.prescription_detail_id, m.medicine_id, m.name AS medicine_name, " +
-                "pd.quantity AS prescribed_quantity, pd.dosage, pd.note " +
-                "FROM Prescription p " +
-                "JOIN MedicineRecords mr ON p.medicineRecord_id = mr.medicineRecord_id " +
-                "JOIN PrescriptionDetail pd ON p.prescription_id = pd.prescription_id " +
-                "JOIN Medicine m ON pd.medicine_id = m.medicine_id " +
-                "WHERE mr.patient_id = ? " +
-                "ORDER BY p.prescription_id, pd.prescription_detail_id";
+        String sql = """
+        
+                SELECT
+            p.prescription_id,
+            p.medicineRecord_id,
+            p.doctor_id,
+            p.prescription_date,
+            p.status,
+            d.full_name AS doctor_name,
+            m.medicine_id,
+            m.name AS medicine_name,
+            m.unit_id,
+            m.category_id,
+            m.ingredient,
+            m.usage,
+            m.preservation,
+            m.manuDate,
+            m.expDate,
+            m.price,
+            md.quantity AS prescribed_quantity,
+            md.dosage
+        FROM Patient pt
+        JOIN MedicineRecords mr ON pt.patient_id = mr.patient_id
+        JOIN Prescription p ON mr.medicineRecord_id = p.medicineRecord_id
+        JOIN Doctor d ON p.doctor_id = d.doctor_id -- đặt sau khi alias p
+        JOIN PrescriptionInvoice pi ON p.prescription_id = pi.prescription_id
+        JOIN Medicines md ON pi.prescription_invoice_id = md.prescription_invoice_id
+        JOIN Medicine m ON md.medicine_id = m.medicine_id
+        
+        WHERE pt.patient_id = ?
+        ORDER BY p.prescription_id;
+        """;
+
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, patientId);
@@ -71,19 +95,28 @@ public class PrescriptionDAO {
                 map.put("prescription_id", rs.getInt("prescription_id"));
                 map.put("medicineRecord_id", rs.getInt("medicineRecord_id"));
                 map.put("doctor_id", rs.getInt("doctor_id"));
-                map.put("prescription_date", rs.getString("prescription_date"));
+                map.put("prescription_date", rs.getDate("prescription_date"));
                 map.put("status", rs.getString("status"));
-                map.put("prescription_detail_id", rs.getInt("prescription_detail_id"));
+                map.put("doctor_name", rs.getString("doctor_name"));
                 map.put("medicine_id", rs.getInt("medicine_id"));
                 map.put("medicine_name", rs.getString("medicine_name"));
+                map.put("unit_id", rs.getInt("unit_id"));
+                map.put("category_id", rs.getInt("category_id"));
+                map.put("ingredient", rs.getString("ingredient"));
+                map.put("usage", rs.getString("usage"));
+                map.put("preservation", rs.getString("preservation"));
+                map.put("manuDate", rs.getDate("manuDate"));
+                map.put("expDate", rs.getDate("expDate"));
+                map.put("price", rs.getDouble("price"));
                 map.put("prescribed_quantity", rs.getInt("prescribed_quantity"));
                 map.put("dosage", rs.getString("dosage"));
-                map.put("note", rs.getString("note"));
+
                 list.add(map);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return list;
     }
 

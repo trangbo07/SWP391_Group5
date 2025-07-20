@@ -49,7 +49,6 @@
             background-color: #007bff;
             color: #fff;
         }
-
     </style>
 
 
@@ -282,62 +281,54 @@
         </nav>            <!--Nav End-->
     </div>
 
-    <div class="row pt-5">
-        <div class="col-lg-12 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-4">
-                            <label for="searchMedicine" class="form-label">Tên thuốc</label>
-                            <input type="text" class="form-control" id="searchMedicine" placeholder="Nhập tên thuốc">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="searchDoctor" class="form-label">Tên bác sĩ</label>
-                            <input type="text" class="form-control" id="searchDoctor" placeholder="Nhập tên bác sĩ">
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-secondary w-100" id="resetButton">Xóa lọc</button>
-                        </div>
+
+    <div class="col-lg-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="searchName" class="form-label">Tên Bác Sĩ</label>
+                        <input type="text" class="form-control" id="searchName" placeholder="Nhập tên Bác Sĩ">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="searchGender" class="form-label">Giới Tính</label>
+                        <select class="form-select" id="searchGender">
+                            <option value="">Tất cả</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-secondary w-100" id="resetButton">Xóa Lọc</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <h2 id="deptTitle">Bác sĩ</h2>
+    <div id="scheduleBox"></div>
+    <select id="daySelect"></select>
+    <div id="timeSlotsBox"></div>
+    <div id="doctorList"></div>
 
-    <!-- Table đơn thuốc -->
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Tên thuốc</th>
-            <th>Ngày kê</th>
-            <th>Liều lượng</th>
-            <th>Bác sĩ</th>
-            <th>Chi tiết</th>
-        </tr>
-        </thead>
-        <tbody id="prescription-table-body"></tbody>
-    </table>
-
-    <!-- Phân trang -->
-    <nav class="mt-3">
-        <ul id="pagination" class="pagination justify-content-center"></ul>
-    </nav>
+    </div>
     <!-- Footer Section Start -->
     <footer class="footer">
         <div class="footer-body">
             <ul class="left-panel list-inline mb-0 p-0">
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Chính sách bảo mật</a></li>
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Điều khoản sử dụng</a></li>
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/contact.html">Liên hệ</a></li>
+                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Privacy Policy</a></li>
+                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Terms of Use</a></li>
             </ul>
             <h6 class="right-panel mb-0">
-                © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span>.
-                Phát triển bởi
-                <a href="https://www.facebook.com/long.bao.303029" target="_blank">Bùi Bảo Long</a>.
+                © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span> with
+                <span class="text-danger">
+                            <svg class="icon-16" width="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.85 2.50065C16.481 2.50065 17.111 2.58965 17.71 2.79065C21.401 3.99065 22.731 8.04065 21.62 11.5806C20.99 13.3896 19.96 15.0406 18.611 16.3896C16.68 18.2596 14.561 19.9196 12.28 21.3496L12.03 21.5006L11.77 21.3396C9.48102 19.9196 7.35002 18.2596 5.40102 16.3796C4.06102 15.0306 3.03002 13.3896 2.39002 11.5806C1.26002 8.04065 2.59002 3.99065 6.32102 2.76965C6.61102 2.66965 6.91002 2.59965 7.21002 2.56065H7.33002C7.61102 2.51965 7.89002 2.50065 8.17002 2.50065H8.28002C8.91002 2.51965 9.52002 2.62965 10.111 2.83065H10.17C10.21 2.84965 10.24 2.87065 10.26 2.88965C10.481 2.96065 10.69 3.04065 10.89 3.15065L11.27 3.32065C11.3618 3.36962 11.4649 3.44445 11.554 3.50912C11.6104 3.55009 11.6612 3.58699 11.7 3.61065C11.7163 3.62028 11.7329 3.62996 11.7496 3.63972C11.8354 3.68977 11.9247 3.74191 12 3.79965C13.111 2.95065 14.46 2.49065 15.85 2.50065ZM18.51 9.70065C18.92 9.68965 19.27 9.36065 19.3 8.93965V8.82065C19.33 7.41965 18.481 6.15065 17.19 5.66065C16.78 5.51965 16.33 5.74065 16.18 6.16065C16.04 6.58065 16.26 7.04065 16.68 7.18965C17.321 7.42965 17.75 8.06065 17.75 8.75965V8.79065C17.731 9.01965 17.8 9.24065 17.94 9.41065C18.08 9.58065 18.29 9.67965 18.51 9.70065Z" fill="currentColor"></path>
+                            </svg>
+                        </span> By <a href="https://iqonic.design/" target="_blank">IQONIC Design</a>.
             </h6>
         </div>
     </footer>
-
     <!-- Footer Section End -->
 </main>
 <!-- Live Customizer start -->
@@ -403,143 +394,188 @@
 </html>
 
 <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        const tbody = document.getElementById("prescription-table-body");
-        const searchMedicine = document.getElementById("searchMedicine");
-        const searchDoctor = document.getElementById("searchDoctor");
-        const resetButton = document.getElementById("resetButton");
+    function getParam(key) {
+        return new URLSearchParams(location.search).get(key);
+    }
 
-        let fullData = [];
-        let currentPage = 1;
-        const rowsPerPage = 5;
+    const dept = getParam("dept");
+    document.getElementById("deptTitle").textContent = `Bác sĩ thuộc chuyên khoa: ${dept}`;
+    let allDoctors = [];
 
-        // Lấy dữ liệu từ server
+    async function loadDoctors() {
         try {
-            const params = new URLSearchParams(window.location.search);
-            const patientId = params.get("patientId");
-
-            if (!patientId) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-danger">Không tìm thấy thông tin bệnh nhân!</td></tr>`;
-                return;
-            }
-            const response = await fetch(`/api/prescription?patientId=${patientId}`);
-            if (!response.ok) {
-                document.getElementById('prescription-table-body').innerHTML = '<span class="text-danger">Không tìm thấy đơn thuốc!</span>';
-                return;
-            }
-
-            fullData = await response.json();
-            renderTable(fullData);
-        } catch (error) {
-            console.error(error);
-            tbody.innerHTML = `<tr><td colspan="6" class="text-danger">Lỗi khi tải dữ liệu!</td></tr>`;
+            const res = await fetch(`/doctors-by-dept?dept=${encodeURIComponent(dept)}`);
+            allDoctors = await res.json();
+            renderDoctors(allDoctors);
+        } catch (err) {
+            console.error("Lỗi:", err);
+            document.getElementById("doctorList").innerHTML = "<p>Lỗi khi tải dữ liệu.</p>";
         }
+    }
 
-        // Hàm render table có phân trang
-        function renderTable(data) {
-            tbody.innerHTML = '';
-            if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-danger">Không có đơn thuốc nào phù hợp!</td></tr>';
-                renderPagination(0);
+    function renderDoctors(doctors) {
+        const container = document.getElementById("doctorList");
+        container.innerHTML = doctors.length === 0 ? "<p>Không có bác sĩ nào.</p>" : "";
+
+        doctors.forEach(async d => {
+            const box = document.createElement("div");
+            box.style.border = "1px solid #ccc";
+            box.style.padding = "10px";
+            box.style.margin = "10px";
+
+            const scheduleBox = document.createElement("div");
+            const daySelect = document.createElement("select");
+            const timeBox = document.createElement("div");
+
+            daySelect.style.marginTop = "10px";
+            daySelect.style.padding = "5px";
+
+            scheduleBox.innerHTML = "<em>Đang tải lịch...</em>";
+            scheduleBox.appendChild(daySelect);
+            scheduleBox.appendChild(timeBox);
+
+            box.innerHTML = `
+            <img src="${d.img}" alt="ảnh bác sĩ" width="80" />
+            <h4>${d.fullName}</h4>
+            <p>Khoa: ${d.department}</p>
+            <p>Trình độ: ${d.eduLevel}</p>
+            <p>Giới tính: ${d.gender || "Không rõ"}</p>
+            <p>Điện thoại: ${d.phone}</p>
+        `;
+
+            box.appendChild(scheduleBox);
+            container.appendChild(box);
+
+            await loadScheduleForDoctor(d, scheduleBox, daySelect, timeBox);
+        });
+    }
+
+    async function loadScheduleForDoctor(doctor, scheduleBox, daySelect, timeBox) {
+        try {
+            const res = await fetch(`/api/doctor-schedule-upcoming?doctorId=${doctor.doctorId}`);
+            const schedules = await res.json();
+
+            if (schedules.length === 0) {
+                scheduleBox.innerHTML = "<p>Không có lịch trong 7 ngày tới.</p>";
                 return;
             }
 
-            const start = (currentPage - 1) * rowsPerPage;
-            const pageData = data.slice(start, start + rowsPerPage);
+            scheduleBox.innerHTML = "";
 
-            pageData.forEach((row, index) => {
-                const globalIndex = start + index;
+            const listBox = document.createElement("div");
+            listBox.innerHTML = `<h3>Lịch làm trong 7 ngày tới</h3><ul>` +
+                schedules.map(s => `<li>${s.workingDate} - Ca: ${s.shift} - Phòng: ${s.roomId}</li>`).join("") + "</ul>";
 
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-        <td>${row.medicine_name || ''}</td>
-        <td>${row.prescription_date || ''}</td>
-        <td>${row.dosage || ''}</td>
-        <td>${row.doctor_name || ''}</td>
-        <td><button class="btn btn-sm btn-primary" onclick="toggleDetails(${globalIndex})">Chi tiết</button></td>
-      `;
-                tbody.appendChild(tr);
+            scheduleBox.appendChild(listBox);
 
-                const detailRow = document.createElement('tr');
-                detailRow.className = "prescription-detail";
-                detailRow.dataset.index = globalIndex;
-                detailRow.style.display = "none";
-                detailRow.innerHTML = `
-        <td colspan="5" class="bg-light">
-          <strong>Ghi chú:</strong> ${row.notes || 'Không có'}<br>
-          <strong>Số lượng:</strong> ${row.prescribed_quantity || 0}<br>
-          <strong>Giá:</strong> ${row.price ? row.price.toLocaleString() + 'đ' : '0đ'}
-        </td>
-      `;
-                tbody.appendChild(detailRow);
+            const label = document.createElement("label");
+            label.textContent = "Chọn ngày: ";
+            daySelect.innerHTML = "<option value=''>-- Chọn ngày --</option>";
+
+            schedules.forEach(s => {
+                const opt = document.createElement("option");
+                opt.value = JSON.stringify(s);
+                opt.textContent = `${s.workingDate} (${s.shift})`;
+                daySelect.appendChild(opt);
             });
 
-            renderPagination(data.length);
-        }
+            scheduleBox.appendChild(label);
+            scheduleBox.appendChild(daySelect);
+            scheduleBox.appendChild(timeBox);
 
-        window.toggleDetails = function(index) {
-            document.querySelectorAll(`.prescription-detail`).forEach(row => {
-                if (parseInt(row.dataset.index) === index) {
-                    row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+            daySelect.addEventListener("change", () => {
+                const selected = daySelect.value;
+                timeBox.innerHTML = "";
+
+                if (!selected) return;
+
+                const schedule = JSON.parse(selected);
+                const shift = schedule.shift;
+                const startHour = shift === "Morning" ? 8 : 13;
+                const endHour = shift === "Morning" ? 12 : 17;
+
+                const slots = [];
+                for (let h = startHour; h < endHour; h++) {
+                    slots.push(`${String(h).padStart(2, "0")}:00`);
+                    slots.push(`${String(h).padStart(2, "0")}:30`);
                 }
-            });
-        };
 
-        function renderPagination(totalItems) {
-            const pagination = document.getElementById("pagination");
-            pagination.innerHTML = '';
-            const totalPages = Math.ceil(totalItems / rowsPerPage);
-            if (totalPages <= 1) return;
+                timeBox.innerHTML = `<h4>Chọn khung giờ (${shift}):</h4>`;
+                const slotContainer = document.createElement("div");
+                slotContainer.style.display = "flex";
+                slotContainer.style.flexWrap = "wrap";
+                slotContainer.style.gap = "10px";
 
-            const createItem = (label, page, disabled = false, active = false) => {
-                const li = document.createElement('li');
-                li.className = `page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}`;
-                const a = document.createElement('a');
-                a.className = 'page-link';
-                a.href = '#';
-                a.textContent = label;
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (!disabled) {
-                        currentPage = page;
-                        applyFilter();
-                    }
+                slots.forEach(time => {
+                    const btn = document.createElement("button");
+                    btn.textContent = time;
+                    btn.className = "time-slot-btn";
+                    btn.style.padding = "8px 12px";
+                    btn.style.border = "1px solid #007bff";
+                    btn.style.borderRadius = "5px";
+                    btn.style.background = "#fff";
+                    btn.style.cursor = "pointer";
+
+                    btn.addEventListener("click", () => {
+                        const bookingInfo = {
+                            doctorId: doctor.doctorId,
+                            fullName: doctor.fullName,
+                            department: doctor.department,
+                            eduLevel: doctor.eduLevel,
+                            phone: doctor.phone,
+                            img: doctor.img,
+                            content: doctor.content,
+                            createdAt: doctor.createdAt,
+                            workingDate: schedule.workingDate,
+                            shift: schedule.shift,
+                            time: time,
+                            roomId: schedule.roomId
+                        };
+
+                        sessionStorage.setItem("bookingInfo", JSON.stringify(bookingInfo));
+                        location.href = "./book-appointment-of-patient.html";
+                    });
+
+                    slotContainer.appendChild(btn);
                 });
-                li.appendChild(a);
-                return li;
-            };
 
-            pagination.appendChild(createItem("«", currentPage - 1, currentPage === 1));
-            for (let i = 1; i <= totalPages; i++) {
-                pagination.appendChild(createItem(i, i, false, currentPage === i));
-            }
-            pagination.appendChild(createItem("»", currentPage + 1, currentPage === totalPages));
-        }
-
-        function applyFilter() {
-            const nameFilter = searchMedicine.value.toLowerCase();
-            const doctorFilter = searchDoctor.value.toLowerCase();
-
-            const filtered = fullData.filter(row => {
-                const nameMatch = row.medicine_name?.toLowerCase().includes(nameFilter);
-                const doctorMatch = row.doctor_name?.toLowerCase().includes(doctorFilter);
-                return nameMatch && doctorMatch;
+                timeBox.appendChild(slotContainer);
             });
-
-            currentPage = 1;
-            renderTable(filtered);
+        } catch (err) {
+            console.error("Lỗi khi lấy lịch:", err);
+            scheduleBox.innerHTML = "<p>Lỗi khi lấy dữ liệu lịch.</p>";
         }
+    }
 
-        function resetFilter() {
-            searchMedicine.value = '';
-            searchDoctor.value = '';
-            currentPage = 1;
-            renderTable(fullData);
-        }
+    const searchName = document.getElementById("searchName");
+    const searchGender = document.getElementById("searchGender");
+    let debounceTimeout;
 
-        searchMedicine.addEventListener("input", applyFilter);
-        searchDoctor.addEventListener("input", applyFilter);
-        resetButton.addEventListener("click", resetFilter);
+    function filterDoctors() {
+        const name = searchName.value.trim().toLowerCase();
+        const gender = searchGender.value;
+
+        const filtered = allDoctors.filter(doctor => {
+            const matchName = doctor.fullName.toLowerCase().includes(name);
+            const matchGender = !gender || doctor.gender === gender;
+            return matchName && matchGender;
+        });
+
+        renderDoctors(filtered); // ✅ dùng renderDoctors thay vì loadDoctors
+    }
+
+    searchName.addEventListener("input", () => {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(filterDoctors, 300);
     });
-</script>
 
+    searchGender.addEventListener("change", filterDoctors);
+
+    document.getElementById("resetButton").addEventListener("click", () => {
+        searchName.value = "";
+        searchGender.value = "";
+        renderDoctors(allDoctors); // ✅ render lại tất cả
+    });
+
+    loadDoctors(); // ✅ load ban đầu
+</script>

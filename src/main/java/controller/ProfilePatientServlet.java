@@ -14,6 +14,7 @@ import model.AccountPatient;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 @WebServlet("/api/patient/profile")
 public class ProfilePatientServlet extends HttpServlet {
@@ -38,17 +39,14 @@ public class ProfilePatientServlet extends HttpServlet {
         int accountPatientId = user.getAccount_patient_id();
         System.out.println("[DEBUG] account_patient_id = " + accountPatientId);
 
-        PatientDTO patientDetails = patientDAO.getPatientDetailByAccountId(accountPatientId);
 
-        if (patientDetails == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().write("{\"error\":\"patient not found\"}");
-            return;
-        }
+        List<PatientDTO> patientDetails ;
+
+
 
 
         PrintWriter out = response.getWriter();
-        out.print(gson.toJson(patientDetails));
+        out.print(gson.toJson("patientDetails"));
         out.flush();
     }
 }
