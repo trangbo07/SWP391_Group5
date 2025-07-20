@@ -16,4 +16,5 @@ public class DoctorDTO {
     private String phone;
     private String email;
     private String role;
+
 }

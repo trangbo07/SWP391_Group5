@@ -1,0 +1,120 @@
+/* Bộ lọc tìm kiếm */
+.filter-section .card {
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  border: none;
+  margin-bottom: 24px;
+}
+.filter-section .form-label {
+  font-weight: 500;
+  color: #2d3748;
+}
+.filter-section .form-control, .filter-section .form-select {
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: none;
+  transition: border-color 0.2s;
+}
+.filter-section .form-control:focus, .filter-section .form-select:focus {
+  border-color: #4f8cff;
+  box-shadow: 0 0 0 2px rgba(79,140,255,0.15);
+}
+.filter-section button {
+  border-radius: 8px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(79,140,255,0.08);
+  transition: background 0.2s, color 0.2s;
+}
+.filter-section #searchButton {
+  background: linear-gradient(90deg, #4f8cff 0%, #6fcf97 100%);
+  border: none;
+}
+.filter-section #searchButton:hover {
+  background: linear-gradient(90deg, #6fcf97 0%, #4f8cff 100%);
+}
+.filter-section #resetButton {
+  background: #f3f4f6;
+  color: #4f8cff;
+  border: none;
+}
+.filter-section #resetButton:hover {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+/* Bảng dữ liệu */
+.styled-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  margin-top: 12px;
+}
+.styled-table thead {
+  background: linear-gradient(90deg, #4f8cff 0%, #6fcf97 100%);
+  color: #fff;
+}
+.styled-table th, .styled-table td {
+  padding: 14px 16px;
+  text-align: center;
+  vertical-align: middle;
+}
+.styled-table th {
+  font-size: 1rem;
+  font-weight: 600;
+  border-bottom: 2px solid #e2e8f0;
+}
+.styled-table tbody tr {
+  transition: background 0.2s;
+}
+.styled-table tbody tr:hover {
+  background: #f3f8ff;
+}
+.styled-table td {
+  font-size: 0.98rem;
+  color: #2d3748;
+  border-bottom: 1px solid #f0f0f0;
+}
+.styled-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.styled-table img.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #4f8cff;
+  box-shadow: 0 2px 8px rgba(79,140,255,0.08);
+}
+
+@media (max-width: 991px) {
+  .filter-section .row > div {
+    margin-bottom: 12px;
+  }
+  .styled-table th, .styled-table td {
+    padding: 10px 6px;
+    font-size: 0.95rem;
+  }
+  .styled-table img.avatar {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 600px) {
+  .filter-section .row > div {
+    margin-bottom: 8px;
+  }
+  .styled-table th, .styled-table td {
+    padding: 7px 2px;
+    font-size: 0.9rem;
+  }
+  .styled-table img.avatar {
+    width: 28px;
+    height: 28px;
+  }
+} 

@@ -97,7 +97,7 @@ public class BookAppointmentServlet extends HttpServlet {
                 jsonResponse.addProperty("message", "Đặt lịch thành công.");
             } else {
                 jsonResponse.addProperty("success", false);
-                jsonResponse.addProperty("message", "Không thể đặt lịch. Vui lòng thử lại.");
+                jsonResponse.addProperty("message", "Slot đã có người đặt");
                 System.err.println("[ERROR] Insert failed: " + appointment);
             }
 
