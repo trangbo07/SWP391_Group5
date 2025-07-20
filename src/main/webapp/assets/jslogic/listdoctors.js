@@ -130,16 +130,19 @@ window.addEventListener("DOMContentLoaded", async () => {
             }
 
             return `<div class="col-xl-3 col-lg-4 col-sm-6 mb-4">
-                <div class="card h-100 shadow-sm border-0 hover-shadow transition-all">
-                    <h5 class="fw-bold mb-1">${highlightedName}</h5>
-                    <p class="text-muted"><i class="fas fa-stethoscope me-1"></i>${d.department}</p>
-                    <div class="d-grid">
-                        <button class="btn btn-outline-primary view-profile-btn" data-id="${d.doctorId}">
-                            <i class="fas fa-eye me-2"></i>Xem hồ sơ
-                        </button>
-                    </div>
-                </div>
-            </div>`;
+    <div class="card h-100 shadow-sm border-0 hover-shadow transition-all">
+        <img src="${d.img || 'https://via.placeholder.com/150'}" class="card-img-top" alt="Ảnh bác sĩ" style="height: 200px; object-fit: cover; border-radius: 0.5rem 0.5rem 0 0;">
+        <div class="card-body">
+            <h5 class="fw-bold mb-1">${highlightedName}</h5>
+            <p class="text-muted"><i class="fas fa-stethoscope me-1"></i>${d.department}</p>
+            <div class="d-grid">
+                <button class="btn btn-outline-primary view-profile-btn" data-id="${d.doctorId}">
+                    <i class="fas fa-eye me-2"></i>Xem hồ sơ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>`;
         }).join('');
     }
 
@@ -226,19 +229,12 @@ window.addEventListener("DOMContentLoaded", async () => {
                         </div>
                     </div>
                 </div>`;
-
                 document.getElementById('bookAppointmentBtn')?.addEventListener('click', () => {
-                    bootstrap.Modal.getOrCreateInstance(document.getElementById('doctorDetailModal')).hide();
-                    document.getElementById('bookAppointmentForm')?.reset();
-                    document.getElementById('appointmentDoctorName').value = doctor.fullName;
-                    document.getElementById('appointmentDoctorId').value = doctor.doctorId;
+                    // ✅ 1. Lưu thông tin bác sĩ vào localStorage
+                    localStorage.setItem("selectedDoctor", JSON.stringify(doctor));
 
-                    const bookModal = new bootstrap.Modal(document.getElementById('bookAppointmentModal'));
-                    bookModal.show();
-
-                    const shift = document.getElementById('appointmentShift').value;
-                    const workingDate = document.getElementById('appointmentDate').value;
-                    if (shift && workingDate) checkDoctorSchedule(doctor.doctorId, workingDate, shift);
+                    // ✅ 2. Chuyển đến trang đặt lịch
+                    window.location.href = "./bookappoinmentdoctor.html";
                 });
             } catch {
                 modalBody.innerHTML = `<div class="text-danger text-center py-4">
@@ -346,6 +342,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         try {
             const res = await fetch("/api/doctors/available");
             filteredDoctors = await res.json();
+            console.log(filteredDoctors)
             renderDoctors(filteredDoctors);
             updateResultsCount();
         } catch {
