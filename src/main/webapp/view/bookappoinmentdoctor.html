@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en" class="theme-fs-sm" data-bs-theme="light" data-bs-theme-color="default" dir="ltr">
 <head>
@@ -49,7 +48,6 @@
             background-color: #007bff;
             color: #fff;
         }
-
     </style>
 
 
@@ -281,54 +279,44 @@
             </div>
         </nav>            <!--Nav End-->
     </div>
-    <div class="container mt-3">
-        <div id="alertContainer"></div>
+    <div id="doctorScheduleBox">
+        <!-- lịch sẽ được hiển thị ở đây -->
     </div>
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-    <h4 class="card-title mb-0">
-        <i class="fas fa-stethoscope me-2"></i>
-        Kết quả khám bệnh
-    </h4>
-            <div class="mb-3 d-flex gap-2">
-                <input type="text" id="doctorSearchInput" class="form-control form-control-sm" placeholder="Tìm kiếm bác sĩ">
-                <button id="clearSearchBtn" class="btn btn-outline-secondary btn-sm">Xóa lọc</button>
-            </div>
-</div>
-        <div class="card-body">
-            <div class="loading-spinner" id="examinationLoading">
-                <div class="spinner"></div>
-                <div class="loading-text">Đang tải kết quả khám bệnh...</div>
-            </div>
+    <label for="daySelect">Chọn ngày khám:</label>
+    <select id="daySelect"></select>
 
-            <div id="examinationResults" style="display: none;">
-                <!-- Examination results will be loaded here -->
-            </div>
+    <div id="timeSlotsBox"></div>
+    <h6>Bác Sĩ Dành Cho Bạn</h6>
+    <h2>bác sĩ</h2>
+    <img id="doctor-img" width="100" />
+    <p><strong>Tên:</strong> <span id="doctor-name"></span></p>
+    <p><strong>Khoa:</strong> <span id="doctor-dept"></span></p>
+    <p><strong>SĐT:</strong> <span id="doctor-phone"></span></p>
+    <p><strong>Trình độ:</strong> <span id="doctor-edu"></span></p>
+    <p><strong>Phản hồi:</strong> <span id="doctor-feedback"></span></p>
+    <p><strong>Ngày phản hồi:</strong> <span id="doctor-created"></span></p>
 
-            <div id="noResults" class="no-results" style="display: none;">
-                <i class="fas fa-clipboard-list"></i>
-                <h5>Chưa có kết quả khám bệnh</h5>
-                <p>Bạn chưa có kết quả khám bệnh nào. Vui lòng liên hệ với bác sĩ để được khám bệnh và nhận kết quả.</p>
-            </div>
-        </div>
+
+    <p>Phản hồi của bệnh nhân sau khi khám</p>
+
     </div>
-
     <!-- Footer Section Start -->
     <footer class="footer">
         <div class="footer-body">
             <ul class="left-panel list-inline mb-0 p-0">
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Chính sách bảo mật</a></li>
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Điều khoản sử dụng</a></li>
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/contact.html">Liên hệ</a></li>
+                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Privacy Policy</a></li>
+                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Terms of Use</a></li>
             </ul>
             <h6 class="right-panel mb-0">
-                © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span>.
-                Phát triển bởi
-                <a href="https://www.facebook.com/long.bao.303029" target="_blank">Bùi Bảo Long</a>.
+                © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span> with
+                <span class="text-danger">
+                            <svg class="icon-16" width="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.85 2.50065C16.481 2.50065 17.111 2.58965 17.71 2.79065C21.401 3.99065 22.731 8.04065 21.62 11.5806C20.99 13.3896 19.96 15.0406 18.611 16.3896C16.68 18.2596 14.561 19.9196 12.28 21.3496L12.03 21.5006L11.77 21.3396C9.48102 19.9196 7.35002 18.2596 5.40102 16.3796C4.06102 15.0306 3.03002 13.3896 2.39002 11.5806C1.26002 8.04065 2.59002 3.99065 6.32102 2.76965C6.61102 2.66965 6.91002 2.59965 7.21002 2.56065H7.33002C7.61102 2.51965 7.89002 2.50065 8.17002 2.50065H8.28002C8.91002 2.51965 9.52002 2.62965 10.111 2.83065H10.17C10.21 2.84965 10.24 2.87065 10.26 2.88965C10.481 2.96065 10.69 3.04065 10.89 3.15065L11.27 3.32065C11.3618 3.36962 11.4649 3.44445 11.554 3.50912C11.6104 3.55009 11.6612 3.58699 11.7 3.61065C11.7163 3.62028 11.7329 3.62996 11.7496 3.63972C11.8354 3.68977 11.9247 3.74191 12 3.79965C13.111 2.95065 14.46 2.49065 15.85 2.50065ZM18.51 9.70065C18.92 9.68965 19.27 9.36065 19.3 8.93965V8.82065C19.33 7.41965 18.481 6.15065 17.19 5.66065C16.78 5.51965 16.33 5.74065 16.18 6.16065C16.04 6.58065 16.26 7.04065 16.68 7.18965C17.321 7.42965 17.75 8.06065 17.75 8.75965V8.79065C17.731 9.01965 17.8 9.24065 17.94 9.41065C18.08 9.58065 18.29 9.67965 18.51 9.70065Z" fill="currentColor"></path>
+                            </svg>
+                        </span> By <a href="https://iqonic.design/" target="_blank">IQONIC Design</a>.
             </h6>
         </div>
     </footer>
-
     <!-- Footer Section End -->
 </main>
 <!-- Live Customizer start -->
@@ -390,8 +378,124 @@
 <script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>
 
 <script src="../assets/jslogic/logout.js" defer></script>
-<script src="../assets/jslogic/examination-patient.js" defer></script>
 </body>
 </html>
 
+<script>
+    const doctor = JSON.parse(localStorage.getItem("selectedDoctor"));
 
+    if (!doctor) {
+        document.body.innerHTML = "<p>Không có dữ liệu bác sĩ.</p>";
+    } else {
+        document.getElementById("doctor-img").src = doctor.img;
+        document.getElementById("doctor-name").textContent = doctor.fullName;
+        document.getElementById("doctor-dept").textContent = doctor.department;
+        document.getElementById("doctor-phone").textContent = doctor.phone;
+        document.getElementById("doctor-edu").textContent = doctor.eduLevel;
+        document.getElementById("doctor-feedback").textContent = doctor.content;
+        document.getElementById("doctor-created").textContent = doctor.createdAt;
+
+        const scheduleBox = document.getElementById("doctorScheduleBox");
+
+        async function fetchSchedule() {
+            try {
+                const res = await fetch(`/api/doctor-schedule-upcoming?doctorId=${doctor.doctorId}`);
+                const schedules = await res.json();
+
+                if (schedules.length === 0) {
+                    scheduleBox.innerHTML = "<p>Không có lịch trong 7 ngày tới.</p>";
+                    return;
+                }
+
+                scheduleBox.innerHTML = "<h3>Lịch làm trong 7 ngày tới</h3><ul>" +
+                    schedules.map(s => `
+                    <li>${s.workingDate} - Ca: ${s.shift} - Phòng: ${s.roomId}</li>
+                `).join("") +
+                    "</ul>";
+
+                // 👉 Tạo select box ngày
+                const daySelect = document.getElementById("daySelect");
+                daySelect.innerHTML = "<option value=''>-- Chọn ngày --</option>";
+                schedules.forEach(s => {
+                    const opt = document.createElement("option");
+                    opt.value = JSON.stringify(s); // lưu cả workingDate và shift
+                    opt.textContent = `${s.workingDate} (${s.shift})`;
+                    daySelect.appendChild(opt);
+                });
+
+                // Khi chọn ngày => hiện khung giờ
+                daySelect.addEventListener("change", () => {
+                    const selected = daySelect.value;
+                    const timeBox = document.getElementById("timeSlotsBox");
+                    timeBox.innerHTML = "";
+
+                    if (!selected) return;
+
+                    const schedule = JSON.parse(selected);
+                    const shift = schedule.shift;
+
+                    let startHour = shift === "Morning" ? 8 : 13;
+                    let endHour = shift === "Morning" ? 12 : 17;
+
+                    const slots = [];
+                    for (let h = startHour; h < endHour; h++) {
+                        slots.push(`${String(h).padStart(2, "0")}:00`);
+                        slots.push(`${String(h).padStart(2, "0")}:30`);
+                    }
+
+                    // Tạo khung giờ dạng nút
+                    timeBox.innerHTML = `<h4>Chọn khung giờ (${shift}):</h4>`;
+                    const slotContainer = document.createElement("div");
+                    slotContainer.style.display = "flex";
+                    slotContainer.style.flexWrap = "wrap";
+                    slotContainer.style.gap = "10px";
+
+                    slots.forEach(time => {
+                        const btn = document.createElement("button");
+                        btn.textContent = time;
+                        btn.className = "time-slot-btn";
+                        btn.style.padding = "8px 12px";
+                        btn.style.border = "1px solid #007bff";
+                        btn.style.borderRadius = "5px";
+                        btn.style.background = "#fff";
+                        btn.style.cursor = "pointer";
+
+                        btn.addEventListener("click", () => {
+                            const bookingInfo = {
+                                doctorId: doctor.doctorId,
+                                fullName: doctor.fullName,
+                                department: doctor.department,
+                                eduLevel: doctor.eduLevel,
+                                phone: doctor.phone,
+                                img: doctor.img,
+                                content: doctor.content,
+                                createdAt: doctor.createdAt,
+                                workingDate: schedule.workingDate,
+                                shift: schedule.shift,
+                                time: time,
+                                roomId: schedule.roomId
+                            };
+
+                            sessionStorage.setItem("bookingInfo", JSON.stringify(bookingInfo));
+                            location.href = "./book-appointment-of-patient.html"; // Trang xác nhận
+                        });
+
+                        slotContainer.appendChild(btn);
+                    });
+
+                    timeBox.appendChild(slotContainer);
+                });
+
+            } catch (err) {
+                console.error("Lỗi khi lấy lịch:", err);
+                scheduleBox.innerHTML = "<p>Lỗi khi lấy dữ liệu lịch.</p>";
+            }
+        }
+
+        // Gọi lần đầu
+        fetchSchedule();
+
+        // Tự động gọi lại mỗi 30 phút
+        setInterval(fetchSchedule, 30 * 60 * 1000);
+    }
+</script>

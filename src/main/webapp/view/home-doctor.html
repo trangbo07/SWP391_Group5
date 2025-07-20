@@ -72,6 +72,7 @@
 
         /* Quick Actions Styles */
         .quick-action-btn {
+
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -80,6 +81,7 @@
             /* Chiều cao cố định cho đồng đều */
             justify-content: center;
             text-decoration: none;
+
         }
 
         .quick-action-btn:hover {
@@ -657,6 +659,7 @@
                     <div class="d-flex align-items-center">
                         <button id="navbar-toggle" class="navbar-toggler px-0" type="button" data-bs-toggle="collapse"
                             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+<<<<<<< HEAD
                             aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-btn">
                                 <span class="navbar-toggler-icon"></span>
@@ -941,6 +944,270 @@
                                             <i class="fas fa-cog me-2"></i>
                                             <span>Settings</span>
                                         </a>
+=======
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                                <span class="navbar-toggler-btn">
+                                   <span class="navbar-toggler-icon"></span>
+                                </span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="mb-2 navbar-nav ms-auto align-items-center navbar-list mb-lg-0">
+
+
+                        <li class="nav-item iq-full-screen d-none d-xl-block" id="fullscreen-item">
+                            <a href="#" class="nav-link" id="btnFullscreen" data-bs-toggle="dropdown">
+                                <div class="icon nav-list-icon">
+                                         <span class="btn-inner">
+                                            <svg class="normal-screen icon-20" width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                               <path d="M18.5528 5.99656L13.8595 10.8961" stroke="currentColor"
+                                                     stroke-width="1.5"
+                                                     stroke-linecap="round" stroke-linejoin="round"></path>
+                                               <path d="M14.8016 5.97618L18.5524 5.99629L18.5176 9.96906"
+                                                     stroke="currentColor"
+                                                     stroke-width="1.5" stroke-linecap="round"
+                                                     stroke-linejoin="round"></path>
+                                               <path d="M5.8574 18.896L10.5507 13.9964" stroke="currentColor"
+                                                     stroke-width="1.5"
+                                                     stroke-linecap="round" stroke-linejoin="round"></path>
+                                               <path d="M9.60852 18.9164L5.85775 18.8963L5.89258 14.9235"
+                                                     stroke="currentColor"
+                                                     stroke-width="1.5" stroke-linecap="round"
+                                                     stroke-linejoin="round"></path>
+                                            </svg>
+                                            <svg class="full-normal-screen d-none icon-20" width="24" height="24"
+                                                 viewBox="0 0 24 24"
+                                                 fill="none" xmlns="http://www.w3.org/2000/svg">
+                                               <path d="M13.7542 10.1932L18.1867 5.79319" stroke="currentColor"
+                                                     stroke-width="1.5"
+                                                     stroke-linecap="round" stroke-linejoin="round"></path>
+                                               <path d="M17.2976 10.212L13.7547 10.1934L13.7871 6.62518"
+                                                     stroke="currentColor"
+                                                     stroke-width="1.5" stroke-linecap="round"
+                                                     stroke-linejoin="round"></path>
+                                               <path d="M10.4224 13.5726L5.82149 18.1398" stroke="currentColor"
+                                                     stroke-width="1.5"
+                                                     stroke-linecap="round" stroke-linejoin="round"></path>
+                                               <path d="M6.74391 13.5535L10.4209 13.5723L10.3867 17.2755"
+                                                     stroke="currentColor"
+                                                     stroke-width="1.5" stroke-linecap="round"
+                                                     stroke-linejoin="round"></path>
+                                            </svg>
+                                         </span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown" id="itemdropdown1">
+                            <a class="py-0 nav-link d-flex align-items-center" href="#" id="navbarDropdown"
+                               role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="icon-40">
+                                         <span class="btn-inner d-inline-block position-relative">
+                                            <img src="../assets/assets/images/avatars/14.png"
+                                                 class="img-fluid rounded-circle object-fit-cover" alt="icon">
+                                            <span
+                                                    class="bg-success p-1 rounded-circle position-absolute end-0 bottom-0 border border-3 border-white"></span>
+                                         </span>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="./profile-doctor.html">Profile</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="./user-privacy-setting.html">Privacy Setting</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" id="logoutBtn">Logout</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>            <!--Nav End-->
+    </div>
+    <div class="content-inner container-fluid pb-0" id="page_layout">
+
+        <div class="d-flex align-items-center mb-4 mb-4 pb-3 pt-3">
+            <svg class="icon-18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                        d="M9.15722 20.7714V17.7047C9.1572 16.9246 9.79312 16.2908 10.581 16.2856H13.4671C14.2587 16.2856 14.9005 16.9209 14.9005 17.7047V17.7047V20.7809C14.9003 21.4432 15.4343 21.9845 16.103 22H18.0271C19.9451 22 21.5 20.4607 21.5 18.5618V18.5618V9.83784C21.4898 9.09083 21.1355 8.38935 20.538 7.93303L13.9577 2.6853C12.8049 1.77157 11.1662 1.77157 10.0134 2.6853L3.46203 7.94256C2.86226 8.39702 2.50739 9.09967 2.5 9.84736V18.5618C2.5 20.4607 4.05488 22 5.97291 22H7.89696C8.58235 22 9.13797 21.4499 9.13797 20.7714V20.7714"
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <svg class="mx-1 icon-18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.5 5L15.5 12L8.5 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                      stroke-linejoin="round"></path>
+            </svg>
+            <span class="head-title fw-500 mt-1">Dashboard</span>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center justify-content-between flex-sm-row flex-column-reverse">
+                    <div>
+                        <h1 class="fs-37">
+                            <span class="left-text text-capitalize fw-light">Hi, </span>
+                            <span class="right-text text-capitalize" id="doctor-name"></span>
+                        </h1>
+                        <p class="mb-5">Have a nice day at work. Progress is excellent!</p>
+                        <div class="d-flex align-items-center flex-wrap gap-3">
+                            <a class="btn btn-primary" onclick="toggleSchedule()">
+                        <span class="btn-inner">
+                            <span class="text d-inline-block align-middle">View Schedule</span>
+                            <span class="icon d-inline-block align-middle ms-1 ps-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"
+                                     fill="none">
+                                    <path
+                                            d="M7.32046 4.70834H4.74952V7.25698C4.74952 7.66734 4.41395 8 4 8C3.58605 8 3.25048 7.66734 3.25048 7.25698V4.70834H0.679545C0.293423 4.6687 0 4.34614 0 3.96132C0 3.5765 0.293423 3.25394 0.679545 3.21431H3.24242V0.673653C3.28241 0.290878 3.60778 0 3.99597 0C4.38416 0 4.70954 0.290878 4.74952 0.673653V3.21431H7.32046C7.70658 3.25394 8 3.5765 8 3.96132C8 4.34614 7.70658 4.6687 7.32046 4.70834Z"
+                                            fill="currentColor"/>
+                                </svg>
+                            </span>
+                        </span>
+                            </a>
+                            <a href="./appointment-doctor.html" class="btn btn-secondary">
+                        <span class="btn-inner">
+                            <span class="text d-inline-block align-middle">Appointment</span>
+                            <span class="icon d-inline-block align-middle ms-1 ps-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"
+                                     fill="none">
+                                    <path
+                                            d="M7.32046 4.70834H4.74952V7.25698C4.74952 7.66734 4.41395 8 4 8C3.58605 8 3.25048 7.66734 3.25048 7.25698V4.70834H0.679545C0.293423 4.6687 0 4.34614 0 3.96132C0 3.5765 0.293423 3.25394 0.679545 3.21431H3.24242V0.673653C3.28241 0.290878 3.60778 0 3.99597 0C4.38416 0 4.70954 0.290878 4.74952 0.673653V3.21431H7.32046C7.70658 3.25394 8 3.5765 8 3.96132C8 4.34614 7.70658 4.6687 7.32046 4.70834Z"
+                                            fill="currentColor"/>
+                                </svg>
+                            </span>
+                        </span>
+                            </a>
+                        </div>
+                        <div id="scheduleContainer" class="mt-4 d-none">
+                            <h5>Doctor's Weekly Schedule</h5>
+                            <table class="table table-bordered text-center">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>Time Slot</th>
+                                    <th>Monday</th>
+                                    <th>Tuesday</th>
+                                    <th>Wednesday</th>
+                                    <th>Thursday</th>
+                                    <th>Friday</th>
+                                    <th>Saturday</th>
+                                    <th>Sunday</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>08:00 - 10:00</td>
+                                    <td>✅</td><td>✅</td><td></td><td>✅</td><td></td><td>✅</td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>10:00 - 12:00</td>
+                                    <td></td><td>✅</td><td>✅</td><td></td><td>✅</td><td></td><td></td>
+                                </tr>
+                                <tr>
+                                    <td>14:00 - 16:00</td>
+                                    <td>✅</td><td></td><td>✅</td><td></td><td></td><td></td><td>✅</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Quick Actions Section -->
+                        <div class="mt-5">
+                            <h4 class="mb-4">Quick Actions</h4>
+                            <div class="row g-3">
+                                <div class="col-md-3 col-sm-6">
+                                    <a href="./examination.html" class="btn btn-outline-primary w-100 py-3 text-center quick-action-btn">
+                                        <i class="fas fa-file-medical mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
+                                        <span class="d-block fw-bold">Wait List</span>
+                                        <small class="text-muted">Manage patients</small>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <a href="./service-order.html" class="btn btn-outline-success w-100 py-3 text-center quick-action-btn">
+                                        <i class="fas fa-clipboard-list mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
+                                        <span class="d-block fw-bold">Service Orders</span>
+                                        <small class="text-muted">View orders</small>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <a href="./diagnosis.html" class="btn btn-outline-info w-100 py-3 text-center quick-action-btn">
+                                        <i class="fas fa-notes-medical mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
+                                        <span class="d-block fw-bold">Paraclinical</span>
+                                        <small class="text-muted">Orders & Results</small>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <a href="./assigned-services.html" class="btn btn-outline-warning w-100 py-3 text-center quick-action-btn">
+                                        <i class="fas fa-tasks mb-2 d-block btn-icon" style="font-size: 1.5rem;"></i>
+                                        <span class="d-block fw-bold">Assigned Services</span>
+                                        <small class="text-muted">My tasks</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Settings & Help Section -->
+                        <div class="mt-4">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <a href="./helpsupport.html" class="btn btn-outline-secondary w-100 py-2">
+                                        <i class="fas fa-question-circle me-2"></i>
+                                        <span>Help & Support</span>
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="./setting.html" class="btn btn-outline-dark w-100 py-2">
+                                        <i class="fas fa-cog me-2"></i>
+                                        <span>Settings</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div>
+                        <img class="img-fluid" src="../assets/images/docter/bacsic-removebg.png" alt="dr-profile"
+                             style="max-width: 200px; height: auto;"
+                             loading="lazy"/>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-md-4">
+                        <div class="card card-block card-stretch card-height overflow-hidden">
+                            <div class="card-body px-0 pb-0 text-center d-flex flex-column justify-content-end">
+                                <h5>Monthly Progress</h5>
+                                <h3 class="text-secondary counter mb-4" style="visibility: visible;">56%</h3>
+                                <div id="areachart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card card-block card-stretch card-height overflow-hidden">
+                            <div class="card-body pb-0">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="mb-3">Today Appointment</h5>
+                                    <div class="dropdown lh-1">
+                                <span role="button" id="dropdownMenuTodayAppointment" data-bs-toggle="dropdown"
+                                      aria-expanded="false">
+                                    <svg width="3" height="20" viewBox="0 0 5 20" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);">
+                                        <circle cx="2.5" cy="3" r="2.5" fill="currentColor"/>
+                                        <circle cx="2.5" cy="10" r="2.5" fill="currentColor"/>
+                                        <circle cx="2.5" cy="17" r="2.5" fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                        <ul class="dropdown-menu dropdown-menu-soft-primary sub-dropdown"
+                                            aria-labelledby="dropdownMenuTodayAppointment">
+                                            <li><a class="dropdown-item active" href="#">View</a></li>
+                                            <li><a class="dropdown-item my-1" href="#">Delete</a></li>
+                                            <li><a class="dropdown-item" href="#">Edit</a></li>
+                                        </ul>
+>>>>>>> 3a7854856200a305c6fe5ca2c89674e913c2f6e5
                                     </div>
                                 </div>
                             </div>
@@ -1347,6 +1614,7 @@
         </div>
 
         </div>
+<<<<<<< HEAD
         <!-- Footer Section Start -->
         <footer class="footer">
             <div class="footer-body">
@@ -1412,6 +1680,30 @@
                             d="M16.0842 2.56737C15.7852 2.25637 15.2632 2.47037 15.2632 2.90137V5.53837C15.2632 6.64437 16.1742 7.55437 17.2792 7.55437C17.9772 7.56237 18.9452 7.56437 19.7672 7.56237C20.1882 7.56137 20.4022 7.05837 20.1102 6.75437C19.0552 5.65737 17.1662 3.69137 16.0842 2.56737Z"
                             fill="currentColor"></path>
                         <path
+=======
+    </footer>
+    <!-- Footer Section End -->
+</main>
+<!-- Live Customizer start -->
+<!-- Setting offcanvas start here -->
+<div class="offcanvas offcanvas-end live-customizer" tabindex="-1" id="live-customizer" data-bs-scroll="true"
+     data-bs-backdrop="false">
+    <div class="offcanvas-header">
+        <div class="d-flex align-items-center">
+            <h4 class="offcanvas-title" id="-label">Live Customizer</h4>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <button class="btn btn-primary p-2" data-copy="settings" data-bs-toggle="tooltip" data-bs-placement="left"
+                    title="Copy">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.4"
+                          d="M18.8088 9.021C18.3573 9.021 17.7592 9.011 17.0146 9.011C15.1987 9.011 13.7055 7.508 13.7055 5.675V2.459C13.7055 2.206 13.5026 2 13.253 2H7.96363C5.49517 2 3.5 4.026 3.5 6.509V17.284C3.5 19.889 5.59022 22 8.16958 22H16.0453C18.5058 22 20.5 19.987 20.5 17.502V9.471C20.5 9.217 20.298 9.012 20.0465 9.013C19.6247 9.016 19.1168 9.021 18.8088 9.021Z"
+                          fill="currentColor"></path>
+                    <path opacity="0.4"
+                          d="M16.0842 2.56737C15.7852 2.25637 15.2632 2.47037 15.2632 2.90137V5.53837C15.2632 6.64437 16.1742 7.55437 17.2792 7.55437C17.9772 7.56237 18.9452 7.56437 19.7672 7.56237C20.1882 7.56137 20.4022 7.05837 20.1102 6.75437C19.0552 5.65737 17.1662 3.69137 16.0842 2.56737Z"
+                          fill="currentColor"></path>
+                    <path
+>>>>>>> 3a7854856200a305c6fe5ca2c89674e913c2f6e5
                             d="M14.3672 12.2364H12.6392V10.5094C12.6392 10.0984 12.3062 9.7644 11.8952 9.7644C11.4842 9.7644 11.1502 10.0984 11.1502 10.5094V12.2364H9.4232C9.0122 12.2364 8.6792 12.5704 8.6792 12.9814C8.6792 13.3924 9.0122 13.7264 9.4232 13.7264H11.1502V15.4524C11.1502 15.8634 11.4842 16.1974 11.8952 16.1974C12.3062 16.1974 12.6392 15.8634 12.6392 15.4524V13.7264H14.3672C14.7782 13.7264 15.1122 13.3924 15.1122 12.9814C15.1122 12.5704 14.7782 12.2364 14.3672 12.2364Z"
                             fill="currentColor"></path>
                     </svg>
@@ -2208,6 +2500,7 @@
 
 
 
+<<<<<<< HEAD
 
 
     <!-- Library Bundle Script -->
@@ -2216,6 +2509,14 @@
     <!-- Tour plugin Start -->
     <script src="../assets/assets/vendor/sheperd/dist/js/sheperd.min.js"></script>
     <script src="../assets/assets/js/plugins/tour.js" defer></script>
+=======
+<!-- Library Bundle Script -->
+<script src="../assets/assets/js/core/libs.min.js"></script>
+<!-- Plugin Scripts -->
+<!-- Tour plugin Start -->
+<script src="../assets/assets/vendor/sheperd/dist/js/sheperd.min.js"></script>
+<script src="../assets/assets/js/plugins/tour.js" defer></script>
+>>>>>>> 3a7854856200a305c6fe5ca2c89674e913c2f6e5
 
     <!-- Flatpickr Script -->
     <script src="../assets/assets/vendor/flatpickr/dist/flatpickr.min.js"></script>
@@ -2253,10 +2554,19 @@
     <script src="../assets/assets/js/kivicare-advance.js?v=1.4.1" defer></script>
     <script src="../assets/assets/js/sidebar.js?v=1.4.1" defer></script>
 
+<<<<<<< HEAD
     <script src="../assets/jslogic/logout.js" defer></script>
     <script src="../assets/jslogic/appointment-doctor.js" defer></script>
     <script src="../assets/jslogic/annoucement.js" defer></script>
     <script src="../assets/jslogic/home-doctor.js" defer></script>
+=======
+<!-- Icons -->
+<script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>
+
+<script src="../assets/jslogic/logout.js" defer></script>
+<script src="../assets/jslogic/appointment-doctor.js" defer></script>
+<script src="../assets/jslogic/home-doctor.js" defer></script>
+>>>>>>> 3a7854856200a305c6fe5ca2c89674e913c2f6e5
 </body>
 
 </html>

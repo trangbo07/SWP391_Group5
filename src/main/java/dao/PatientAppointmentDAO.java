@@ -18,18 +18,18 @@ public class PatientAppointmentDAO {
     public List<AppointmentpatientDTO> getAppointmentsByPatientId(int patientId) {
         List<AppointmentpatientDTO> list = new ArrayList<>();
         String sql = """
-            SELECT a.appointment_id,
-                   d.full_name,
+            
+                SELECT a.appointment_id,
                    a.appointment_datetime,
                    a.shift,
-                   d.eduLevel,
                    a.status,
-                   a.note
+                   a.note,
+                   p.full_name
             FROM Appointment a
-            JOIN Waitlist w ON w.doctor_id = a.doctor_id
-            JOIN Doctor   d ON d.doctor_id = w.doctor_id
-            WHERE a.patient_id = ?
-            ORDER BY a.appointment_datetime DESC
+            JOIN Patient p ON p.patient_id = a.patient_id
+            JOIN Patient_AccountPatient pap ON pap.patient_id = p.patient_id
+            WHERE pap.account_patient_id = ?
+            ORDER BY a.appointment_datetime DESC;
             """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
@@ -65,13 +65,11 @@ public class PatientAppointmentDAO {
             UPDATE Appointment
                SET status = 'Cancelled'
              WHERE appointment_id = ?
-               AND patient_id     = ?
             """;
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, appointmentId);
-            ps.setInt(2, patientId);
             return ps.executeUpdate() == 1;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,20 +80,25 @@ public class PatientAppointmentDAO {
     public List<AppointmentpatientDTO> getByPatientAndStatus(int patientId, String status) {
         List<AppointmentpatientDTO> list = new ArrayList<>();
         String sql = """
-            SELECT a.appointment_id,
-                   d.full_name      AS doctor_name,
-                   a.appointment_datetime,
-                   a.shift,
-                   d.eduLevel       AS eduLevel,
-                   a.status,
-                   a.note
-            FROM Appointment a
-            JOIN Waitlist w ON w.doctor_id = a.doctor_id
-            JOIN Doctor   d ON d.doctor_id = w.doctor_id
-            WHERE a.patient_id = ?
-              AND a.status     = ?
-            ORDER BY a.appointment_datetime DESC
-            """;
+    SELECT
+        a.appointment_id,
+        a.appointment_datetime,
+        a.shift,
+        a.status,
+        a.note,
+        d.full_name AS doctor_name,
+        d.eduLevel  AS eduLevel,
+        ap.account_patient_id,
+        ap.username,
+        ap.email
+    FROM Appointment a
+    JOIN Doctor d ON d.doctor_id = a.doctor_id
+    JOIN Patient_AccountPatient pap ON pap.patient_id = a.patient_id
+    JOIN AccountPatient ap ON ap.account_patient_id = pap.account_patient_id
+    WHERE ap.account_patient_id = ?
+      AND a.status = ?
+    ORDER BY a.appointment_datetime DESC
+    """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

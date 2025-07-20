@@ -25,7 +25,7 @@ public class DiagnosisServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             String idParam = request.getParameter("patientId");
-
+            System.out.println("📥 patientId param = " + idParam);
             if (idParam == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("{\"error\":\"Missing patientId\"}");
@@ -33,8 +33,9 @@ public class DiagnosisServlet extends HttpServlet {
             }
 
             int patientId = Integer.parseInt(idParam);
+            System.out.println("p = " + patientId);
             DiagnosisPatientDAO dao = new DiagnosisPatientDAO();
-            List<DiagnosisPatient> list = dao.getPatientDiagnosis(patientId);
+            List<DiagnosisPatient> list = dao.getDiagnosisByAccountIdAndName(patientId);
 
             System.out.println("🧾 Diagnosis list size = " + (list == null ? "null" : list.size()));
             response.setContentType("application/json");

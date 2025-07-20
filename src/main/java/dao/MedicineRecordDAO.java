@@ -1,46 +1,36 @@
 package dao;
 
+import dto.PatientDTO;
 import dto.RecordSummaryDTO;
 import model.MedicineRecords;
 import java.sql.*;
 import java.util.*;
 
 public class MedicineRecordDAO {
-    public List<RecordSummaryDTO> getSummaryByPatientId(int patientId) {
-        List<RecordSummaryDTO> list = new ArrayList<>();
+    public List<PatientDTO> getSummaryByPatientId(int acc_patientId) {
+        List<PatientDTO> list = new ArrayList<>();
 
         String sql = """
-            SELECT 
-                mr.medicineRecord_id,
-                d.full_name AS doctorName,
-                d.department AS clinicName,
-                diag.disease AS reason,
-                a.note
-            FROM MedicineRecords mr
-            JOIN Diagnosis diag ON diag.medicineRecord_id = mr.medicineRecord_id
-            JOIN Doctor d ON diag.doctor_id = d.doctor_id
-            LEFT JOIN Appointment a ON a.appointment_id = (
-                SELECT TOP 1 appointment_id FROM Appointment
-                WHERE patient_id = mr.patient_id
-                ORDER BY appointment_datetime DESC
-            )
-            WHERE mr.patient_id = ?
-            ORDER BY mr.medicineRecord_id DESC
-        """;
+        SELECT p.patient_id, p.full_name, p.dob, p.gender, p.phone, p.address
+        FROM Patient p
+        JOIN Patient_AccountPatient pap ON p.patient_id = pap.patient_id
+        WHERE pap.account_patient_id = ?
+    """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, patientId);
+            ps.setInt(1, acc_patientId);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                list.add(new RecordSummaryDTO(
-                        rs.getInt("medicineRecord_id"),
-                        rs.getString("doctorName"),
-                        rs.getString("clinicName"),
-                        rs.getString("reason"),
-                        rs.getString("note")
+                list.add(new PatientDTO(
+                        rs.getInt("patient_id"),  // Sửa từ "id" thành "patient_id"
+                        rs.getString("full_name"),  // Sửa từ "fullName" thành "full_name"
+                        rs.getString("dob"),
+                        rs.getString("gender"),
+                        rs.getString("phone"),
+                        rs.getString("address")
                 ));
             }
 

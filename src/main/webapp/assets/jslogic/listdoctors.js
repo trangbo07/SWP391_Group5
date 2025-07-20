@@ -130,16 +130,19 @@ window.addEventListener("DOMContentLoaded", async () => {
             }
 
             return `<div class="col-xl-3 col-lg-4 col-sm-6 mb-4">
-                <div class="card h-100 shadow-sm border-0 hover-shadow transition-all">
-                    <h5 class="fw-bold mb-1">${highlightedName}</h5>
-                    <p class="text-muted"><i class="fas fa-stethoscope me-1"></i>${d.department}</p>
-                    <div class="d-grid">
-                        <button class="btn btn-outline-primary view-profile-btn" data-id="${d.doctorId}">
-                            <i class="fas fa-eye me-2"></i>Xem hồ sơ
-                        </button>
-                    </div>
-                </div>
-            </div>`;
+    <div class="card h-100 shadow-sm border-0 hover-shadow transition-all">
+        <img src="${d.img || 'https://via.placeholder.com/150'}" class="card-img-top" alt="Ảnh bác sĩ" style="height: 200px; object-fit: cover; border-radius: 0.5rem 0.5rem 0 0;">
+        <div class="card-body">
+            <h5 class="fw-bold mb-1">${highlightedName}</h5>
+            <p class="text-muted"><i class="fas fa-stethoscope me-1"></i>${d.department}</p>
+            <div class="d-grid">
+                <button class="btn btn-outline-primary view-profile-btn" data-id="${d.doctorId}">
+                    <i class="fas fa-eye me-2"></i>Xem hồ sơ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>`;
         }).join('');
     }
 
@@ -226,19 +229,12 @@ window.addEventListener("DOMContentLoaded", async () => {
                         </div>
                     </div>
                 </div>`;
-
                 document.getElementById('bookAppointmentBtn')?.addEventListener('click', () => {
-                    bootstrap.Modal.getOrCreateInstance(document.getElementById('doctorDetailModal')).hide();
-                    document.getElementById('bookAppointmentForm')?.reset();
-                    document.getElementById('appointmentDoctorName').value = doctor.fullName;
-                    document.getElementById('appointmentDoctorId').value = doctor.doctorId;
+                    // ✅ 1. Lưu thông tin bác sĩ vào localStorage
+                    localStorage.setItem("selectedDoctor", JSON.stringify(doctor));
 
-                    const bookModal = new bootstrap.Modal(document.getElementById('bookAppointmentModal'));
-                    bookModal.show();
-
-                    const shift = document.getElementById('appointmentShift').value;
-                    const workingDate = document.getElementById('appointmentDate').value;
-                    if (shift && workingDate) checkDoctorSchedule(doctor.doctorId, workingDate, shift);
+                    // ✅ 2. Chuyển đến trang đặt lịch
+                    window.location.href = "./bookappoinmentdoctor.html";
                 });
             } catch {
                 modalBody.innerHTML = `<div class="text-danger text-center py-4">
@@ -256,7 +252,32 @@ window.addEventListener("DOMContentLoaded", async () => {
         const data = await res.json();
         patientIdFromSession = data.patientId;
         window.patientIdFromSession = patientIdFromSession;
+        try {
+            const res = await fetch("/api/session/patient");
+            if (!res.ok) throw new Error();
+            const data = await res.json();
+            patientIdFromSession = data.patientId;
+            window.patientIdFromSession = patientIdFromSession;
 
+            // 🟡 GỌI API danh sách bệnh nhân theo accountId
+            const patientRes = await fetch(`/api/patient/list-by-account?accountId=${patientIdFromSession}`);
+            const patients = await patientRes.json();
+
+            const patientSelect = document.getElementById('appointmentPatientId');
+            if (patientSelect && patients.length > 0) {
+                // Xóa option cũ (nếu có)
+                patientSelect.innerHTML = '<option disabled selected value="">-- Chọn bệnh nhân --</option>';
+                patients.forEach(patient => {
+                    const option = document.createElement('option');
+                    option.value = patient.patient_id;
+                    option.textContent = patient.full_name;
+                    patientSelect.appendChild(option);
+                });
+            }
+        } catch (e) {
+            alert("Bạn chưa đăng nhập hoặc không phải tài khoản bệnh nhân!");
+            console.error(e);
+        }
         const input = document.getElementById('appointmentPatientId') || document.createElement('input');
         input.type = 'hidden';
         input.id = 'appointmentPatientId';
@@ -305,18 +326,9 @@ window.addEventListener("DOMContentLoaded", async () => {
                 if (data.success) {
                     bootstrap.Modal.getOrCreateInstance(document.getElementById('bookAppointmentModal')).hide();
                     document.getElementById('bookAppointmentForm')?.reset();
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Đặt lịch thành công!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                    alert(data.message || "Đặt lịch thành công!");
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lịch đã bị trùng vui lòng đặt lại!',
-                        text: 'Vui lòng thử lại.'
-                    });
+                    alert(data.message || "Lịch đã bị trùng vui lòng đặt lại!\nVui lòng thử lại.");
                 }
             })
             .catch(() => alert("Có lỗi xảy ra!"));
@@ -330,6 +342,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         try {
             const res = await fetch("/api/doctors/available");
             filteredDoctors = await res.json();
+            console.log(filteredDoctors)
             renderDoctors(filteredDoctors);
             updateResultsCount();
         } catch {
