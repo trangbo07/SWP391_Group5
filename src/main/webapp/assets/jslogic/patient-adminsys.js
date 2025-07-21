@@ -70,8 +70,6 @@ async function fetchPatientsOfAccount(accountPatientId) {
     // Lấy các filter còn lại
     const gender = document.getElementById('filterGender')?.value || '';
     const search = document.getElementById('searchInput')?.value || '';
-    console.log(search);
-    console.log(gender);
 
     const queryParams = new URLSearchParams({
         accountPatientId,
@@ -84,7 +82,7 @@ async function fetchPatientsOfAccount(accountPatientId) {
         const data = await response.json();
 
         if (!Array.isArray(data) || data.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="5">No patients found.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="5">Không tìm thấy bệnh nhân.</td></tr>';
             if (info) info.innerText = `Hiển thị 0 đến 0 trong tổng số 0 bản ghi`;
             return;
         }

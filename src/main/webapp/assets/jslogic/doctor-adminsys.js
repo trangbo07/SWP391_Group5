@@ -154,7 +154,13 @@ function loadSelectFilter(field, selectId) {
         .then(data => {
             const select = document.getElementById(selectId);
             if (!select) return;
-            select.innerHTML = `<option value="">All ${capitalize(field)}</option>`;
+
+            let fl = field === 'status' ? 'trạng thái' :
+                field === 'eduLevel' ? 'trình độ' :
+                    field === 'department' ? 'phòng ban' :
+                        field;
+
+            select.innerHTML = `<option value="">Tất cả ${fl}</option>`;
             (data?.values || []).forEach(val => {
                 if (field === "status") {
                     val === "Disable" ? 'Kích hoạt' :
@@ -197,11 +203,11 @@ function viewDoctor(doctorId) {
     document.getElementById('viewPhone').textContent = d.phone;
     document.getElementById('viewEduLevel').textContent = d.eduLevel;
     document.getElementById('viewStatus').textContent = d.status === "Disable" ? 'Kích hoạt' :
-                                                                            d.status === "Enable" ? 'Vô hiệu hóa' :
-                                                                                d.status ;
+        d.status === "Enable" ? 'Vô hiệu hóa' :
+            d.status;
     document.getElementById('viewRole').textContent = d.role === "AdminSys" ? 'Quản trị hệ thống' :
-                                                                                d.role === "AdminBusiness" ? 'Quản trị doanh nghiệp' :
-                                                                                    d.role;
+        d.role === "AdminBusiness" ? 'Quản trị doanh nghiệp' :
+            d.role;
     document.getElementById('viewImg').src = d.img || '';
 }
 

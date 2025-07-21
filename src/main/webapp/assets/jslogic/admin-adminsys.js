@@ -168,8 +168,12 @@ function loadSelectFilter(field, selectId) {
         .then(data => {
             const select = document.getElementById(selectId);
             if (!select) return;
+            let fl = field === 'status' ? 'trạng thái' :
+                                    field === 'role' ? 'vai trò' :
+                                        field === 'department' ? 'phòng ban' :
+                                            field;
 
-            select.innerHTML = `<option value="">All ${capitalize(field)}</option>`;
+            select.innerHTML = `<option value="">Tất cả ${fl}</option>`;
 
             (data?.values || []).forEach(val => {
                 let displayVal = val;

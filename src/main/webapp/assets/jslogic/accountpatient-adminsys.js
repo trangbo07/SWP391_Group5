@@ -123,12 +123,15 @@ function loadSelectFilterAccountPatient(field, selectId) {
             const select = document.getElementById(selectId);
             if (!select) return;
 
-            select.innerHTML = `<option value="">All ${capitalize(field)}</option>`;
+            let fl = field === 'status' ? 'trạng thái' :
+                    field;
+
+            select.innerHTML = `<option value="">Tất cả ${fl}</option>`;
             (data?.values || []).forEach(val => {
                 if (field === "status") {
                     displayVal = val === "Enable" ? 'Kích hoạt' :
                         val === "Disable" ? 'Vô hiệu hóa' :
-                            val; // fallback
+                            val;
                 }
                 select.innerHTML += `<option value="${val}">${displayVal}</option>`;
             });
