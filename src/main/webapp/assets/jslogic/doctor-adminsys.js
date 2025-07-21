@@ -32,7 +32,7 @@ async function fetchDoctorsWithFilter() {
     const tableBody = document.getElementById('doctorListTableBody');
     const info = document.getElementById('paginationInfo');
 
-    tableBody.innerHTML = '<tr><td colspan="10">Loading...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="10">Đang tải...</td></tr>';
 
     const params = new URLSearchParams({action: 'filter'});
     if (status) params.append("status", status);
@@ -48,8 +48,8 @@ async function fetchDoctorsWithFilter() {
         const doctors = await response.json();
 
         if (!Array.isArray(doctors) || doctors.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="10">No doctors found.</td></tr>';
-            if (info) info.innerText = `Showing 0 to 0 of 0 entries`;
+            tableBody.innerHTML = '<tr><td colspan="10">Không tìm thấy bác sĩ nào</td></tr>';
+            if (info) info.innerText = `Hiển thị 0 đến 0 trong tổng số 0 bản ghi`;
             return;
         }
 
@@ -58,8 +58,8 @@ async function fetchDoctorsWithFilter() {
         paginateDoctors();
 
     } catch (error) {
-        console.error('Error fetching doctors:', error);
-        tableBody.innerHTML = '<tr><td colspan="10">Failed to load doctor data.</td></tr>';
+        console.error('Lỗi khi tìm kiếm bác sĩ:', error);
+        tableBody.innerHTML = '<tr><td colspan="10">Không tải được dữ liệu tài khoản bác sĩ.</td></tr>';
     }
 }
 
@@ -74,8 +74,9 @@ function paginateDoctors() {
     const pageData = sourceList.slice(start, end);
 
     if (!pageData.length) {
-        tableBody.innerHTML = '<tr><td colspan="10">No doctors available.</td></tr>';
-        info.innerText = `Showing 0 to 0 of ${allDoctors.length} entries`;
+        tableBody.innerHTML = '<tr><td colspan="10">Không có bác sĩ nào</td></tr>';
+        info.innerText = `Hiển thị 0 đến 0 trong tổng số ${allDoctors.length} bản ghi`;
+
         return;
     }
 
@@ -85,7 +86,7 @@ function paginateDoctors() {
             <td>${d.fullName}</td>
             <td>${d.username}</td>
             <td>${d.email}</td>
-            <td>${d.status}</td>
+            <td>${d.status === 'Enable' ? 'Kích hoạt' : 'Vô hiệu hóa'}</td>
             <td>${d.phone}</td>
             <td>${d.department}</td>
             <td>${d.eduLevel}</td>
@@ -94,11 +95,11 @@ function paginateDoctors() {
                 <button class="btn btn-sm btn-info me-1"
                             data-bs-toggle="offcanvas"
                             data-bs-target="#doctorViewCanvas"
-                            onclick="viewDoctor(${d.doctorId})">View</button>
-                <button class="btn btn-sm btn-warning me-1" onclick="editDoctor(${d.doctorId})">Edit</button>
+                            onclick="viewDoctor(${d.doctorId})">Chi tiết</button>
+                <button class="btn btn-sm btn-warning me-1" onclick="editDoctor(${d.doctorId})">Chỉnh sửa</button>
                 <button class="btn btn-sm ${d.status === 'Enable' ? 'btn-danger' : 'btn-success'}"
                         onclick="toggleDoctorStatus(${d.accountStaffId}, '${d.status}')">
-                    ${d.status === 'Enable' ? 'Disable' : 'Enable'}
+                    ${d.status === 'Enable' ? 'Vô hiệu hóa' : 'Kích hoạt'}
                 </button>
             </td>
         </tr>
@@ -106,7 +107,7 @@ function paginateDoctors() {
 
     const formattedStart = String(start + 1).padStart(2, '0');
     const formattedEnd = String(Math.min(end, allDoctors.length)).padStart(2, '0');
-    info.innerText = `Showing ${formattedStart} to ${formattedEnd} of ${allDoctors.length} entries`;
+    info.innerText = `Hiển thị ${formattedStart} đến ${formattedEnd} trong tổng số ${allDoctors.length} bản ghi`;
 }
 
 document.getElementById('btnReverseList').addEventListener('click', () => {
@@ -153,12 +154,23 @@ function loadSelectFilter(field, selectId) {
         .then(data => {
             const select = document.getElementById(selectId);
             if (!select) return;
-            select.innerHTML = `<option value="">All ${capitalize(field)}</option>`;
+
+            let fl = field === 'status' ? 'trạng thái' :
+                field === 'eduLevel' ? 'trình độ' :
+                    field === 'department' ? 'phòng ban' :
+                        field;
+
+            select.innerHTML = `<option value="">Tất cả ${fl}</option>`;
             (data?.values || []).forEach(val => {
+                if (field === "status") {
+                    val === "Disable" ? 'Kích hoạt' :
+                        val === "Enable" ? 'Vô hiệu hóa' :
+                            val;
+                }
                 select.innerHTML += `<option value="${val}">${val}</option>`;
             });
         })
-        .catch(err => console.error(`Error loading ${field}:`, err));
+        .catch(err => console.error(`Lỗi tải ${field}:`, err));
 }
 
 function capitalize(str) {
@@ -190,8 +202,12 @@ function viewDoctor(doctorId) {
     document.getElementById('viewDepartment').textContent = d.department;
     document.getElementById('viewPhone').textContent = d.phone;
     document.getElementById('viewEduLevel').textContent = d.eduLevel;
-    document.getElementById('viewStatus').textContent = d.status;
-    document.getElementById('viewRole').textContent = d.role;
+    document.getElementById('viewStatus').textContent = d.status === "Disable" ? 'Kích hoạt' :
+        d.status === "Enable" ? 'Vô hiệu hóa' :
+            d.status;
+    document.getElementById('viewRole').textContent = d.role === "AdminSys" ? 'Quản trị hệ thống' :
+        d.role === "AdminBusiness" ? 'Quản trị doanh nghiệp' :
+            d.role;
     document.getElementById('viewImg').src = d.img || '';
 }
 
@@ -211,7 +227,7 @@ function togglePasswordVisibility() {
 
 function resetDoctorPassword() {
     if (!selectedDoctorIdForReset) {
-        alert("Please select a doctor.");
+        alert("Vui lòng chọn bác sĩ");
         return;
     }
     const accountStaffId = document.getElementById('viewAccountStaffId').textContent.trim();
@@ -231,7 +247,7 @@ function resetDoctorPassword() {
                 bootstrap.Offcanvas.getOrCreateInstance(canvasEl).hide();
             }
         })
-        .catch(err => alert("Error: " + err));
+        .catch(err => alert("Lỗi: " + err));
 }
 
 //===============================================================================================================
@@ -265,7 +281,7 @@ async function openDoctorForm(mode, doctor = null) {
     await loadSelectForForm('eduLevel', 'eduLevel', 'customEduLevel');
 
     if (mode === 'edit' && doctor) {
-        title.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Doctor';
+        title.innerHTML = '<i class="fas fa-edit me-2"></i>Chỉnh sửa bác sĩ';
         const previewImg = document.getElementById('previewImg');
         if (doctor.img && doctor.img !== '') {
             previewImg.src = doctor.img;
@@ -297,7 +313,7 @@ async function openDoctorForm(mode, doctor = null) {
         const messageBox = document.getElementById('formMessage');
         messageBox.style.display = 'none';
     } else {
-        title.innerHTML = '<i class="fas fa-plus me-2"></i>Add Doctor';
+        title.innerHTML = '<i class="fas fa-plus me-2"></i>Thêm bác sĩ';
         const previewImg = document.getElementById('previewImg');
         previewImg.src = '/assets/images/uploads/default.jpg';
         previewImg.style.display = 'none';
@@ -352,13 +368,19 @@ async function loadSelectForForm(field, selectId, inputId = null) {
             const capitalized = field.charAt(0).toUpperCase() + field.slice(1);
             select.innerHTML += `<option value="" disabled selected>Please select ${capitalized}</option>`;
             (data?.values || []).forEach(val => {
-                select.innerHTML += `<option value="${val}">${val}</option>`;
+                let displayVal = val;
+                if (field === "status") {
+                    displayVal = val === "Disable" ? 'Kích hoạt' :
+                        val === "Enable" ? 'Vô hiệu hóa' :
+                            val; // fallback
+                }
+                select.innerHTML += `<option value="${val}">${displayVal}</option>`;
             });
-            select.innerHTML += `<option value="Other">Other</option>`;
+            select.innerHTML += `<option value="Other">Khác</option>`;
             if (inputId) handleCustomInput(selectId, inputId);
         }
     } catch (error) {
-        console.error(`Error loading options for ${field}:`, error);
+        console.error(`Lỗi tải các tùy chọn cho ${field}:`, error);
     }
 }
 
@@ -435,12 +457,12 @@ document.getElementById('doctorForm').addEventListener('submit', async function 
 
         } else {
             const rawText = await response.text();
-            throw new Error("Unexpected response: " + rawText);
+            throw new Error("Phản hồi bất ngờ: " + rawText);
         }
 
     } catch (error) {
-        console.error('Submit error:', error);
-        displayFormMessage("Submit failed: " + error.message, "danger");
+        console.error('Gửi lỗi: ', error);
+        displayFormMessage("Gửi không thành công: " + error.message, "danger");
     }
 });
 
@@ -467,29 +489,29 @@ function validateDoctorForm() {
     const errors = [];
 
     if (!fullName || !fullNameRegex.test(fullName)) {
-        errors.push("Full Name must have at least two words, only letters.");
+        errors.push("Họ và tên phải có ít nhất hai từ, chỉ chứa chữ cái.");
     }
 
     if (!username) {
-        errors.push("Username cannot be empty or only whitespace.");
+        errors.push("Tên đăng nhập không được để trống hoặc chỉ chứa khoảng trắng.");
     } else if (username.length < 6) {
-        errors.push("Username must be at least 6 characters long.");
+        errors.push("Tên đăng nhập phải có ít nhất 6 ký tự.");
     }
 
     if (!emailRegex.test(email)) {
-        errors.push("Invalid email format.");
+        errors.push("Định dạng email không hợp lệ.");
     }
 
     if (!phoneRegex.test(phone)) {
-        errors.push("Phone must be exactly 10 digits and start with 0.");
+        errors.push("Số điện thoại phải gồm đúng 10 chữ số và bắt đầu bằng số 0.");
     }
 
     if (!department) {
-        errors.push("Department cannot be empty.");
+        errors.push("Phòng ban không được để trống.");
     }
 
     if (!eduLevel) {
-        errors.push("Education Level cannot be empty.");
+        errors.push("Trình độ học vấn không được để trống.");
     }
 
     return errors;
@@ -517,12 +539,12 @@ function toggleDoctorStatus(account_staff_id, currentStatus) {
                 alert(data.message);
                 fetchDoctorsWithFilter();
             } else {
-                alert("Failed: " + data.message);
+                alert("Thất bại: " + data.message);
             }
         })
         .catch(err => {
             console.error(err);
-            alert("Something went wrong!");
+            alert("Đã xảy ra lỗi!");
         });
 }
 

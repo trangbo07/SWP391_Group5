@@ -68,7 +68,7 @@ async function fetchAnnouncements() {
             credentials: 'include',
         });
 
-        if (!res.ok) throw new Error('Failed to fetch announcements');
+        if (!res.ok) throw new Error('Không thể tải thông báo');
 
         const data = await res.json();
 
@@ -80,7 +80,7 @@ async function fetchAnnouncements() {
         updateCountAnnouncement(allAnnouncements);
     } catch (err) {
         console.error(err);
-        document.getElementById('announcementList').innerHTML = `<li class="list-group-item text-danger">Error loading announcements</li>`;
+        document.getElementById('announcementList').innerHTML = `<li class="list-group-item text-danger">Lỗi tải thông báo</li>`;
     }
 }
 
@@ -95,8 +95,8 @@ function renderAnnouncements() {
     const pageItems = allAnnouncements.slice(start, end);
 
     if (pageItems.length === 0) {
-        listEl.innerHTML = `<li class="list-group-item text-center">No announcements found.</li>`;
-        infoEl.textContent = `Showing 0 to 0 of ${allAnnouncements.length} entries`;
+        listEl.innerHTML = `<li class="list-group-item text-center">Không tìm thấy thông báo nào.</li>`;
+        infoEl.textContent = `Hiển thị 0 đến 0 trong tổng số ${allAnnouncements.length} bản ghi`;
         return;
     }
 
@@ -122,7 +122,7 @@ function renderAnnouncements() {
     </li>
     `).join('');
 
-    infoEl.textContent = `Showing ${start + 1} to ${Math.min(end, allAnnouncements.length)} of ${allAnnouncements.length} entries`;
+    infoEl.textContent = `Hiển thị ${start + 1} đến ${Math.min(end, allAnnouncements.length)} trong tổng số ${allAnnouncements.length} bản ghi`;
 
     listEl.onclick = async (e) => {
         const item = e.target.closest('.announcement-item');
@@ -149,7 +149,7 @@ function renderAnnouncements() {
             });
 
             if (!res.ok) {
-                console.error('Mark‑read failed:', await res.text());
+                console.error('Đánh dấu đọc không thành công: ', await res.text());
                 return;
             }
 
@@ -173,7 +173,7 @@ function renderAnnouncements() {
             fetchAnnouncements();
             updateUnreadCounter();
         } catch (err) {
-            console.error('Mark‑read error:', err);
+            console.error('Đánh dấu đọc không thành công: ', err);
         }
     };
 }
@@ -182,11 +182,11 @@ function updateCountAnnouncement(data) {
     const countEl = document.getElementById('countannoucement');
     if (!countEl) return;
     const unreadCount = data.filter(a => !a.isRead).length;
-    countEl.textContent = `${unreadCount} new announcements`;
+    countEl.textContent = `${unreadCount} thông báo mới`;
 }
 
 document.getElementById('markAllReadBtn').addEventListener('click', async () => {
-    if (!confirm('Are you sure you want to mark all announcements as read?')) return;
+    if (!confirm('Bạn có muốn đánh dấu đã đọc thông báo này không?')) return;
 
     try {
         const res = await fetch('/api/announcements', {
@@ -203,10 +203,10 @@ document.getElementById('markAllReadBtn').addEventListener('click', async () => 
 
         loadAnnouncements();
 
-        alert('All announcements marked as read!');
+        alert('Tất cả thông báo được đánh dấu là đã đọc!');
     } catch (err) {
-        console.error('Mark‑all‑read error:', err);
-        alert('Failed to mark all as read');
+        console.error('Lỗi đánh dấu đã đọc:', err);
+        alert('Không thể đánh dấu tất cả là đã đọc');
     }
 });
 

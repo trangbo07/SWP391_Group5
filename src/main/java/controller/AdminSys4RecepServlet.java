@@ -43,7 +43,7 @@ public class AdminSys4RecepServlet extends HttpServlet {
 
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            JsonResponse res = new JsonResponse(false, "Unauthorized", "/view/home.html");
+            JsonResponse res = new JsonResponse(false, "Trái phép", "/view/home.html");
             out.print(new Gson().toJson(res));
             return;
         }
@@ -80,18 +80,18 @@ public class AdminSys4RecepServlet extends HttpServlet {
                 }
 
                 default -> {
-                    JsonResponse res = new JsonResponse(false, "Unknown action: " + action);
+                    JsonResponse res = new JsonResponse(false, "Hành động không xác định: " + action);
                     out.print(gson.toJson(res));
                 }
             }
 
             out.flush();
         } catch (NumberFormatException e) {
-            JsonResponse res = new JsonResponse(false, "Invalid ID format");
+            JsonResponse res = new JsonResponse(false, "Định dạng ID không hợp lệ");
             out.print(gson.toJson(res));
         } catch (Exception e) {
             e.printStackTrace();
-            JsonResponse res = new JsonResponse(false, "Server error");
+            JsonResponse res = new JsonResponse(false, "Lỗi máy chủ");
             out.print(gson.toJson(res));
         }
     }
@@ -153,12 +153,12 @@ public class AdminSys4RecepServlet extends HttpServlet {
                 }
 
                 if (accountDAO.checkAccount(email)) {
-                    jsonRes = new JsonResponse(false, "Email already exists.");
+                    jsonRes = new JsonResponse(false, "Email đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
                 if (accountDAO.checkAccount(username)) {
-                    jsonRes = new JsonResponse(false, "Username already exists.");
+                    jsonRes = new JsonResponse(false, "Tên đăng nhập đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -169,13 +169,13 @@ public class AdminSys4RecepServlet extends HttpServlet {
                         fullName, phone
                 );
 
-                jsonRes = new JsonResponse(success, success ? "Create successfully!" : "Create failed!");
+                jsonRes = new JsonResponse(success, success ? "Tạo thành công!" : "Tạo không thành công!");
                 out.print(gson.toJson(jsonRes));
                 return;
 
             } else if ("update".equals(action)) {
                 if (receptionistId == null || receptionistId.isEmpty()) {
-                    jsonRes = new JsonResponse(false, "Missing receptionist ID");
+                    jsonRes = new JsonResponse(false, "Thiếu ID");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -221,7 +221,7 @@ public class AdminSys4RecepServlet extends HttpServlet {
 
                 boolean isDuplicate = dao.isEmailOrUsernameDuplicated(username, email, oldUsername, oldEmail);
                 if (isDuplicate) {
-                    jsonRes = new JsonResponse(false, "Username or Email already exists.");
+                    jsonRes = new JsonResponse(false, "Tên đăng nhập hoặc Email đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -231,7 +231,7 @@ public class AdminSys4RecepServlet extends HttpServlet {
                         username, email, imagePath, status, fullName, phone
                 );
 
-                jsonRes = new JsonResponse(success, success ? "Updated successfully!" : "Update failed!");
+                jsonRes = new JsonResponse(success, success ? "Cập nhật thành công" : "Cập nhật không thành công");
                 out.print(gson.toJson(jsonRes));
                 return;
             } else if ("updateStatus".equals(action)) {
@@ -239,13 +239,13 @@ public class AdminSys4RecepServlet extends HttpServlet {
                 String newStatus = req.getParameter("status");
 
                 boolean success = dao.updateAccountStaffStatus(account_staff_id, newStatus);
-                jsonRes = new JsonResponse(success, success ? "Status updated!" : "Status update failed.");
+                jsonRes = new JsonResponse(success, success ? "Cập nhật thành công" : "Cập nhật không thành công");
                 out.print(gson.toJson(jsonRes));
                 return;
             } else if ("resetPassword".equals(action)) {
                 String staffIdRaw = req.getParameter("accountStaffId");
                 if (staffIdRaw == null || staffIdRaw.isEmpty()) {
-                    jsonRes = new JsonResponse(false, "Missing accountStaffId");
+                    jsonRes = new JsonResponse(false, "Thiếu accountStaffId");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -254,17 +254,17 @@ public class AdminSys4RecepServlet extends HttpServlet {
                 String generatedPassword = generateRandomPassword(8);
                 boolean ok = accountDAO.resetStaffPassword(staffId, generatedPassword);
 
-                jsonRes = new JsonResponse(ok, ok ? "Reset password successfully" : "Reset password failed");
+                jsonRes = new JsonResponse(ok, ok ? "Đặt lại mật khẩu thành công" : "Đặt lại mật khẩu không thành công");
                 out.print(gson.toJson(jsonRes));
                 return;
             } else {
-                jsonRes = new JsonResponse(false, "Invalid action");
+                jsonRes = new JsonResponse(false, "Hành động không hợp lệ");
                 out.print(gson.toJson(jsonRes));
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            JsonResponse errorRes = new JsonResponse(false, "Error: " + e.getMessage());
+            JsonResponse errorRes = new JsonResponse(false, "Lỗi: " + e.getMessage());
             out.print(gson.toJson(errorRes));
         }
     }

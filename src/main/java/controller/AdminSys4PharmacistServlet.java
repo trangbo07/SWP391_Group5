@@ -82,11 +82,11 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
 
             out.flush();
         } catch (NumberFormatException e) {
-            JsonResponse res = new JsonResponse(false, "Invalid ID format");
+            JsonResponse res = new JsonResponse(false, "Định dạng ID không hợp lệ");
             out.print(gson.toJson(res));
         } catch (Exception e) {
             e.printStackTrace();
-            JsonResponse res = new JsonResponse(false, "Server error");
+            JsonResponse res = new JsonResponse(false, "Lỗi máy chủ");
             out.print(gson.toJson(res));
         }
     }
@@ -112,8 +112,6 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
                 String phone = req.getParameter("phone");
                 String eduLevel = req.getParameter("eduLevel");
                 String status = req.getParameter("status");
-                System.out.println(username);
-                System.out.println(email);
 
                 // 1. Check duplicate
                 if (accountDAO.checkAccount(email)) {
@@ -159,7 +157,7 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
 
                 // 3. Insert
                 boolean success = dao.insertPharmacist(username, generateRandomPassword(8), email, imagePath, status, fullName, phone, eduLevel);
-                jsonRes = new JsonResponse(success, success ? "Created pharmacist successfully." : "Creation failed.");
+                jsonRes = new JsonResponse(success, success ? "Tạo thành công!" : "Tạo không thành công!");
                 out.print(gson.toJson(jsonRes));
                 return;
             } else if ("update".equals(action)) {
@@ -174,8 +172,7 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
 
                 AccountPharmacist acc = dao.getAccountPharmacistById(pharmacistId);
                 if (acc == null) {
-                    jsonRes = new JsonResponse(false, "Account not found");
-                    out.print(gson.toJson(jsonRes));
+                    out.print(gson.toJson(new JsonResponse(false, "Không tìm thấy tài khoản")));
                     return;
                 }
 
@@ -219,13 +216,13 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
 
                 boolean isDuplicate = dao.isEmailOrUsernameDuplicated(username, email, oldUsername, oldEmail);
                 if (isDuplicate) {
-                    jsonRes = new JsonResponse(false, "Username or Email already exists.");
+                    jsonRes = new JsonResponse(false, "Tên đăng nhập hoặc Email đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
 
                 boolean updated = dao.updatePharmacist(pharmacistId, accountPharmacistId, username, email, imagePath, status, fullName, phone, eduLevel);
-                jsonRes = new JsonResponse(updated, updated ? "Updated successfully!" : "Update failed!");
+                jsonRes = new JsonResponse(updated, updated ? "Cập nhật thành công" : "Cập nhật không thành công");
                 out.print(gson.toJson(jsonRes));
                 return;
             } else if ("updateStatus".equals(action)) {
@@ -233,7 +230,7 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
                 String newStatus = req.getParameter("status");
 
                 boolean success = dao.updateAccountPharmacistStatus(accountPharmacistId , newStatus); // viết hàm này trong DAO
-                jsonRes = new JsonResponse(success, success ? "Status updated!" : "Status update failed.");
+                jsonRes = new JsonResponse(success, success ? "Cập nhật thành công" : "Cập nhật không thành công");
                 out.print(gson.toJson(jsonRes));
                 return;
             } else if ("resetPassword".equals(action)) {
@@ -247,11 +244,11 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
                 int pharmacistId = Integer.parseInt(accountPharmacistId);
                 String generatedPassword = generateRandomPassword(8);
                 boolean ok = accountDAO.resetPharmacistPassword(pharmacistId, generatedPassword);
-                jsonRes = new JsonResponse(ok, ok ? "Reset password successfully" : "Reset password failed");
+                jsonRes = new JsonResponse(ok, ok ? "Đặt lại mật khẩu thành công" : "Đặt lại mật khẩu không thành công");
                 out.print(gson.toJson(jsonRes));
                 return;
             } else {
-                jsonRes = new JsonResponse(false, "Invalid action");
+                jsonRes = new JsonResponse(false, "Hành động không hợp lệ");
                 out.print(gson.toJson(jsonRes));
             }
 

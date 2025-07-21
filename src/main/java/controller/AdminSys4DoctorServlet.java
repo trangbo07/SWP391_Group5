@@ -84,18 +84,18 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 }
 
                 default -> {
-                    JsonResponse res = new JsonResponse(false, "Unknown action: " + action);
+                    JsonResponse res = new JsonResponse(false, "Hành động không xác định:" + action);
                     out.print(gson.toJson(res));
                 }
             }
 
             out.flush();
         } catch (NumberFormatException e) {
-            JsonResponse res = new JsonResponse(false, "Invalid ID format");
+            JsonResponse res = new JsonResponse(false, "Hành động không xác định:");
             out.print(gson.toJson(res));
         } catch (Exception e) {
             e.printStackTrace();
-            JsonResponse res = new JsonResponse(false, "Server error");
+            JsonResponse res = new JsonResponse(false, "Lỗi máy chủ");
             out.print(gson.toJson(res));
         }
     }
@@ -159,12 +159,12 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 }
 
                 if (accountDAO.checkAccount(email)) {
-                    jsonRes = new JsonResponse(false, "Email already exists.");
+                    jsonRes = new JsonResponse(false, "Email đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
                 if (accountDAO.checkAccount(username)) {
-                    jsonRes = new JsonResponse(false, "Username already exists.");
+                    jsonRes = new JsonResponse(false, "Tên đăng nhập đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -175,13 +175,13 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                         fullName, phone, department, eduLevel
                 );
 
-                jsonRes = new JsonResponse(success, success ? "Create successfully!" : "Create failed!");
+                jsonRes = new JsonResponse(success, success ? "Tạo thành công!" : "Tạo không thành công!");
                 out.print(gson.toJson(jsonRes));
                 return;
 
             } else if ("update".equals(action)) {
                 if (doctorId == null || doctorId.isEmpty()) {
-                    jsonRes = new JsonResponse(false, "Missing doctor ID");
+                    jsonRes = new JsonResponse(false, "Thiếu ID bác sĩ");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -226,7 +226,7 @@ public class AdminSys4DoctorServlet extends HttpServlet {
 
                 boolean isDuplicate = dao.isEmailOrUsernameDuplicated(username, email, oldUsername, oldEmail);
                 if (isDuplicate) {
-                    jsonRes = new JsonResponse(false, "Username or Email already exists.");
+                    jsonRes = new JsonResponse(false, "Tên đăng nhập hoặc Email đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -236,7 +236,7 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                         fullName, phone, department, eduLevel
                 );
 
-                jsonRes = new JsonResponse(success, success ? "Updated successfully!" : "Update failed!");
+                jsonRes = new JsonResponse(success, success ? "Đã cập nhật thành công!" : "Cập nhật không thành công!");
                 out.print(gson.toJson(jsonRes));
                 return;
             } else if ("updateStatus".equals(action)) {
@@ -244,13 +244,13 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 String newStatus = req.getParameter("status");
 
                 boolean success = dao.updateAccountStaffStatus(account_staff_id , newStatus); // viết hàm này trong DAO
-                jsonRes = new JsonResponse(success, success ? "Status updated!" : "Status update failed.");
+                jsonRes = new JsonResponse(success, success ? "Trạng thái đã được cập nhật!": "Cập nhật trạng thái không thành công.");
                 out.print(gson.toJson(jsonRes));
                 return;
             } else if ("resetPassword".equals(action)) {
                 String staffIdRaw = req.getParameter("accountStaffId");
                 if (staffIdRaw == null || staffIdRaw.isEmpty()) {
-                    jsonRes = new JsonResponse(false, "Missing accountStaffId");
+                    jsonRes = new JsonResponse(false, "Thiếu accountStaffId");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -258,11 +258,11 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 int staffId = Integer.parseInt(staffIdRaw);
                 String generatedPassword = generateRandomPassword(8);
                 boolean ok = accountDAO.resetStaffPassword(staffId, generatedPassword);
-                jsonRes = new JsonResponse(ok, ok ? "Reset password successfully" : "Reset password failed");
+                jsonRes = new JsonResponse(ok, ok ? "Đặt lại mật khẩu thành công": "Đặt lại mật khẩu không thành công");
                 out.print(gson.toJson(jsonRes));
                 return;
             } else {
-                jsonRes = new JsonResponse(false, "Invalid action");
+                jsonRes = new JsonResponse(false, "Hành động không hợp lệ");
                 out.print(gson.toJson(jsonRes));
             }
 

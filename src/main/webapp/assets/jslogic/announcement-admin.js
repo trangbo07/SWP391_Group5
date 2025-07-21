@@ -53,7 +53,7 @@ async function fetchAnnouncements() {
     }
 
     const tableBody = document.getElementById('announcementTableBody');
-    tableBody.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="7">Đang tải...</td></tr>`;
 
     try {
         const res = await fetch(`/api/admin/announcements?${params.toString()}`);
@@ -61,7 +61,7 @@ async function fetchAnnouncements() {
 
         if (!Array.isArray(data) || data.length === 0) {
             tableBody.innerHTML = `<tr><td colspan="7">No announcements found.</td></tr>`;
-            document.getElementById('paginationInfo').textContent = `Showing 0 to 0 of 0 entries`;
+            document.getElementById('paginationInfo').textContent = `Hiển thị 0 đến 0 trong tổng số 0 bản ghi`;
             return;
         }
 
@@ -69,8 +69,8 @@ async function fetchAnnouncements() {
         currentPage = 1;
         paginateAnnouncements();
     } catch (error) {
-        console.error('Fetch failed:', error);
-        tableBody.innerHTML = `<tr><td colspan="7">Failed to load announcements.</td></tr>`;
+        console.error('Lỗi khi tìm kiếm: ', error);
+        tableBody.innerHTML = `<tr><td colspan="7">Không tải được dữ liệu thông báo.</td></tr>`;
     }
 }
 
@@ -84,8 +84,8 @@ function paginateAnnouncements() {
     const pageData = source.slice(start, end);
 
     if (pageData.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="7">No announcements.</td></tr>`;
-        info.textContent = `Showing 0 to 0 of ${allAnnouncements.length} entries`;
+        tableBody.innerHTML = `<tr><td colspan="7">Không có thông báo nào.</td></tr>`;
+        info.textContent = `Hiển thị 0 đến 0 trong tổng số ${allAnnouncements.length} bản ghi`;
         return;
     }
 
@@ -98,13 +98,13 @@ function paginateAnnouncements() {
             <td>${a.adminId}</td>
             <td>${a.fullName}</td>
             <td>
-                <button class="btn btn-sm btn-warning me-1" onclick="editAnnouncement(${a.announcementId})">Edit</button>
-                <button class="btn btn-sm btn-danger" onclick="deleteAnnouncement(${a.announcementId})">Delete</button>
+                <button class="btn btn-sm btn-warning me-1" onclick="editAnnouncement(${a.announcementId})">Chỉnh sửa</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteAnnouncement(${a.announcementId})">Xóa</button>
             </td>
         </tr>
     `).join('');
 
-    info.textContent = `Showing ${start + 1} to ${Math.min(end, allAnnouncements.length)} of ${allAnnouncements.length} entries`;
+    info.textContent = `Hiển thị ${start + 1} đến ${Math.min(end, allAnnouncements.length)} trong tổng số ${allAnnouncements.length} bản ghi`;
 }
 
 function toggleReverseList() {
@@ -144,13 +144,13 @@ function openAnnouncementForm(mode, announcement = null) {
     formMessage.style.display = 'none'; // ẩn message
 
     if (mode === 'create') {
-        modalTitle.innerHTML = `<i class="fas fa-plus me-2"></i> Add Announcement`;
+        modalTitle.innerHTML = `<i class="fas fa-plus me-2"></i> Thêm thông báo`;
         announcementId.value = '';
         titleInput.value = '';
         contentInput.value = '';
         editOnlyFields.innerHTML = '';
     } else if (mode === 'edit' && announcement) {
-        modalTitle.innerHTML = `<i class="fas fa-edit me-2"></i> Edit Announcement`;
+        modalTitle.innerHTML = `<i class="fas fa-edit me-2"></i> Chỉnh sửa thông báo`;
         announcementId.value = announcement.announcementId;
         titleInput.value = announcement.title;
         contentInput.value = announcement.content;
@@ -158,11 +158,11 @@ function openAnnouncementForm(mode, announcement = null) {
         editOnlyFields.innerHTML = `
            <div class="row">
         <div class="col-md-6">
-          <label class="form-label">Create By</label>
+          <label class="form-label">Tạo bởi</label>
           <input type="text" class="form-control" readonly value="${announcement.fullName || ''}">
         </div>
         <div class="col-md-6">
-          <label class="form-label">Create At</label>
+          <label class="form-label">Ngày tạo</label>
           <input type="text" class="form-control" readonly value="${announcement.createdAt || ''}">
         </div>
       </div>
@@ -180,7 +180,7 @@ document.getElementById('btnAddAnnouncement').addEventListener('click', () => {
 function editAnnouncement(id) {
     const announcement = allAnnouncements.find(a => a.announcementId === id);
     if (!announcement) {
-        alert('Announcement not found!');
+        alert('Không tìm thấy thông báo!');
         return;
     }
     openAnnouncementForm('edit', announcement);
@@ -230,12 +230,12 @@ document.getElementById('announcementForm').addEventListener('submit', async fun
 
         } else {
             const rawText = await response.text();
-            throw new Error("Unexpected response: " + rawText);
+            throw new Error("Phản hồi bất ngờ: " + rawText);
         }
 
     } catch (error) {
-        console.error('Submit error:', error);
-        displayAnnouncementFormMessage("Submit failed: " + error.message, "danger");
+        console.error('Gửi lỗi: ', error);
+        displayAnnouncementFormMessage("Gửi không thành công: " + error.message, "danger");
     }
 });
 
@@ -253,22 +253,22 @@ function validateAnnouncementForm() {
     const errors = [];
 
     if (!title) {
-        errors.push("Title cannot be empty.");
+        errors.push("Tiêu đề không được để trống.");
     } else if (title.length < 5) {
-        errors.push("Title must be at least 5 characters long.");
+        errors.push("Tiêu đề phải có ít nhất 5 ký tự.");
     }
 
     if (!content) {
-        errors.push("Content cannot be empty.");
+        errors.push("Nội dung không được để trống.");
     } else if (content.length < 10) {
-        errors.push("Content must be at least 10 characters long.");
+        errors.push("Nội dung phải có ít nhất 10 ký tự.");
     }
 
     return errors;
 }
 
 async function deleteAnnouncement(id) {
-    if (!confirm("Are you sure you want to delete this announcement?")) return;
+    if (!confirm("Bạn có chắc chắn muốn xóa thông báo này không?")) return;
 
     try {
         const res = await fetch('/api/admin/announcements', {
@@ -285,19 +285,19 @@ async function deleteAnnouncement(id) {
             const result = await res.json();
 
             if (result.success) {
-                alert("Announcement deleted successfully!");
+                alert("Thông báo đã được xóa thành công!");
                 fetchAnnouncements(); // Load lại danh sách
             } else {
-                alert("Failed to delete: " + result.message);
+                alert("Không xóa được: " + result.message);
             }
         } else {
             const rawText = await res.text();
-            throw new Error("Unexpected response: " + rawText);
+            throw new Error("Phản hồi bất ngờ: " + rawText);
         }
 
     } catch (err) {
-        console.error("Delete error:", err);
-        alert("Delete failed: " + err.message);
+        console.error("Xóa lỗi: ", err);
+        alert("Xóa không thành công: " + err.message);
     }
 }
 
