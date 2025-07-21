@@ -177,6 +177,36 @@ public class AppointmentDAO {
         return appointmentDTO;
     }
 
+ // Hàm mới đơn giản để lấy thông tin cơ bản của appointment
+    public AppointmentDTO getAppointmentBasicInfo(int appointmentId) {
+        DBContext db = DBContext.getInstance();
+        AppointmentDTO appointmentDTO = null;
+
+        try {
+            String sql = "SELECT appointment_id, doctor_id, patient_id, appointment_datetime FROM Appointment WHERE appointment_id = ?";
+
+            PreparedStatement statement = db.getConnection().prepareStatement(sql);
+            statement.setInt(1, appointmentId);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                appointmentDTO = new AppointmentDTO();
+                appointmentDTO.setAppointment_id(rs.getInt("appointment_id"));
+                appointmentDTO.setDoctor_id(rs.getInt("doctor_id"));
+                appointmentDTO.setPatient_id(rs.getInt("patient_id"));
+                appointmentDTO.setAppointment_datetime(rs.getString("appointment_datetime"));
+            }
+
+            rs.close();
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return appointmentDTO;
+    }
+
     public boolean cancelAppointmentById(int appointmentId) {
         DBContext db = DBContext.getInstance();
         String sql = "UPDATE Appointment SET status = 'Cancelled' WHERE appointment_id = ?";
