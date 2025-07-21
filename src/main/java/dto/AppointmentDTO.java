@@ -6,6 +6,7 @@ public class AppointmentDTO {
     private String shift;
     private String status;
     private String note;
+    private int doctor_id;
 
     private int patient_id;
     private String full_name;
@@ -65,7 +66,8 @@ public class AppointmentDTO {
     public void setAppointment_datetime(String appointment_datetime) {
         this.appointment_datetime = appointment_datetime;
     }
-
+    public int getDoctor_id() { return doctor_id; }
+    public void setDoctor_id(int doctor_id) { this.doctor_id = doctor_id; }
     public String getShift() {
         return shift;
     }

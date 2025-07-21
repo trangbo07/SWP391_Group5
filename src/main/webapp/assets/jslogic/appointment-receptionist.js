@@ -178,6 +178,12 @@ function renderAppointments() {
                         <i class="fas fa-edit me-1"></i>Edit
                     </button>
                     ${appointment.status === 'Pending' ? `
+                        <button type="button" class="btn btn-success text-white select-patient-btn" 
+                                onclick="confirmAppointment(${appointment.appointment_id})" 
+                                data-appointment-id="${appointment.appointment_id}" 
+                                data-action="confirm">
+                            <i class="fas fa-check-circle me-1"></i>Confirm
+                        </button>
                         <button type="button" class="btn btn-secondary text-white select-patient-btn" 
                                 onclick="cancelAppointment(${appointment.appointment_id})" 
                                 data-appointment-id="${appointment.appointment_id}" 
@@ -298,6 +304,45 @@ function cancelAppointment(appointmentId) {
 
     // Implementation for canceling appointment
     showInfo('Cancel appointment functionality will be implemented soon.');
+}
+
+function confirmAppointment(appointmentId) {
+    console.log('confirmAppointment called with ID:', appointmentId, 'Type:', typeof appointmentId);
+    if (!confirm('Are you sure you want to confirm this appointment?')) {
+        return;
+    }
+
+    const payload = {
+        action: 'confirm',
+        appointmentId: Number(appointmentId)
+    };
+    console.log('Sending payload:', payload);
+
+    fetch('/api/receptionist/appointment', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => {
+        console.log('Response status:', res.status);
+        return res.json().then(data => ({ ok: res.ok, data }));
+    })
+    .then(result => {
+        console.log('Response data:', result);
+        if (result.ok && result.data.success) {
+            showSuccess('Appointment confirmed and added to waitlist!');
+            refreshAppointments();
+        } else {
+            showError(result.data.message || 'Failed to confirm appointment.');
+        }
+    })
+    .catch(err => {
+        console.error('Error confirming appointment:', err);
+        showError('System error. Please try again later.');
+    });
 }
 
 function createNewAppointment() {
