@@ -130,28 +130,23 @@ public class DoctorWaitlistServlet extends HttpServlet {
         try {
             BufferedReader reader = request.getReader();
             String requestBody = reader.lines().collect(Collectors.joining());
-            System.out.println("Request body: " + requestBody);
             
             // Kiểm tra nếu request body rỗng
             if (requestBody == null || requestBody.trim().isEmpty()) {
-                System.out.println("ERROR: Request body is empty");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("{\"error\":\"Request body is empty\"}");
                 return;
             }
             
             JsonObject jsonBody = JsonParser.parseString(requestBody).getAsJsonObject();
-            System.out.println("Parsed JSON: " + jsonBody);
 
             if (!jsonBody.has("waitlistId")) {
-                System.out.println("ERROR: Missing waitlistId in request");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("{\"error\":\"Missing waitlistId\"}");
                 return;
             }
 
             int waitlistId = jsonBody.get("waitlistId").getAsInt();
-            System.out.println("Processing waitlistId: " + waitlistId);
             
             boolean updated = false;
             String message = "";
@@ -161,30 +156,23 @@ public class DoctorWaitlistServlet extends HttpServlet {
                 // Cập nhật cả status và visittype
                 String status = jsonBody.get("status").getAsString();
                 String visittype = jsonBody.get("visittype").getAsString();
-                System.out.println("Updating both - status: " + status + ", visittype: " + visittype);
 
                 updated = waitlistDAO.updateStatusAndVisittype(waitlistId, status, visittype);
                 message = updated ? "Status and visittype updated successfully" : "Failed to update status and visittype";
-                System.out.println("Update result: " + updated);
 
             } else if (jsonBody.has("status")) {
                 // Chỉ cập nhật status
                 String status = jsonBody.get("status").getAsString();
-                System.out.println("Updating status only: " + status);
                 
                 updated = waitlistDAO.updateStatus(waitlistId, status);
                 message = updated ? "Status updated successfully" : "Failed to update status";
-                System.out.println("Update result: " + updated);
 
             } else {
-                System.out.println("ERROR: Missing status or visittype fields");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("{\"error\":\"Missing status or visittype\"}");
                 return;
             }
 
-            System.out.println("Final response - updated: " + updated + ", message: " + message);
-            
             if (updated) {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write("{\"success\":true,\"message\":\"" + message + "\"}");
@@ -194,8 +182,6 @@ public class DoctorWaitlistServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            System.out.println("EXCEPTION in doPut: " + e.getMessage());
-            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
         }

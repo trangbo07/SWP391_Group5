@@ -8,12 +8,7 @@ import java.io.IOException;
 import java.util.Map;
 import dao.AdminbusinessDAO;
 import dto.ScheduleDTO;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+
 
 @WebServlet({"/api/schedule/check", "/api/schedule/create"})
 public class AdminbusinessServlet extends HttpServlet {

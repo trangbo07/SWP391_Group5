@@ -3,7 +3,35 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Load examination results when page loads
     loadExaminationResults();
+
+    // Event for filtering by doctor name
+    document.getElementById('doctorSearchInput').addEventListener('input', function () {
+        const keyword = this.value.toLowerCase().trim();
+        if (keyword === "") {
+            displayExaminationResults(allExaminationResults);
+            return;
+        }
+
+        const filtered = allExaminationResults.filter(result =>
+            result.doctorName && result.doctorName.toLowerCase().includes(keyword)
+        );
+
+        if (filtered.length > 0) {
+            displayExaminationResults(filtered);
+        } else {
+            document.getElementById('examinationResults').innerHTML = '<p class="text-muted">Không tìm thấy bác sĩ phù hợp.</p>';
+        }
+    });
+
+    // Event for clearing search
+    document.getElementById('clearSearchBtn').addEventListener('click', function () {
+        document.getElementById('doctorSearchInput').value = "";
+        displayExaminationResults(allExaminationResults);
+    });
 });
+
+// Global variable to cache all results
+let allExaminationResults = [];
 
 /**
  * Load examination results for the current patient
@@ -12,6 +40,8 @@ function loadExaminationResults() {
     const loadingElement = document.getElementById('examinationLoading');
     const resultsElement = document.getElementById('examinationResults');
     const noResultsElement = document.getElementById('noResults');
+    const params = new URLSearchParams(window.location.search);
+    const patientId = params.get('patientId');
 
     // Show loading
     loadingElement.style.display = 'flex';
@@ -19,33 +49,33 @@ function loadExaminationResults() {
     noResultsElement.style.display = 'none';
 
     // Make API call to get examination results
-    fetch('/api/examination-results', {
+    fetch(`/api/examination-results?patientId=${patientId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
         credentials: 'same-origin'
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Hide loading
-        loadingElement.style.display = 'none';
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            loadingElement.style.display = 'none';
 
-        if (data.success && data.examinationResults && data.examinationResults.length > 0) {
-            displayExaminationResults(data.examinationResults);
-        } else {
-            showNoResults();
-        }
-    })
-    .catch(error => {
-        loadingElement.style.display = 'none';
-        showError('Có lỗi xảy ra khi tải kết quả khám bệnh. Vui lòng thử lại sau.');
-    });
+            if (data.success && data.examinationResults && data.examinationResults.length > 0) {
+                allExaminationResults = data.examinationResults;
+                displayExaminationResults(data.examinationResults);
+            } else {
+                showNoResults();
+            }
+        })
+        .catch(error => {
+            loadingElement.style.display = 'none';
+            showError('Có lỗi xảy ra khi tải kết quả khám bệnh. Vui lòng thử lại sau.');
+        });
 }
 
 /**
@@ -54,35 +84,50 @@ function loadExaminationResults() {
  */
 function displayExaminationResults(results) {
     const resultsElement = document.getElementById('examinationResults');
-    
-    let html = '';
-    
+    let html = `
+    <div class="table-responsive">
+    <table class="table table-bordered align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Tên bệnh nhân</th>
+                <th>Ngày sinh</th>
+                <th>Giới tính</th>
+                <th>SĐT bệnh nhân</th>
+                <th>Địa chỉ</th>
+                <th>Bác sĩ</th>
+                <th>Chuyên khoa</th>
+                <th>SĐT bác sĩ</th>
+                <th>Trình độ</th>
+                <th>Triệu chứng</th>
+                <th>Chẩn đoán sơ bộ</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
     results.forEach((result, index) => {
         html += `
-            <div class="examination-section">
-                <div class="examination-date">
-                    <i class="fas fa-calendar-alt me-2"></i>
-                    Kết quả khám ngày: ${formatDate(result.examinationDate)}
-                </div>
-                
-                <div class="examination-result">
-                    <h6><i class="fas fa-user-md me-2"></i>Bác sĩ khám:</h6>
-                    <p>${result.doctorName || 'Chưa có thông tin'}</p>
-                </div>
-                
-                <div class="examination-result">
-                    <h6><i class="fas fa-notes-medical me-2"></i>Triệu chứng:</h6>
-                    <p>${result.symptoms || 'Chưa có thông tin'}</p>
-                </div>
-                
-                <div class="examination-result">
-                    <h6><i class="fas fa-stethoscope me-2"></i>Chẩn đoán sơ bộ:</h6>
-                    <p>${result.preliminaryDiagnosis || 'Chưa có thông tin'}</p>
-                </div>
-            </div>
+            <tr>
+                <td>${index + 1}</td>
+                <td>${result.patientName || ''}</td>
+                <td>${result.dob || ''}</td>
+                <td>${result.gender || ''}</td>
+                <td>${result.patientPhone || ''}</td>  
+                <td>${result.address || ''}</td>
+                <td>${result.doctorName || ''}</td>
+                <td>${result.department || ''}</td>
+                <td>${result.doctorPhone || ''}</td>
+                <td>${result.eduLevel || ''}</td>
+                <td>${result.symptoms || ''}</td>
+                <td>${result.preliminaryDiagnosis || ''}</td>
+            </tr>
         `;
     });
-    
+    html += `
+        </tbody>
+    </table>
+    </div>
+    `;
     resultsElement.innerHTML = html;
     resultsElement.style.display = 'block';
 }
@@ -108,26 +153,4 @@ function showError(message) {
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     `;
-}
-
-/**
- * Format date to Vietnamese format
- * @param {string} dateString - Date string to format
- * @returns {string} Formatted date string
- */
-function formatDate(dateString) {
-    if (!dateString) return 'Chưa có thông tin';
-    
-    try {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    } catch (error) {
-        return dateString;
-    }
 }

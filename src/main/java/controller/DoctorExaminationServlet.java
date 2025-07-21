@@ -84,21 +84,13 @@ public class DoctorExaminationServlet extends HttpServlet {
                 return;
             }
 
-            // Tạo hoặc lấy medicine record
-            MedicineRecords medicineRecord = medicineRecordDAO.getLatestMedicineRecordByPatientId(patientId);
-            int medicineRecordId;
-
-            if (medicineRecord == null) {
-                // Tạo medicine record mới
-                medicineRecordId = medicineRecordDAO.createMedicineRecord(patientId);
-                if (medicineRecordId == -1) {
-                    jsonResponse.put("success", false);
-                    jsonResponse.put("message", "Failed to create medicine record");
-                    mapper.writeValue(response.getWriter(), jsonResponse);
-                    return;
-                }
-            } else {
-                medicineRecordId = medicineRecord.getMedicineRecord_id();
+            // Tạo medicine record mới cho mỗi lần khám (kể cả khám lại)
+            int medicineRecordId = medicineRecordDAO.createMedicineRecord(patientId);
+            if (medicineRecordId == -1) {
+                jsonResponse.put("success", false);
+                jsonResponse.put("message", "Failed to create medicine record");
+                mapper.writeValue(response.getWriter(), jsonResponse);
+                return;
             }
 
             // Lấy doctor_id từ session

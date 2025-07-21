@@ -13,12 +13,17 @@ public class DoctorDAO {
         List<DoctorDTO> list = new ArrayList<>();
 
         String sql = """
-         SELECT DISTINCT *
+         SELECT DISTINCT d.doctor_id, d.full_name, d.department, d.eduLevel, d.phone, ac.email, ac.role, ac.img
          FROM Doctor d
-         JOIN DoctorSchedule ds ON d.doctor_id = ds.doctor_id
-         Join AccountStaff ac on d.account_staff_id = ac.account_staff_id
-         WHERE ds.is_available = 1
-         AND ds.working_date > CAST(GETDATE() AS DATE)
+         JOIN AccountStaff ac ON d.account_staff_id = ac.account_staff_id
+         WHERE ac.Status = 'Enable'
+           AND EXISTS (
+               SELECT 1
+               FROM DoctorSchedule ds
+               WHERE ds.doctor_id = d.doctor_id
+                 AND ds.is_available = 1
+                 AND ds.working_date > CAST(GETDATE() AS DATE)
+           )
         """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
@@ -31,7 +36,7 @@ public class DoctorDAO {
                         rs.getString("full_name"),
                         rs.getString("department"),
                         rs.getString("eduLevel"),
-                        "/assets/assets/images/doctor/" + rs.getInt("doctor_id") + ".webp", // ảnh tự động
+                        rs.getString("img"),
                         rs.getString("phone"),
                         rs.getString("email"),
                         rs.getString("role")
@@ -50,7 +55,7 @@ public class DoctorDAO {
         List<DoctorDTO> list = new ArrayList<>();
 
         String sql = """
-        SELECT d.doctor_id, d.full_name, d.department, d.eduLevel, d.phone, a.email, a.role 
+        SELECT d.doctor_id, d.full_name, d.department, d.eduLevel, d.phone, a.email, a.role ,a.img
         FROM Doctor d
         JOIN AccountStaff a on d.account_staff_id = a.account_staff_id
         WHERE a.Status = 'Enable' 
@@ -66,7 +71,7 @@ public class DoctorDAO {
                         rs.getString("full_name"),
                         rs.getString("department"),
                         rs.getString("eduLevel"),
-                        "/assets/assets/images/doctor/" + rs.getInt("doctor_id") + ".webp", // ảnh tự động
+                        rs.getString("img"),
                         rs.getString("phone"),
                         rs.getString("email"),
                         rs.getString("role")
@@ -137,10 +142,10 @@ public class DoctorDAO {
 
     public DoctorDTO getDoctorDTOById(int doctorId) {
         String sql = """
-        SELECT d.doctor_id, d.full_name, d.department, d.eduLevel, d.phone, a.email, a.role 
-        FROM Doctor d
-        JOIN AccountStaff a on d.account_staff_id = a.account_staff_id
-        WHERE d.doctor_id = ? AND a.Status = 'Enable'
+                SELECT d.doctor_id, d.full_name, d.department, d.eduLevel, d.phone, a.email, a.role , a.img
+                FROM Doctor d
+                JOIN AccountStaff a on d.account_staff_id = a.account_staff_id
+                WHERE d.doctor_id = ? AND a.Status = 'Enable'
         """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
@@ -154,7 +159,7 @@ public class DoctorDAO {
                             rs.getString("full_name"),
                             rs.getString("department"),
                             rs.getString("eduLevel"),
-                            "/assets/assets/images/doctor/" + rs.getInt("doctor_id") + ".webp",
+                           rs.getString("img"),
                             rs.getString("phone"),
                             rs.getString("email"),
                             rs.getString("role")
@@ -169,5 +174,22 @@ public class DoctorDAO {
 
         return null;
     }
+public boolean updateDoctorImage(int accountStaffId, String imageUrl) {
+    String sql = "UPDATE AccountStaff SET img = ? WHERE account_staff_id = ?";
 
+    try (Connection conn = DBContext.getInstance().getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, imageUrl);
+        ps.setInt(2, accountStaffId);
+
+        int rowsAffected = ps.executeUpdate();
+        return rowsAffected > 0;
+
+    } catch (Exception e) {
+        System.err.println("Error in updateDoctorImage: " + e.getMessage());
+        e.printStackTrace();
+        return false;
+    }
+}
 }

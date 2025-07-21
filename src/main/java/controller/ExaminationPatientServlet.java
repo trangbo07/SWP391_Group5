@@ -30,28 +30,25 @@ public class ExaminationPatientServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         try {
-            // Get patient from session
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("user") == null) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("{\"error\":\"Not logged in\"}");
+            String patientIdParam = request.getParameter("patientId");
+            if (patientIdParam == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"error\":\"Thiếu patientId\"}");
                 return;
             }
 
-            AccountPatient user = (AccountPatient) session.getAttribute("user");
-            int accountPatientId = user.getAccount_patient_id();
+            int patientId = Integer.parseInt(patientIdParam);
 
-            // Get examination results for the patient
-            List<ExaminationPatientDTO> results = examinationResultDAO.getExaminationResultsByPatientId(accountPatientId);
-
-            // Return success response
+            // Gọi DAO để lấy kết quả khám bệnh
+            List<ExaminationPatientDTO> results = examinationResultDAO.getExaminationResultsByPatientId(patientId);
+            System.out.println(results);
             ApiResponse apiResponse = new ApiResponse(true, "Lấy kết quả khám bệnh thành công");
             apiResponse.setExaminationResults(results);
             response.getWriter().write(gson.toJson(apiResponse));

@@ -20,7 +20,7 @@ async function initializeServiceOrderPage() {
         console.error("Error initializing service order page:", error);
 
         // Thay vì báo lỗi, hiển thị interface với thông báo friendly
-        showAlert('Welcome to Service Order Management. Click "New Order" to start or use search functions.', 'info');
+        showAlert('Chào mừng đến với Quản lý Đơn Dịch Vụ. Nhấn "Tạo mới" để bắt đầu hoặc sử dụng chức năng tìm kiếm.', 'info');
 
         // Ẩn loading spinner nếu có lỗi
         const loadingSpinner = document.getElementById("loadingSpinner");
@@ -45,10 +45,10 @@ function displayEmptyState() {
                 <td colspan="11" class="text-center py-5">
                     <div class="empty-state">
                         <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">No Service Orders Available</h5>
-                        <p class="text-muted">There are currently no patients ready for service orders.</p>
+                        <h5 class="text-muted">Không có đơn dịch vụ nào</h5>
+                        <p class="text-muted">Hiện tại chưa có bệnh nhân nào sẵn sàng cho chỉ định dịch vụ.</p>
                         <button class="btn btn-primary" onclick="loadServiceOrderWaitlist()">
-                            <i class="fas fa-refresh me-2"></i>Refresh
+                            <i class="fas fa-refresh me-2"></i>Làm mới
                         </button>
                     </div>
                 </td>
@@ -101,7 +101,7 @@ async function loadServiceOrderWaitlist() {
 
         const waitlists = responseData.data;
         if (!waitlists || waitlists.length === 0) {
-            showAlert('No patients ready for service orders at the moment.', 'info');
+            showAlert('Hiện tại chưa có bệnh nhân nào sẵn sàng cho chỉ định dịch vụ.', 'info');
             if (tableContainer) {
                 tableContainer.style.display = "none";
             }
@@ -114,7 +114,7 @@ async function loadServiceOrderWaitlist() {
         }
         renderServiceOrderTable();
 
-        showAlert(`Loaded ${waitlists.length} patient(s) ready for service orders.`, 'success');
+        showAlert(`Đã tải ${waitlists.length} bệnh nhân sẵn sàng cho chỉ định dịch vụ.`, 'success');
 
     } catch (error) {
         console.error("Error loading service order waitlist:", error);
@@ -124,7 +124,7 @@ async function loadServiceOrderWaitlist() {
         if (tableContainer) {
             tableContainer.style.display = "none";
         }
-        showAlert(`Failed to load service order waitlist: ${error.message}`, 'danger');
+        showAlert(`Không thể tải danh sách chờ chỉ định dịch vụ: ${error.message}`, 'danger');
     }
 }
 
@@ -160,13 +160,13 @@ function renderServiceOrderTable() {
         } else if (visittype === 'result' && status === 'waiting') {
             actionButton = `
                 <button class="btn btn-primary view-results-btn" data-waitlist-id="${waitlist.waitlist_id}" data-patient-id="${waitlist.patient_id}">
-                    <i class="fas fa-eye me-1"></i>View
+                    <i class="fas fa-eye me-1"></i>Xem kết quả
                 </button>
             `;
         } else {
             actionButton = `
                 <span class="text-muted">
-                    <i class="fas fa-minus-circle me-1"></i>No action available
+                    <i class="fas fa-minus-circle me-1"></i>Không có thao tác
                 </span>
             `;
         }
@@ -176,19 +176,19 @@ function renderServiceOrderTable() {
                 <div class="patient-info">
                     <div class="patient-name">${waitlist.full_name || 'N/A'}</div>
                     <div class="patient-details">
-                        ID: ${waitlist.patient_id || 'N/A'} | 
-                        Age: ${waitlist.dob ? calculateAge(waitlist.dob) : 'N/A'} | 
-                        Gender: ${waitlist.gender || 'N/A'}
+                        Mã BN: ${waitlist.patient_id || 'N/A'} | 
+                        Tuổi: ${waitlist.dob ? calculateAge(waitlist.dob) : 'N/A'} | 
+                        Giới tính: ${waitlist.gender || 'N/A'}
                     </div>
                 </div>
             </td>
-            <td><i class="fas fa-door-open me-2"></i>Room ${waitlist.room_id || 'N/A'}</td>
+            <td><i class="fas fa-door-open me-2"></i>Phòng ${waitlist.room_id || 'N/A'}</td>
             <td><i class="fas fa-calendar-plus me-2"></i>${formatDate(waitlist.registered_at)}</td>
             <td><i class="fas fa-hourglass-start me-2"></i>${formatTime(waitlist.estimated_time)}</td>
             <td><i class="fas fa-calendar-check me-2"></i>${formatDateTime(waitlist.appointment_datetime)}</td>
-            <td><span class="status-badge ${statusClass}">${waitlist.status || 'N/A'}</span></td>
+            <td><span class="status-badge ${statusClass}">${waitlist.status === 'InProgress' ? 'Đang khám' : waitlist.status === 'Waiting' ? 'Chờ kết quả' : waitlist.status === 'Completed' ? 'Hoàn thành' : waitlist.status || 'N/A'}</span></td>
             <td><i class="fas fa-vial me-2"></i>${waitlist.visittype || 'N/A'}</td>
-            <td><i class="fas fa-sticky-note me-2"></i>${waitlist.note || 'No note'}</td>
+            <td><i class="fas fa-sticky-note me-2"></i>${waitlist.note || 'Không có ghi chú'}</td>
             <td><i class="fas fa-clock me-2"></i>${waitlist.shift || 'N/A'}</td>
             <td>
                 ${actionButton}
@@ -201,9 +201,9 @@ function renderServiceOrderTable() {
     const paginationInfo = document.getElementById("paginationInfo");
     if (paginationInfo) {
         if (serviceOrderWaitlist.length === 0) {
-            paginationInfo.textContent = "Showing 0 entries";
+            paginationInfo.textContent = "Hiển thị 0 mục";
         } else {
-            paginationInfo.textContent = `Showing ${startIdx + 1} to ${endIdx} of ${serviceOrderWaitlist.length} entries`;
+            paginationInfo.textContent = `Hiển thị ${startIdx + 1} đến ${endIdx} trên tổng ${serviceOrderWaitlist.length} mục`;
         }
     }
 
