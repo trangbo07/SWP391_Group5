@@ -48,6 +48,16 @@ public class ServiceServlet extends HttpServlet {
         try {
             String serviceId = request.getParameter("id");
             String searchQuery = request.getParameter("search");
+            int page = 1;
+            int size = 10;
+            try {
+                page = Integer.parseInt(request.getParameter("page"));
+                if (page < 1) page = 1;
+            } catch (Exception ignored) {}
+            try {
+                size = Integer.parseInt(request.getParameter("size"));
+                if (size < 1) size = 10;
+            } catch (Exception ignored) {}
 
             if (serviceId != null && !serviceId.isEmpty()) {
                 // Get single service by ID
@@ -60,15 +70,26 @@ public class ServiceServlet extends HttpServlet {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     response.getWriter().write("{\"error\": \"Service not found\"}");
                 }
-            } else if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-                // Search services by name
-                List<ListOfMedicalService> services = serviceDAO.searchServicesByName(searchQuery.trim());
-                String jsonResponse = objectMapper.writeValueAsString(services);
-                response.getWriter().write(jsonResponse);
             } else {
-                // Get all services
-                List<ListOfMedicalService> services = serviceDAO.getAllServices();
-                String jsonResponse = objectMapper.writeValueAsString(services);
+                // Lấy danh sách (có thể tìm kiếm, phân trang)
+                List<ListOfMedicalService> services;
+                if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                    services = serviceDAO.searchServicesByName(searchQuery.trim());
+                } else {
+                    services = serviceDAO.getAllServices();
+                }
+                int totalItems = services.size();
+                int totalPages = (int) Math.ceil((double) totalItems / size);
+                int fromIndex = Math.min((page - 1) * size, totalItems);
+                int toIndex = Math.min(fromIndex + size, totalItems);
+                List<ListOfMedicalService> paged = services.subList(fromIndex, toIndex);
+                // Đóng gói kết quả
+                String jsonResponse = objectMapper.createObjectNode()
+                        .putPOJO("services", paged)
+                        .put("totalPages", totalPages)
+                        .put("page", page)
+                        .put("totalItems", totalItems)
+                        .toString();
                 response.getWriter().write(jsonResponse);
             }
         } catch (NumberFormatException e) {
