@@ -42,7 +42,7 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
 
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            JsonResponse res = new JsonResponse(false, "Unauthorized", "/view/home.html");
+            JsonResponse res = new JsonResponse(false, "Trái phép", "/view/home.html");
             out.print(gson.toJson(res));
             return;
         }
@@ -78,18 +78,18 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
                 }
 
                 default -> {
-                    JsonResponse res = new JsonResponse(false, "Unknown action: " + action);
+                    JsonResponse res = new JsonResponse(false, "Hành động không xác định: " + action);
                     out.print(gson.toJson(res));
                 }
             }
 
             out.flush();
         } catch (NumberFormatException e) {
-            JsonResponse res = new JsonResponse(false, "Invalid ID format");
+            JsonResponse res = new JsonResponse(false, "Định dạng ID không hợp lệ");
             out.print(gson.toJson(res));
         } catch (Exception e) {
             e.printStackTrace();
-            JsonResponse res = new JsonResponse(false, "Server error");
+            JsonResponse res = new JsonResponse(false, "Lỗi máy chủ");
             out.print(gson.toJson(res));
         }
     }
@@ -146,32 +146,32 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
 
 
                     if (accountDAO.checkAccount(email)) {
-                        jsonRes = new JsonResponse(false, "Email already exists.");
+                        jsonRes = new JsonResponse(false, "Email đã tồn tại.");
                         out.print(gson.toJson(jsonRes));
                         return;
                     }
                     if (accountDAO.checkAccount(username)) {
-                        jsonRes = new JsonResponse(false, "Username already exists.");
+                        jsonRes = new JsonResponse(false, "Tên đăng nhập đã tồn tại.");
                         out.print(gson.toJson(jsonRes));
                         return;
                     }
 
                     String password = generateRandomPassword(8);
                     boolean ok = dao.insertAccountPatient(username, password, email, imagePath, status);
-                    jsonRes = new JsonResponse(ok, ok ? "Create successfully!" : "Create failed!");
+                    jsonRes = new JsonResponse(ok, ok ? "Tạo thành công!" : "Tạo không thành công!");
                     out.print(gson.toJson(jsonRes));
                 }
 
                 case "update" -> {
                     if (accountPatientId == null || accountPatientId.isEmpty()) {
-                        jsonRes = new JsonResponse(false, "Missing ID");
+                        jsonRes = new JsonResponse(false, "Thiếu ID");
                         out.print(gson.toJson(jsonRes));
                         return;
                     }
 
                     AccountPatientDTO existing = dao.getAccountById(Integer.parseInt(accountPatientId));
                     if (existing == null) {
-                        out.print(gson.toJson(new JsonResponse(false, "Account not found")));
+                        out.print(gson.toJson(new JsonResponse(false, "Không tìm thấy tài khoản")));
                         return;
                     }
 
@@ -214,7 +214,7 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
 
                     boolean duplicated = dao.isEmailOrUsernameDuplicated(username, email, oldUsername, oldEmail);
                     if (duplicated) {
-                        jsonRes = new JsonResponse(false, "Username or Email already exists.");
+                        jsonRes = new JsonResponse(false, "Tên đăng nhập hoặc Email đã tồn tại.");
                         out.print(gson.toJson(jsonRes));
                         return;
                     }
@@ -228,7 +228,7 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
                             Integer.parseInt(accountPatientId),
                             username, email, imagePath, status
                     );
-                    jsonRes = new JsonResponse(ok, ok ? "Update successful" : "Update failed");
+                    jsonRes = new JsonResponse(ok, ok ? "Cập nhật thành công" : "Cập nhật không thành công");
                     out.print(gson.toJson(jsonRes));
                 }
 
@@ -236,7 +236,7 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
                     int id = Integer.parseInt(req.getParameter("account_patient_id"));
                     String newStatus = req.getParameter("status");
                     boolean ok = dao.updateStatus(id, newStatus);
-                    jsonRes = new JsonResponse(ok, ok ? "Status updated!" : "Update failed");
+                    jsonRes = new JsonResponse(ok, ok ? "Cập nhật thành công" : "Cập nhật không thành công");
                     out.print(gson.toJson(jsonRes));
                 }
 
@@ -244,19 +244,19 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
                     int id = Integer.parseInt(req.getParameter("accountPatientId"));
                     String newPass = generateRandomPassword(8);
                     boolean ok = dao.resetPatientPassword(id, newPass);
-                    jsonRes = new JsonResponse(ok, ok ? "Reset successful" : "Reset failed");
+                    jsonRes = new JsonResponse(ok, ok ? "Đặt lại mật khẩu thành công" : "Đặt lại mật khẩu không thành công");
                     out.print(gson.toJson(jsonRes));
                 }
 
                 default -> {
-                    jsonRes = new JsonResponse(false, "Invalid action");
+                    jsonRes = new JsonResponse(false, "Hành động không hợp lệ");
                     out.print(gson.toJson(jsonRes));
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            out.print(gson.toJson(new JsonResponse(false, "Server error: " + e.getMessage())));
+            out.print(gson.toJson(new JsonResponse(false, "Lỗi máy chủ: " + e.getMessage())));
         }
     }
 

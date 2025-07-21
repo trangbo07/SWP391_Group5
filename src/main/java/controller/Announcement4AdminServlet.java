@@ -68,7 +68,7 @@ public class Announcement4AdminServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            out.print(gson.toJson(new JsonResponse(false, "Server error")));
+            out.print(gson.toJson(new JsonResponse(false, "Lỗi máy chủ")));
         }
     }
 
@@ -103,7 +103,7 @@ public class Announcement4AdminServlet extends HttpServlet {
                         AnnouncementSocket.broadcastNewAnnouncement(dto);
                     }
 
-                    res = new JsonResponse(success, success ? "Created successfully" : "Create failed");
+                    res = new JsonResponse(success, success ? "Tạo thành công" : "Tạo không thành công");
                     out.print(gson.toJson(res));
                 }
 
@@ -119,7 +119,7 @@ public class Announcement4AdminServlet extends HttpServlet {
                         AnnouncementSocket.broadcastNewAnnouncement(dto);
                     }
 
-                    res = new JsonResponse(success, success ? "Updated successfully" : "Update failed");
+                    res = new JsonResponse(success, success ? "Đã cập nhật thành công" : "Cập nhật không thành công");
                     out.print(gson.toJson(res));
                 }
 
@@ -133,7 +133,7 @@ public class Announcement4AdminServlet extends HttpServlet {
                         AnnouncementSocket.broadcastDeleteAnnouncement(id);
                     }
 
-                    res = new JsonResponse(success, success ? "Deleted successfully" : "Delete failed");
+                    res = new JsonResponse(success, success ? "Đã xóa thành công" : "Xóa không thành công");
                     out.print(gson.toJson(res));
                 }
 
@@ -145,7 +145,7 @@ public class Announcement4AdminServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            out.print(gson.toJson(new JsonResponse(false, "Server error: " + e.getMessage())));
+            out.print(gson.toJson(new JsonResponse(false, "Lỗi máy chủ: " + e.getMessage())));
         }
     }
 

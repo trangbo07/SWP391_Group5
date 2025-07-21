@@ -30,7 +30,7 @@ async function fetchReceptionistsWithFilter() {
     const tableBody = document.getElementById('receptionistTableBody');
     const info = document.getElementById('receptionistPaginationInfo');
 
-    tableBody.innerHTML = '<tr><td colspan="8">Loading...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="8">Đang tải...</td></tr>';
 
     const params = new URLSearchParams({ action: 'filter' });
     if (status) params.append("status", status);
@@ -45,7 +45,7 @@ async function fetchReceptionistsWithFilter() {
 
         if (!Array.isArray(receptionists) || receptionists.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="8">No receptionists found.</td></tr>';
-            if (info) info.innerText = `Showing 0 to 0 of 0 entries`;
+            if (info) info.innerText = `Hiển thị 0 đến 0 trong tổng số 0 bản ghi`;
             return;
         }
 
@@ -54,8 +54,8 @@ async function fetchReceptionistsWithFilter() {
         paginateReceptionists();
 
     } catch (error) {
-        console.error('Error fetching receptionists:', error);
-        tableBody.innerHTML = '<tr><td colspan="8">Failed to load receptionist data.</td></tr>';
+        console.error('Lỗi khi tìm kiếm nhân viên lễ tân:', error);
+        tableBody.innerHTML = '<tr><td colspan="8">Không tải được dữ liệu tài khoản lễ tân</td></tr>';
     }
 }
 
@@ -70,8 +70,8 @@ function paginateReceptionists() {
     const pageData = sourceList.slice(start, end);
 
     if (!pageData.length) {
-        tableBody.innerHTML = '<tr><td colspan="8">No receptionists available.</td></tr>';
-        info.innerText = `Showing 0 to 0 of ${allReceptionists.length} entries`;
+        tableBody.innerHTML = '<tr><td colspan="8">Không có lễ tân.</td></tr>';
+        info.innerText = `Hiển thị 0 đến 0 trong tổng số ${allReceptionists.length} bản ghi`;
         return;
     }
 
@@ -81,18 +81,18 @@ function paginateReceptionists() {
             <td>${r.fullName}</td>
             <td>${r.username}</td>
             <td>${r.email}</td>
-            <td>${r.status}</td>
+            <td>${r.status === 'Enable' ? 'Kích hoạt' : 'Vô hiệu hóa'}</td>
             <td>${r.phone}</td>
             <td><img src="${r.img}" style="width: 40px; height: 40px; object-fit: cover;"></td>
             <td>
                 <button class="btn btn-sm btn-info me-1"
                         data-bs-toggle="offcanvas"
                         data-bs-target="#receptionistViewCanvas"
-                        onclick="viewReceptionist(${r.receptionistId})">View</button>
-                <button class="btn btn-sm btn-warning me-1" onclick="editReceptionist(${r.receptionistId})">Edit</button>
+                        onclick="viewReceptionist(${r.receptionistId})">Chi tiết</button>
+                <button class="btn btn-sm btn-warning me-1" onclick="editReceptionist(${r.receptionistId})">Chỉnh sửa</button>
                 <button class="btn btn-sm ${r.status === 'Enable' ? 'btn-danger' : 'btn-success'}"
                         onclick="toggleReceptionistStatus(${r.accountStaffId}, '${r.status}')">
-                    ${r.status === 'Enable' ? 'Disable' : 'Enable'}
+                    ${r.status === 'Enable' ? 'Vô hiệu hóa' : 'Kích hoạt'}
                 </button>
             </td>
         </tr>
@@ -100,7 +100,7 @@ function paginateReceptionists() {
 
     const formattedStart = String(start + 1).padStart(2, '0');
     const formattedEnd = String(Math.min(end, allReceptionists.length)).padStart(2, '0');
-    info.innerText = `Showing ${formattedStart} to ${formattedEnd} of ${allReceptionists.length} entries`;
+    info.innerText = `Hiển thị ${formattedStart} đến ${formattedEnd} trong tổng số ${allReceptionists.length} bản ghi`;
 }
 
 document.getElementById('btnReverseReceptionistList').addEventListener('click', () => {
@@ -148,10 +148,16 @@ function loadSelectFilter(field, selectId) {
             if (!select) return;
             select.innerHTML = `<option value="">All ${capitalize(field)}</option>`;
             (data?.values || []).forEach(val => {
-                select.innerHTML += `<option value="${val}">${val}</option>`;
+                let displayVal = val;
+                if (field === "status") {
+                    displayVal = val === "Disable" ? 'Kích hoạt' :
+                        val === "Enable" ? 'Vô hiệu hóa' :
+                            val;
+                }
+                select.innerHTML += `<option value="${val}">${displayVal}</option>`;
             });
         })
-        .catch(err => console.error(`Error loading ${field}:`, err));
+        .catch(err => console.error(`Lỗi tải ${field}:`, err));
 }
 
 function capitalize(str) {
@@ -181,7 +187,9 @@ function viewReceptionist(receptionistId) {
     document.getElementById('viewEmail').textContent = r.email;
     document.getElementById('viewFullName').textContent = r.fullName;
     document.getElementById('viewPhone').textContent = r.phone;
-    document.getElementById('viewStatus').textContent = r.status;
+    document.getElementById('viewStatus').textContent = r.status === "Disable" ? 'Kích hoạt' :
+                                                                          r.status === "Enable" ? 'Vô hiệu hóa' :
+                                                                               r.status ;
     document.getElementById('viewRole').textContent = r.role;
     document.getElementById('viewImg').src = r.img || '';
 }
@@ -202,7 +210,7 @@ function togglePasswordVisibility() {
 
 function resetReceptionistPassword() {
     if (!selectedReceptionistIdForReset) {
-        alert("Please select a receptionist.");
+        alert("Vui lòng chọn nhân viên lễ tân.");
         return;
     }
     const accountStaffId = document.getElementById('viewAccountStaffId').textContent.trim();
@@ -221,7 +229,7 @@ function resetReceptionistPassword() {
                 bootstrap.Offcanvas.getOrCreateInstance(canvasEl).hide();
             }
         })
-        .catch(err => alert("Error: " + err));
+        .catch(err => alert("Lỗi: " + err));
 }
 
 //==================================================================================
@@ -256,7 +264,7 @@ function openReceptionistForm(mode, receptionist = null) {
     messageBox.style.display = 'none';
 
     if (mode === 'edit' && receptionist) {
-        title.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Receptionist';
+        title.innerHTML = '<i class="fas fa-edit me-2"></i>Chỉnh sửa Lễ tân';
 
         previewImg.src = receptionist.img || '/assets/images/uploads/default.jpg';
         previewImg.style.display = receptionist.img ? 'block' : 'none';
@@ -270,7 +278,7 @@ function openReceptionistForm(mode, receptionist = null) {
         document.getElementById('status').value = receptionist.status;
         document.getElementById('img').value = '';
     } else {
-        title.innerHTML = '<i class="fas fa-plus me-2"></i>Add Receptionist';
+        title.innerHTML = '<i class="fas fa-plus me-2"></i>Thêm nhân viên lễ tân';
 
         previewImg.src = '/assets/images/uploads/default.jpg';
         previewImg.style.display = 'none';
@@ -340,12 +348,12 @@ document.getElementById('receptionistForm').addEventListener('submit', async fun
 
         } else {
             const rawText = await response.text();
-            throw new Error("Unexpected response: " + rawText);
+            throw new Error("Phản hồi bất ngờ: " + rawText);
         }
 
     } catch (error) {
-        console.error('Submit error:', error);
-        displayFormMessage("Submit failed: " + error.message, "danger");
+        console.error('Gửi lỗi: ', error);
+        displayFormMessage("Gửi không thành công: " + error.message, "danger");
     }
 });
 
@@ -362,21 +370,21 @@ function validateReceptionistForm() {
     const errors = [];
 
     if (!fullName || !fullNameRegex.test(fullName)) {
-        errors.push("Full Name must have at least two words, only letters.");
+        errors.push("Họ và tên phải có ít nhất hai từ, chỉ chứa chữ cái.");
     }
 
     if (!username) {
-        errors.push("Username cannot be empty or only whitespace.");
+        errors.push("Tên đăng nhập không được để trống hoặc chỉ chứa khoảng trắng.");
     } else if (username.length < 6) {
-        errors.push("Username must be at least 6 characters long.");
+        errors.push("Tên đăng nhập phải có ít nhất 6 ký tự.");
     }
 
     if (!emailRegex.test(email)) {
-        errors.push("Invalid email format.");
+        errors.push("Định dạng email không hợp lệ.");
     }
 
     if (!phoneRegex.test(phone)) {
-        errors.push("Phone must be exactly 10 digits and start with 0.");
+        errors.push("Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0.");
     }
 
     return errors;
@@ -411,12 +419,12 @@ function toggleReceptionistStatus(account_staff_id, currentStatus) {
                 alert(data.message);
                 fetchReceptionistsWithFilter();
             } else {
-                alert("Failed: " + data.message);
+                alert("Thất bại:" + data.message);
             }
         })
         .catch(err => {
             console.error(err);
-            alert("Something went wrong!");
+            alert("Đã xảy ra lỗi!");
         });
 }
 

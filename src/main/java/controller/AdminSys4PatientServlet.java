@@ -42,7 +42,7 @@ public class AdminSys4PatientServlet extends HttpServlet {
                 case "" -> {
                     String accountId = req.getParameter("accountPatientId");
                     if (accountId == null) {
-                        out.print(gson.toJson(new JsonResponse(false, "Missing accountPatientId")));
+                        out.print(gson.toJson(new JsonResponse(false, "Thiếu accountPatientId")));
                         return;
                     }
 
@@ -56,7 +56,7 @@ public class AdminSys4PatientServlet extends HttpServlet {
                 case "unlinked" -> {
                     String accIdParam = req.getParameter("accountPatientId");
                     if (accIdParam == null) {
-                        out.print(gson.toJson(new JsonResponse(false, "Missing accountPatientId")));
+                        out.print(gson.toJson(new JsonResponse(false, "Thiếu accountPatientId")));
                         return;
                     }
 
@@ -66,13 +66,13 @@ public class AdminSys4PatientServlet extends HttpServlet {
                 }
 
                 default -> {
-                    out.print(gson.toJson(new JsonResponse(false, "Unknown action")));
+                    out.print(gson.toJson(new JsonResponse(false, "Hành động không hợp lệ")));
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            out.print(gson.toJson(new JsonResponse(false, "Server error")));
+            out.print(gson.toJson(new JsonResponse(false, "Lỗi máy chủ")));
         }
     }
 
@@ -87,7 +87,7 @@ public class AdminSys4PatientServlet extends HttpServlet {
         try {
             String action = req.getParameter("action");
             if (action == null) {
-                out.print(gson.toJson(new JsonResponse(false, "Missing action")));
+                out.print(gson.toJson(new JsonResponse(false, "Hành động không hợp lệ")));
                 return;
             }
 
@@ -104,20 +104,20 @@ public class AdminSys4PatientServlet extends HttpServlet {
             switch (action) {
                 case "create" -> {
                     if (accountPatientId == null || fullName == null || dob == null) {
-                        jsonRes = new JsonResponse(false, "Missing required fields");
+                        jsonRes = new JsonResponse(false, "Thiếu các trường bắt buộc");
                     } else {
                         boolean ok = dao.createPatient(fullName, dob, gender, phone, address, Integer.parseInt(accountPatientId));
-                        jsonRes = new JsonResponse(ok, ok ? "Patient created successfully!" : "Patient creation failed!");
+                        jsonRes = new JsonResponse(ok, ok ? "Đã tạo bệnh nhân thành công!" : "Tạo bệnh nhân không thành công!");
                     }
                     out.print(gson.toJson(jsonRes));
                 }
 
                 case "update" -> {
                     if (patientId == null) {
-                        jsonRes = new JsonResponse(false, "Missing patientId");
+                        jsonRes = new JsonResponse(false, "Thiếu patientId");
                     } else {
                         boolean ok = dao.updatePatient(Integer.parseInt(patientId), fullName, dob, gender, phone, address);
-                        jsonRes = new JsonResponse(ok, ok ? "Patient updated successfully!" : "Patient update failed!");
+                        jsonRes = new JsonResponse(ok, ok ? "Đã cập nhật bệnh nhân thành công!" : "Cập nhật bệnh nhân không thành công!");
                     }
                     out.print(gson.toJson(jsonRes));
                 }
@@ -141,7 +141,7 @@ public class AdminSys4PatientServlet extends HttpServlet {
                     }
 
                     boolean ok = dao.linkPatientsToAccount(accountId, patientIds);
-                    out.print(gson.toJson(new JsonResponse(ok, ok ? "Add Successfully!" : "Add Failed!")));
+                    out.print(gson.toJson(new JsonResponse(ok, ok ? "Thêm thành công!" : "Thêm không thành công!")));
                 }
 
                 case "unlink" -> {
@@ -163,14 +163,14 @@ public class AdminSys4PatientServlet extends HttpServlet {
 
 
                 default -> {
-                    jsonRes = new JsonResponse(false, "Unknown action: " + action);
+                    jsonRes = new JsonResponse(false, "Hành động không xác định:" + action);
                     out.print(gson.toJson(jsonRes));
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            out.print(gson.toJson(new JsonResponse(false, "Server error: " + e.getMessage())));
+            out.print(gson.toJson(new JsonResponse(false, "Lỗi máy chủ: " + e.getMessage())));
         }
     }
 }

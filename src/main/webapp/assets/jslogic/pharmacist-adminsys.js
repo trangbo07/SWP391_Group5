@@ -28,9 +28,9 @@ async function fetchPharmacistsWithFilter() {
     const tableBody = document.getElementById('pharmacistListTableBody');
     const info = document.getElementById('paginationInfo');
 
-    tableBody.innerHTML = '<tr><td colspan="9">Loading...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="9">Đang tải...</td></tr>';
 
-    const params = new URLSearchParams({ action: 'filter' });
+    const params = new URLSearchParams({action: 'filter'});
     if (status) params.append("status", status);
     if (eduLevel) params.append("eduLevel", eduLevel);
     if (search) params.append("search", search);
@@ -43,8 +43,8 @@ async function fetchPharmacistsWithFilter() {
         const pharmacists = await response.json();
 
         if (!Array.isArray(pharmacists) || pharmacists.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="9">No pharmacists found.</td></tr>';
-            if (info) info.innerText = `Showing 0 to 0 of 0 entries`;
+            tableBody.innerHTML = '<tr><td colspan="9">Không tìm thấy dược sĩ nào.</td></tr>';
+            if (info) info.innerText = `Hiển thị 0 đến 0 trong tổng số 0 bản ghi`;
             return;
         }
 
@@ -53,8 +53,8 @@ async function fetchPharmacistsWithFilter() {
         paginatePharmacists();
 
     } catch (error) {
-        console.error('Error fetching pharmacists:', error);
-        tableBody.innerHTML = '<tr><td colspan="9">Failed to load pharmacist data.</td></tr>';
+        console.error('Lỗi khi tìm kiếm dược sĩ:', error);
+        tableBody.innerHTML = '<tr><td colspan="9">Không tải được dữ liệu tài khoản dược sĩ</td></tr>';
     }
 }
 
@@ -68,8 +68,8 @@ function paginatePharmacists() {
     const pageData = sourceList.slice(start, end);
 
     if (!pageData.length) {
-        tableBody.innerHTML = '<tr><td colspan="9">No pharmacists available.</td></tr>';
-        info.innerText = `Showing 0 to 0 of ${allPharmacists.length} entries`;
+        tableBody.innerHTML = '<tr><td colspan="9">Không tìm thấy dược sĩ nào.</td></tr>';
+        info.innerText = `Hiển thị 0 đến 0 trong tổng số ${allPharmacists.length} bản ghi`;
         return;
     }
 
@@ -79,7 +79,7 @@ function paginatePharmacists() {
             <td>${p.fullName}</td>
             <td>${p.username}</td>
             <td>${p.email}</td>
-            <td>${p.status}</td>
+            <td>${p.status === 'Enable' ? 'Kích hoạt' : 'Vô hiệu hóa'}</td>
             <td>${p.phone}</td>
             <td>${p.eduLevel}</td>
             <td><img src="${p.img}" style="width: 40px; height: 40px; object-fit: cover;"></td>
@@ -87,11 +87,11 @@ function paginatePharmacists() {
                 <button class="btn btn-sm btn-info me-1"
                             data-bs-toggle="offcanvas"
                             data-bs-target="#pharmacistViewCanvas"
-                            onclick="viewPharmacist(${p.pharmacistId})">View</button>
-                <button class="btn btn-sm btn-warning me-1" onclick="editPharmacist(${p.pharmacistId})">Edit</button>
+                            onclick="viewPharmacist(${p.pharmacistId})">Chi tiết</button>
+                <button class="btn btn-sm btn-warning me-1" onclick="editPharmacist(${p.pharmacistId})">Chỉnh sửa</button>
                 <button class="btn btn-sm ${p.status === 'Enable' ? 'btn-danger' : 'btn-success'}"
                         onclick="togglePharmacistStatus(${p.accountPharmacistId}, '${p.status}')">
-                    ${p.status === 'Enable' ? 'Disable' : 'Enable'}
+                    ${p.status === 'Enable' ? 'Vô hiệu hóa' : 'Kích hoạt'}
                 </button>
             </td>
         </tr>
@@ -99,7 +99,7 @@ function paginatePharmacists() {
 
     const formattedStart = String(start + 1).padStart(2, '0');
     const formattedEnd = String(Math.min(end, allPharmacists.length)).padStart(2, '0');
-    info.innerText = `Showing ${formattedStart} to ${formattedEnd} of ${allPharmacists.length} entries`;
+    info.innerText = `Hiển thị ${formattedStart} đến ${formattedEnd} trong tổng số ${allPharmacists.length} bản ghi`;
 }
 
 document.getElementById('btnReverseList').addEventListener('click', () => {
@@ -147,10 +147,16 @@ function loadSelectFilter(field, selectId) {
             if (!select) return;
             select.innerHTML = `<option value="">All ${capitalize(field)}</option>`;
             (data?.values || []).forEach(val => {
-                select.innerHTML += `<option value="${val}">${val}</option>`;
+                let displayVal = val;
+                if (field === "status") {
+                    val === "Disable" ? 'Kích hoạt' :
+                        val === "Enable" ? 'Vô hiệu hóa' :
+                            val;
+                }
+                select.innerHTML += `<option value="${val}">${displayVal}</option>`;
             });
         })
-        .catch(err => console.error(`Error loading ${field}:`, err));
+        .catch(err => console.error(`Lỗi tải ${field}:`, err));
 }
 
 function capitalize(str) {
@@ -181,7 +187,9 @@ function viewPharmacist(pharmacistId) {
     document.getElementById('viewFullName').textContent = p.fullName;
     document.getElementById('viewPhone').textContent = p.phone;
     document.getElementById('viewEduLevel').textContent = p.eduLevel;
-    document.getElementById('viewStatus').textContent = p.status;
+    document.getElementById('viewStatus').textContent = p.status === "Disable" ? 'Kích hoạt' :
+                                                                                    p.status === "Enable" ? 'Vô hiệu hóa' :
+                                                                                        p.status;
     document.getElementById('viewImg').src = p.img || '';
 }
 
@@ -201,7 +209,7 @@ function togglePasswordVisibility() {
 
 function resetPharmacistPassword() {
     if (!selectedPharmacistIdForReset) {
-        alert("Please select a pharmacist.");
+        alert("Vui lòng chọn một dược sĩ");
         return;
     }
     const accountPharmacistId = document.getElementById('viewAccountPharmacistId').textContent.trim();
@@ -220,7 +228,7 @@ function resetPharmacistPassword() {
                 bootstrap.Offcanvas.getOrCreateInstance(canvasEl).hide();
             }
         })
-        .catch(err => alert("Error: " + err));
+        .catch(err => alert("Lỗi: " + err));
 }
 
 //=====================================================================================
@@ -253,7 +261,7 @@ async function openPharmacistForm(mode, pharmacist = null) {
     await loadSelectForForm('eduLevel', 'eduLevel', 'customEduLevel');
 
     if (mode === 'edit' && pharmacist) {
-        title.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Pharmacist';
+        title.innerHTML = '<i class="fas fa-edit me-2"></i>Chỉnh sửa dược sĩ';
         const previewImg = document.getElementById('previewImg');
         if (pharmacist.img && pharmacist.img !== '') {
             previewImg.src = pharmacist.img;
@@ -279,7 +287,7 @@ async function openPharmacistForm(mode, pharmacist = null) {
         const messageBox = document.getElementById('formMessage');
         messageBox.style.display = 'none';
     } else {
-        title.innerHTML = '<i class="fas fa-plus me-2"></i>Add Pharmacist';
+        title.innerHTML = '<i class="fas fa-plus me-2"></i>Thêm dược sĩ';
         const previewImg = document.getElementById('previewImg');
         previewImg.src = '/assets/images/uploads/default.jpg';
         previewImg.style.display = 'none';
@@ -329,13 +337,19 @@ async function loadSelectForForm(field, selectId, inputId = null) {
             const capitalized = field.charAt(0).toUpperCase() + field.slice(1);
             select.innerHTML += `<option value="" disabled selected>Please select ${capitalized}</option>`;
             (data?.values || []).forEach(val => {
-                select.innerHTML += `<option value="${val}">${val}</option>`;
+                let displayVal = val;
+                if (field === "status") {
+                    displayVal = val === "Disable" ? 'Kích hoạt' :
+                        val === "Enable" ? 'Vô hiệu hóa' :
+                            val;
+                }
+                select.innerHTML += `<option value="${val}">${displayVal}</option>`;
             });
             select.innerHTML += `<option value="Other">Other</option>`;
             if (inputId) handleCustomInput(selectId, inputId);
         }
     } catch (error) {
-        console.error(`Error loading options for ${field}:`, error);
+        console.error(`Lỗi tải các tùy chọn cho ${field}:`, error);
     }
 }
 
@@ -407,12 +421,12 @@ document.getElementById('pharmacistForm').addEventListener('submit', async funct
             }
         } else {
             const rawText = await response.text();
-            throw new Error("Unexpected response: " + rawText);
+            throw new Error("Phản hồi bất ngờ: " + rawText);
         }
 
     } catch (error) {
-        console.error('Submit error:', error);
-        displayFormMessage("Submit failed: " + error.message, "danger");
+        console.error('Lưu không thành công:', error);
+        displayFormMessage("Lưu không thành công: " + error.message, "danger");
     }
 });
 
@@ -438,25 +452,25 @@ function validatePharmacistForm() {
     const errors = [];
 
     if (!fullName || !fullNameRegex.test(fullName)) {
-        errors.push("Full Name must have at least two words, only letters.");
+        errors.push("Họ và tên phải có ít nhất hai từ, chỉ chứa chữ cái.");
     }
 
     if (!username) {
-        errors.push("Username cannot be empty or only whitespace.");
+        errors.push("Tên đăng nhập không được để trống hoặc chỉ chứa khoảng trắng.");
     } else if (username.length < 6) {
-        errors.push("Username must be at least 6 characters long.");
+        errors.push("Tên đăng nhập phải có ít nhất 6 ký tự.");
     }
 
     if (!emailRegex.test(email)) {
-        errors.push("Invalid email format.");
+        errors.push("Định dạng email không hợp lệ.");
     }
 
     if (!phoneRegex.test(phone)) {
-        errors.push("Phone must be exactly 10 digits and start with 0.");
+        errors.push("Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0.");
     }
 
     if (!eduLevel) {
-        errors.push("Education Level cannot be empty.");
+        errors.push("Trình độ học vấn không được để trống.");
     }
 
     return errors;
@@ -484,12 +498,12 @@ function togglePharmacistStatus(accountPharmacistId, currentStatus) {
                 alert(data.message);
                 fetchPharmacistsWithFilter(); // Gọi lại danh sách đã lọc
             } else {
-                alert("Failed: " + data.message);
+                alert("Lỗi: " + data.message);
             }
         })
         .catch(err => {
             console.error(err);
-            alert("Something went wrong!");
+            alert("Có gì đó không ổn!");
         });
 }
 
