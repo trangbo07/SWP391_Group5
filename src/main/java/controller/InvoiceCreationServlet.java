@@ -238,6 +238,9 @@ public class InvoiceCreationServlet extends HttpServlet {
                 throw new Exception("Failed to add medicines to prescription");
             }
             
+            // Cập nhật lại tổng tiền hóa đơn sau khi thêm thuốc
+            invoiceDAO.updateInvoiceTotalAmount(invoiceId);
+            
             Map<String, Object> result = new HashMap<>();
             result.put("success", true);
             result.put("message", "Đã tạo đơn thuốc thành công");

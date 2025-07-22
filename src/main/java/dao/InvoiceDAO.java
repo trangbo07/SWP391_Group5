@@ -97,12 +97,14 @@ public class InvoiceDAO {
                 i.total_amount,
                 i.status,
                 ISNULL(SUM(DISTINCT si.total_price), 0) AS total_service_price,
-                ISNULL(SUM(DISTINCT p.amount), 0) AS total_prescription_price,
-                ISNULL(SUM(DISTINCT si.total_price), 0) + ISNULL(SUM(DISTINCT p.amount), 0) AS total_invoice
+                ISNULL(SUM(mds.quantity * med.price), 0) AS total_prescription_price,
+                ISNULL(SUM(DISTINCT si.total_price), 0) + ISNULL(SUM(mds.quantity * med.price), 0) AS total_invoice
             FROM Invoice i
             LEFT JOIN Patient pt ON i.patient_id = pt.patient_id
             LEFT JOIN ServiceInvoice si ON i.invoice_id = si.invoice_id
-            LEFT JOIN Payment p ON i.invoice_id = p.invoice_id AND p.payment_type = 'Prescription'
+            LEFT JOIN PrescriptionInvoice pi ON i.invoice_id = pi.invoice_id
+            LEFT JOIN Medicines mds ON pi.prescription_invoice_id = mds.prescription_invoice_id
+            LEFT JOIN Medicine med ON mds.medicine_id = med.medicine_id
             GROUP BY 
                 i.invoice_id,
                 i.medicineRecord_id,
@@ -117,11 +119,9 @@ public class InvoiceDAO {
                 i.status
             ORDER BY i.issue_date DESC
         """;
-        
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            
             while (rs.next()) {
                 Map<String, Object> invoice = new HashMap<>();
                 invoice.put("invoice_id", rs.getInt("invoice_id"));
@@ -140,11 +140,9 @@ public class InvoiceDAO {
                 invoice.put("total_invoice", rs.getDouble("total_invoice"));
                 invoices.add(invoice);
             }
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
         return invoices;
     }
 
@@ -363,14 +361,12 @@ public class InvoiceDAO {
     }
 
     public boolean updateInvoiceStatus(int invoiceId, String status) {
-        System.out.println("[DAO] Updating invoiceId=" + invoiceId + " to status=" + status);
         String sql = "UPDATE Invoice SET status = ? WHERE invoice_id = ?";
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, status);
             ps.setInt(2, invoiceId);
             int rows = ps.executeUpdate();
-            System.out.println("[DAO] Rows updated: " + rows);
             return rows > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -399,7 +395,6 @@ public class InvoiceDAO {
             }
             
         } catch (Exception e) {
-            System.err.println("Error creating initial invoice: " + e.getMessage());
             e.printStackTrace();
         }
         
@@ -466,6 +461,35 @@ public class InvoiceDAO {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    // Cập nhật lại tổng tiền hóa đơn dựa trên tổng dịch vụ và tổng thuốc
+    public void updateInvoiceTotalAmount(int invoiceId) {
+        String sql = """
+            UPDATE Invoice
+            SET total_amount = ISNULL(service_total.total_price, 0) + ISNULL(medicine_total.total_price, 0)
+            FROM Invoice i
+            LEFT JOIN (
+                SELECT invoice_id, SUM(total_price) AS total_price
+                FROM ServiceInvoice
+                GROUP BY invoice_id
+            ) AS service_total ON i.invoice_id = service_total.invoice_id
+            LEFT JOIN (
+                SELECT pi.invoice_id, SUM(mds.quantity * med.price) AS total_price
+                FROM PrescriptionInvoice pi
+                JOIN Medicines mds ON pi.prescription_invoice_id = mds.prescription_invoice_id
+                JOIN Medicine med ON mds.medicine_id = med.medicine_id
+                GROUP BY pi.invoice_id
+            ) AS medicine_total ON i.invoice_id = medicine_total.invoice_id
+            WHERE i.invoice_id = ?
+        """;
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, invoiceId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

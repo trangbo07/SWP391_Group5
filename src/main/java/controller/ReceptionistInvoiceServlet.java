@@ -113,6 +113,28 @@ public class ReceptionistInvoiceServlet extends HttpServlet {
 
                 boolean success = invoiceDAO.updateInvoiceStatus(invoiceId, statusRequest.status);
                 
+                // Nếu cập nhật hóa đơn thành công và status là Paid, cập nhật luôn Prescription
+                if (success && "Paid".equalsIgnoreCase(statusRequest.status)) {
+                    // Tìm prescription_id liên quan đến invoice này
+                    dao.PrescriptionDAO prescriptionDAO = new dao.PrescriptionDAO();
+                    try {
+                        // Lấy prescription_id từ PrescriptionInvoice
+                        String sql = "SELECT prescription_id FROM PrescriptionInvoice WHERE invoice_id = ?";
+                        try (java.sql.Connection conn = dao.DBContext.getInstance().getConnection();
+                             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+                            ps.setInt(1, invoiceId);
+                            try (java.sql.ResultSet rs = ps.executeQuery()) {
+                                while (rs.next()) {
+                                    int prescriptionId = rs.getInt("prescription_id");
+                                    prescriptionDAO.updatePrescriptionStatus(prescriptionId, "Paid");
+                                }
+                            }
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                
                 if (success) {
                     out.write("{\"success\":true,\"message\":\"Invoice status updated successfully\"}");
                 } else {
