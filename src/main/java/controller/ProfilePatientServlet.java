@@ -3,6 +3,7 @@ package controller;
 import com.google.gson.Gson;
 import dao.ProfilePatientDAO;
 
+import dto.AccountPatientDTO;
 import dto.PatientDTO;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -40,13 +41,13 @@ public class ProfilePatientServlet extends HttpServlet {
         System.out.println("[DEBUG] account_patient_id = " + accountPatientId);
 
 
-        List<PatientDTO> patientDetails ;
+        AccountPatientDTO patientDetails = patientDAO.getAccountPatientById(accountPatientId);
 
 
-
+    System.out.println("[DEBUG] patientDetails = " + patientDetails);
 
         PrintWriter out = response.getWriter();
-        out.print(gson.toJson("patientDetails"));
+        out.print(gson.toJson(patientDetails));
         out.flush();
     }
 }

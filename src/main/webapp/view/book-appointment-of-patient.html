@@ -36,17 +36,48 @@
             margin-top: 20px;
             text-align: center;
         }
-
         #pagination button {
             padding: 8px 12px;
             border: 1px solid #ddd;
             background: #fff;
             cursor: pointer;
         }
-
         #pagination button.active {
             background-color: #007bff;
             color: #fff;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .form-section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .info-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .info-value {
+            font-weight: 600;
+        }
+        .avatar-doctor {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #e3e6f0;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 991px) {
+            .card { margin-bottom: 1.5rem; }
+        }
+        #confirmBookingBtn {
+            margin-top: 1rem;
         }
     </style>
 
@@ -293,51 +324,96 @@
             </div>
         </nav>            <!--Nav End-->
     </div>
-    <img id="doctor-img" style="width:100px;height:100px" />
-    <p><strong>Bác sĩ:</strong> <span id="doctor-name"></span></p>
-    <p><strong>Khoa:</strong> <span id="doctor-dept"></span></p>
-    <p><strong>Học vị:</strong> <span id="doctor-edu"></span></p>
-    <p><strong>Điện thoại:</strong> <span id="doctor-phone"></span></p>
-    <hr />
-    <p><strong>Ngày làm việc:</strong> <span id="booking-date"></span></p>
-    <p><strong>Ca:</strong> <span id="booking-shift"></span></p>
-    <p><strong>Giờ hẹn:</strong> <span id="booking-time"></span></p>
-    <p><strong>Phòng:</strong> <span id="booking-room"></span></p>
-
-    <hr />
-    <h3>Thông tin người đặt khám</h3>
-    <div class="mb-3" style="position: relative; z-index: 1061;">
-        <label for="appointmentPatientId" class="form-label">Chọn bệnh nhân</label>
-        <select class="form-select" id="appointmentPatientId" required >
-            <option disabled selected value="">-- Chọn bệnh nhân --</option>
-            <!-- Các option sẽ được render bằng JS -->
-        </select>
-    </div>
-    <form id="patientForm">
-        <label>Họ và tên *</label>
-        <input type="text" name="name" required><br>
-
-        <label>Giới tính *</label><br>
-        <input type="radio" name="gender" value="Nam" checked> Nam
-        <input type="radio" name="gender" value="Nữ"> Nữ<br><br>
-
-        <label>Số điện thoại *</label>
-        <input type="tel" name="phone" required><br>
-
-        <label>Email</label>
-        <input type="email" name="email"><br>
-
-        <label>Năm sinh *</label>
-        <input type="number" name="birthYear" required><br>
-
-        <label>Địa chỉ</label>
-        <input type="text" name="address"><br>
-
-        <label>Lý do khám</label>
-        <textarea name="reason"></textarea><br>
-
-        <button type="submit" id="confirmBookingBtn">Xác nhận đặt lịch</button>
-    </form>
+    <main class="main-content">
+        <div class="container-fluid mt-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-5 mb-4">
+                    <div class="card p-4">
+                        <div class="text-center">
+                            <img id="doctor-img" class="avatar-doctor" alt="doctor avatar" />
+                            <h5 class="mt-2 mb-0" id="doctor-name"></h5>
+                            <div class="text-muted mb-2" id="doctor-dept"></div>
+                        </div>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="info-label">Học vị:</span>
+                                <span class="info-value" id="doctor-edu"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="info-label">Điện thoại:</span>
+                                <span class="info-value" id="doctor-phone"></span>
+                            </li>
+                        </ul>
+                        <div class="form-section-title">Thông tin lịch hẹn</div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="info-label">Ngày làm việc:</span>
+                                <span class="info-value" id="booking-date"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="info-label">Ca:</span>
+                                <span class="info-value" id="booking-shift"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="info-label">Giờ hẹn:</span>
+                                <span class="info-value" id="booking-time"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="info-label">Phòng:</span>
+                                <span class="info-value" id="booking-room"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-7 mb-4">
+                    <div class="card p-4">
+                        <div class="form-section-title">Thông tin người đặt khám</div>
+                        <div class="mb-3" style="position: relative; z-index: 1061;">
+                            <label for="appointmentPatientId" class="form-label">Chọn bệnh nhân</label>
+                            <select class="form-select" id="appointmentPatientId" required >
+                                <option disabled selected value="">-- Chọn bệnh nhân --</option>
+                                <!-- Các option sẽ được render bằng JS -->
+                            </select>
+                        </div>
+                        <form id="patientForm">
+                            <div class="mb-3">
+                                <label class="form-label">Họ và tên *</label>
+                                <input type="text" name="name" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Giới tính *</label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="gender" value="Nam" id="genderNam" checked>
+                                    <label class="form-check-label" for="genderNam">Nam</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="gender" value="Nữ" id="genderNu">
+                                    <label class="form-check-label" for="genderNu">Nữ</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Số điện thoại *</label>
+                                <input type="tel" name="phone" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Năm sinh *</label>
+                                <input type="number" name="birthYear" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Địa chỉ</label>
+                                <input type="text" name="address" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Lý do khám *</label>
+                                <textarea name="reason" class="form-control" required></textarea>
+                            </div>
+                            <button type="submit" id="confirmBookingBtn" class="btn btn-primary w-100">Xác nhận đặt lịch</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
     <!-- Footer Section Start -->
     <footer class="footer">
         <div class="footer-body">
@@ -416,9 +492,6 @@
 <script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>
 
 <script src="../assets/jslogic/logout.js" defer></script>
-</body>
-</html>
-
 <script>
     let doctorId = null;
     document.addEventListener("DOMContentLoaded", async () => {
@@ -441,6 +514,24 @@
         document.getElementById("booking-time").textContent = info.time;
         document.getElementById("booking-room").textContent = info.roomId;
 
+        // Hiển thị lỗi
+        function showError(msg) {
+            let err = document.getElementById('formErrorMsg');
+            if (!err) {
+                err = document.createElement('div');
+                err.id = 'formErrorMsg';
+                err.className = 'alert alert-danger';
+                err.style.marginBottom = '1rem';
+                const form = document.getElementById('patientForm');
+                form.parentNode.insertBefore(err, form);
+            }
+            err.textContent = msg;
+        }
+        function clearError() {
+            const err = document.getElementById('formErrorMsg');
+            if (err) err.remove();
+        }
+
         try {
             const res = await fetch("/api/session/patient");
             if (!res.ok) throw new Error("Session lỗi hoặc hết hạn");
@@ -454,6 +545,13 @@
 
             const patientSelect = document.getElementById("appointmentPatientId");
             const form = document.getElementById("patientForm");
+            const fields = [
+                form.name,
+                form.phone,
+                form.birthYear,
+                form.address,
+            ];
+            const genderRadios = form.gender;
 
             // Render options
             if (patients.length > 0) {
@@ -469,26 +567,37 @@
             // Sự kiện khi chọn bệnh nhân
             patientSelect.addEventListener("change", async () => {
                 const selectedId = patientSelect.value;
-                if (!selectedId) return;
+                if (!selectedId) {
+                    // Enable fields for manual input
+                    fields.forEach(f => { f.value = ""; f.disabled = false; });
+                    form.reason.value = ""; form.reason.disabled = false;
+                    genderRadios[0].disabled = false;
+                    genderRadios[1].disabled = false;
+                    genderRadios[0].checked = true;
+                    return;
+                }
 
                 // Nếu muốn tự động điền, gọi API chi tiết bệnh nhân
                 const res = await fetch(`/api/patient/detail?patientId=${selectedId}`);
                 const patient = await res.json();
 
-                // Điền thông tin vào form
+                // Điền thông tin vào form và disable
                 form.name.value = patient.fullName  || "";
                 form.phone.value = patient.phone || "";
-                form.email.value = patient.email || "";
                 form.birthYear.value = new Date(patient.dob).getFullYear() || "";
                 form.address.value = patient.address || "";
-                form.reason.value = patient.reason || "";
-
+                // Email và lý do khám luôn cho phép chỉnh sửa
+                form.reason.value = "";
+                form.reason.disabled = false;
+                fields.forEach(f => f.disabled = true);
                 // Giới tính
                 if (patient.gender === "Nữ") {
-                    form.gender[1].checked = true;
+                    genderRadios[1].checked = true;
                 } else {
-                    form.gender[0].checked = true;
+                    genderRadios[0].checked = true;
                 }
+                genderRadios[0].disabled = true;
+                genderRadios[1].disabled = true;
             });
         } catch (e) {
             alert("⚠ Bạn chưa đăng nhập hoặc không phải tài khoản bệnh nhân.");
@@ -498,20 +607,33 @@
         // Xử lý submit
         document.getElementById("patientForm").addEventListener("submit", async (event) => {
             event.preventDefault();
-
+            clearError();
             const form = event.target;
-
             // Dữ liệu bệnh nhân: nếu chọn từ danh sách, gửi ID
             const selectedPatientId = document.getElementById("appointmentPatientId").value;
-
             // Dữ liệu lịch hẹn từ giao diện
             const workingDate = document.getElementById("booking-date").textContent;
             const shift = document.getElementById("booking-shift").textContent;
             const timeSlot = document.getElementById("booking-time").textContent;
             const room = document.getElementById("booking-room").textContent;
 
+            // Validate required fields
+            if (!form.name.value.trim() || !form.phone.value.trim() || !form.birthYear.value.trim()) {
+                showError("Vui lòng nhập đầy đủ các trường bắt buộc!");
+                return;
+            }
+            if (!selectedPatientId && !form.name.value.trim()) {
+                showError("Vui lòng chọn bệnh nhân hoặc nhập thông tin bệnh nhân!");
+                return;
+            }
+            // Validate lý do khám
+            if (!form.reason.value.trim()) {
+                showError("Vui lòng nhập lý do khám!");
+                return;
+            }
+
             // Nếu bệnh nhân chọn sẵn
-           const patientId  = parseInt(selectedPatientId);
+            const patientId  = selectedPatientId ? parseInt(selectedPatientId) : undefined;
             const data = {
                 doctorId,
                 patientId,
@@ -535,13 +657,12 @@
 
                 if (result.success) {
                     alert("✅ " + result.message);
-                    window.location.href = "/appointment-success.html";
                 } else {
-                    alert("❌ " + result.message);
+                    showError(result.message || "Có lỗi xảy ra!");
                 }
             } catch (error) {
                 console.error("Lỗi gửi lịch hẹn:", error);
-                alert("⚠ Lỗi gửi lịch hẹn: " + error.message);
+                showError("⚠ Lỗi gửi lịch hẹn: " + error.message);
             }
         });
     });

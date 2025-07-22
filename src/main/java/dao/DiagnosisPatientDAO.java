@@ -17,19 +17,18 @@ public class DiagnosisPatientDAO {
 
         try {
             String sql = """
-                                                    SELECT
-                                                        doc.full_name,
-                                                        p.dob,
-                                                        p.gender,
-                                                        d.disease,
-                                                        d.conclusion,
-                                                        d.treatment_plan
-                                                    FROM Patient p
-                                                    JOIN MedicineRecords m ON p.patient_id = m.patient_id
-                                                    JOIN Diagnosis d ON d.medicineRecord_id = m.medicineRecord_id
-                            						JOIN Doctor doc ON doc.doctor_id = d.doctor_id
-                                                    WHERE p.patient_id = ?
-                                                    ORDER BY doc.full_name;
+            SELECT
+            doc.full_name,
+            p.dob,
+            p.gender,
+            d.disease,
+            d.conclusion,
+            d.treatment_plan
+            FROM Patient p
+            JOIN MedicineRecords m ON p.patient_id = m.patient_id
+            JOIN Diagnosis d ON d.medicineRecord_id = m.medicineRecord_id
+            JOIN Doctor doc ON doc.doctor_id = d.doctor_id
+            WHERE m.medicineRecord_id = ?
             """;
 
             PreparedStatement statement = db.getConnection().prepareStatement(sql);

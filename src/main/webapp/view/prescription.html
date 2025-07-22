@@ -469,6 +469,12 @@
           <strong>Ghi chú:</strong> ${row.notes || 'Không có'}<br>
           <strong>Số lượng:</strong> ${row.prescribed_quantity || 0}<br>
           <strong>Giá:</strong> ${row.price ? row.price.toLocaleString() + 'đ' : '0đ'}
+          <strong>Thành phần:</strong> ${row.ingredient || 'Chưa có'}<br>
+    <strong>Cách dùng:</strong> ${row.usage || 'Chưa có'}<br>
+    <strong>Bảo quản:</strong> ${row.preservation || 'Chưa có'}<br>
+    <strong>Ngày sản xuất:</strong> ${row.manuDate ? new Date(row.manuDate).toLocaleDateString() : 'Chưa có'}<br>
+    <strong>Hạn sử dụng:</strong> ${row.expDate ? new Date(row.expDate).toLocaleDateString() : 'Chưa có'}<br>
+    <strong>Trạng thái:</strong> ${row.status || 'Chưa xác định'}
         </td>
       `;
                 tbody.appendChild(detailRow);

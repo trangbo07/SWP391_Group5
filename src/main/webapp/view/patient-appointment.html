@@ -29,7 +29,22 @@
 
    <link rel="stylesheet" href="../assets/assets/vendor/sheperd/dist/css/sheperd.css">
 
-
+   <style>
+      html, body {
+         height: 100%;
+      }
+      body {
+         display: flex;
+         flex-direction: column;
+         min-height: 100vh;
+      }
+      main.main-content {
+         flex: 1 0 auto;
+      }
+      footer.footer {
+         flex-shrink: 0;
+      }
+   </style>
 
    <!-- Sweetlaert2 css -->
    <link rel="stylesheet" href="../assets/assets/vendor/sweetalert2/dist/sweetalert2.min.css"/>
@@ -53,7 +68,7 @@
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">    </head>
-<body class="  ">
+<body class="d-flex flex-column min-vh-100">
 <!-- loader Start -->
 <div id="loading">
    <div class="loader simple-loader">
@@ -63,7 +78,7 @@
    </div>        </div>
 <!-- loader END -->
 
-<main class="main-content">
+<main class="main-content flex-fill">
    <div class="position-relative ">
       <!--Nav Start-->
       <nav class="nav navbar navbar-expand-xl navbar-light iq-navbar patient-header">
@@ -272,25 +287,22 @@
             <div class="card">
                <div class="card-header">
                   <div class="row align-items-center gy-3">
-                     <div class="col-md-4 col-lg-6 text-md-start">
-                        <h4>Appointments</h4>
-                        <p class="mb-0" id="countappointmenttoday">0 appointments today</p>
-                     </div>
-                     <div class="col-md-8 col-lg-6">
-                        <div class="d-flex flex-column align-items-end gap-2">
+
+                     <div class="col-12">
+                        <div class="d-flex flex-wrap align-items-center gap-2">
                            <!-- Tabs -->
                            <ul id="appointment-table-tab" class="nav nav-tabs d-inline-flex align-items-center gap-2 mb-0 px-0" role="tablist">
                               <li class="nav-item" role="presentation">
-                                 <button class="nav-link btn active btn-tab" id="appointmentPending" type="button" data-bs-toggle="tab" data-action="Pending" data-bs-target="#appointmentTab" role="tab" aria-selected="true">Pending</button>
+                                 <button class="nav-link btn active btn-tab" id="appointmentPending" type="button" data-bs-toggle="tab" data-action="Pending" data-bs-target="#appointmentTab" role="tab" aria-selected="true">Đơn Chờ Giải Quyết</button>
                               </li>
                               <li class="nav-item" role="presentation">
-                                 <button class="nav-link btn btn-tab" id="appointmentConfirmed" type="button" data-bs-toggle="tab" data-action="Confirmed" data-bs-target="#appointmentTab" role="tab" aria-selected="false">Confirmed</button>
+                                 <button class="nav-link btn btn-tab" id="appointmentConfirmed" type="button" data-bs-toggle="tab" data-action="Confirmed" data-bs-target="#appointmentTab" role="tab" aria-selected="false">Đơn Được Xác Nhận</button>
                               </li>
                               <li class="nav-item" role="presentation">
-                                 <button class="nav-link btn btn-tab" id="appointmentComplete" type="button" data-bs-toggle="tab" data-action="Completed" data-bs-target="#appointmentTab" role="tab" aria-selected="false">Completed</button>
+                                 <button class="nav-link btn btn-tab" id="appointmentComplete" type="button" data-bs-toggle="tab" data-action="Completed" data-bs-target="#appointmentTab" role="tab" aria-selected="false">Đơn Đã Được Hoàn Thành</button>
                               </li>
                               <li class="nav-item" role="presentation">
-                                 <button class="nav-link btn btn-tab" id="appointmentClosed" type="button" data-bs-toggle="tab" data-action="Cancelled" data-bs-target="#appointmentTab" role="tab" aria-selected="false">Cancelled</button>
+                                 <button class="nav-link btn btn-tab" id="appointmentClosed" type="button" data-bs-toggle="tab" data-action="Cancelled" data-bs-target="#appointmentTab" role="tab" aria-selected="false">Đơn Đã Hủy</button>
                               </li>
                               <li class="nav-item">
                                  <button class="btn btn-info view-feedback-btn" data-doctor-id="123">Xem Feedback</button>
@@ -300,9 +312,18 @@
                            <!-- Search -->
                            <div class="position-relative" style="max-width: 276px; width: 100%;">
                               <input type="text" id="searchKeyword" class="form-control ps-4 pe-5" placeholder="Search..." style="height: 38px; line-height: 38px;" aria-label="Search">
+
                               <button id="searchAppointmentBtn" type="button" class="btn position-absolute end-0 top-50 translate-middle-y me-2 p-0 border-0 bg-transparent text-muted" style="height: 38px; width: 38px; display: flex; align-items: center; justify-content: center;">
                                  <i class="fas fa-search"></i>
                               </button>
+                           </div>
+                           <div class="position-relative" style="max-width: 276px; width: 100%;">
+                              <div class="d-flex gap-2 align-items-center">
+                                 <input type="date" id="fromDate" class="form-control" style="width: 180px;">
+                                 <span>đến</span>
+                                 <input type="date" id="toDate" class="form-control" style="width: 180px;">
+                                 <button class="btn btn-primary" onclick="filterByDateRange()">Lọc</button>
+                              </div>
                            </div>
                         </div>
 
@@ -372,63 +393,54 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
          </div>
          <div class="offcanvas-body">
-            <div class="form-group col-md-12">
-               <label class="form-label" for="patient_id">Patient Id</label>
-               <input type="text" class="form-control" id="patient_id" readonly>
-            </div>
 
             <div class="form-group col-md-12">
-               <label class="form-label" for="full_name">Full Name</label>
+               <label class="form-label" for="full_name">Họ Và Tên</label>
                <input type="text" class="form-control" id="full_name" readonly>
             </div>
 
             <div class="form-group col-md-12">
-               <label class="form-label" for="dob">Date of Birth</label>
+               <label class="form-label" for="dob">Ngày Sinh</label>
                <input type="date" class="form-control" id="dob" readonly>
             </div>
 
             <div class="form-group col-md-12">
-               <label class="form-label" for="gender">Gender</label>
+               <label class="form-label" for="gender">Giới tính</label>
                <input type="text" class="form-control" id="gender" readonly>
             </div>
 
             <div class="form-group col-md-12">
-               <label class="form-label" for="phone">Phone</label>
+               <label class="form-label" for="phone">Số điện thoại</label>
                <input type="text" class="form-control" id="phone" readonly>
             </div>
 
             <div class="form-group col-md-12">
-               <label class="form-label" for="appointment_id">Appointment ID</label>
-               <input type="text" class="form-control" id="appointment_id" readonly>
-            </div>
-
-            <div class="form-group col-md-12">
-               <label class="form-label" for="doctor_name">Doctor Name</label>
+               <label class="form-label" for="doctor_name">Bác Sĩ</label>
                <input type="text" class="form-control" id="doctor_name" readonly>
             </div>
 
             <div class="form-group col-md-12">
-               <label class="form-label" for="appointment_datetime">Appointment Date & Time</label>
+               <label class="form-label" for="appointment_datetime">Lịch Hẹn</label>
                <input type="datetime-local" class="form-control" id="appointment_datetime" readonly>
             </div>
 
             <div class="form-group col-md-12">
-               <label class="form-label" for="shift">Shift</label>
+               <label class="form-label" for="shift">Ca</label>
                <input type="text" class="form-control" id="shift" readonly>
             </div>
 
             <div class="form-group col-md-12">
-               <label class="form-label" for="edu_level">Education Level</label>
+               <label class="form-label" for="edu_level">Trình Độ</label>
                <input type="text" class="form-control" id="edu_level" readonly>
             </div>
 
             <div class="form-group col-md-12">
-               <label class="form-label" for="status">Status</label>
+               <label class="form-label" for="status">Trạng Thái</label>
                <input type="text" class="form-control" id="status" readonly>
             </div>
 
             <div class="form-group col-md-12">
-               <label class="form-label" for="note">Note</label>
+               <label class="form-label" for="note">Ghi Chú</label>
                <textarea class="form-control" id="note" rows="3" readonly></textarea>
             </div>
 
@@ -499,24 +511,20 @@
          </div>
       </div>
 
-      <!-- Footer Section Start -->
       <footer class="footer">
          <div class="footer-body">
             <ul class="left-panel list-inline mb-0 p-0">
-               <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Privacy Policy</a></li>
-               <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Terms of Use</a></li>
+               <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Chính sách bảo mật</a></li>
+               <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Điều khoản sử dụng</a></li>
+               <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/contact.html">Liên hệ</a></li>
             </ul>
             <h6 class="right-panel mb-0">
-               © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span> with
-               <span class="text-danger">
-                            <svg class="icon-16" width="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.85 2.50065C16.481 2.50065 17.111 2.58965 17.71 2.79065C21.401 3.99065 22.731 8.04065 21.62 11.5806C20.99 13.3896 19.96 15.0406 18.611 16.3896C16.68 18.2596 14.561 19.9196 12.28 21.3496L12.03 21.5006L11.77 21.3396C9.48102 19.9196 7.35002 18.2596 5.40102 16.3796C4.06102 15.0306 3.03002 13.3896 2.39002 11.5806C1.26002 8.04065 2.59002 3.99065 6.32102 2.76965C6.61102 2.66965 6.91002 2.59965 7.21002 2.56065H7.33002C7.61102 2.51965 7.89002 2.50065 8.17002 2.50065H8.28002C8.91002 2.51965 9.52002 2.62965 10.111 2.83065H10.17C10.21 2.84965 10.24 2.87065 10.26 2.88965C10.481 2.96065 10.69 3.04065 10.89 3.15065L11.27 3.32065C11.3618 3.36962 11.4649 3.44445 11.554 3.50912C11.6104 3.55009 11.6612 3.58699 11.7 3.61065C11.7163 3.62028 11.7329 3.62996 11.7496 3.63972C11.8354 3.68977 11.9247 3.74191 12 3.79965C13.111 2.95065 14.46 2.49065 15.85 2.50065ZM18.51 9.70065C18.92 9.68965 19.27 9.36065 19.3 8.93965V8.82065C19.33 7.41965 18.481 6.15065 17.19 5.66065C16.78 5.51965 16.33 5.74065 16.18 6.16065C16.04 6.58065 16.26 7.04065 16.68 7.18965C17.321 7.42965 17.75 8.06065 17.75 8.75965V8.79065C17.731 9.01965 17.8 9.24065 17.94 9.41065C18.08 9.58065 18.29 9.67965 18.51 9.70065Z" fill="currentColor"></path>
-                            </svg>
-                        </span> By <a href="https://iqonic.design/" target="_blank">IQONIC Design</a>.
+               © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span>.
+               Phát triển bởi
+               <a href="https://www.facebook.com/long.bao.303029" target="_blank">Bùi Bảo Long</a>.
             </h6>
          </div>
       </footer>
-      <!-- Footer Section End -->
 </main>
 <!-- Live Customizer start -->
 <!-- Setting offcanvas start here -->
@@ -1152,136 +1160,139 @@
                                    fill="currentColor" />
                            <path
                                    d="M20.0941 18.5594C21.3117 16.848 21.9736 14.8163 21.9993 12.7329C22.0027 12.4569 21.7699 12.2413 21.4941 12.2512L19.5244 12.3213C19.2482 12.3311 19.0342 12.5633 19.0254 12.8395C18.9796 14.283 18.5078 15.6861 17.6628 16.8739C16.7203 18.1986 15.3651 19.183 13.8035 19.6772C12.2419 20.1714 10.5595 20.1483 9.01246 19.6114C7.4654 19.0746 6.13845 18.0534 5.23367 16.7033C4.66562 15.8557 4.28352 14.9076 4.10367 13.9196C4.00935 18.0934 6.49194 21.37 10.008 22.6416C10.697 22.8908 11.4336 22.9852 12.1652 22.9465C13.075 22.8983 13.8508 22.742 14.7105 22.4699C16.8889 21.7805 18.7794 20.4073 20.0941 18.5594Z"
-                                   fill="currentColor" />
-                        </svg>
-                     </a>
-                  </div>
-                  <div class="d-grid gap-3 grid-cols-2 mb-4">
-                     <div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                           <div class="label">
-                              <label class="mb-0 d-inline-block">Body Font</label>
+                                   fill="#0169CA" />
+                                 </svg>
+                              </label>
                            </div>
                         </div>
-                        <div class="form-group mb-0">
-                           <select name="body_font_family" class="form-control" data-select="font"
-                                   data-setting="select">
-                              <option value="">Select Body Font</option>
-                           </select>
+                     </div>
+                     <div class="d-grid gap-3 grid-cols-2 mb-4">
+                        <div>
+                           <div class="d-flex justify-content-between align-items-center mb-2">
+                              <div class="label">
+                                 <label class="mb-0 d-inline-block">Body Font</label>
+                              </div>
+                           </div>
+                           <div class="form-group mb-0">
+                              <select name="body_font_family" class="form-control" data-select="font"
+                                      data-setting="select">
+                                 <option value="">Select Body Font</option>
+                              </select>
+                           </div>
+                        </div>
+
+                        <div>
+                           <div class="d-flex justify-content-between align-items-center mb-2">
+                              <div class="label">
+                                 <label class="mb-0 d-inline-block">Heading Font</label>
+                              </div>
+                           </div>
+                           <div class="form-group mb-0">
+                              <select name="heading_font_family" class="form-control" data-select="font"
+                                      data-setting="select">
+                                 <option value="">Select Heading Font</option>
+                              </select>
+                           </div>
                         </div>
                      </div>
 
+                     <!-- Page container start here -->
                      <div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                           <div class="label">
-                              <label class="mb-0 d-inline-block">Heading Font</label>
-                           </div>
-                        </div>
-                        <div class="form-group mb-0">
-                           <select name="heading_font_family" class="form-control" data-select="font"
-                                   data-setting="select">
-                              <option value="">Select Heading Font</option>
-                           </select>
-                        </div>
-                     </div>
-                  </div>
-
-                  <!-- Page container start here -->
-                  <div>
-                     <h6 class="d-inline-block mb-3 me-2">Page Style </h6>
-                     <span data-bs-toggle="tooltip" data-bs-placement="right"
-                           title="Wrap your content layout and select Full Width or Boxed styles.  ">
+                        <h6 class="d-inline-block mb-3 me-2">Page Style </h6>
+                        <span data-bs-toggle="tooltip" data-bs-placement="right"
+                              title="Wrap your content layout and select Full Width or Boxed styles.  ">
                                         <svg class="icon-20" width="20" height="20" xmlns="http://www.w3.org/2000/svg"
                                              fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                   d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </span>
-                  </div>
-                  <div class="d-grid gap-3 grid-cols-2 mb-4">
-                     <div data-setting="radio">
-                        <input type="radio" value="container" class="btn-check" name="page_layout"
-                               id="page-layout-boxed">
-                        <label class="btn btn-border d-block" for="page-layout-boxed">Boxed</label>
                      </div>
-                     <div data-setting="radio">
-                        <input type="radio" value="container-fluid" class="btn-check" name="page_layout"
-                               id="page-layout-full-width" checked>
-                        <label class="btn btn-border d-block" for="page-layout-full-width">Full Width</label>
+                     <div class="d-grid gap-3 grid-cols-2 mb-4">
+                        <div data-setting="radio">
+                           <input type="radio" value="container" class="btn-check" name="page_layout"
+                                  id="page-layout-boxed">
+                           <label class="btn btn-border d-block" for="page-layout-boxed">Boxed</label>
+                        </div>
+                        <div data-setting="radio">
+                           <input type="radio" value="container-fluid" class="btn-check" name="page_layout"
+                                  id="page-layout-full-width" checked>
+                           <label class="btn btn-border d-block" for="page-layout-full-width">Full Width</label>
+                        </div>
                      </div>
-                  </div>
-                  <!-- Page container start here -->
+                     <!-- Page container start here -->
 
-                  <!-- Style appearance start here -->
+                     <!-- Style appearance start here -->
 
-                  <div>
-                     <h6 class="d-inline-block mb-3 me-2">Style Appearance </h6>
-                  </div>
-                  <div class="d-grid gap-3 grid-cols-3 mb-4">
-                     <div data-setting="checkbox">
-                        <input type="checkbox" value="theme-flat" class="btn-check"
-                               name="theme_style_appearance" id="theme-style-appearance-flat">
-                        <label class="btn btn-border d-block" for="theme-style-appearance-flat">Flat</label>
+                     <div>
+                        <h6 class="d-inline-block mb-3 me-2">Style Appearance </h6>
                      </div>
-                     <div data-setting="checkbox">
-                        <input type="checkbox" value="theme-bordered" class="btn-check"
-                               name="theme_style_appearance" id="theme-style-appearance-bordered">
-                        <label class="btn btn-border d-block"
-                               for="theme-style-appearance-bordered">Bordered</label>
+                     <div class="d-grid gap-3 grid-cols-3 mb-4">
+                        <div data-setting="checkbox">
+                           <input type="checkbox" value="theme-flat" class="btn-check"
+                                  name="theme_style_appearance" id="theme-style-appearance-flat">
+                           <label class="btn btn-border d-block" for="theme-style-appearance-flat">Flat</label>
+                        </div>
+                        <div data-setting="checkbox">
+                           <input type="checkbox" value="theme-bordered" class="btn-check"
+                                  name="theme_style_appearance" id="theme-style-appearance-bordered">
+                           <label class="btn btn-border d-block"
+                                  for="theme-style-appearance-bordered">Bordered</label>
+                        </div>
+                        <div data-setting="checkbox">
+                           <input type="checkbox" value="theme-sharp" class="btn-check"
+                                  name="theme_style_appearance" id="theme-style-appearance-sharp">
+                           <label class="btn btn-border d-block" for="theme-style-appearance-sharp">Sharp</label>
+                        </div>
                      </div>
-                     <div data-setting="checkbox">
-                        <input type="checkbox" value="theme-sharp" class="btn-check"
-                               name="theme_style_appearance" id="theme-style-appearance-sharp">
-                        <label class="btn btn-border d-block" for="theme-style-appearance-sharp">Sharp</label>
-                     </div>
-                  </div>
 
-                  <!-- Style appearance end here -->
+                     <!-- Style appearance end here -->
 
-                  <!-- Page Animation start here -->
-                  <div>
-                     <h6 class="d-inline-block mb-3 me-2">Page Transition </h6>
-                  </div>
-                  <div class="d-grid gap-3 grid-cols-2 mb-4">
-                     <div data-setting="radio">
-                        <input type="radio" value="theme-with-animation" class="btn-check"
-                               name="theme_transition" id="page-animation" checked>
-                        <label class="btn btn-border d-block" for="page-animation">Animation</label>
+                     <!-- Page Animation start here -->
+                     <div>
+                        <h6 class="d-inline-block mb-3 me-2">Page Transition </h6>
                      </div>
-                     <div data-setting="radio">
-                        <input type="radio" value="theme-without-animation" class="btn-check"
-                               name="theme_transition" id="without-page-animation">
-                        <label class="btn btn-border d-block" for="without-page-animation">No Animation</label>
+                     <div class="d-grid gap-3 grid-cols-2 mb-4">
+                        <div data-setting="radio">
+                           <input type="radio" value="theme-with-animation" class="btn-check"
+                                  name="theme_transition" id="page-animation" checked>
+                           <label class="btn btn-border d-block" for="page-animation">Animation</label>
+                        </div>
+                        <div data-setting="radio">
+                           <input type="radio" value="theme-without-animation" class="btn-check"
+                                  name="theme_transition" id="without-page-animation">
+                           <label class="btn btn-border d-block" for="without-page-animation">No Animation</label>
+                        </div>
                      </div>
-                  </div>
-                  <!-- Page Animation start here -->
+                     <!-- Page Animation start here -->
 
-                  <div>
-                     <h6 class="mb-3 d-inline-block">Storage</h6>
-                     <span data-bs-toggle="tooltip" data-bs-placement="right"
-                           title="You can save the setting changes you made for your project on either Local storage, Session storage.">
+                     <div>
+                        <h6 class="mb-3 d-inline-block">Storage</h6>
+                        <span data-bs-toggle="tooltip" data-bs-placement="right"
+                              title="You can save the setting changes you made for your project on either Local storage, Session storage.">
                                         <svg class="icon-20" width="20" height="20" xmlns="http://www.w3.org/2000/svg"
                                              fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                   d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                     </span>
-                  </div>
-                  <div class="d-grid gap-3 grid-cols-3 mb-4">
-                     <div data-setting="radio">
-                        <input type="radio" value="localStorage" class="btn-check" name="saveLocal"
-                               id="save-localstorage">
-                        <label class="btn btn-border d-block" for="save-localstorage">Local</label>
                      </div>
-                     <div data-setting="radio">
-                        <input type="radio" value="sessionStorage" class="btn-check" name="saveLocal"
-                               id="save-sessionstorage">
-                        <label class="btn btn-border d-block" for="save-sessionstorage">Session</label>
-                     </div>
-                     <div data-setting="radio">
-                        <input type="radio" value="none" class="btn-check" name="saveLocal" id="save-none"
-                               checked>
-                        <label class="btn btn-border d-block" for="save-none">None</label>
+                     <div class="d-grid gap-3 grid-cols-3 mb-4">
+                        <div data-setting="radio">
+                           <input type="radio" value="localStorage" class="btn-check" name="saveLocal"
+                                  id="save-localstorage">
+                           <label class="btn btn-border d-block" for="save-localstorage">Local</label>
+                        </div>
+                        <div data-setting="radio">
+                           <input type="radio" value="sessionStorage" class="btn-check" name="saveLocal"
+                                  id="save-sessionstorage">
+                           <label class="btn btn-border d-block" for="save-sessionstorage">Session</label>
+                        </div>
+                        <div data-setting="radio">
+                           <input type="radio" value="none" class="btn-check" name="saveLocal" id="save-none"
+                                  checked>
+                           <label class="btn btn-border d-block" for="save-none">None</label>
+                        </div>
                      </div>
                   </div>
                </div>
@@ -1381,4 +1392,116 @@
       </div>
    </div>
 </div>
+
+<style>
+   .nav-tabs .nav-link {
+      border-radius: 0.5rem 0.5rem 0 0;
+      background: #f8f9fa;
+      color: #495057;
+      font-weight: 500;
+      margin-right: 2px;
+      transition: background 0.2s, color 0.2s;
+   }
+   .nav-tabs .nav-link.active, .nav-tabs .nav-link:focus {
+      background: #fff;
+      color: #007bff;
+      border-bottom: 2px solid #007bff;
+   }
+   .btn-tab {
+      min-width: 150px;
+   }
+   .table {
+      border-radius: 1rem;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+   }
+   .table th, .table td {
+      vertical-align: middle;
+   }
+   .table thead th {
+      background: #f1f3f6;
+      color: #222;
+      font-weight: 600;
+      border-bottom: 2px solid #dee2e6;
+   }
+   .table tbody tr:hover {
+      background: #f8f9fa;
+   }
+   .table td, .table th {
+      text-align: center;
+   }
+   .card {
+      border-radius: 1rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+   }
+   .card-header {
+      border-radius: 1rem 1rem 0 0;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+   }
+   .card-body {
+      background: #fff;
+      border-radius: 0 0 1rem 1rem;
+   }
+   .pagination .page-link {
+      border-radius: 0.5rem;
+      margin: 0 2px;
+      color: #007bff;
+      border: 1px solid #dee2e6;
+      transition: background 0.2s, color 0.2s;
+   }
+   .pagination .page-item.active .page-link {
+      background: #007bff;
+      color: #fff;
+      border-color: #007bff;
+   }
+   .pagination .page-link:focus {
+      box-shadow: none;
+   }
+   .form-control:focus {
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.1);
+      border-color: #007bff;
+   }
+   .modal-content {
+      border-radius: 1rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+   }
+   .modal-header {
+      border-radius: 1rem 1rem 0 0;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+   }
+   .modal-title {
+      font-weight: 600;
+   }
+   .modal-body {
+      background: #fff;
+      border-radius: 0 0 1rem 1rem;
+   }
+   .view-feedback-btn {
+      min-width: 120px;
+   }
+   @media (max-width: 991px) {
+      .card { margin-bottom: 1.5rem; }
+      .nav-tabs .nav-link { min-width: 120px; font-size: 0.95rem; }
+   }
+   #searchKeyword {
+      border-radius: 0.5rem;
+      border: 1px solid #dee2e6;
+   }
+   #searchAppointmentBtn {
+      color: #007bff;
+   }
+   .card-navigation a {
+      border-radius: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+   }
+   .card-navigation a:hover {
+      background: #f1f3f6;
+      color: #0056b3;
+   }
+</style>
 

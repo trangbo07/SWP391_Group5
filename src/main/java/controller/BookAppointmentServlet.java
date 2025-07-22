@@ -12,6 +12,7 @@ import jakarta.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -57,7 +58,14 @@ public class BookAppointmentServlet extends HttpServlet {
             String timeSlot = jsonRequest.get("timeSlot").getAsString();       // HH:mm
             String shift = jsonRequest.get("shift").getAsString();
             String note = jsonRequest.has("note") ? jsonRequest.get("note").getAsString() : "";
+            Date sqlDate = Date.valueOf(workingDate); // yyyy-MM-dd -> java.sql.Date
 
+            if (appointmentDAO.hasAppointmentSameDay(patientId, doctorId, sqlDate)) {
+                jsonResponse.addProperty("success", false);
+                jsonResponse.addProperty("message", "Bạn đã đặt lịch với bác sĩ này trong ngày này rồi.");
+                out.print(gson.toJson(jsonResponse));
+                return;
+            }
             // Kiểm tra số lượng lịch đang chờ
             int pendingCount = appointmentDAO.countPendingAppointmentsByPatient(patientId);
             if (pendingCount >= 3) {
@@ -90,15 +98,29 @@ public class BookAppointmentServlet extends HttpServlet {
             System.out.println("Shift: " + shift);
             System.out.println("Note: " + note);
 
-            boolean inserted = appointmentDAO.insertAppointment(appointment);
+            String result = appointmentDAO.insertAppointment(appointment);
 
-            if (inserted) {
-                jsonResponse.addProperty("success", true);
-                jsonResponse.addProperty("message", "Đặt lịch thành công.");
-            } else {
-                jsonResponse.addProperty("success", false);
-                jsonResponse.addProperty("message", "Slot đã có người đặt");
-                System.err.println("[ERROR] Insert failed: " + appointment);
+            switch (result) {
+                case "SUCCESS":
+                    jsonResponse.addProperty("success", true);
+                    jsonResponse.addProperty("message", "Đặt lịch thành công.");
+                    break;
+                case "DUPLICATE_PATIENT":
+                    jsonResponse.addProperty("success", false);
+                    jsonResponse.addProperty("message", "Bệnh nhân này đã từng đặt lịch với bác sĩ này vào giờ này rồi.");
+                    break;
+                case "SLOT_TAKEN":
+                    jsonResponse.addProperty("success", false);
+                    jsonResponse.addProperty("message", "Slot đã có người đặt.");
+                    break;
+                case "FAIL":
+                    jsonResponse.addProperty("success", false);
+                    jsonResponse.addProperty("message", "Không thể thêm lịch hẹn.");
+                    break;
+                default:
+                    jsonResponse.addProperty("success", false);
+                    jsonResponse.addProperty("message", "Lỗi hệ thống.");
+                    break;
             }
 
         } catch (Exception e) {

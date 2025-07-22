@@ -1,4 +1,5 @@
 let allAppointments = [];
+let originalAppointments = [];
 let currentPage     = 1;
 const pageSize      = 7;
 
@@ -19,8 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Search functionality
-    document.getElementById('searchAppointmentBtn').addEventListener('click', () => {
-        const keyword = document.getElementById('searchKeyword').value;
+    document.getElementById('searchKeyword')?.addEventListener('input', (e) => {
+        const keyword = e.target.value;
         searchAppointments(keyword);
     });
 
@@ -89,7 +90,8 @@ async function loadAppointments() {
         const responseText = await res.text();
         console.log('Raw response:', responseText);
 
-        allAppointments = JSON.parse(responseText);
+        originalAppointments = JSON.parse(responseText); // lưu gốc
+        allAppointments = [...originalAppointments];
         console.log('Appointments loaded:', allAppointments);
         console.log('Number of appointments:', allAppointments.length);
 
@@ -134,27 +136,10 @@ async function loadAppointmentsByStatus(status) {
         tbody.innerHTML = '<tr><td colspan="7">Error loading</td></tr>';
         console.error('Error loading appointments by status:', err);
     }
+    originalAppointments = [...allAppointments];
 }
 
 // Search appointments
-function searchAppointments(keyword) {
-    if (!keyword.trim()) {
-        loadAppointmentsByStatus('Pending'); // Load Pending appointments when search is empty
-        return;
-    }
-
-    const filtered = allAppointments.filter(appointment =>
-        appointment.doctorName.toLowerCase().includes(keyword.toLowerCase()) ||
-        appointment.dateTime.toLowerCase().includes(keyword.toLowerCase()) ||
-        appointment.shift.toLowerCase().includes(keyword.toLowerCase()) ||
-        appointment.status.toLowerCase().includes(keyword.toLowerCase()) ||
-        (appointment.note && appointment.note.toLowerCase().includes(keyword.toLowerCase()))
-    );
-
-    allAppointments = filtered;
-    currentPage = 1;
-    renderPage();
-}
 
 
 // 2. Render 1 page
@@ -246,12 +231,10 @@ async function showAppointmentDetail(appointmentId) {
         const appointment = await res.json();
 
         // Điền thông tin vào modal
-        document.getElementById('patient_id').value = appointment.patientId || '';
         document.getElementById('full_name').value = appointment.patientName || '';
         document.getElementById('dob').value = appointment.dob || '';
         document.getElementById('gender').value = appointment.gender || '';
         document.getElementById('phone').value = appointment.phone || '';
-        document.getElementById('appointment_id').value = appointment.appointmentId || '';
         document.getElementById('doctor_name').value = appointment.doctorName || '';
         document.getElementById('appointment_datetime').value = appointment.dateTime || '';
         document.getElementById('shift').value = appointment.shift || '';
@@ -354,5 +337,59 @@ function showAlert(message, type = 'info') {
         }
     }, 5000);
 }
+function filterByDateRange() {
+    const fromDateStr = document.getElementById("fromDate").value;
+    const toDateStr = document.getElementById("toDate").value;
 
+    if (!fromDateStr && !toDateStr) {
+        loadAppointmentsByStatus('Pending'); // hoặc giữ nguyên danh sách nếu bạn không muốn reset
+        return;
+    }
+
+    const fromDate = fromDateStr ? new Date(fromDateStr) : null;
+    const toDate = toDateStr ? new Date(toDateStr) : null;
+
+    const filtered = allAppointments.filter(appointment => {
+        if (!appointment.dateTime) return false;
+
+        const appointmentDate = new Date(appointment.dateTime.substring(0, 10)); // "2025-07-21 08:00" -> "2025-07-21"
+
+        if (fromDate && appointmentDate < fromDate) return false;
+        if (toDate && appointmentDate > toDate) return false;
+
+        return true;
+    });
+
+    allAppointments = filtered;
+    currentPage = 1;
+    renderPage();
+}
+function searchAppointments(keyword) {
+    const trimmedKeyword = keyword.trim().toLowerCase();
+
+    if (!trimmedKeyword) {
+        allAppointments = [...originalAppointments];
+        currentPage = 1;
+        renderPage();
+        return;
+    }
+
+    const isDate = /^\d{4}-\d{2}-\d{2}$/.test(trimmedKeyword);
+
+    const filtered = originalAppointments.filter(appointment => {
+        const doctorMatch = appointment.doctorName?.toLowerCase().includes(trimmedKeyword);
+        const shiftMatch = appointment.shift?.toLowerCase().includes(trimmedKeyword);
+        const statusMatch = appointment.status?.toLowerCase().includes(trimmedKeyword);
+        const noteMatch = appointment.note?.toLowerCase().includes(trimmedKeyword);
+        const dateMatch = isDate
+            ? appointment.dateTime?.startsWith(trimmedKeyword)
+            : appointment.dateTime?.toLowerCase().includes(trimmedKeyword);
+
+        return doctorMatch || shiftMatch || statusMatch || noteMatch || dateMatch;
+    });
+
+    allAppointments = filtered;
+    currentPage = 1;
+    renderPage();
+}
 

@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const data = await response.json();
 
         // Hiển thị thông tin bệnh nhân
-        document.getElementById('patient-name').textContent = data.fullName || "---";
+        document.getElementById('patient-name').textContent = data.username || "---";
         document.getElementById('patient-phone').textContent = data.phone || "---";
         document.getElementById('patient-email').textContent = data.email || "---";
         document.getElementById('patient-username').textContent = data.username || "---";

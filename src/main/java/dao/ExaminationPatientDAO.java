@@ -9,38 +9,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExaminationPatientDAO {
-    public List<ExaminationPatientDTO> getExaminationResultsByPatientId(int patientId) {
+    public List<ExaminationPatientDTO> getExaminationResultsByPatientId(int medicineRecord_id) {
         List<ExaminationPatientDTO> results = new ArrayList<>();
         String sql = """
-        SELECT
-            p.patient_id,
-            p.full_name AS patient_name,
-            p.dob,
-            p.gender,
-            p.phone AS patient_phone,
-            p.address,
-            mr.medicineRecord_id,
-            er.exam_result_id,
-            er.symptoms,
-            er.preliminary_diagnosis,
-  
-            d.doctor_id,
-            d.full_name AS doctor_name,
-            d.department,
-            d.phone AS doctor_phone,
-            d.eduLevel
-        FROM Patient p
-        JOIN MedicineRecords mr ON p.patient_id = mr.patient_id
-        JOIN ExamResult er ON mr.medicineRecord_id = er.medicineRecord_id
-        JOIN Doctor d ON er.doctor_id = d.doctor_id
-        WHERE p.patient_id = ?
+        Select
+        		p.patient_id,
+                    p.full_name AS patient_name,
+                    p.dob,
+                    p.gender,
+                    p.phone AS patient_phone,
+                    p.address,
+                    mr.medicineRecord_id,
+                    er.exam_result_id,
+                    er.symptoms,
+                    er.preliminary_diagnosis,
+        
+                    d.doctor_id,
+                    d.full_name AS doctor_name,
+                    d.department,
+                    d.phone AS doctor_phone,
+                    d.eduLevel
+                FROM Patient p
+                JOIN MedicineRecords mr ON p.patient_id = mr.patient_id
+                JOIN ExamResult er ON mr.medicineRecord_id = er.medicineRecord_id
+                JOIN Doctor d ON er.doctor_id = d.doctor_id
+                WHERE mr.medicineRecord_id = ?
   
     """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, patientId);
+            ps.setInt(1, medicineRecord_id);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
