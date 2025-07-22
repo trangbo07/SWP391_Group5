@@ -43,7 +43,7 @@ public class PatientAppointmentServlet extends HttpServlet {
             // detail
             if ("detail".equalsIgnoreCase(action) && idParam != null) {
                 int apptId = Integer.parseInt(idParam);
-                AppointmentpatientDTO appointment = dao.getAppointmentDetailById(apptId, patientId);
+                AppointmentpatientDTO appointment = dao.getAppointmentDetailById(apptId);
                     
                 if (appointment == null) {
                     resp.setStatus(404);
@@ -93,14 +93,23 @@ public class PatientAppointmentServlet extends HttpServlet {
 
             String status;
             switch (action) {
-                case "Completed": status = "Completed"; break;
-                case "Cancelled": status = "Cancelled"; break;
-                default:          status = "Pending";   break;
+                case "Completed":
+                    status = "Completed";
+                    break;
+                case "Cancelled":
+                    status = "Cancelled";
+                    break;
+                case "Confirmed":
+                    status = "Confirmed"; // 👈 Thêm dòng này
+                    break;
+                default:
+                    status = "Pending";
+                    break;
             }
-
             List<AppointmentpatientDTO> list = dao.getByPatientAndStatus(patientId, status);
+            System.out.println("Confirm" + list);
             out.write(gson.toJson(list));
-            
+
         } catch (Exception e) {
             resp.setStatus(500);
             out.write("{\"error\":\"Internal server error: " + e.getMessage() + "\"}");

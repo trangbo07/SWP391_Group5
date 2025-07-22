@@ -4,21 +4,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
     let patientId = urlParams.get("patientId");
 
-    if (!patientId) {
-        try {
-            const sessionRes = await fetch("/api/session/patient", {
-                credentials: "include"
-            });
-            if (!sessionRes.ok) throw new Error("Không thể lấy patientId từ session");
-
-            const sessionData = await sessionRes.json();
-            patientId = sessionData.patientId;
-        } catch (error) {
-            console.error(error);
-            return;
-        }
-    }
-
     try {
         const spinner = document.getElementById("loadingSpinner");
         const tableContainer = document.getElementById("tableContainer");

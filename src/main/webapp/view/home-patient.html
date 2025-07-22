@@ -34,23 +34,114 @@
 
     <style>
         #pagination {
-            margin-top: 30px;
-            margin-bottom: 60px; /* Đẩy lên khỏi footer */
+            margin-top: 24px;
+            margin-bottom: 0;
             text-align: center;
+            position: static;
+            /* Đảm bảo không bị đẩy xuống cuối trang */
         }
-
         #pagination button {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            background: #fff;
+            padding: 8px 14px;
+            border: 1px solid #d1d5db;
+            background: #f3f4f6;
+            color: #333;
+            border-radius: 5px;
+            margin: 0 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            box-shadow: none;
+        }
+        #pagination button.active {
+            background: #6c757d;
+            color: #fff;
+            border-color: #6c757d;
+        }
+        #pagination button:hover:not(.active) {
+            background: #e2e6ea;
+            color: #222;
+        }
+        /* --- Custom style for Doctor section --- */
+        .doctor-section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #222;
+            margin: 40px 0 24px 0;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        .doctor-section-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .doctor-section-buttons button {
+            padding: 10px 28px;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 6px;
+            background: #007bff;
+            color: #fff;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             cursor: pointer;
         }
-
-        #pagination button.active {
-            background-color: #007bff;
-            color: #fff;
+        .doctor-section-buttons button:hover {
+            background: #0056b3;
         }
-
+        /* Table style refinement */
+        #doctorFeedbackTable.styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto 24px auto;
+            background: #fff;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #doctorFeedbackTable.styled-table th, #doctorFeedbackTable.styled-table td {
+            padding: 14px 12px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        #doctorFeedbackTable.styled-table th {
+            background: #f7f7f7;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #eaeaea;
+        }
+        #doctorFeedbackTable.styled-table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.15s;
+        }
+        #doctorFeedbackTable.styled-table tbody tr:hover {
+            background: #f5faff;
+        }
+        #doctorFeedbackTable.styled-table img.avatar {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #e3e3e3;
+            background: #fafafa;
+        }
+        #doctorFeedbackTable.styled-table td.feedback {
+            max-width: 220px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #doctorFeedbackTable.styled-table td.created-at {
+            color: #888;
+            font-size: 0.95em;
+        }
+        @media (max-width: 900px) {
+            .doctor-section-title { font-size: 1.3rem; }
+            .doctor-section-buttons button { font-size: 0.95rem; padding: 8px 16px; }
+            #doctorFeedbackTable.styled-table th, #doctorFeedbackTable.styled-table td { font-size: 0.95rem; padding: 10px 6px; }
+        }
     </style>
 
 
@@ -283,7 +374,12 @@
     </nav>            <!--Nav End-->
   </div>
 
-  <h6>Bác Sĩ Dành Cho Bạn</h6>
+  <h6 class="doctor-section-title">Bác Sĩ Dành Cho Bạn</h6>
+  <div class="doctor-section-buttons">
+    <button id="department">Khám Chuyên Khoa</button>
+    <button id="test">Bài Test Sức Khỏe</button>
+  </div>
+  <!-- Đặt phân trang ngay dưới bảng, không append vào document.body nữa -->
   <div class="col-lg-12">
       <div class="card">
           <div class="card-body">
@@ -305,19 +401,15 @@
                       </tbody>
                   </table>
               </div>
+              <div id="pagination"></div>
           </div>
       </div>
   </div>
 
-    <button id="department">Khám Chuyên Khoa</button>
-
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const tbody = document.querySelector("#doctorFeedbackTable tbody");
-            const paginationDiv = document.createElement("div");
-            paginationDiv.id = "pagination";
-            document.body.appendChild(paginationDiv);
-
+            const paginationDiv = document.getElementById("pagination");
             let currentPage = 1;
             const rowsPerPage = 5;
             let data = [];

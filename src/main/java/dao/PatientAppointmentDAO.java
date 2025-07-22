@@ -131,41 +131,36 @@ public class PatientAppointmentDAO {
         return list;
     }
 
-    public AppointmentpatientDTO getAppointmentDetailById(int appointmentId, int patientId) {
+    public AppointmentpatientDTO getAppointmentDetailById(int appointmentId) {
         String sql = """
-            SELECT a.appointment_id,
-                   a.patient_id,
-                   p.full_name      AS patient_name,
-                   p.dob,
-                   p.gender,
-                   p.phone,
-                   d.full_name      AS doctor_name,
-                   a.appointment_datetime,
-                   a.shift,
-                   d.eduLevel,
-                   a.status,
-                   a.note
-            FROM Appointment a
-            JOIN Patient p ON p.patient_id = a.patient_id
-            JOIN Waitlist w ON w.doctor_id = a.doctor_id
-            JOIN Doctor   d ON d.doctor_id = w.doctor_id
-            WHERE a.appointment_id = ?
-              AND a.patient_id     = ?
-            """;
+        SELECT a.appointment_id,
+               a.patient_id,
+               p.full_name      AS patient_name,
+               p.dob,
+               p.gender,
+               p.phone,
+               d.full_name      AS doctor_name,
+               a.appointment_datetime,
+               a.shift,
+               d.eduLevel,
+               a.status,
+               a.note
+        FROM Appointment a
+        JOIN Patient p ON p.patient_id = a.patient_id
+        JOIN Doctor  d ON d.doctor_id = a.doctor_id
+        WHERE a.appointment_id = ?
+        """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, appointmentId);
-            ps.setInt(2, patientId);
-            
+
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 Timestamp ts = rs.getTimestamp("appointment_datetime");
-                String dtStr = ts == null
-                        ? ""
-                        : ts.toLocalDateTime().format(FMT);
+                String dtStr = ts == null ? "" : ts.toLocalDateTime().format(FMT);
 
                 AppointmentpatientDTO dto = new AppointmentpatientDTO();
                 dto.setPatientId(rs.getInt("patient_id"));
@@ -176,13 +171,13 @@ public class PatientAppointmentDAO {
                 dto.setEduLevel(rs.getString("eduLevel"));
                 dto.setStatus(rs.getString("status"));
                 dto.setNote(rs.getString("note"));
-                
-                // Thêm thông tin patient
+
+                // Thông tin bệnh nhân
                 dto.setPatientName(rs.getString("patient_name"));
                 dto.setDob(rs.getString("dob"));
                 dto.setGender(rs.getString("gender"));
                 dto.setPhone(rs.getString("phone"));
-                
+
                 return dto;
             }
         } catch (SQLException e) {
@@ -190,4 +185,5 @@ public class PatientAppointmentDAO {
         }
         return null;
     }
+
 }

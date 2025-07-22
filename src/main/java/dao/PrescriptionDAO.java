@@ -51,7 +51,7 @@ public class PrescriptionDAO {
         return list;
     }
 
-    public List<Map<String, Object>> getPrescriptionDetailsByPatientId(int patientId) {
+    public List<Map<String, Object>> getPrescriptionDetailsByPatientId(int medicineRecord_id) {
         List<Map<String, Object>> list = new ArrayList<>();
         String sql = """
         
@@ -77,18 +77,17 @@ public class PrescriptionDAO {
         FROM Patient pt
         JOIN MedicineRecords mr ON pt.patient_id = mr.patient_id
         JOIN Prescription p ON mr.medicineRecord_id = p.medicineRecord_id
-        JOIN Doctor d ON p.doctor_id = d.doctor_id -- đặt sau khi alias p
+        JOIN Doctor d ON p.doctor_id = d.doctor_id 
         JOIN PrescriptionInvoice pi ON p.prescription_id = pi.prescription_id
         JOIN Medicines md ON pi.prescription_invoice_id = md.prescription_invoice_id
         JOIN Medicine m ON md.medicine_id = m.medicine_id
         
-        WHERE pt.patient_id = ?
-        ORDER BY p.prescription_id;
+        WHERE mr.medicineRecord_id= ?
         """;
 
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, patientId);
+            ps.setInt(1, medicineRecord_id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Map<String, Object> map = new HashMap<>();

@@ -1,5 +1,6 @@
 package dao;
 
+import dto.MedicinePatientDTO;
 import dto.PatientDTO;
 import dto.RecordSummaryDTO;
 import model.MedicineRecords;
@@ -7,6 +8,41 @@ import java.sql.*;
 import java.util.*;
 
 public class MedicineRecordDAO {
+
+    public List<MedicinePatientDTO> getMedicineRecordsByPatientId(int patientId) {
+        List<MedicinePatientDTO> list = new ArrayList<>();
+
+        String sql = """
+            SELECT m.medicineRecord_id, p.patient_id, p.full_name, p.gender, p.phone, p.address
+            FROM MedicineRecords m
+            JOIN Patient p ON m.patient_id = p.patient_id
+            WHERE m.patient_id = ?
+        """;
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, patientId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new MedicinePatientDTO(
+                        rs.getInt("medicineRecord_id"),
+                        rs.getInt("patient_id"),
+                        rs.getString("full_name"),
+                        rs.getString("gender"),
+                        rs.getString("phone"),
+                        rs.getString("address")
+                ));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(); // bạn có thể log hoặc xử lý theo nhu cầu
+        }
+
+        return list;
+    }
+
     public List<PatientDTO> getSummaryByPatientId(int acc_patientId) {
         List<PatientDTO> list = new ArrayList<>();
 

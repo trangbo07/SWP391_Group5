@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const genderSelect = document.getElementById("searchGender");
     const resetButton = document.getElementById("resetButton");
 
-    let allRecords = []; // Dữ liệu gốc để lọc
+    let allRecords = [];
 
     try {
         const sessionRes = await fetch("/api/session/patient", {
@@ -20,23 +20,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             credentials: "include"
         });
 
-        if (!res.ok) throw new Error("Server error");
+        if (!res.ok) throw new Error("Lỗi server khi tải hồ sơ");
 
-        allRecords = await res.json(); // lưu vào mảng gốc
-
+        allRecords = await res.json();
         renderTable(allRecords);
 
-        // 👇 Tự động lọc khi gõ tên
-        nameInput.addEventListener("input", () => {
-            filterAndRender();
-        });
+        nameInput.addEventListener("input", () => filterAndRender());
+        genderSelect.addEventListener("change", () => filterAndRender());
 
-        // 👇 Tự động lọc khi đổi giới tính
-        genderSelect.addEventListener("change", () => {
-            filterAndRender();
-        });
-
-        // 👇 Xóa lọc
         resetButton.addEventListener("click", () => {
             nameInput.value = "";
             genderSelect.value = "";
@@ -57,6 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         records.forEach((r, index) => {
+            const patientData = JSON.stringify(r).replace(/"/g, '&quot;');
             const row = `
   <tr data-item="list">
     <th scope="row">${index + 1}</th>
@@ -69,22 +61,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     <td>${r.gender}</td>
     <td>${r.address}</td>
     <td>
-      <a href="diagnosis-patient.html?patientId=${r.patientId}" class="d-inline-block pe-2" title="Xem chuẩn đoán">
-        <span class="text-info"><i class="bi bi-clipboard2-heart"></i></span>
-      </a>
-      <a href="prescription.html?patientId=${r.patientId}" class="d-inline-block pe-2" title="Xem đơn thuốc">
-        <span class="text-success"><i class="bi bi-capsule"></i></span>
-      </a>
-      <a href="invoice.html?patientId=${r.patientId}" class="d-inline-block pe-2" title="Xem hóa đơn">
-        <span class="text-warning"><i class="bi bi-receipt"></i></span>
-      </a>
-      <a href="examination-patient.html?patientId=${r.patientId}" class="d-inline-block pe-2" title="Xem kết quả khám">
-        <span class="text-primary"><i class="bi bi-activity"></i></span>
+      <a href="#" onclick="goToMedicineRecord('${patientData}')" 
+         class="d-inline-block pe-2 text-info" 
+         title="Xem Chi tiết">
+         <i class="bi bi-capsule-pill"></i>
       </a>
     </td>
-  </tr>
-`;
-            tableBody.insertAdjacentHTML("beforeend", row);
+  </tr>`;
+            tableBody.innerHTML += row;
         });
     }
 
@@ -101,3 +85,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderTable(filtered);
     }
 });
+
+// Gửi dữ liệu sang medicineRecord.html
+function goToMedicineRecord(patientJson) {
+    const patient = JSON.parse(patientJson);
+    sessionStorage.setItem("patientInfo", JSON.stringify(patient));
+    window.location.href = `medicineRecord.html?patientId=${patient.patientId}`;
+}

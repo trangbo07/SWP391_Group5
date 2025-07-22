@@ -49,6 +49,117 @@
             background-color: #007bff;
             color: #fff;
         }
+        #departmentButtons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            justify-content: center;
+            margin: 36px 0 28px 0;
+        }
+        .dept-button {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            border: 2.5px solid #e0e0e0;
+            color: #333;
+            font-size: 1.15rem;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            text-align: center;
+            padding: 0 10px;
+            outline: none;
+            white-space: normal;
+            word-break: break-word;
+            position: relative;
+            overflow: hidden;
+        }
+        .dept-button .dept-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            display: block;
+            color: #007bff;
+            line-height: 1;
+        }
+        .dept-button:hover, .dept-button:focus {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+            box-shadow: 0 8px 24px rgba(0,123,255,0.13);
+        }
+        .dept-button:hover .dept-icon, .dept-button:focus .dept-icon {
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .dept-button {
+                width: 90px;
+                height: 90px;
+                font-size: 0.98rem;
+            }
+            .dept-button .dept-icon {
+                font-size: 1.7rem;
+            }
+            #departmentButtons {
+                gap: 14px;
+            }
+        }
+        .departments-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #222;
+            text-align: center;
+            margin: 36px 0 18px 0;
+            letter-spacing: 0.5px;
+        }
+        .departments-filter-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+        #searchInput {
+            padding: 10px 18px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 24px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+            background: #fafbfc;
+            min-width: 220px;
+            max-width: 320px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        #searchInput:focus {
+            border-color: #007bff;
+            background: #fff;
+        }
+        #clearFilterBtn {
+            padding: 9px 18px;
+            border-radius: 24px;
+            border: none;
+            background: #6c757d;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        #clearFilterBtn:hover {
+            background: #495057;
+        }
+        @media (max-width: 600px) {
+            .departments-title { font-size: 1.2rem; }
+            .departments-filter-bar { flex-direction: column; gap: 8px; }
+            #searchInput, #clearFilterBtn { width: 100%; min-width: 0; }
+        }
     </style>
 
 
@@ -281,9 +392,11 @@
         </nav>            <!--Nav End-->
     </div>
 
-    <h2>Chọn chuyên khoa</h2>
-    <input type="text" id="searchInput" placeholder="Tìm chuyên khoa..." style="margin-bottom: 10px; padding: 5px; width: 250px;">
-    <button id="clearFilterBtn">Xoá bộ lọc</button>
+    <h2 class="departments-title">Chọn chuyên khoa</h2>
+    <div class="departments-filter-bar">
+        <input type="text" id="searchInput" placeholder="Tìm chuyên khoa...">
+        <button id="clearFilterBtn">Xoá bộ lọc</button>
+    </div>
     <div id="departmentButtons"></div>
 
 
@@ -370,6 +483,49 @@
 </html>
 
 <script>
+    // Map tên khoa sang icon unicode (hoặc svg nếu muốn)
+    const deptIcons = {
+        'Nội': '🩺',
+        'Nội tổng quát': '🩺',
+        'Ngoại': '🏥',
+        'Ngoại tổng quát': '🏥',
+        'Nhi': '👶',
+        'Sản': '🤰',
+        'Phụ sản': '🤱',
+        'Mắt': '👁️',
+        'Tai Mũi Họng': '👂',
+        'Răng Hàm Mặt': '🦷',
+        'Da Liễu': '🧴',
+        'Tim Mạch': '❤️',
+        'Thần Kinh': '🧠',
+        'Hô Hấp': '🌬️',
+        'Tiêu Hóa': '🍽️',
+        'Thận': '🩸',
+        'Cơ Xương Khớp': '🦴',
+        'Ung Bướu': '🎗️',
+        'Chấn thương chỉnh hình': '🦿',
+        'Hồi sức cấp cứu': '🚑',
+        'Phục hồi chức năng': '🏃',
+        'Nội tiết': '🧬',
+        'Huyết học': '🩸',
+        'Dinh dưỡng': '🥗',
+        'Lão khoa': '👴',
+        'Tâm thần': '😌',
+        'Sơ sinh': '🍼',
+        'Tiết niệu': '💧',
+        'Nam khoa': '👨',
+        'Nữ khoa': '👩',
+        'Sức khỏe sinh sản': '🌸',
+        'Y học cổ truyền': '🌿',
+        'Vật lý trị liệu': '🧘',
+        'Chẩn đoán hình ảnh': '🖼️',
+        'Xét nghiệm': '🧪',
+        'Dược': '💊',
+        'Nha khoa': '🦷',
+        'Mắt - Nhãn khoa': '👁️',
+        'Da liễu - Thẩm mỹ': '💄',
+        // ... thêm các khoa khác nếu muốn
+    };
     async function loadDepartments() {
         const res = await fetch("/api/departments");
         const departments = await res.json();
@@ -377,11 +533,11 @@
         const container = document.getElementById("departmentButtons");
         departments.forEach(dept => {
             const btn = document.createElement("button");
-            btn.textContent = dept;
-            btn.style.margin = "8px";
             btn.classList.add("dept-button");
+            // Lấy icon theo tên khoa, nếu không có thì dùng icon mặc định
+            const icon = deptIcons[dept] || '🏨';
+            btn.innerHTML = `<span class=\"dept-icon\">${icon}</span><span>${dept}</span>`;
             btn.onclick = () => {
-                // Đi sang trang mới kèm query string
                 window.location.href = `./doctor-department.html?dept=${encodeURIComponent(dept)}`;
             };
             container.appendChild(btn);
@@ -390,22 +546,18 @@
     document.getElementById("searchInput").addEventListener("input", function () {
         const keyword = this.value.toLowerCase();
         const buttons = document.querySelectorAll(".dept-button");
-
         buttons.forEach(btn => {
             const deptName = btn.textContent.toLowerCase();
-            btn.style.display = deptName.includes(keyword) ? "inline-block" : "none";
+            btn.style.display = deptName.includes(keyword) ? "inline-flex" : "none";
         });
     });
-
     document.getElementById("clearFilterBtn").addEventListener("click", function () {
         const input = document.getElementById("searchInput");
         input.value = "";
-
         const buttons = document.querySelectorAll(".dept-button");
         buttons.forEach(btn => {
-            btn.style.display = "inline-block";
+            btn.style.display = "inline-flex";
         });
     });
-
     loadDepartments();
 </script>

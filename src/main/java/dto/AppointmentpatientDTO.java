@@ -1,16 +1,18 @@
 package dto;
 
-public class AppointmentpatientDTO {
+import java.io.Serializable;
+
+public class AppointmentpatientDTO implements Serializable {
     private int patientId;
     private int appointmentId;
     private String doctorName;
-    private String dateTime;      // ← đổi thành String
+    private String dateTime;      // đã đổi thành String
     private String shift;
     private String eduLevel;
     private String status;
     private String note;
-    
-    // Thêm thông tin patient
+
+    // Thông tin bệnh nhân
     private String patientName;
     private String dob;
     private String gender;
@@ -18,7 +20,9 @@ public class AppointmentpatientDTO {
 
     public AppointmentpatientDTO() {}
 
-    public AppointmentpatientDTO(int appointmentId, String doctorName, String shift, String dateTime, String eduLevel, String status, String note) {
+    // Constructor không có patientId
+    public AppointmentpatientDTO(int appointmentId, String doctorName, String shift,
+                                 String dateTime, String eduLevel, String status, String note) {
         this.appointmentId = appointmentId;
         this.doctorName = doctorName;
         this.shift = shift;
@@ -28,20 +32,15 @@ public class AppointmentpatientDTO {
         this.note = note;
     }
 
+    // Constructor có patientId, tái sử dụng constructor trên
     public AppointmentpatientDTO(int patientId, int appointmentId, String doctorName,
                                  String dateTime, String shift, String eduLevel,
                                  String status, String note) {
-        this.patientId     = patientId;
-        this.appointmentId = appointmentId;
-        this.doctorName    = doctorName;
-        this.dateTime      = dateTime;
-        this.shift         = shift;
-        this.eduLevel      = eduLevel;
-        this.status        = status;
-        this.note          = note;
+        this(appointmentId, doctorName, shift, dateTime, eduLevel, status, note);
+        this.patientId = patientId;
     }
 
-    // getters & setters
+    // Getters & Setters
     public int getPatientId() { return patientId; }
     public void setPatientId(int patientId) { this.patientId = patientId; }
 
@@ -65,8 +64,7 @@ public class AppointmentpatientDTO {
 
     public String getNote() { return note; }
     public void setNote(String note) { this.note = note; }
-    
-    // Thêm getters & setters cho thông tin patient
+
     public String getPatientName() { return patientName; }
     public void setPatientName(String patientName) { this.patientName = patientName; }
 

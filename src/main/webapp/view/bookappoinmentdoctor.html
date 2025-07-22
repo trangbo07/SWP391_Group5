@@ -48,6 +48,19 @@
             background-color: #007bff;
             color: #fff;
         }
+        .time-slot-btn:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .time-slot-btn.active {
+            background-color: #0056b3;
+            color: white;
+            border-color: #0056b3;
+        }
+        #doctorScheduleBox ul {
+            padding-left: 0;
+            list-style: none;
+        }
     </style>
 
 
@@ -279,26 +292,57 @@
             </div>
         </nav>            <!--Nav End-->
     </div>
-    <div id="doctorScheduleBox">
-        <!-- lịch sẽ được hiển thị ở đây -->
-    </div>
-    <label for="daySelect">Chọn ngày khám:</label>
-    <select id="daySelect"></select>
-
-    <div id="timeSlotsBox"></div>
-    <h6>Bác Sĩ Dành Cho Bạn</h6>
-    <h2>bác sĩ</h2>
-    <img id="doctor-img" width="100" />
-    <p><strong>Tên:</strong> <span id="doctor-name"></span></p>
-    <p><strong>Khoa:</strong> <span id="doctor-dept"></span></p>
-    <p><strong>SĐT:</strong> <span id="doctor-phone"></span></p>
-    <p><strong>Trình độ:</strong> <span id="doctor-edu"></span></p>
-    <p><strong>Phản hồi:</strong> <span id="doctor-feedback"></span></p>
-    <p><strong>Ngày phản hồi:</strong> <span id="doctor-created"></span></p>
-
-
-    <p>Phản hồi của bệnh nhân sau khi khám</p>
-
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Thông tin bác sĩ</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <img id="doctor-img" class="img-fluid rounded-circle" alt="doctor-img" style="width: 150px; height: 150px; object-fit: cover;">
+                        </div>
+                        <hr>
+                        <h4 class="text-center"><strong id="doctor-name"></strong></h4>
+                        <p class="text-center text-muted" id="doctor-dept"></p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong>SĐT:</strong>
+                                <span id="doctor-phone"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong>Trình độ:</strong>
+                                <span id="doctor-edu"></span>
+                            </li>
+                        </ul>
+                        <hr>
+                        <h6>Phản hồi gần đây:</h6>
+                        <blockquote class="blockquote">
+                            <p class="mb-0" id="doctor-feedback"></p>
+                            <footer class="blockquote-footer">Ngày: <cite title="Source Title" id="doctor-created"></cite></footer>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Đặt lịch khám</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="doctorScheduleBox">
+                            <!-- lịch sẽ được hiển thị ở đây -->
+                        </div>
+                        <div class="mb-3">
+                            <label for="daySelect" class="form-label">Chọn ngày khám:</label>
+                            <select id="daySelect" class="form-select"></select>
+                        </div>
+                        <div id="timeSlotsBox"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- Footer Section Start -->
     <footer class="footer">
@@ -378,14 +422,11 @@
 <script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>
 
 <script src="../assets/jslogic/logout.js" defer></script>
-</body>
-</html>
-
 <script>
     const doctor = JSON.parse(localStorage.getItem("selectedDoctor"));
 
     if (!doctor) {
-        document.body.innerHTML = "<p>Không có dữ liệu bác sĩ.</p>";
+        document.body.innerHTML = "<div class='container text-center mt-5'><div class='alert alert-danger'>Không có dữ liệu bác sĩ.</div></div>";
     } else {
         document.getElementById("doctor-img").src = doctor.img;
         document.getElementById("doctor-name").textContent = doctor.fullName;
@@ -403,15 +444,21 @@
                 const schedules = await res.json();
 
                 if (schedules.length === 0) {
-                    scheduleBox.innerHTML = "<p>Không có lịch trong 7 ngày tới.</p>";
+                    scheduleBox.innerHTML = "<div class='alert alert-warning'>Không có lịch trong 7 ngày tới.</div>";
                     return;
                 }
 
-                scheduleBox.innerHTML = "<h3>Lịch làm trong 7 ngày tới</h3><ul>" +
-                    schedules.map(s => `
-                    <li>${s.workingDate} - Ca: ${s.shift} - Phòng: ${s.roomId}</li>
-                `).join("") +
-                    "</ul>";
+                const scheduleList = schedules.map(s => `
+                    <li class="list-group-item">
+                        <strong>Ngày:</strong> ${s.workingDate} - <strong>Ca:</strong> ${s.shift} - <strong>Phòng:</strong> ${s.roomId}
+                    </li>
+                `).join("");
+
+                scheduleBox.innerHTML = `
+                    <h5>Lịch làm trong 7 ngày tới</h5>
+                    <ul class="list-group mb-3">${scheduleList}</ul>
+                `;
+
 
                 // 👉 Tạo select box ngày
                 const daySelect = document.getElementById("daySelect");
@@ -444,23 +491,21 @@
                     }
 
                     // Tạo khung giờ dạng nút
-                    timeBox.innerHTML = `<h4>Chọn khung giờ (${shift}):</h4>`;
+                    timeBox.innerHTML = `<h5>Chọn khung giờ (${shift}):</h5>`;
                     const slotContainer = document.createElement("div");
-                    slotContainer.style.display = "flex";
-                    slotContainer.style.flexWrap = "wrap";
-                    slotContainer.style.gap = "10px";
+                    slotContainer.className = "d-flex flex-wrap gap-2";
 
                     slots.forEach(time => {
                         const btn = document.createElement("button");
                         btn.textContent = time;
-                        btn.className = "time-slot-btn";
-                        btn.style.padding = "8px 12px";
-                        btn.style.border = "1px solid #007bff";
-                        btn.style.borderRadius = "5px";
-                        btn.style.background = "#fff";
-                        btn.style.cursor = "pointer";
+                        btn.className = "btn btn-outline-primary time-slot-btn";
 
                         btn.addEventListener("click", () => {
+                            // remove active class from all buttons
+                            document.querySelectorAll('.time-slot-btn').forEach(b => b.classList.remove('active'));
+                            // add active class to the clicked button
+                            btn.classList.add('active');
+
                             const bookingInfo = {
                                 doctorId: doctor.doctorId,
                                 fullName: doctor.fullName,
@@ -499,3 +544,5 @@
         setInterval(fetchSchedule, 30 * 60 * 1000);
     }
 </script>
+</body>
+</html>
