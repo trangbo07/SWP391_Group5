@@ -2,12 +2,15 @@ package controller;
 
 import com.google.gson.Gson;
 import dao.PatientDAOFA;
+import dao.SystemLogStaffDAO;
 import dto.JsonResponse;
 import dto.PatientDTOFA;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import model.AccountStaff;
+import model.SystemLog_Staff;
 import util.NormalizeUtil;
 
 import java.io.IOException;
@@ -55,13 +58,16 @@ public class AdminSys4PatientServlet extends HttpServlet {
 
                 case "unlinked" -> {
                     String accIdParam = req.getParameter("accountPatientId");
+                    String searchTerm = req.getParameter("search");
                     if (accIdParam == null) {
                         out.print(gson.toJson(new JsonResponse(false, "Thiếu accountPatientId")));
                         return;
                     }
+                    List<PatientDTOFA> unlinked;
 
-                    int accountPatientId = Integer.parseInt(accIdParam);
-                    List<PatientDTOFA> unlinked = dao.getPatientsNotLinkedToAccount(accountPatientId);
+                    searchTerm = NormalizeUtil.normalizeKeyword(searchTerm);
+                    unlinked = dao.getPatientsNotLinkedToAccount(Integer.parseInt(accIdParam), searchTerm);
+
                     out.print(gson.toJson(unlinked));
                 }
 
@@ -83,6 +89,10 @@ public class AdminSys4PatientServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter out = resp.getWriter();
+
+        SystemLogStaffDAO logDAO = new SystemLogStaffDAO();
+        HttpSession session = req.getSession();
+        AccountStaff staff = (AccountStaff) session.getAttribute("user");
 
         try {
             String action = req.getParameter("action");
@@ -108,6 +118,11 @@ public class AdminSys4PatientServlet extends HttpServlet {
                     } else {
                         boolean ok = dao.createPatient(fullName, dob, gender, phone, address, Integer.parseInt(accountPatientId));
                         jsonRes = new JsonResponse(ok, ok ? "Đã tạo bệnh nhân thành công!" : "Tạo bệnh nhân không thành công!");
+                        SystemLog_Staff log = new SystemLog_Staff();
+                        log.setAccount_staff_id(staff.getAccount_staff_id());
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã tạo bệnh nhân: " + fullName);
+                        log.setAction_type("CREATE");
+                        logDAO.insertLog(log);
                     }
                     out.print(gson.toJson(jsonRes));
                 }
@@ -118,6 +133,13 @@ public class AdminSys4PatientServlet extends HttpServlet {
                     } else {
                         boolean ok = dao.updatePatient(Integer.parseInt(patientId), fullName, dob, gender, phone, address);
                         jsonRes = new JsonResponse(ok, ok ? "Đã cập nhật bệnh nhân thành công!" : "Cập nhật bệnh nhân không thành công!");
+                        if (ok && staff != null) {
+                            SystemLog_Staff log = new SystemLog_Staff();
+                            log.setAccount_staff_id(staff.getAccount_staff_id());
+                            log.setAction("Nhân viên " + staff.getUsername() + " đã cập nhật thông tin bệnh nhân ID: " + patientId);
+                            log.setAction_type("UPDATE");
+                            logDAO.insertLog(log);
+                        }
                     }
                     out.print(gson.toJson(jsonRes));
                 }
@@ -137,11 +159,20 @@ public class AdminSys4PatientServlet extends HttpServlet {
                     for (String id : idParts) {
                         try {
                             patientIds.add(Integer.parseInt(id));
-                        } catch (NumberFormatException ignored) {}
+                        } catch (NumberFormatException ignored) {
+                        }
                     }
 
                     boolean ok = dao.linkPatientsToAccount(accountId, patientIds);
                     out.print(gson.toJson(new JsonResponse(ok, ok ? "Thêm thành công!" : "Thêm không thành công!")));
+
+                    if (ok && staff != null) {
+                        SystemLog_Staff log = new SystemLog_Staff();
+                        log.setAccount_staff_id(staff.getAccount_staff_id());
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã liên kết các bệnh nhân " + patientIds + " với tài khoản bệnh nhân ID: " + accountId);
+                        log.setAction_type("UPDATE");
+                        logDAO.insertLog(log);
+                    }
                 }
 
                 case "unlink" -> {
@@ -159,6 +190,14 @@ public class AdminSys4PatientServlet extends HttpServlet {
                     boolean ok = dao.unlinkPatientFromAccount(patient_Id, accountId);
 
                     out.print(gson.toJson(new JsonResponse(ok, ok ? "Gỡ thành công" : "Gỡ thất bại")));
+
+                    if (ok && staff != null) {
+                        SystemLog_Staff log = new SystemLog_Staff();
+                        log.setAccount_staff_id(staff.getAccount_staff_id());
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã gỡ liên kết bệnh nhân ID: " + patient_Id + " khỏi tài khoản bệnh nhân ID: " + accountId);
+                        log.setAction_type("UPDATE");
+                        logDAO.insertLog(log);
+                    }
                 }
 
 

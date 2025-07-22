@@ -5,6 +5,7 @@ import dao.AccountDAO;
 import dao.AccountStaffDAO;
 import dao.AdminSystemDAO;
 
+import dao.SystemLogStaffDAO;
 import dto.DistinctResponse;
 import dto.DoctorDTOFA;
 import dto.JsonResponse;
@@ -13,6 +14,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.AccountStaff;
+import model.SystemLog_Staff;
 import util.ImageCheckUtil;
 import util.NormalizeUtil;
 
@@ -109,6 +111,10 @@ public class AdminSys4DoctorServlet extends HttpServlet {
         PrintWriter out = resp.getWriter();
         Gson gson = new Gson();
         AccountDAO accountDAO = new AccountDAO();
+        SystemLogStaffDAO logDAO = new SystemLogStaffDAO();
+
+        HttpSession session = req.getSession();
+        AccountStaff staff = (AccountStaff) session.getAttribute("user");
 
         try {
             String action = req.getParameter("action");
@@ -177,6 +183,15 @@ public class AdminSys4DoctorServlet extends HttpServlet {
 
                 jsonRes = new JsonResponse(success, success ? "Tạo thành công!" : "Tạo không thành công!");
                 out.print(gson.toJson(jsonRes));
+
+                if (success) {
+                    SystemLog_Staff log = new SystemLog_Staff();
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+                    log.setAction("Nhân viên " + staff.getUsername() + " đã tạo tài khoản bác sĩ: " + username);
+                    log.setAction_type("CREATE");
+                    logDAO.insertLog(log);
+                }
+
                 return;
 
             } else if ("update".equals(action)) {
@@ -238,6 +253,19 @@ public class AdminSys4DoctorServlet extends HttpServlet {
 
                 jsonRes = new JsonResponse(success, success ? "Đã cập nhật thành công!" : "Cập nhật không thành công!");
                 out.print(gson.toJson(jsonRes));
+
+                if (success) {
+                    SystemLog_Staff log = new SystemLog_Staff();
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+
+                    if (username.equals(oldUsername)) {
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã cập nhật tài khoản bác sĩ: " + username);
+                    } else {
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã cập nhật tài khoản bác sĩ: " + username + " từ " + oldUsername);
+                    }
+                    log.setAction_type("UPDATE");
+                    logDAO.insertLog(log);
+                }
                 return;
             } else if ("updateStatus".equals(action)) {
                 int account_staff_id = Integer.parseInt(req.getParameter("account_staff_id"));
@@ -246,6 +274,17 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 boolean success = dao.updateAccountStaffStatus(account_staff_id , newStatus); // viết hàm này trong DAO
                 jsonRes = new JsonResponse(success, success ? "Trạng thái đã được cập nhật!": "Cập nhật trạng thái không thành công.");
                 out.print(gson.toJson(jsonRes));
+
+                if (success) {
+                    AccountStaffDAO accountStaffDAO = new AccountStaffDAO();
+                    AccountStaff target = accountStaffDAO.getAccountStaffById(account_staff_id);
+                    SystemLog_Staff log = new SystemLog_Staff();
+
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+                    log.setAction("Nhân viên " + staff.getUsername() + " đã cập nhật trạng thái của tài khoản bác sĩ: " + target.getUsername() + " thành " + newStatus);
+                    log.setAction_type("UPDATE");
+                    logDAO.insertLog(log);
+                }
                 return;
             } else if ("resetPassword".equals(action)) {
                 String staffIdRaw = req.getParameter("accountStaffId");
@@ -260,6 +299,17 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 boolean ok = accountDAO.resetStaffPassword(staffId, generatedPassword);
                 jsonRes = new JsonResponse(ok, ok ? "Đặt lại mật khẩu thành công": "Đặt lại mật khẩu không thành công");
                 out.print(gson.toJson(jsonRes));
+
+                if (ok) {
+                    AccountStaffDAO accountStaffDAO = new AccountStaffDAO();
+                    AccountStaff target = accountStaffDAO.getAccountStaffById(staffId);
+                    SystemLog_Staff log = new SystemLog_Staff();
+
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+                    log.setAction("Nhân viên " + staff.getUsername() + " đã đặt lại mật khẩu cho tài khoản bác sĩ: " + target.getUsername());
+                    log.setAction_type("UPDATE");
+                    logDAO.insertLog(log);
+                }
                 return;
             } else {
                 jsonRes = new JsonResponse(false, "Hành động không hợp lệ");

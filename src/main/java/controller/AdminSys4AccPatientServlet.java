@@ -3,6 +3,8 @@ package controller;
 import com.google.gson.Gson;
 import dao.AccountDAO;
 import dao.AccountPatientDAOFA;
+import dao.SystemLogPatientDAO;
+import dao.SystemLogStaffDAO;
 import dto.AccountPatientDTO;
 import dto.DistinctResponse;
 import dto.JsonResponse;
@@ -10,6 +12,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import model.AccountStaff;
+import model.SystemLog_Patient;
+import model.SystemLog_Staff;
 import util.ImageCheckUtil;
 import util.NormalizeUtil;
 
@@ -100,6 +105,10 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter out = resp.getWriter();
+        SystemLogStaffDAO logDAO = new SystemLogStaffDAO();
+
+        HttpSession session = req.getSession();
+        AccountStaff staff = (AccountStaff) session.getAttribute("user");
 
         try {
             String action = req.getParameter("action");
@@ -160,6 +169,15 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
                     boolean ok = dao.insertAccountPatient(username, password, email, imagePath, status);
                     jsonRes = new JsonResponse(ok, ok ? "Tạo thành công!" : "Tạo không thành công!");
                     out.print(gson.toJson(jsonRes));
+
+                    if (ok) {
+                        SystemLog_Staff log = new SystemLog_Staff();
+                        log.setAccount_staff_id(staff.getAccount_staff_id()); // Bạn cần hàm này trong DAO
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã tạo tài khoản cho bệnh nhân: " + username);
+
+                        log.setAction_type("CREATE");
+                        logDAO.insertLog(log);
+                    }
                 }
 
                 case "update" -> {
@@ -230,6 +248,18 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
                     );
                     jsonRes = new JsonResponse(ok, ok ? "Cập nhật thành công" : "Cập nhật không thành công");
                     out.print(gson.toJson(jsonRes));
+
+                    if (ok) {
+                        SystemLog_Staff log = new SystemLog_Staff();
+                        String actor = (staff != null) ? staff.getUsername() : "Unknown";
+
+                        log.setAccount_staff_id(staff.getAccount_staff_id());
+                        log.setAction("Nhân viên " + actor + " đã cập nhật tài khoản bệnh nhân: " + existing.getUsername());
+                        log.setAction_type("UPDATE");
+
+                        logDAO.insertLog(log);
+                    }
+
                 }
 
                 case "updateStatus" -> {
@@ -238,6 +268,17 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
                     boolean ok = dao.updateStatus(id, newStatus);
                     jsonRes = new JsonResponse(ok, ok ? "Cập nhật thành công" : "Cập nhật không thành công");
                     out.print(gson.toJson(jsonRes));
+
+                    if (ok) {
+                        AccountPatientDTO target = dao.getAccountById(id); // Lấy username bệnh nhân
+
+                        SystemLog_Staff log = new SystemLog_Staff();
+                        log.setAccount_staff_id(staff.getAccount_staff_id());
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã cập nhật trạng thái của tài khoản bệnh nhân: " + target.getUsername() + " thành " + newStatus);
+                        log.setAction_type("UPDATE");
+
+                        logDAO.insertLog(log);
+                    }
                 }
 
                 case "resetPassword" -> {
@@ -246,6 +287,17 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
                     boolean ok = dao.resetPatientPassword(id, newPass);
                     jsonRes = new JsonResponse(ok, ok ? "Đặt lại mật khẩu thành công" : "Đặt lại mật khẩu không thành công");
                     out.print(gson.toJson(jsonRes));
+
+                    if (ok) {
+                        AccountPatientDTO target = dao.getAccountById(id); // Lấy username bệnh nhân
+
+                        SystemLog_Staff log = new SystemLog_Staff();
+                        log.setAccount_staff_id(staff.getAccount_staff_id());
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã đặt lại mật khẩu cho bệnh nhân: " + target.getUsername());
+                        log.setAction_type("UPDATE");
+
+                        logDAO.insertLog(log);
+                    }
                 }
 
                 default -> {
