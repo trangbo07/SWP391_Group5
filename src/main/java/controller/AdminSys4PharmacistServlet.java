@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dao.AccountDAO;
 import dao.AccountStaffDAO;
 import dao.AdminSystemDAO;
+import dao.SystemLogStaffDAO;
 import dto.DistinctResponse;
 import dto.JsonResponse;
 import dto.PharmacistDTOFA;
@@ -13,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.AccountPharmacist;
 import model.AccountStaff;
+import model.SystemLog_Staff;
 import util.ImageCheckUtil;
 import util.NormalizeUtil;
 
@@ -101,6 +103,9 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
         PrintWriter out = resp.getWriter();
         AccountDAO accountDAO = new AccountDAO();
 
+        SystemLogStaffDAO logDAO = new SystemLogStaffDAO();
+        AccountStaff staff = (AccountStaff) req.getSession().getAttribute("user");
+
         try {
             String action = req.getParameter("action");
             JsonResponse jsonRes;
@@ -159,6 +164,11 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
                 boolean success = dao.insertPharmacist(username, generateRandomPassword(8), email, imagePath, status, fullName, phone, eduLevel);
                 jsonRes = new JsonResponse(success, success ? "Tạo thành công!" : "Tạo không thành công!");
                 out.print(gson.toJson(jsonRes));
+
+                if (success && staff != null) {
+                    logStaffAction(logDAO, staff, "Nhân viên " + staff.getUsername() + " đã tạo tài khoản dược sĩ: " + username, "CREATE");
+                }
+
                 return;
             } else if ("update".equals(action)) {
                 int pharmacistId = Integer.parseInt(req.getParameter("pharmacistId"));
@@ -224,6 +234,11 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
                 boolean updated = dao.updatePharmacist(pharmacistId, accountPharmacistId, username, email, imagePath, status, fullName, phone, eduLevel);
                 jsonRes = new JsonResponse(updated, updated ? "Cập nhật thành công" : "Cập nhật không thành công");
                 out.print(gson.toJson(jsonRes));
+
+                if (updated && staff != null) {
+                    logStaffAction(logDAO, staff, "Nhân viên " + staff.getUsername() + " đã cập nhật tài khoản dược sĩ ID: " + pharmacistId, "UPDATE");
+                }
+
                 return;
             } else if ("updateStatus".equals(action)) {
                 int accountPharmacistId = Integer.parseInt(req.getParameter("accountPharmacistId"));
@@ -232,6 +247,11 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
                 boolean success = dao.updateAccountPharmacistStatus(accountPharmacistId , newStatus); // viết hàm này trong DAO
                 jsonRes = new JsonResponse(success, success ? "Cập nhật thành công" : "Cập nhật không thành công");
                 out.print(gson.toJson(jsonRes));
+
+                if (success && staff != null) {
+                    logStaffAction(logDAO, staff, "Nhân viên " + staff.getUsername() + " đã cập nhật trạng thái tài khoản dược sĩ ID: " + accountPharmacistId + " thành: " + newStatus, "UPDATE");
+                }
+
                 return;
             } else if ("resetPassword".equals(action)) {
                 String accountPharmacistId = req.getParameter("accountPharmacistId");
@@ -246,6 +266,11 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
                 boolean ok = accountDAO.resetPharmacistPassword(pharmacistId, generatedPassword);
                 jsonRes = new JsonResponse(ok, ok ? "Đặt lại mật khẩu thành công" : "Đặt lại mật khẩu không thành công");
                 out.print(gson.toJson(jsonRes));
+
+                if (ok && staff != null) {
+                    logStaffAction(logDAO, staff, "Nhân viên " + staff.getUsername() + " đã đặt lại mật khẩu tài khoản dược sĩ ID: " + pharmacistId, "UPDATE");
+                }
+
                 return;
             } else {
                 jsonRes = new JsonResponse(false, "Hành động không hợp lệ");
@@ -257,6 +282,15 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
             JsonResponse errorRes = new JsonResponse(false, "Error: " + e.getMessage());
             out.print(gson.toJson(errorRes));
         }
+    }
+
+    private void logStaffAction(SystemLogStaffDAO logDAO, AccountStaff staff, String action, String type) throws Exception {
+        if (staff == null) return;
+        SystemLog_Staff log = new SystemLog_Staff();
+        log.setAccount_staff_id(staff.getAccount_staff_id());
+        log.setAction(action);
+        log.setAction_type(type);
+        logDAO.insertLog(log);
     }
 
     private String generateRandomPassword(int length) {

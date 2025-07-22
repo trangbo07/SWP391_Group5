@@ -4,6 +4,9 @@ let patientPageSize = 5;
 let isPatientReversed = false;
 let currentAccountPatientId = null;
 let selectedPatientId = null;
+let allUnlinkedPatients = [];
+let currentUnlinkedPage = 1;
+let unlinkedPageSize = 5;
 
 document.addEventListener("DOMContentLoaded", () => {
     currentAccountPatientId = getAccountPatientIdFromURL();
@@ -195,11 +198,9 @@ function openPatientForm(mode, patient = null) {
         document.getElementById('patientGender').value = patient.gender;
         document.getElementById('patientPhone').value = patient.phone;
         document.getElementById('patientAddress').value = patient.address;
-        document.getElementById('patientAccountPatientId').value = patient.accountPatientId;
     } else {
         document.getElementById("patientFormTab").style.display = 'flex';
         document.getElementById('patientId').value = '';
-        document.getElementById('patientAccountPatientId').value = currentAccountPatientId;
         document.getElementById('patientGender').value = '';
 
         loadUnlinkedPatients?.();
@@ -216,12 +217,16 @@ document.getElementById('patientForm').addEventListener('submit', async function
         return;
     }
 
+
     const form = e.target;
     const formData = new FormData(form);
     const patientId = document.getElementById('patientId').value;
     const action = patientId ? 'update' : 'create';
     console.log('Action:', action);
     formData.append('action', action);
+    const accountPatientId = new URLSearchParams(window.location.search).get('accountPatientId');
+    console.log('Account PatientId', accountPatientId);
+    formData.append('accountPatientId', accountPatientId);
 
     try {
         const response = await fetch('/api/admin/patients', {
@@ -383,4 +388,111 @@ async function deletePatient(patientId) {
         alert("Đã xảy ra lỗi khi gửi yêu cầu.");
     }
 }
+
+async function loadUnlinkedPatients() {
+    const searchTerm = document.getElementById('searchExistingPatient').value.trim();
+
+    try {
+        const params = new URLSearchParams({
+            action: 'unlinked',
+            accountPatientId: currentAccountPatientId,
+            search: searchTerm
+        });
+
+        const response = await fetch(`/api/admin/patients?${params.toString()}`);
+        const result = await response.json();
+
+        if (Array.isArray(result)) {
+            allUnlinkedPatients = result;
+            currentUnlinkedPage = 1;
+            renderUnlinkedPatientList();
+        } else {
+            console.error("Phản hồi không hợp lệ:", result);
+        }
+
+    } catch (error) {
+        console.error("Lỗi khi tải bệnh nhân chưa liên kết:", error);
+    }
+}
+
+function renderUnlinkedPatientList() {
+    const listDiv = document.getElementById('existingPatientList');
+    const infoSpan = document.getElementById('existingPatientInfo');
+
+    const start = (currentUnlinkedPage - 1) * unlinkedPageSize;
+    const end = start + unlinkedPageSize;
+    const pageData = allUnlinkedPatients.slice(start, end);
+
+    if (pageData.length === 0) {
+        listDiv.innerHTML = "<p>Không có bệnh nhân nào.</p>";
+        infoSpan.innerText = `Hiển thị 0 đến 0 trên tổng ${allUnlinkedPatients.length} mục`;
+        return;
+    }
+
+    let html = `
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th></th>
+                    <th>Họ và tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Giới tính</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    html += pageData.map(p => `
+        <tr>
+            <td class="text-center">
+                <input class="form-check-input" type="checkbox" id="patient_${p.patientId}" value="${p.patientId}">
+            </td>
+            <td>${p.fullName}</td>
+            <td>${p.dob}</td>
+            <td>${p.gender}</td>
+            <td>${p.phone}</td>
+            <td>${p.address}</td>
+        </tr>
+    `).join('');
+
+    html += `
+            </tbody>
+        </table>
+    `;
+
+    listDiv.innerHTML = html;
+    infoSpan.innerText = `Hiển thị ${start + 1} đến ${Math.min(end, allUnlinkedPatients.length)} trên tổng ${allUnlinkedPatients.length} mục`;
+}
+
+
+document.getElementById('searchExistingPatient').addEventListener('input', debounce(() => {
+    loadUnlinkedPatients();
+}, 400));
+
+document.getElementById('btnPreviousExisting').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (currentUnlinkedPage > 1) {
+        currentUnlinkedPage--;
+        renderUnlinkedPatientList();
+    }
+});
+
+document.getElementById('btnNextPageExisting').addEventListener('click', (e) => {
+    e.preventDefault();
+    const maxPage = Math.ceil(allUnlinkedPatients.length / unlinkedPageSize);
+    if (currentUnlinkedPage < maxPage) {
+        currentUnlinkedPage++;
+        renderUnlinkedPatientList();
+    }
+});
+
+document.getElementById('add-existing-tab').addEventListener('shown.bs.tab', function (event) {
+    loadUnlinkedPatients();
+});
+
+
+
+
 
