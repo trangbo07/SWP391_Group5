@@ -3,6 +3,7 @@ package dao;
 import model.AccountStaff;
 import model.AccountPharmacist;
 import model.AccountPatient;
+import util.PasswordHasherSHA256Util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -99,7 +100,7 @@ public class AccountDAO {
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, generatedPassword);
+            ps.setString(1, PasswordHasherSHA256Util.hashPassword(generatedPassword));
             ps.setInt(2, staffId);
 
             return ps.executeUpdate() > 0;
@@ -115,7 +116,7 @@ public class AccountDAO {
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, generatedPassword);
+            ps.setString(1, PasswordHasherSHA256Util.hashPassword(generatedPassword));
             ps.setInt(2, accountPharmacistId);
 
             return ps.executeUpdate() > 0;

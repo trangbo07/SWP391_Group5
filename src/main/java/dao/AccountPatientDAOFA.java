@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import util.PasswordHasherSHA256Util;
 
 public class AccountPatientDAOFA {
     private DBContext db = DBContext.getInstance();
@@ -143,7 +144,7 @@ public class AccountPatientDAOFA {
         try (Connection con = db.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, username);
-            ps.setString(2, password); // nên mã hóa nếu cần
+            ps.setString(2, PasswordHasherSHA256Util.hashPassword(password)); // hash password before saving
             ps.setString(3, email);
             ps.setString(4, img);
             ps.setString(5, status);
@@ -174,7 +175,7 @@ public class AccountPatientDAOFA {
         String sql = "UPDATE AccountPatient SET password = ? WHERE account_patient_id = ?";
         try (Connection con = db.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, newPassword); // nên hash nếu cần
+            ps.setString(1, PasswordHasherSHA256Util.hashPassword(newPassword)); // hash password before saving
             ps.setInt(2, accountPatientId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
