@@ -205,4 +205,18 @@ public class PrescriptionDAO {
             return false;
         }
     }
+
+    // Cập nhật trạng thái đơn thuốc
+    public boolean updatePrescriptionStatus(int prescriptionId, String status) {
+        String sql = "UPDATE Prescription SET status = ? WHERE prescription_id = ?";
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, prescriptionId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 } 

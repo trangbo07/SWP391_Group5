@@ -13,11 +13,8 @@ public class ReportDAO {
     // Enhanced Total Revenue Report with date filtering
     public Map<String, Object> getTotalRevenueReport(String startDate, String endDate) throws SQLException {
         Map<String, Object> report = new HashMap<>();
-        
-        // Check if Payment table exists and has data
         try (Connection conn = DBContext.getInstance().getConnection()) {
             if (conn == null) {
-                // Return default values if no connection
                 report.put("total_revenue", 0.0);
                 report.put("total_invoices", 0);
                 report.put("average_invoice_amount", 0.0);
@@ -26,75 +23,43 @@ public class ReportDAO {
                 report.put("cancelled_invoices", 0);
                 return report;
             }
-            
-            // Updated query to use Payment table for actual revenue
-            String paymentQuery = "SELECT " +
-                "COALESCE(SUM(p.amount), 0) as total_revenue, " +
-                "COUNT(p.payment_id) as total_payments, " +
-                "COALESCE(AVG(p.amount), 0) as average_payment_amount " +
-                "FROM Payment p WHERE p.status = 'Paid'";
-            
-            // Separate query for invoice statistics
+
+            // Query tổng doanh thu và các thống kê từ bảng Invoice
             String invoiceQuery = "SELECT " +
+                "COALESCE(SUM(CASE WHEN status = 'Paid' THEN total_amount ELSE 0 END), 0) as total_revenue, " +
                 "COUNT(*) as total_invoices, " +
+                "COALESCE(AVG(CASE WHEN status = 'Paid' THEN total_amount END), 0) as average_invoice_amount, " +
                 "COUNT(CASE WHEN status = 'Paid' THEN 1 END) as paid_invoices, " +
                 "COUNT(CASE WHEN status = 'Pending' THEN 1 END) as pending_invoices, " +
                 "COUNT(CASE WHEN status = 'Cancelled' THEN 1 END) as cancelled_invoices " +
                 "FROM Invoice WHERE 1=1";
-            
+
             List<Object> params = new ArrayList<>();
             if (startDate != null && !startDate.isEmpty()) {
-                paymentQuery += " AND CAST(p.payment_date AS DATE) >= ?";
                 invoiceQuery += " AND CAST(issue_date AS DATE) >= ?";
                 params.add(startDate);
             }
             if (endDate != null && !endDate.isEmpty()) {
-                paymentQuery += " AND CAST(p.payment_date AS DATE) <= ?";
                 invoiceQuery += " AND CAST(issue_date AS DATE) <= ?";
                 params.add(endDate);
             }
-            
-            // Get payment statistics (actual revenue)
-            try (PreparedStatement pstmt = conn.prepareStatement(paymentQuery)) {
-                for (int i = 0; i < params.size(); i++) {
-                    pstmt.setObject(i + 1, params.get(i));
-                }
-                
-                ResultSet rs = pstmt.executeQuery();
-                if (rs.next()) {
-                    report.put("total_revenue", rs.getDouble("total_revenue"));
-                    report.put("total_payments", rs.getInt("total_payments"));
-                    report.put("average_payment_amount", rs.getDouble("average_payment_amount"));
-                }
-            }
-            
-            // Get invoice statistics
+
             try (PreparedStatement pstmt = conn.prepareStatement(invoiceQuery)) {
                 for (int i = 0; i < params.size(); i++) {
                     pstmt.setObject(i + 1, params.get(i));
                 }
-                
                 ResultSet rs = pstmt.executeQuery();
                 if (rs.next()) {
+                    report.put("total_revenue", rs.getDouble("total_revenue"));
                     report.put("total_invoices", rs.getInt("total_invoices"));
+                    report.put("average_invoice_amount", rs.getDouble("average_invoice_amount"));
                     report.put("paid_invoices", rs.getInt("paid_invoices"));
                     report.put("pending_invoices", rs.getInt("pending_invoices"));
                     report.put("cancelled_invoices", rs.getInt("cancelled_invoices"));
-                    
-                    // Calculate average invoice amount from revenue/paid invoices
-                    int paidInvoices = rs.getInt("paid_invoices");
-                    double totalRevenue = (Double) report.get("total_revenue");
-                    if (paidInvoices > 0) {
-                        report.put("average_invoice_amount", totalRevenue / paidInvoices);
-                    } else {
-                        report.put("average_invoice_amount", 0.0);
-                    }
                 }
             }
-            
         } catch (SQLException e) {
             System.err.println("Error in getTotalRevenueReport: " + e.getMessage());
-            // Return default values on error
             report.put("total_revenue", 0.0);
             report.put("total_invoices", 0);
             report.put("average_invoice_amount", 0.0);
@@ -256,14 +221,22 @@ public class ReportDAO {
     // Enhanced Patient Visit Report
     public Map<String, Object> getPatientVisitReport(String startDate, String endDate) throws SQLException {
         Map<String, Object> report = new HashMap<>();
-        
         try (Connection conn = DBContext.getInstance().getConnection()) {
             if (conn == null) {
                 return generateDefaultPatientData();
             }
-            
+
+            // 1. Lấy tổng số bệnh nhân thực tế từ bảng Patient
+            String patientCountQuery = "SELECT COUNT(*) as total_patients FROM Patient";
+            try (PreparedStatement pstmt = conn.prepareStatement(patientCountQuery)) {
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    report.put("total_patients", rs.getInt("total_patients"));
+                }
+            }
+
+            // 2. Lấy các thống kê lịch hẹn như cũ
             String query = "SELECT " +
-                "COUNT(DISTINCT patient_id) as total_patients, " +
                 "COUNT(*) as total_appointments, " +
                 "COUNT(CASE WHEN status = 'Completed' THEN 1 END) as completed_appointments, " +
                 "COUNT(CASE WHEN status = 'Cancelled' THEN 1 END) as cancelled_appointments, " +
@@ -273,7 +246,7 @@ public class ReportDAO {
                 "    CAST(COUNT(CASE WHEN status = 'Completed' THEN 1 END) * 100.0 / COUNT(*) AS DECIMAL(5,2)) " +
                 "ELSE 0 END as completion_rate " +
                 "FROM Appointment WHERE 1=1";
-            
+
             List<Object> params = new ArrayList<>();
             if (startDate != null && !startDate.isEmpty()) {
                 query += " AND CAST(appointment_datetime AS DATE) >= ?";
@@ -283,15 +256,13 @@ public class ReportDAO {
                 query += " AND CAST(appointment_datetime AS DATE) <= ?";
                 params.add(endDate);
             }
-            
+
             try (PreparedStatement pstmt = conn.prepareStatement(query)) {
                 for (int i = 0; i < params.size(); i++) {
                     pstmt.setObject(i + 1, params.get(i));
                 }
-                
                 ResultSet rs = pstmt.executeQuery();
                 if (rs.next()) {
-                    report.put("total_patients", rs.getInt("total_patients"));
                     report.put("total_appointments", rs.getInt("total_appointments"));
                     report.put("completed_appointments", rs.getInt("completed_appointments"));
                     report.put("cancelled_appointments", rs.getInt("cancelled_appointments"));
@@ -304,7 +275,6 @@ public class ReportDAO {
             System.err.println("Error in getPatientVisitReport: " + e.getMessage());
             return generateDefaultPatientData();
         }
-        
         return report.isEmpty() ? generateDefaultPatientData() : report;
     }
 
@@ -602,9 +572,8 @@ public class ReportDAO {
 
     // Helper method to get total revenue by date range (compatible with PaymentDAO)
     public double getTotalRevenueByDateRange(String startDate, String endDate) {
-        String sql = "SELECT ISNULL(SUM(amount), 0) as total_revenue FROM Payment " +
-                "WHERE payment_date BETWEEN ? AND ? AND status = 'Paid'";
-        
+        String sql = "SELECT COALESCE(SUM(total_amount), 0) as total_revenue FROM Invoice " +
+                "WHERE issue_date BETWEEN ? AND ? AND status = 'Paid'";
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 

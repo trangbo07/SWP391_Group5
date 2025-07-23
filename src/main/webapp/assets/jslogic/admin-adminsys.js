@@ -43,7 +43,7 @@ async function fetchAdminsWithFilter() {
     const tableBody = document.getElementById('adminTableBody');
     const info = document.getElementById('paginationInfo');
 
-    tableBody.innerHTML = '<tr><td colspan="10">Loading...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="10">Đang tải...</td></tr>';
 
     const params = new URLSearchParams({action: 'filter'});
     if (status) params.append("status", status);
@@ -59,8 +59,8 @@ async function fetchAdminsWithFilter() {
         const admins = await response.json();
 
         if (!Array.isArray(admins) || admins.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="10">No admins found.</td></tr>';
-            if (info) info.innerText = `Showing 0 to 0 of 0 entries`;
+            tableBody.innerHTML = '<tr><td colspan="10">Không tìm thấy Admin nào</td></tr>';
+            if (info) info.innerText = `Hiển thị 0 đến 0 trong tổng số 0 bản ghi`;
             return;
         }
 
@@ -69,8 +69,8 @@ async function fetchAdminsWithFilter() {
         paginateAdmins();
 
     } catch (error) {
-        console.error('Error fetching admins:', error);
-        tableBody.innerHTML = '<tr><td colspan="10">Failed to load admin data.</td></tr>';
+        console.error('Lỗi khi tìm kiếm Admin: ', error);
+        tableBody.innerHTML = '<tr><td colspan="10">Không tải được dữ liệu tài khoản Admin.</td></tr>';
     }
 }
 
@@ -85,8 +85,8 @@ function paginateAdmins() {
     const pageData = sourceList.slice(start, end);
 
     if (!pageData.length) {
-        tableBody.innerHTML = '<tr><td colspan="10">No admins available.</td></tr>';
-        info.innerText = `Showing 0 to 0 of ${allAdmins.length} entries`;
+        tableBody.innerHTML = '<tr><td colspan="10">Không có Admin nào</td></tr>';
+        info.innerText = `Hiển thị 0 đến 0 trong tổng số ${allAdmins.length} bản ghi`;
         return;
     }
 
@@ -96,12 +96,12 @@ function paginateAdmins() {
             <td>${a.fullName}</td>
             <td>${a.username}</td>
             <td>${a.email}</td>
-            <td>${a.status}</td>
+            <td>${a.status === 'Enable' ? 'Kích hoạt' : 'Vô hiệu hóa'}</td>
             <td>${a.phone}</td>
             <td>${a.department}</td>
             <td>
-              ${a.role === 'AdminSys' ? 'Admin System' :
-                    a.role === 'AdminBusiness' ? 'Admin Business' :
+              ${a.role === 'AdminSys' ? 'Quản trị hệ thống' :
+                    a.role === 'AdminBusiness' ? 'Quản trị doanh nghiệp' :
                         a.role}
             </td>
 
@@ -110,11 +110,11 @@ function paginateAdmins() {
                 <button class="btn btn-sm btn-info me-1"
                         data-bs-toggle="offcanvas"
                         data-bs-target="#adminViewCanvas"
-                        onclick="viewAdmin(${a.adminId})">View</button>
-                <button class="btn btn-sm btn-warning me-1" onclick="editAdmin(${a.adminId})">Edit</button>
+                        onclick="viewAdmin(${a.adminId})">Chi tiết</button>
+                <button class="btn btn-sm btn-warning me-1" onclick="editAdmin(${a.adminId})">Chỉnh sửa</button>
                 <button class="btn btn-sm ${a.status === 'Enable' ? 'btn-danger' : 'btn-success'}"
                         onclick="toggleAdminStatus(${a.accountStaffId}, '${a.status}')">
-                    ${a.status === 'Enable' ? 'Disable' : 'Enable'}
+                    ${a.status === 'Enable' ? 'Vô hiệu hóa' : 'Kích hoạt'}
                 </button>
             </td>
         </tr>
@@ -122,7 +122,7 @@ function paginateAdmins() {
 
     const formattedStart = String(start + 1).padStart(2, '0');
     const formattedEnd = String(Math.min(end, allAdmins.length)).padStart(2, '0');
-    info.innerText = `Showing ${formattedStart} to ${formattedEnd} of ${allAdmins.length} entries`;
+    info.innerText = `Hiển thị ${formattedStart} đến ${formattedEnd} trong tổng số ${allAdmins.length} bản ghi`;
 }
 
 document.getElementById('btnReverseList').addEventListener('click', () => {
@@ -168,22 +168,32 @@ function loadSelectFilter(field, selectId) {
         .then(data => {
             const select = document.getElementById(selectId);
             if (!select) return;
+            let fl = field === 'status' ? 'trạng thái' :
+                                    field === 'role' ? 'vai trò' :
+                                        field === 'department' ? 'phòng ban' :
+                                            field;
 
-            select.innerHTML = `<option value="">All ${capitalize(field)}</option>`;
+            select.innerHTML = `<option value="">Tất cả ${fl}</option>`;
 
             (data?.values || []).forEach(val => {
                 let displayVal = val;
 
                 if (field === "role") {
-                    displayVal = val === "AdminSys" ? "Admin System" :
-                        val === "AdminBusiness" ? "Admin Business" :
+                    displayVal = val === "AdminSys" ? 'Quản trị hệ thống' :
+                        val === "AdminBusiness" ? 'Quản trị doanh nghiệp' :
+                            val; // fallback
+                }
+
+                if (field === "status") {
+                    displayVal = val === "Disable" ? 'Kích hoạt' :
+                        val === "Enable" ? 'Vô hiệu hóa' :
                             val; // fallback
                 }
 
                 select.innerHTML += `<option value="${val}">${displayVal}</option>`;
             });
         })
-        .catch(err => console.error(`Error loading ${field}:`, err));
+        .catch(err => console.error(`Lỗi tải ${field}:`, err));
 }
 
 function capitalize(str) {
@@ -214,7 +224,9 @@ function viewAdmin(adminId) {
     document.getElementById('viewFullName').textContent = a.fullName;
     document.getElementById('viewDepartment').textContent = a.department;
     document.getElementById('viewPhone').textContent = a.phone;
-    document.getElementById('viewStatus').textContent = a.status;
+    document.getElementById('viewStatus').textContent = a.status === "Disable" ? 'Kích hoạt' :
+                                                                                    a.status === "Enable" ? 'Vô hiệu hóa' :
+                                                                                        a.status ;
     document.getElementById('viewRole').textContent = a.role;
     document.getElementById('viewImg').src = a.img || '';
 }
@@ -235,7 +247,7 @@ function togglePasswordVisibility() {
 
 function resetAdminPassword() {
     if (!selectedAdminIdForReset) {
-        alert("Please select an admin.");
+        alert("Vui lòng chọn một tài khoản.");
         return;
     }
     const accountStaffId = document.getElementById('viewAccountStaffId').textContent.trim();
@@ -254,7 +266,7 @@ function resetAdminPassword() {
                 bootstrap.Offcanvas.getOrCreateInstance(canvasEl).hide();
             }
         })
-        .catch(err => alert("Error: " + err));
+        .catch(err => alert("Lỗi: " + err));
 }
 
 //===============================================================================================================
@@ -287,7 +299,7 @@ async function openAdminForm(mode, admin = null) {
     await loadSelectForForm('department', 'department', 'customDepartment');
 
     if (mode === 'edit' && admin) {
-        title.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Admin';
+        title.innerHTML = '<i class="fas fa-edit me-2"></i>Chỉnh sửa Admin';
         const previewImg = document.getElementById('previewImgAdmin');
         if (admin.img && admin.img !== '') {
             previewImg.src = admin.img;
@@ -314,7 +326,7 @@ async function openAdminForm(mode, admin = null) {
 
         document.getElementById('formMessage').style.display = 'none';
     } else {
-        title.innerHTML = '<i class="fas fa-plus me-2"></i>Add Admin';
+        title.innerHTML = '<i class="fas fa-plus me-2"></i>Thêm Admin';
         const previewImg = document.getElementById('previewImgAdmin');
         previewImg.src = '/assets/images/uploads/default.jpg';
         previewImg.style.display = 'none';
@@ -370,19 +382,25 @@ async function loadSelectForForm(field, selectId, inputId = null) {
 
                 if (field === "role") {
                     displayVal = val === "AdminSys" ? "Admin System" :
-                        val === "AdminBusiness" ? "Admin Business" :
+                        val === 'Quản trị hệ thống' ? 'Quản trị doanh nghiệp' :
                             val;
+                }
+
+                if (field === "status") {
+                    displayVal = val === "Enable" ? 'Kích hoạt' :
+                        val === "Disable" ? 'Vô hiệu hóa' :
+                            val; // fallback
                 }
 
                 select.innerHTML += `<option value="${val}">${displayVal}</option>`;
             });
 
-            select.innerHTML += `<option value="Other">Other</option>`;
+            select.innerHTML += `<option value="Other">Khác</option>`;
 
             if (inputId) handleCustomInput(selectId, inputId);
         }
     } catch (error) {
-        console.error(`Error loading options for ${field}:`, error);
+        console.error(`Lỗi tải các tùy chọn cho ${field}:`, error);
     }
 }
 
@@ -451,12 +469,12 @@ document.getElementById('adminForm').addEventListener('submit', async function (
 
         } else {
             const rawText = await response.text();
-            throw new Error("Unexpected response: " + rawText);
+            throw new Error("Phản hồi bất ngờ: " + rawText);
         }
 
     } catch (error) {
-        console.error('Submit error:', error);
-        displayFormMessage("Submit failed: " + error.message, "danger");
+        console.error('Gửi lỗi: ', error);
+        displayFormMessage("Gửi không thành công: " + error.message, "danger");
     }
 });
 
@@ -478,33 +496,33 @@ function validateAdminForm() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^0\d{9}$/;
 
-
     const errors = [];
 
     if (!fullName || !fullNameRegex.test(fullName)) {
-        errors.push("Full Name must have at least two words, only letters.");
+        errors.push("Họ tên phải có ít nhất hai từ và chỉ chứa chữ cái.");
     }
 
     if (!username) {
-        errors.push("Username cannot be empty or only whitespace.");
+        errors.push("Tên đăng nhập không được để trống hoặc chỉ chứa khoảng trắng.");
     } else if (username.length < 6) {
-        errors.push("Username must be at least 6 characters long.");
+        errors.push("Tên đăng nhập phải có ít nhất 6 ký tự.");
     }
 
     if (!emailRegex.test(email)) {
-        errors.push("Invalid email format.");
+        errors.push("Định dạng email không hợp lệ.");
     }
 
     if (!phoneRegex.test(phone)) {
-        errors.push("Phone must be exactly 10 digits and start with 0.");
+        errors.push("Số điện thoại phải bắt đầu bằng số 0 và có đúng 10 chữ số.");
     }
 
     if (!department) {
-        errors.push("Department cannot be empty.");
+        errors.push("Phòng ban không được để trống.");
     }
 
     return errors;
 }
+
 
 //===============================================================================================================
 
@@ -528,12 +546,12 @@ function toggleAdminStatus(account_staff_id, currentStatus) {
                 alert(data.message);
                 fetchAdminsWithFilter();
             } else {
-                alert("Failed: " + data.message);
+                alert("Lỗi: " + data.message);
             }
         })
         .catch(err => {
             console.error(err);
-            alert("Something went wrong!");
+            alert("Đã xảy ra lỗi!");
         });
 }
 

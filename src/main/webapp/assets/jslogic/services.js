@@ -4,7 +4,35 @@ class ServicesManager {
     constructor() {
         this.servicesData = [];
         this.currentEditingId = null;
+        // Pagination state
+        this.pageSize = 10; // số dịch vụ mỗi trang
+        this.currentPage = 1;
+        this.totalPages = 1;
         this.init();
+    }
+
+    // Thay đổi trang
+    setPage(page) {
+        if (page < 1) page = 1;
+        if (page > this.totalPages) page = this.totalPages;
+        this.currentPage = page;
+        this.renderServicesTable();
+        this.renderPagination();
+    }
+
+    // Cập nhật số trang dựa trên dữ liệu hiện tại
+    updatePagination() {
+        this.totalPages = Math.max(1, Math.ceil(this.servicesData.length / this.pageSize));
+        if (this.currentPage > this.totalPages) {
+            this.currentPage = this.totalPages;
+        }
+    }
+
+    // Lấy dữ liệu dịch vụ cho trang hiện tại
+    getPaginatedData() {
+        const start = (this.currentPage - 1) * this.pageSize;
+        const end = start + this.pageSize;
+        return this.servicesData.slice(start, end);
     }
 
     init() {
@@ -103,7 +131,9 @@ class ServicesManager {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             this.servicesData = await response.json();
+            this.updatePagination();
             this.renderServicesTable();
+            this.renderPagination && this.renderPagination();
         } catch (error) {
             console.error('Error loading services:', error);
             this.showError('Failed to load services. Please try again later.');
@@ -123,7 +153,9 @@ class ServicesManager {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             this.servicesData = await response.json();
+            this.updatePagination();
             this.renderServicesTable();
+            this.renderPagination && this.renderPagination();
         } catch (error) {
             console.error('Error searching services:', error);
             this.showError('Failed to search services. Please try again later.');
@@ -153,7 +185,10 @@ class ServicesManager {
             return;
         }
 
-        if (this.servicesData.length === 0) {
+        this.updatePagination && this.updatePagination();
+        const paginatedData = this.getPaginatedData ? this.getPaginatedData() : this.servicesData;
+
+        if (paginatedData.length === 0) {
             const searchInput = document.getElementById('serviceSearchInput');
             const isSearching = searchInput && searchInput.value.trim() !== '';
             
@@ -176,11 +211,11 @@ class ServicesManager {
         }
 
         let tableRows = '';
-        this.servicesData.forEach((service, index) => {
+        paginatedData.forEach((service, index) => {
             const formattedPrice = this.formatPrice(service.price);
             tableRows += `
                 <tr data-item="list">
-                    <th scope="row">${index + 1}</th>
+                    <th scope="row">${(this.currentPage - 1) * this.pageSize + index + 1}</th>
                     <td>#${service.service_id}</td>
                     <td>
                         <h6 class="mb-0 text-body fw-normal">${this.escapeHtml(service.name)}</h6>
@@ -236,6 +271,7 @@ class ServicesManager {
         });
 
         tbody.innerHTML = tableRows;
+        this.renderPagination && this.renderPagination();
     }
 
     formatPrice(price) {
@@ -556,6 +592,43 @@ class ServicesManager {
 
     refreshServices() {
         this.loadServices();
+    }
+
+    renderPagination() {
+        const container = document.getElementById('servicesPagination');
+        if (!container) return;
+        this.updatePagination();
+        if (this.totalPages <= 1) {
+            container.innerHTML = '';
+            return;
+        }
+        let html = '<nav aria-label="Service pagination"><ul class="pagination justify-content-center mb-0">';
+        // Previous button
+        html += `<li class="page-item${this.currentPage === 1 ? ' disabled' : ''}">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="${this.currentPage === 1}" data-page="${this.currentPage - 1}">Previous</a></li>`;
+        // Page numbers (show max 5 pages)
+        let start = Math.max(1, this.currentPage - 2);
+        let end = Math.min(this.totalPages, start + 4);
+        if (end - start < 4) start = Math.max(1, end - 4);
+        for (let i = start; i <= end; i++) {
+            html += `<li class="page-item${i === this.currentPage ? ' active' : ''}">
+                <a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+        }
+        // Next button
+        html += `<li class="page-item${this.currentPage === this.totalPages ? ' disabled' : ''}">
+            <a class="page-link" href="#" aria-disabled="${this.currentPage === this.totalPages}" data-page="${this.currentPage + 1}">Next</a></li>`;
+        html += '</ul></nav>';
+        container.innerHTML = html;
+        // Add event listeners
+        Array.from(container.querySelectorAll('a.page-link')).forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = parseInt(link.getAttribute('data-page'));
+                if (!isNaN(page) && page !== this.currentPage && page >= 1 && page <= this.totalPages) {
+                    this.setPage(page);
+                }
+            });
+        });
     }
 }
 

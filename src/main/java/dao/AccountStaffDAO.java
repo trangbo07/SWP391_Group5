@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import util.PasswordHasherSHA256Util;
 
 public class AccountStaffDAO {
     public static AccountStaff checkLogin(String username, String password) {
@@ -14,13 +15,14 @@ public class AccountStaffDAO {
         AccountStaff staff = null;
 
         try {
+            String hashedPassword = PasswordHasherSHA256Util.hashPassword(password);
             String sql = """    
                     SELECT * FROM AccountStaff WHERE (username = ? OR email = ?) AND password = ? AND status = 'Enable'
                     """;
             PreparedStatement statement = db.getConnection().prepareStatement(sql);
             statement.setString(1, username);
             statement.setString(2, username);
-            statement.setString(3, password);
+            statement.setString(3, hashedPassword);
 
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
@@ -98,7 +100,7 @@ public class AccountStaffDAO {
         try {
             String sql = "UPDATE AccountStaff SET password = ? WHERE email = ?";
             PreparedStatement ps = db.getConnection().prepareStatement(sql);
-            ps.setString(1, newPassword); // Should be hashed
+            ps.setString(1, PasswordHasherSHA256Util.hashPassword(newPassword)); // hash password before saving
             ps.setString(2, email);
             int rowsAffected = ps.executeUpdate();
             ps.close();

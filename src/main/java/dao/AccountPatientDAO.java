@@ -2,6 +2,7 @@ package dao;
 
 import model.AccountPatient;
 import java.sql.*;
+import util.PasswordHasherSHA256Util;
 
 public class AccountPatientDAO {
     public AccountPatient checkLogin(String username, String password) {
@@ -9,13 +10,14 @@ public class AccountPatientDAO {
         AccountPatient patient = null;
 
         try {
+            String hashedPassword = PasswordHasherSHA256Util.hashPassword(password).toUpperCase();
             String sql = """    
                          SELECT * FROM AccountPatient WHERE (username = ? OR email = ?) AND password = ?
                          """;
             PreparedStatement statement = db.getConnection().prepareStatement(sql);
             statement.setString(1, username);
             statement.setString(2, username);
-            statement.setString(3, password);
+            statement.setString(3, hashedPassword);
 
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
@@ -72,7 +74,7 @@ public class AccountPatientDAO {
         try {
             String sql = "UPDATE AccountPatient SET password = ? WHERE email = ?";
             PreparedStatement ps = db.getConnection().prepareStatement(sql);
-            ps.setString(1, newPassword); // Should be hashed
+            ps.setString(1, PasswordHasherSHA256Util.hashPassword(newPassword)); // hash password before saving
             ps.setString(2, email);
             int rowsAffected = ps.executeUpdate();
             ps.close();

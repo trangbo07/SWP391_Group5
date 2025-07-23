@@ -33,9 +33,9 @@ async function fetchPatientsWithFilter() {
     const tableBody = document.getElementById('accountPatientTableBody');
     const info = document.getElementById('paginationInfo');
 
-    tableBody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="6">Đang tải...</td></tr>';
 
-    const params = new URLSearchParams({ action: 'filter' });
+    const params = new URLSearchParams({action: 'filter'});
     if (status) params.append("status", status);
     if (search) params.append("search", search);
 
@@ -47,8 +47,8 @@ async function fetchPatientsWithFilter() {
         const patients = await response.json();
 
         if (!Array.isArray(patients) || patients.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6">No patients found.</td></tr>';
-            if (info) info.innerText = `Showing 0 to 0 of 0 entries`;
+            tableBody.innerHTML = '<tr><td colspan="6">Không tìm thấy bệnh nhân nào.</td></tr>';
+            if (info) info.innerText = `Hiển thị 0 đến 0 trong tổng số 0 bản ghi`;
             return;
         }
 
@@ -57,8 +57,8 @@ async function fetchPatientsWithFilter() {
         paginateAccountPatients();
 
     } catch (error) {
-        console.error('Error fetching patients:', error);
-        tableBody.innerHTML = '<tr><td colspan="6">Failed to load patient data.</td></tr>';
+        console.error('Lỗi khi tìm kiếm tài khoản :', error);
+        tableBody.innerHTML = '<tr><td colspan="6">Không tải được dữ liệu tài khoản bệnh nhân.</td></tr>';
     }
 }
 
@@ -73,8 +73,8 @@ function paginateAccountPatients() {
     const pageData = sourceList.slice(start, end);
 
     if (!pageData.length) {
-        tableBody.innerHTML = '<tr><td colspan="6">No data available.</td></tr>';
-        info.innerText = `Showing 0 to 0 of ${allAccountPatients.length} entries`;
+        tableBody.innerHTML = '<tr><td colspan="6">Không có dữ liệu có sẵn.</td></tr>';
+        info.innerText = `Hiển thị 0 đến 0 trong tổng số ${allAccountPatients.length} bản ghi`;
         return;
     }
 
@@ -83,28 +83,28 @@ function paginateAccountPatients() {
             <td>${start + index + 1}</td>
             <td>${p.username}</td>
             <td>${p.email}</td>
-            <td>${p.status}</td>
+            <td>${p.status === 'Enable' ? 'Kích hoạt' : 'Vô hiệu hóa'}</td>
             <td><img src="${p.img}" style="width: 40px; height: 40px; object-fit: cover;"></td>
             <td>
                 <button class="btn btn-sm btn-info me-1"
                         data-bs-toggle="offcanvas"
                         data-bs-target="#accountPatientViewCanvas"
-                        onclick="viewAccountPatient(${p.accountPatientId})">View</button>
+                        onclick="viewAccountPatient(${p.accountPatientId})">Chi tiết</button>
                 <button class="btn btn-sm btn-warning me-1"
-                        onclick="editAccountPatient(${p.accountPatientId})">Edit</button>
+                        onclick="editAccountPatient(${p.accountPatientId})">Chỉnh sửa</button>
                 <button class="btn btn-sm ${p.status === 'Enable' ? 'btn-danger' : 'btn-success'}"
                         onclick="toggleAccountPatientStatus(${p.accountPatientId}, '${p.status}')">
-                    ${p.status === 'Enable' ? 'Disable' : 'Enable'}
+                    ${p.status === 'Enable' ? 'Vô hiệu hóa' : 'Kích hoạt'}
                 </button>
                 <button class="btn btn-sm btn-secondary"
                         onclick="viewPatientsOfAccount(${p.accountPatientId})">
-                    Patients
+                    Danh sách bệnh nhân
                 </button>
             </td>
         </tr>
     `).join('');
 
-    info.innerText = `Showing ${start + 1} to ${Math.min(end, allAccountPatients.length)} of ${allAccountPatients.length} entries`;
+    info.innerText = `Hiển thị ${start + 1} đến ${Math.min(end, allAccountPatients.length)} trong tổng số ${allAccountPatients.length} bản ghi`;
 }
 
 function changePage(direction) {
@@ -123,12 +123,20 @@ function loadSelectFilterAccountPatient(field, selectId) {
             const select = document.getElementById(selectId);
             if (!select) return;
 
-            select.innerHTML = `<option value="">All ${capitalize(field)}</option>`;
+            let fl = field === 'status' ? 'trạng thái' :
+                    field;
+
+            select.innerHTML = `<option value="">Tất cả ${fl}</option>`;
             (data?.values || []).forEach(val => {
-                select.innerHTML += `<option value="${val}">${val}</option>`;
+                if (field === "status") {
+                    displayVal = val === "Enable" ? 'Kích hoạt' :
+                        val === "Disable" ? 'Vô hiệu hóa' :
+                            val;
+                }
+                select.innerHTML += `<option value="${val}">${displayVal}</option>`;
             });
         })
-        .catch(err => console.error(`Error loading ${field}:`, err));
+        .catch(err => console.error(`Lỗi tải ${field}:`, err));
 }
 
 document.getElementById('selectPageSize').addEventListener('change', (e) => {
@@ -183,7 +191,9 @@ function viewAccountPatient(accountPatientId) {
     document.getElementById('viewUsername').textContent = a.username;
     document.getElementById("viewPassword").value = a.password || '********';
     document.getElementById('viewEmail').textContent = a.email;
-    document.getElementById('viewStatus').textContent = a.status;
+    document.getElementById('viewStatus').textContent = a.status === "Disable" ? 'Kích hoạt' :
+                                                                                    a.status === "Enable" ? 'Vô hiệu hóa' :
+                                                                                        a.status ;
     document.getElementById('viewImg').src = a.img || '';
 }
 
@@ -203,7 +213,7 @@ function togglePasswordVisibility() {
 
 function resetAccountPatientPassword() {
     if (!selectedAccountPatientIdForReset) {
-        alert("Please select an account.");
+        alert("Vui lòng chọn một tài khoản.");
         return;
     }
 
@@ -223,7 +233,7 @@ function resetAccountPatientPassword() {
                 bootstrap.Offcanvas.getOrCreateInstance(canvasEl).hide();
             }
         })
-        .catch(err => alert("Error: " + err));
+        .catch(err => alert("Lỗi: " + err));
 }
 
 //===============================================================================================================
@@ -255,7 +265,7 @@ async function openAccountPatientForm(mode, acc = null) {
     form.reset();
 
     if (mode === 'edit' && acc) {
-        title.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Account';
+        title.innerHTML = '<i class="fas fa-edit me-2"></i>Chỉnh sửa tài khoản';
         const previewImg = document.getElementById('previewImg');
         if (acc.img && acc.img !== '') {
             previewImg.src = acc.img;
@@ -272,7 +282,7 @@ async function openAccountPatientForm(mode, acc = null) {
 
         document.getElementById('formMessage').style.display = 'none';
     } else {
-        title.innerHTML = '<i class="fas fa-plus me-2"></i>Add Account';
+        title.innerHTML = '<i class="fas fa-plus me-2"></i>Thêm tài khoản';
         const previewImg = document.getElementById('previewImg');
         previewImg.src = '/assets/images/uploads/default.jpg';
         previewImg.style.display = 'none';
@@ -341,12 +351,12 @@ document.getElementById('accountPatientForm').addEventListener('submit', async f
 
         } else {
             const rawText = await response.text();
-            throw new Error("Unexpected response: " + rawText);
+            throw new Error("Phản hồi bất ngờ: " + rawText);
         }
 
     } catch (error) {
-        console.error('Submit error:', error);
-        displayFormMessage("Submit failed: " + error.message, "danger");
+        console.error('Gửi không thành công:', error);
+        displayFormMessage("Gửi không thành công:" + error.message, "danger");
     }
 });
 
@@ -365,13 +375,13 @@ function validateAccountPatientForm() {
     const errors = [];
 
     if (!username) {
-        errors.push("Username cannot be empty or only whitespace.");
+        errors.push("Tên đăng nhập không được để trống hoặc chỉ chứa khoảng trắng.");
     } else if (username.length < 6) {
-        errors.push("Username must be at least 6 characters long.");
+        errors.push("Tên đăng nhập phải có ít nhất 6 ký tự.");
     }
 
     if (!emailRegex.test(email)) {
-        errors.push("Invalid email format.");
+        errors.push("Định dạng email không hợp lệ.");
     }
 
     return errors;
@@ -399,12 +409,12 @@ function toggleAccountPatientStatus(account_patient_id, currentStatus) {
                 alert(data.message);
                 fetchPatientsWithFilter();
             } else {
-                alert("Failed: " + data.message);
+                alert("Lỗi: " + data.message);
             }
         })
         .catch(err => {
             console.error(err);
-            alert("Something went wrong!");
+            alert("Đã xảy ra lỗi!");
         });
 }
 

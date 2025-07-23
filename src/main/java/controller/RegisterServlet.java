@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.AccountPatient;
+import util.PasswordHasherSHA256Util;
 
 import java.io.IOException;
 
@@ -51,7 +52,7 @@ public class RegisterServlet extends HttpServlet {
         }
 
 
-        boolean created = accountPatientDAO.registerPatient(username, email, password, "https://jbagy.me/wp-content/uploads/2025/03/Hinh-nen-don-gian-dang-yeu-cho-nu-4.png", "Enable");
+        boolean created = accountPatientDAO.registerPatient(username, email, PasswordHasherSHA256Util.hashPassword(password), "/assets/images/uploads/default.jpg", "Enable");
 
         if (created) {
             jsonResponse = new JsonResponse(true, "Sign up successful ", "login.html");

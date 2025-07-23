@@ -157,9 +157,10 @@ public class PatientDAOFA {
         }
     }
 
-    public List<PatientDTOFA> getPatientsNotLinkedToAccount(int accountPatientId) {
+    public List<PatientDTOFA> getPatientsNotLinkedToAccount(int accountPatientId, String searchTerm) {
         List<PatientDTOFA> list = new ArrayList<>();
-        String sql = """
+
+        StringBuilder sql = new StringBuilder("""
         SELECT p.patient_id, p.full_name, p.dob, p.gender, p.phone, p.address
         FROM Patient p
         WHERE p.patient_id NOT IN (
@@ -167,12 +168,32 @@ public class PatientDAOFA {
             FROM Patient_AccountPatient b
             WHERE b.account_patient_id = ?
         )
-        """;
+    """);
+
+        List<Object> params = new ArrayList<>();
+        params.add(accountPatientId);
+
+        if (searchTerm != null && !searchTerm.isBlank()) {
+            sql.append("""
+            AND (
+                p.full_name COLLATE Latin1_General_CI_AI LIKE ? OR
+                p.phone COLLATE Latin1_General_CI_AI LIKE ? OR
+                p.address COLLATE Latin1_General_CI_AI LIKE ?
+            )
+        """);
+
+            String keyword = "%" + searchTerm.trim().replaceAll("\\s+", " ") + "%";
+            params.add(keyword);
+            params.add(keyword);
+            params.add(keyword);
+        }
 
         try (Connection conn = db.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
 
-            ps.setInt(1, accountPatientId);
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {

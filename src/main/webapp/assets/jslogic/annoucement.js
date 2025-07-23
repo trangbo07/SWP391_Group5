@@ -24,7 +24,7 @@ async function loadAnnouncements() {
         renderNewAnnouncements(announcements);
         updateUnreadCounter();
     } catch (err) {
-        console.error('Load announcement failed:', err);
+        console.error('Thông báo tải không thành công: ', err);
         bodyEl.innerHTML =
             '<div class="p-3 text-center text-danger">Không tải được thông báo</div>';
     }
@@ -115,10 +115,10 @@ function renderNewAnnouncements(list) {
                 loadAnnouncements();
                 updateUnreadCounter();
             } else {
-                console.error('Mark-read failed:', await res.text());
+                console.error('Đánh dấu đọc không thành công: ', await res.text());
             }
         } catch (err) {
-            console.error('Mark‑read error', err);
+            console.error('Lỗi đọc đánh dấu', err);
         }
     };
 }

@@ -5,6 +5,7 @@ import dao.AccountDAO;
 import dao.AccountStaffDAO;
 import dao.AdminSystemDAO;
 
+import dao.SystemLogStaffDAO;
 import dto.DistinctResponse;
 import dto.DoctorDTOFA;
 import dto.JsonResponse;
@@ -13,6 +14,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.AccountStaff;
+import model.SystemLog_Staff;
 import util.ImageCheckUtil;
 import util.NormalizeUtil;
 
@@ -84,18 +86,18 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 }
 
                 default -> {
-                    JsonResponse res = new JsonResponse(false, "Unknown action: " + action);
+                    JsonResponse res = new JsonResponse(false, "Hành động không xác định:" + action);
                     out.print(gson.toJson(res));
                 }
             }
 
             out.flush();
         } catch (NumberFormatException e) {
-            JsonResponse res = new JsonResponse(false, "Invalid ID format");
+            JsonResponse res = new JsonResponse(false, "Hành động không xác định:");
             out.print(gson.toJson(res));
         } catch (Exception e) {
             e.printStackTrace();
-            JsonResponse res = new JsonResponse(false, "Server error");
+            JsonResponse res = new JsonResponse(false, "Lỗi máy chủ");
             out.print(gson.toJson(res));
         }
     }
@@ -109,6 +111,10 @@ public class AdminSys4DoctorServlet extends HttpServlet {
         PrintWriter out = resp.getWriter();
         Gson gson = new Gson();
         AccountDAO accountDAO = new AccountDAO();
+        SystemLogStaffDAO logDAO = new SystemLogStaffDAO();
+
+        HttpSession session = req.getSession();
+        AccountStaff staff = (AccountStaff) session.getAttribute("user");
 
         try {
             String action = req.getParameter("action");
@@ -159,12 +165,12 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 }
 
                 if (accountDAO.checkAccount(email)) {
-                    jsonRes = new JsonResponse(false, "Email already exists.");
+                    jsonRes = new JsonResponse(false, "Email đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
                 if (accountDAO.checkAccount(username)) {
-                    jsonRes = new JsonResponse(false, "Username already exists.");
+                    jsonRes = new JsonResponse(false, "Tên đăng nhập đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -175,13 +181,22 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                         fullName, phone, department, eduLevel
                 );
 
-                jsonRes = new JsonResponse(success, success ? "Create successfully!" : "Create failed!");
+                jsonRes = new JsonResponse(success, success ? "Tạo thành công!" : "Tạo không thành công!");
                 out.print(gson.toJson(jsonRes));
+
+                if (success) {
+                    SystemLog_Staff log = new SystemLog_Staff();
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+                    log.setAction("Nhân viên " + staff.getUsername() + " đã tạo tài khoản bác sĩ: " + username);
+                    log.setAction_type("CREATE");
+                    logDAO.insertLog(log);
+                }
+
                 return;
 
             } else if ("update".equals(action)) {
                 if (doctorId == null || doctorId.isEmpty()) {
-                    jsonRes = new JsonResponse(false, "Missing doctor ID");
+                    jsonRes = new JsonResponse(false, "Thiếu ID bác sĩ");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -226,7 +241,7 @@ public class AdminSys4DoctorServlet extends HttpServlet {
 
                 boolean isDuplicate = dao.isEmailOrUsernameDuplicated(username, email, oldUsername, oldEmail);
                 if (isDuplicate) {
-                    jsonRes = new JsonResponse(false, "Username or Email already exists.");
+                    jsonRes = new JsonResponse(false, "Tên đăng nhập hoặc Email đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -236,21 +251,45 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                         fullName, phone, department, eduLevel
                 );
 
-                jsonRes = new JsonResponse(success, success ? "Updated successfully!" : "Update failed!");
+                jsonRes = new JsonResponse(success, success ? "Đã cập nhật thành công!" : "Cập nhật không thành công!");
                 out.print(gson.toJson(jsonRes));
+
+                if (success) {
+                    SystemLog_Staff log = new SystemLog_Staff();
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+
+                    if (username.equals(oldUsername)) {
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã cập nhật tài khoản bác sĩ: " + username);
+                    } else {
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã cập nhật tài khoản bác sĩ: " + username + " từ " + oldUsername);
+                    }
+                    log.setAction_type("UPDATE");
+                    logDAO.insertLog(log);
+                }
                 return;
             } else if ("updateStatus".equals(action)) {
                 int account_staff_id = Integer.parseInt(req.getParameter("account_staff_id"));
                 String newStatus = req.getParameter("status");
 
                 boolean success = dao.updateAccountStaffStatus(account_staff_id , newStatus); // viết hàm này trong DAO
-                jsonRes = new JsonResponse(success, success ? "Status updated!" : "Status update failed.");
+                jsonRes = new JsonResponse(success, success ? "Trạng thái đã được cập nhật!": "Cập nhật trạng thái không thành công.");
                 out.print(gson.toJson(jsonRes));
+
+                if (success) {
+                    AccountStaffDAO accountStaffDAO = new AccountStaffDAO();
+                    AccountStaff target = accountStaffDAO.getAccountStaffById(account_staff_id);
+                    SystemLog_Staff log = new SystemLog_Staff();
+
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+                    log.setAction("Nhân viên " + staff.getUsername() + " đã cập nhật trạng thái của tài khoản bác sĩ: " + target.getUsername() + " thành " + newStatus);
+                    log.setAction_type("UPDATE");
+                    logDAO.insertLog(log);
+                }
                 return;
             } else if ("resetPassword".equals(action)) {
                 String staffIdRaw = req.getParameter("accountStaffId");
                 if (staffIdRaw == null || staffIdRaw.isEmpty()) {
-                    jsonRes = new JsonResponse(false, "Missing accountStaffId");
+                    jsonRes = new JsonResponse(false, "Thiếu accountStaffId");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -258,11 +297,22 @@ public class AdminSys4DoctorServlet extends HttpServlet {
                 int staffId = Integer.parseInt(staffIdRaw);
                 String generatedPassword = generateRandomPassword(8);
                 boolean ok = accountDAO.resetStaffPassword(staffId, generatedPassword);
-                jsonRes = new JsonResponse(ok, ok ? "Reset password successfully" : "Reset password failed");
+                jsonRes = new JsonResponse(ok, ok ? "Đặt lại mật khẩu thành công": "Đặt lại mật khẩu không thành công");
                 out.print(gson.toJson(jsonRes));
+
+                if (ok) {
+                    AccountStaffDAO accountStaffDAO = new AccountStaffDAO();
+                    AccountStaff target = accountStaffDAO.getAccountStaffById(staffId);
+                    SystemLog_Staff log = new SystemLog_Staff();
+
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+                    log.setAction("Nhân viên " + staff.getUsername() + " đã đặt lại mật khẩu cho tài khoản bác sĩ: " + target.getUsername());
+                    log.setAction_type("UPDATE");
+                    logDAO.insertLog(log);
+                }
                 return;
             } else {
-                jsonRes = new JsonResponse(false, "Invalid action");
+                jsonRes = new JsonResponse(false, "Hành động không hợp lệ");
                 out.print(gson.toJson(jsonRes));
             }
 

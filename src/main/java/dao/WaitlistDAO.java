@@ -284,6 +284,45 @@ public class WaitlistDAO {
         return waitlist;
     }
 
+    public boolean insertWaitlist(Waitlist waitlist) {
+        DBContext db = DBContext.getInstance();
+        String sql = "INSERT INTO Waitlist (patient_id, doctor_id, room_id, status, visittype, registered_at, estimated_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = db.getConnection().prepareStatement(sql);
+            ps.setInt(1, waitlist.getPatient_id());
+            ps.setInt(2, waitlist.getDoctor_id());
+            
+            // Xử lý room_id - sử dụng null nếu là -1 (chưa phân phòng)
+            if (waitlist.getRoom_id() > 0) {
+                ps.setInt(3, waitlist.getRoom_id());
+            } else {
+                ps.setNull(3, java.sql.Types.INTEGER);
+            }
+            
+            ps.setString(4, waitlist.getStatus());
+            ps.setString(5, waitlist.getVisittype());
+            
+            // Sử dụng Timestamp thay vì String để tránh lỗi format
+            if (waitlist.getRegistered_at() != null) {
+                ps.setTimestamp(6, java.sql.Timestamp.valueOf(waitlist.getRegistered_at()));
+            } else {
+                ps.setTimestamp(6, new java.sql.Timestamp(System.currentTimeMillis()));
+            }
+            
+            if (waitlist.getEstimated_time() != null) {
+                ps.setTimestamp(7, java.sql.Timestamp.valueOf(waitlist.getEstimated_time()));
+            } else {
+                ps.setTimestamp(7, new java.sql.Timestamp(System.currentTimeMillis()));
+            }
+            
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Methods for receptionist
     public List<Waitlist> getAllWaitlistForReceptionist() throws SQLException {
         List<Waitlist> waitlist = new ArrayList<>();

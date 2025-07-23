@@ -4,15 +4,14 @@ import com.google.gson.Gson;
 import dao.AccountDAO;
 import dao.AccountStaffDAO;
 import dao.AdminSystemDAO;
-import dto.AdminDTOFA;
-import dto.DistinctResponse;
-import dto.JsonResponse;
-import dto.ReceptionistDTOFA;
+import dao.SystemLogStaffDAO;
+import dto.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.AccountStaff;
+import model.SystemLog_Staff;
 import util.ImageCheckUtil;
 import util.NormalizeUtil;
 
@@ -87,18 +86,18 @@ public class AdminSys4AdminServlet extends HttpServlet {
                 }
 
                 default -> {
-                    JsonResponse res = new JsonResponse(false, "Unknown action: " + action);
+                    JsonResponse res = new JsonResponse(false, "Hành động không xác định:" + action);
                     out.print(gson.toJson(res));
                 }
             }
 
             out.flush();
         } catch (NumberFormatException e) {
-            JsonResponse res = new JsonResponse(false, "Invalid ID format");
+            JsonResponse res = new JsonResponse(false, "Hành động không xác định:");
             out.print(new Gson().toJson(res));
         } catch (Exception e) {
             e.printStackTrace();
-            JsonResponse res = new JsonResponse(false, "Server error");
+                JsonResponse res = new JsonResponse(false, "Lỗi máy chủ");
             out.print(new Gson().toJson(res));
         }
     }
@@ -111,10 +110,14 @@ public class AdminSys4AdminServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter out = resp.getWriter();
+        SystemLogStaffDAO logDAO = new SystemLogStaffDAO();
         Gson gson = new Gson();
 
         AccountDAO accountDAO = new AccountDAO();
         AdminSystemDAO dao = new AdminSystemDAO();
+
+        HttpSession session = req.getSession();
+        AccountStaff staff = (AccountStaff) session.getAttribute("user");
 
         try {
             String action = req.getParameter("action");
@@ -165,12 +168,12 @@ public class AdminSys4AdminServlet extends HttpServlet {
                 }
 
                 if (new AccountDAO().checkAccount(email)) {
-                    jsonRes = new JsonResponse(false, "Email already exists.");
+                    jsonRes = new JsonResponse(false, "Email đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
                 if (new AccountDAO().checkAccount(username)) {
-                    jsonRes = new JsonResponse(false, "Username already exists.");
+                    jsonRes = new JsonResponse(false, "Tên đăng nhập đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -179,13 +182,26 @@ public class AdminSys4AdminServlet extends HttpServlet {
                 boolean success = dao.insertAdmin(username, generatedPassword, email, imagePath, status,
                                                     fullName, phone, department, role);
 
-                jsonRes = new JsonResponse(success, success ? "Create successfully!" : "Create failed!");
+                jsonRes = new JsonResponse(success, success ? "Tạo thành công!" : "Tạo không thành công!");
                 out.print(gson.toJson(jsonRes));
+
+                if (success) {
+                    SystemLog_Staff log = new SystemLog_Staff();
+
+                    // Nếu có accountStaffId người thao tác thì lấy, nếu không bạn có thể lấy từ session
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+
+                    log.setAction("Nhân viên " + staff.getUsername() + " đã tạo tài khoản admin: " + username);
+                    log.setAction_type("CREATE");
+
+                    logDAO.insertLog(log);
+                }
+
                 return;
 
             } else if ("update".equals(action)) {
                 if (adminId == null || adminId.isEmpty()) {
-                    jsonRes = new JsonResponse(false, "Missing admin ID");
+                    jsonRes = new JsonResponse(false, "Thiếu Admin ID");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -195,7 +211,7 @@ public class AdminSys4AdminServlet extends HttpServlet {
 
                 AccountStaff acc = new AccountStaffDAO().getAccountStaffById(accountStaffIdInt);
                 if (acc == null) {
-                    jsonRes = new JsonResponse(false, "Account not found");
+                    jsonRes = new JsonResponse(false, "Không tìm thấy tài khoản");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -239,7 +255,7 @@ public class AdminSys4AdminServlet extends HttpServlet {
 
                 boolean isDuplicate = dao.isEmailOrUsernameDuplicated(username, email, oldUsername, oldEmail);
                 if (isDuplicate) {
-                    jsonRes = new JsonResponse(false, "Username or Email already exists.");
+                    jsonRes = new JsonResponse(false, "Tên đăng nhập hoặc Email đã tồn tại.");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -250,22 +266,53 @@ public class AdminSys4AdminServlet extends HttpServlet {
                         fullName, phone, department
                 );
 
-                jsonRes = new JsonResponse(success, success ? "Updated successfully!" : "Update failed!");
+                jsonRes = new JsonResponse(success, success ? "Đã cập nhật thành công!" : "Cập nhật không thành công!");
                 out.print(gson.toJson(jsonRes));
+
+                if (success) {
+                    SystemLog_Staff log = new SystemLog_Staff();
+
+                    // Nếu có accountStaffId người thao tác thì lấy, nếu không bạn có thể lấy từ session
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+
+                    if (username == oldUsername) {
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã cập nhật tài khoản admin: " + username);
+                    } else {
+                        log.setAction("Nhân viên " + staff.getUsername() + " đã cập nhật tài khoản admin: " + username + " from " + oldUsername);
+                    }
+                    log.setAction_type("UPDATE");
+
+                    logDAO.insertLog(log);
+                }
+
                 return;
             } else if ("updateStatus".equals(action)) {
                 int account_staff_id = Integer.parseInt(req.getParameter("account_staff_id"));
                 String newStatus = req.getParameter("status");
 
                 boolean success = dao.updateAccountStaffStatus(account_staff_id, newStatus);
-                jsonRes = new JsonResponse(success, success ? "Status updated!" : "Status update failed.");
+                jsonRes = new JsonResponse(success, success ? "Trạng thái đã được cập nhật!": "Cập nhật trạng thái không thành công.");
                 out.print(gson.toJson(jsonRes));
+
+                if (success) {
+                    AccountStaffDAO accountStaffDAO = new AccountStaffDAO();
+                    AccountStaff target = accountStaffDAO.getAccountStaffById(account_staff_id);
+                    SystemLog_Staff log = new SystemLog_Staff();
+
+                    // Nếu có accountStaffId người thao tác thì lấy, nếu không bạn có thể lấy từ session
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+
+                    log.setAction("Nhân viên " + staff.getUsername() + " đã cập nhật trạng thái của tài khoản admin: " + target.getUsername() + " thành " + newStatus);
+                    log.setAction_type("UPDATE");
+
+                    logDAO.insertLog(log);
+                }
                 return;
 
             } else if ("resetPassword".equals(action)) {
                 String staffIdRaw = req.getParameter("accountStaffId");
                 if (staffIdRaw == null || staffIdRaw.isEmpty()) {
-                    jsonRes = new JsonResponse(false, "Missing accountStaffId");
+                    jsonRes = new JsonResponse(false, "Thiếu accountStaffId");
                     out.print(gson.toJson(jsonRes));
                     return;
                 }
@@ -274,12 +321,27 @@ public class AdminSys4AdminServlet extends HttpServlet {
                 String generatedPassword = generateRandomPassword(8);
                 boolean ok = accountDAO.resetStaffPassword(staffId, generatedPassword);
 
-                jsonRes = new JsonResponse(ok, ok ? "Reset password successfully" : "Reset password failed");
+                jsonRes = new JsonResponse(ok, ok ? "Đặt lại mật khẩu thành công": "Đặt lại mật khẩu không thành công");
                 out.print(gson.toJson(jsonRes));
+
+                if (ok) {
+                    AccountStaffDAO accountStaffDAO = new AccountStaffDAO();
+                    AccountStaff target = accountStaffDAO.getAccountStaffById(staffId);
+                    SystemLog_Staff log = new SystemLog_Staff();
+
+                    // Nếu có accountStaffId người thao tác thì lấy, nếu không bạn có thể lấy từ session
+                    log.setAccount_staff_id(staff.getAccount_staff_id());
+
+                    log.setAction("Nhân viên " + staff.getUsername() + " đã đặt lại mật khẩu của tài khoản " + target.getUsername() + ".");
+                    log.setAction_type("UPDATE");
+
+                    logDAO.insertLog(log);
+                }
+
                 return;
 
             } else {
-                jsonRes = new JsonResponse(false, "Invalid action");
+                jsonRes = new JsonResponse(false, "Hành động không hợp lệ");
                 out.print(gson.toJson(jsonRes));
             }
 

@@ -17,7 +17,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 🧠 Mapping tùy chỉnh (ví dụ: "home-adminsys.html" thuộc Admin Dashboard)
     const customMap = {
+        // Admin System Dashboard
         "home-adminsys.html": "home-adminsys.html",
+        "announcement-adminsys.html": "home-adminsys.html",
+        "announcements-adminsys.html": "home-adminsys.html",
+        "report.html": "home-adminsys.html",
+        "manage-services.html": "home-adminsys.html",
+        "payment.html": "home-adminsys.html",
+        "medicine-warehouse.html": "home-adminsys.html",
+        // Admin Business Dashboard
+        "home-adminbusiness.html": "home-adminbusiness.html",
+        "announcement-adminbusiness.html": "home-adminbusiness.html",
+        "report.html": "home-adminbusiness.html",
+        "manage-services.html": "home-adminbusiness.html",
+        "payment.html": "home-adminbusiness.html",
+        "medicine-warehouse.html": "home-adminbusiness.html",
+        // Add more mappings as needed
     };
 
     // Nếu đang ở 1 trang alias → gán đúng vào "home-adminsys.html"

@@ -29,8 +29,8 @@ class BusinessReportsManager {
             'totalInvoices', 
             'totalPatients',
             'completionRate',
-            'revenueChart',
-            'departmentChart',
+            // 'revenueChart', // Not required
+            // 'departmentChart', // Not required
             'servicesTableBody',
             'doctorsTableBody', 
             'medicinesTableBody',
@@ -45,10 +45,11 @@ class BusinessReportsManager {
                 console.error(`Missing DOM element: ${id}`);
             }
         });
-        
-        if (missingElements.length > 0) {
-            console.error('Missing DOM elements:', missingElements);
-            this.showErrorMessage(`Thiếu các thành phần giao diện: ${missingElements.join(', ')}`);
+        // Remove revenueChart and departmentChart from missingElements if present (defensive)
+        const filteredMissing = missingElements.filter(id => id !== 'revenueChart' && id !== 'departmentChart');
+        if (filteredMissing.length > 0) {
+            console.error('Missing DOM elements:', filteredMissing);
+            this.showErrorMessage(`Thiếu các thành phần giao diện: ${filteredMissing.join(', ')}`);
         } else {
             console.log('All required DOM elements found');
         }
@@ -254,8 +255,8 @@ class BusinessReportsManager {
         
         try {
             this.updateMetrics(data.revenue, data.patients);
-            this.updateRevenueChart(data.monthlyTrend || []);
-            this.updateDepartmentChart(data.departments || []);
+            
+            
             this.updateServicesTable(data.topServices || []);
             this.updateDoctorsTable(data.doctors || []);
             this.updateMedicinesTable(data.medicines || []);
@@ -327,137 +328,7 @@ class BusinessReportsManager {
         console.log('Metrics update complete');
     }
 
-    updateRevenueChart(monthlyData) {
-        console.log('Updating revenue chart...');
-        try {
-            const ctx = document.getElementById('revenueChart');
-            if (!ctx) {
-                console.error('Revenue chart canvas not found');
-                return;
-            }
-            
-            const chartCtx = ctx.getContext('2d');
-            
-            if (this.charts.revenue) {
-                this.charts.revenue.destroy();
-            }
-
-            const labels = monthlyData.map(item => item.month_name || `Tháng ${item.month}`);
-            const revenues = monthlyData.map(item => item.monthly_revenue || 0);
-            const invoices = monthlyData.map(item => item.monthly_invoices || 0);
-
-            this.charts.revenue = new Chart(chartCtx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Doanh Thu (VNĐ)',
-                        data: revenues,
-                        borderColor: 'rgb(75, 192, 192)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        yAxisID: 'y'
-                    }, {
-                        label: 'Số Hóa Đơn',
-                        data: invoices,
-                        borderColor: 'rgb(255, 99, 132)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        yAxisID: 'y1'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Xu Hướng Doanh Thu Theo Tháng'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            type: 'linear',
-                            display: true,
-                            position: 'left',
-                            ticks: {
-                                callback: function(value) {
-                                    return new Intl.NumberFormat('vi-VN', {
-                                        style: 'currency',
-                                        currency: 'VND',
-                                        notation: 'compact'
-                                    }).format(value);
-                                }
-                            }
-                        },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            grid: {
-                                drawOnChartArea: false,
-                            },
-                        }
-                    }
-                }
-            });
-        } catch (error) {
-            console.error('Error updating revenue chart:', error);
-        }
-    }
-
-    updateDepartmentChart(departments) {
-        console.log('Updating department chart...');
-        try {
-            const ctx = document.getElementById('departmentChart');
-            if (!ctx) {
-                console.error('Department chart canvas not found');
-                return;
-            }
-            
-            const chartCtx = ctx.getContext('2d');
-            
-            if (this.charts.department) {
-                this.charts.department.destroy();
-            }
-
-            const labels = departments.map(dept => dept.department || 'Không xác định');
-            const appointmentCounts = departments.map(dept => dept.total_appointments || 0);
-            const colors = [
-                'rgba(255, 99, 132, 0.8)',
-                'rgba(54, 162, 235, 0.8)',
-                'rgba(255, 205, 86, 0.8)',
-                'rgba(75, 192, 192, 0.8)',
-                'rgba(153, 102, 255, 0.8)',
-                'rgba(255, 159, 64, 0.8)'
-            ];
-
-            this.charts.department = new Chart(chartCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: appointmentCounts,
-                        backgroundColor: colors.slice(0, labels.length),
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Phân Bổ Lịch Hẹn Theo Khoa'
-                        }
-                    }
-                }
-            });
-        } catch (error) {
-            console.error('Error updating department chart:', error);
-        }
-    }
+   
 
     updateServicesTable(services) {
         console.log('Updating services table...');

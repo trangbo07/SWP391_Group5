@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@WebServlet("/api/receptionist/appointment")
+@WebServlet({"/api/receptionist/appointment", "/api/receptionist/doctors"})
 public class ReceptionistAppointmentServlet extends HttpServlet {
     private final AppointmentDAO appointmentDAO = new AppointmentDAO();
     private final DoctorDAO doctorDAO = new DoctorDAO();
@@ -30,6 +30,13 @@ public class ReceptionistAppointmentServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json;charset=UTF-8");
         PrintWriter out = resp.getWriter();
+
+        String servletPath = req.getServletPath();
+        if ("/api/receptionist/doctors".equals(servletPath)) {
+            List<dto.DoctorDTO> doctors = doctorDAO.getAllDoctorDTOs();
+            out.write(gson.toJson(doctors));
+            return;
+        }
 
         try {
             HttpSession session = req.getSession(false);
@@ -96,36 +103,22 @@ public class ReceptionistAppointmentServlet extends HttpServlet {
             String body = req.getReader().lines().collect(Collectors.joining());
             AppointmentRequest appointmentRequest = gson.fromJson(body, AppointmentRequest.class);
 
-            if (appointmentRequest.action == null) {
-                resp.setStatus(400);
-                out.write("{\"error\":\"Missing action\"}");
-                return;
+            // Không cần action, chỉ nhận dữ liệu tạo appointment
+            boolean success = appointmentDAO.createAppointment(
+                appointmentRequest.doctorId,
+                appointmentRequest.patientId,
+                receptionistId,
+                appointmentRequest.appointmentDateTime,
+                appointmentRequest.shift,
+                appointmentRequest.note != null ? appointmentRequest.note : ""
+            );
+
+            if (success) {
+                out.write("{\"success\":true,\"message\":\"Appointment created successfully\"}");
+            } else {
+                resp.setStatus(500);
+                out.write("{\"success\":false,\"message\":\"Failed to create appointment\"}");
             }
-
-            switch (appointmentRequest.action) {
-                case "create":
-                    boolean success = appointmentDAO.createAppointment(
-                        appointmentRequest.doctorId,
-                        appointmentRequest.patientId,
-                        receptionistId,
-                        appointmentRequest.appointmentDateTime,
-                        appointmentRequest.shift,
-                        appointmentRequest.note != null ? appointmentRequest.note : ""
-                    );
-
-                    if (success) {
-                        out.write("{\"success\":true,\"message\":\"Appointment created successfully\"}");
-                    } else {
-                        resp.setStatus(500);
-                        out.write("{\"success\":false,\"message\":\"Failed to create appointment\"}");
-                    }
-                    break;
-                default:
-                    resp.setStatus(400);
-                    out.write("{\"error\":\"Invalid action\"}");
-                    break;
-            }
-
         } catch (Exception e) {
             resp.setStatus(500);
             out.write("{\"error\":\"Internal server error: " + e.getMessage() + "\"}");
@@ -140,5 +133,6 @@ public class ReceptionistAppointmentServlet extends HttpServlet {
         String appointmentDateTime;
         String shift;
         String note;
+        int appointmentId; // Thêm trường này để nhận appointmentId khi confirm
     }
 } 

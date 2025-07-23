@@ -1,6 +1,8 @@
 package controller;
 
 import dao.PaymentDAO;
+import dao.PaymentAdminDAO;
+import dto.PaymentAdminDTO;
 import model.Payment;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,9 +12,10 @@ import java.util.List;
 import java.util.Map;
 import com.google.gson.Gson;
 
-@WebServlet({"/payment-admin", "/payment-admin/analytics", "/payment-admin/update-status", "/payment-admin/update"})
+@WebServlet({"/payment-admin", "/payment-admin/analytics", "/payment-admin/update-status", "/payment-admin/update", "/payment-adminbusiness", "/payment-adminbusiness/api"})
 public class PaymentAdminServlet extends HttpServlet {
     private PaymentDAO paymentDAO = new PaymentDAO();
+    private PaymentAdminDAO paymentAdminDAO = new PaymentAdminDAO();
     private Gson gson = new Gson();
 
     @Override
@@ -25,6 +28,12 @@ public class PaymentAdminServlet extends HttpServlet {
                 break;
             case "/payment-admin/analytics":
                 handleGetAnalytics(req, resp);
+                break;
+            case "/payment-adminbusiness":
+                handleGetAllPaymentAdminBusiness(req, resp);
+                break;
+            case "/payment-adminbusiness/api":
+                handleGetAllPaymentAdminBusinessApi(req, resp);
                 break;
             default:
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -39,6 +48,10 @@ public class PaymentAdminServlet extends HttpServlet {
             handleUpdatePaymentStatus(req, resp);
         } else if ("/payment-admin/update".equals(path)) {
             handleUpdatePayment(req, resp);
+        } else if ("/payment-adminbusiness/add".equals(path)) {
+            handleAddPaymentAdminBusiness(req, resp);
+        } else if ("/payment-adminbusiness/edit".equals(path)) {
+            handleEditPaymentAdminBusiness(req, resp);
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -48,7 +61,7 @@ public class PaymentAdminServlet extends HttpServlet {
         try {
             // Trả về JSON cho AJAX request
             if ("application/json".equals(req.getHeader("Accept"))) {
-                List<Map<String, Object>> payments = paymentDAO.getAllPaymentsWithCustomer();
+                List<Map<String, Object>> payments = paymentDAO.getAllPaymentsWithDiagnosis();
                 resp.setContentType("application/json");
                 resp.setCharacterEncoding("UTF-8");
                 resp.getWriter().write(gson.toJson(payments));
@@ -87,6 +100,31 @@ public class PaymentAdminServlet extends HttpServlet {
             e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("{\"error\": \"Failed to fetch analytics\"}");
+        }
+    }
+
+    private void handleGetAllPaymentAdminBusiness(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        try {
+            List<PaymentAdminDTO> payments = paymentAdminDAO.getAllPaymentAdminInfo();
+            req.setAttribute("payments", payments);
+            req.getRequestDispatcher("/view/payment-adminbusiness.html").forward(req, resp);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\": \"Failed to fetch payment admin business data\"}");
+        }
+    }
+
+    private void handleGetAllPaymentAdminBusinessApi(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            List<PaymentAdminDTO> payments = paymentAdminDAO.getAllPaymentAdminInfo();
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            resp.getWriter().write(gson.toJson(payments));
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\": \"Failed to fetch payment admin business data\"}");
         }
     }
 
@@ -152,6 +190,51 @@ public class PaymentAdminServlet extends HttpServlet {
             e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("{\"error\": \"Internal server error\"}");
+        }
+    }
+
+    // Thêm mới payment cho admin business
+    private void handleAddPaymentAdminBusiness(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            PaymentAdminDTO dto = new PaymentAdminDTO();
+            dto.setFull_name(req.getParameter("full_name"));
+            dto.setDob(req.getParameter("dob"));
+            dto.setGender(req.getParameter("gender"));
+            dto.setDisease(req.getParameter("disease"));
+            dto.setConclusion(req.getParameter("conclusion"));
+            dto.setTreatment_plan(req.getParameter("treatment_plan"));
+            dto.setTotal_amount(Double.parseDouble(req.getParameter("total_amount")));
+            dto.setStatus(req.getParameter("status"));
+
+            resp.setContentType("application/json");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"success\":false,\"error\":\"Internal server error\"}");
+        }
+    }
+
+    // Sửa payment cho admin business
+    private void handleEditPaymentAdminBusiness(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            int invoiceId = Integer.parseInt(req.getParameter("invoice_id"));
+            PaymentAdminDTO dto = new PaymentAdminDTO();
+            dto.setFull_name(req.getParameter("full_name"));
+            dto.setDob(req.getParameter("dob"));
+            dto.setGender(req.getParameter("gender"));
+            dto.setDisease(req.getParameter("disease"));
+            dto.setConclusion(req.getParameter("conclusion"));
+            dto.setTreatment_plan(req.getParameter("treatment_plan"));
+            dto.setTotal_amount(Double.parseDouble(req.getParameter("total_amount")));
+            dto.setStatus(req.getParameter("status"));
+            boolean success = paymentAdminDAO.updatePayment(invoiceId, dto);
+            resp.setContentType("application/json");
+            resp.getWriter().write("{" + (success ? "\"success\":true" : "\"success\":false") + "}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"success\":false,\"error\":\"Internal server error\"}");
         }
     }
 } 

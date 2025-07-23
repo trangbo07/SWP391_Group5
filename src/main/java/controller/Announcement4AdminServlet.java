@@ -3,6 +3,7 @@ package controller;
 import com.google.gson.Gson;
 import dao.AccountStaffDAO;
 import dao.AnnouncementDAO;
+import dao.SystemLogStaffDAO;
 import dto.AnnouncementDTO;
 import dto.JsonResponse;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.*;
 import model.AccountStaff;
 import model.AdminBusiness;
 import model.AdminSystem;
+import model.SystemLog_Staff;
 import socket.AnnouncementSocket;
 import util.NormalizeUtil;
 
@@ -68,7 +70,7 @@ public class Announcement4AdminServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            out.print(gson.toJson(new JsonResponse(false, "Server error")));
+            out.print(gson.toJson(new JsonResponse(false, "Lỗi máy chủ")));
         }
     }
 
@@ -81,6 +83,9 @@ public class Announcement4AdminServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter out = resp.getWriter();
+        SystemLogStaffDAO logDAO = new SystemLogStaffDAO();
+        AnnouncementDAO dao = new AnnouncementDAO();
+        AccountStaff currentStaff = (AccountStaff) req.getSession().getAttribute("user");
 
         try {
             String action = req.getParameter("action");
@@ -98,12 +103,22 @@ public class Announcement4AdminServlet extends HttpServlet {
                     int newId = dao.createAnnouncement(title, content, adminId);
                     boolean success = newId > 0;
 
+
+
                     if (success) {
                         AnnouncementDTO dto = dao.getAnnouncementByAnnouncementId(newId);
                         AnnouncementSocket.broadcastNewAnnouncement(dto);
+
+                        if (currentStaff != null) {
+                            SystemLog_Staff log = new SystemLog_Staff();
+                            log.setAccount_staff_id(currentStaff.getAccount_staff_id());
+                            log.setAction("Nhân viên " + currentStaff.getUsername() + " đã tạo thông báo: " + title);
+                            log.setAction_type("CREATE");
+                            logDAO.insertLog(log);
+                        }
                     }
 
-                    res = new JsonResponse(success, success ? "Created successfully" : "Create failed");
+                    res = new JsonResponse(success, success ? "Tạo thành công" : "Tạo không thành công");
                     out.print(gson.toJson(res));
                 }
 
@@ -117,9 +132,16 @@ public class Announcement4AdminServlet extends HttpServlet {
                     if (success) {
                         AnnouncementDTO dto = dao.getAnnouncementByAnnouncementId(id);
                         AnnouncementSocket.broadcastNewAnnouncement(dto);
-                    }
 
-                    res = new JsonResponse(success, success ? "Updated successfully" : "Update failed");
+                        if (currentStaff != null) {
+                            SystemLog_Staff log = new SystemLog_Staff();
+                            log.setAccount_staff_id(currentStaff.getAccount_staff_id());
+                            log.setAction("Nhân viên " + currentStaff.getUsername() + " đã cập nhật thông báo ID: " + id);
+                            log.setAction_type("UPDATE");
+                            logDAO.insertLog(log);
+                        }
+                    }
+                    res = new JsonResponse(success, success ? "Đã cập nhật thành công" : "Cập nhật không thành công");
                     out.print(gson.toJson(res));
                 }
 
@@ -131,9 +153,17 @@ public class Announcement4AdminServlet extends HttpServlet {
                         AnnouncementDTO dto = new AnnouncementDTO();
                         dto.setAnnouncementId(id);
                         AnnouncementSocket.broadcastDeleteAnnouncement(id);
+
+                        if (currentStaff != null) {
+                            SystemLog_Staff log = new SystemLog_Staff();
+                            log.setAccount_staff_id(currentStaff.getAccount_staff_id());
+                            log.setAction("Nhân viên " + currentStaff.getUsername() + " đã xóa thông báo ID: " + id);
+                            log.setAction_type("DELETE");
+                            logDAO.insertLog(log);
+                        }
                     }
 
-                    res = new JsonResponse(success, success ? "Deleted successfully" : "Delete failed");
+                    res = new JsonResponse(success, success ? "Đã xóa thành công" : "Xóa không thành công");
                     out.print(gson.toJson(res));
                 }
 
@@ -145,7 +175,7 @@ public class Announcement4AdminServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            out.print(gson.toJson(new JsonResponse(false, "Server error: " + e.getMessage())));
+            out.print(gson.toJson(new JsonResponse(false, "Lỗi máy chủ: " + e.getMessage())));
         }
     }
 

@@ -183,30 +183,39 @@ public class PaymentDAO {
         return result;
     }
 
-    // Lấy thông tin payment với customer name
-    public List<Map<String, Object>> getAllPaymentsWithCustomer() {
+    // Lấy danh sách payment với thông tin bệnh nhân, chẩn đoán, hóa đơn
+    public List<Map<String, Object>> getAllPaymentsWithDiagnosis() {
         List<Map<String, Object>> result = new ArrayList<>();
-        String sql = "SELECT p.payment_id, p.amount, p.payment_type, p.payment_date, p.status, " +
-                "p.invoice_id, pt.full_name as customer_name " +
-                "FROM Payment p " +
-                "JOIN Invoice i ON p.invoice_id = i.invoice_id " +
-                "JOIN Patient pt ON i.patient_id = pt.patient_id " +
-                "ORDER BY p.payment_date DESC";
+        String sql = "SELECT p.full_name, " +
+                "ISNULL(CONVERT(varchar, p.dob, 23), '') as dob, " +
+                "ISNULL(p.gender, '') as gender, " +
+                "ISNULL(d.disease, '') as disease, " +
+                "ISNULL(d.conclusion, '') as conclusion, " +
+                "ISNULL(d.treatment_plan, '') as treatment_plan, " +
+                "i.invoice_id, " +
+                "ISNULL(i.total_amount, 0) as total_amount, " +
+                "ISNULL(i.status, '') as status, " +
+                "ISNULL(CONVERT(varchar, i.issue_date, 20), '') as payment_date " +
+                "FROM Diagnosis d " +
+                "JOIN MedicineRecords m ON d.medicineRecord_id = m.medicineRecord_id " +
+                "JOIN Patient p ON p.patient_id = m.patient_id " +
+                "JOIN Invoice i ON i.medicineRecord_id = m.medicineRecord_id ";
         DBContext db = DBContext.getInstance();
-
         try (Connection conn = db.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
             while (rs.next()) {
                 Map<String, Object> payment = new HashMap<>();
-                payment.put("payment_id", rs.getInt("payment_id"));
-                payment.put("amount", rs.getDouble("amount"));
-                payment.put("payment_type", rs.getString("payment_type"));
-                payment.put("payment_date", rs.getTimestamp("payment_date"));
-                payment.put("status", rs.getString("status"));
+                payment.put("full_name", rs.getString("full_name"));
+                payment.put("dob", rs.getString("dob"));
+                payment.put("gender", rs.getString("gender"));
+                payment.put("disease", rs.getString("disease"));
+                payment.put("conclusion", rs.getString("conclusion"));
+                payment.put("treatment_plan", rs.getString("treatment_plan"));
                 payment.put("invoice_id", rs.getInt("invoice_id"));
-                payment.put("customer_name", rs.getString("customer_name"));
+                payment.put("total_amount", rs.getDouble("total_amount"));
+                payment.put("status", rs.getString("status"));
+                payment.put("payment_date", rs.getString("payment_date"));
                 result.add(payment);
             }
         } catch (Exception e) {

@@ -60,6 +60,11 @@ public class VnPayServlet extends HttpServlet {
         vnp_Params.put("vnp_ReturnUrl", VnPayConfig.getReturnUrl());
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
         vnp_Params.put("vnp_CreateDate", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        // Thêm thời gian hết hạn link thanh toán (5 phút)
+        Calendar expireCal = Calendar.getInstance();
+        expireCal.add(Calendar.MINUTE, 5);
+        String vnp_ExpireDate = new SimpleDateFormat("yyyyMMddHHmmss").format(expireCal.getTime());
+        vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
         List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
         Collections.sort(fieldNames);
