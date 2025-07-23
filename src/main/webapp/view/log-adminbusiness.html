@@ -54,7 +54,261 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
         
-        
+        <style>
+            /* Quick Actions Styles */
+            .quick-action-btn {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 25px 15px;
+                height: 180px;
+                justify-content: center;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                border-radius: 15px;
+                background: var(--bs-card-bg);
+                border: 1px solid var(--bs-border-color);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+    
+            .quick-action-btn:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+                border-color: var(--bs-primary);
+            }
+    
+            .quick-action-btn .btn-icon {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+                color: var(--bs-primary);
+                transition: transform 0.3s ease;
+                width: 64px;
+                height: 64px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: var(--bs-primary-bg-subtle);
+                border-radius: 12px;
+            }
+    
+            .quick-action-btn:hover .btn-icon {
+                transform: scale(1.1);
+                background: var(--bs-primary-bg-subtle);
+            }
+    
+            .quick-action-btn .btn-text {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: var(--bs-body-color);
+                text-align: center;
+                margin-top: 10px;
+            }
+    
+            .quick-action-card {
+                background: var(--bs-card-bg);
+                border-radius: 15px;
+                transition: all 0.3s ease;
+                border: 1px solid var(--bs-border-color);
+                height: 100%;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+    
+            .quick-action-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            }
+    
+            .stats-counter {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin: 15px 0;
+            }
+    
+            .welcome-banner {
+                background: linear-gradient(45deg, var(--bs-primary) 0%, var(--bs-info) 100%);
+                border-radius: 15px;
+                padding: 40px;
+                margin-bottom: 30px;
+                color: white;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            }
+    
+            .welcome-banner h2 {
+                margin: 0;
+                font-size: 2.5rem;
+                font-weight: 700;
+            }
+    
+            .welcome-banner p {
+                margin: 10px 0 0;
+                opacity: 0.9;
+                font-size: 1.1rem;
+            }
+    
+            .progress {
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+    
+            .progress-bar {
+                transition: width 1s ease;
+            }
+    
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                .quick-action-btn {
+                    height: 160px;
+                    padding: 20px 10px;
+                }
+    
+                .quick-action-btn .btn-icon {
+                    width: 48px;
+                    height: 48px;
+                    font-size: 2rem;
+                }
+    
+                .welcome-banner {
+                    padding: 30px;
+                }
+    
+                .welcome-banner h2 {
+                    font-size: 2rem;
+                }
+    
+                .stats-counter {
+                    font-size: 2rem;
+                }
+            }
+    
+            /* Promotional Cards Styles */
+            .promo-card {
+                transition: all 0.3s ease;
+                overflow: hidden;
+            }
+    
+            .promo-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 30px rgba(58, 87, 232, 0.2);
+            }
+    
+            .promo-stat {
+                padding: 10px 20px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                backdrop-filter: blur(5px);
+            }
+    
+            .promo-stat h3 {
+                font-size: 24px;
+                color: #fff;
+                margin: 0;
+            }
+    
+            .promo-stat small {
+                color: rgba(255, 255, 255, 0.8);
+            }
+    
+            /* Service Cards Styles */
+            .service-card {
+                transition: all 0.3s ease;
+                border: 1px solid var(--bs-border-color);
+            }
+    
+            .service-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 40px rgba(58, 87, 232, 0.1);
+                border-color: var(--bs-primary);
+            }
+    
+            .service-icon {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(var(--bs-primary-rgb), 0.1);
+                border-radius: 50%;
+                transition: all 0.3s ease;
+            }
+
+            /* Active link styles */
+            .sidebar .nav-link.active {
+                background-color: var(--bs-primary);
+                color: white !important;
+                border-radius: 8px;
+                position: relative;
+            }
+
+            .sidebar .nav-link.active .icon {
+                color: white !important;
+            }
+
+            .sidebar .nav-link.active .item-name {
+                color: white !important;
+                font-weight: 600;
+            }
+
+            /* Hover effect cho non-active links */
+            .sidebar .nav-link:not(.active):not(.disabled):hover {
+                background-color: rgba(var(--bs-primary-rgb), 0.1);
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .sidebar .nav-link:not(.active):not(.disabled):hover .icon,
+            .sidebar .nav-link:not(.active):not(.disabled):hover .item-name {
+                color: var(--bs-primary);
+            }
+
+            /* Active indicator */
+            .sidebar .nav-link.active::before {
+                content: '';
+                position: absolute;
+                left: -15px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 4px;
+                height: 20px;
+                background-color: white;
+                border-radius: 2px;
+            }
+
+            /* Transition cho tất cả nav-links */
+            .sidebar .nav-link {
+                transition: all 0.3s ease;
+                margin-bottom: 5px;
+                padding: 10px 15px;
+            }
+
+            /* Dark mode support */
+            [data-bs-theme='dark'] .sidebar .nav-link.active {
+                background-color: var(--bs-primary);
+                color: white !important;
+            }
+
+            [data-bs-theme='dark'] .sidebar .nav-link:not(.active):not(.disabled):hover {
+                background-color: rgba(var(--bs-primary-rgb), 0.2);
+            }
+    
+            [data-bs-theme='dark'] .service-card:hover {
+                border-color: var(--bs-primary);
+            }
+    
+            html, body {
+                height: 100%;
+                margin: 0;
+            }
+    
+            .page-container {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+    
+            .main-content {
+                flex: 1;
+            }
+        </style>
     </head>
     <body class="  ">
         <!-- loader Start -->
@@ -904,5 +1158,53 @@
 <script src="../assets/jslogic/logout.js" defer></script>
 <script src="../assets/jslogic/annoucement.js" defer></script>
 <script src="../assets/jslogic/log-adminsys.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Lấy đường dẫn file hiện tại (ví dụ: medicine-warehouse.html)
+        var currentPage = location.pathname.split("/").pop();
+    
+        // Lặp qua tất cả các nav-link trong sidebar
+        document.querySelectorAll('.sidebar .nav-link').forEach(function(link) {
+            // Lấy href của từng link (bỏ ./ nếu có)
+            var linkPage = link.getAttribute('href');
+            if (linkPage) {
+                var normalizedLink = linkPage.replace(/^\.\//, '');
+                var normalizedCurrent = currentPage.replace(/^\.\//, '');
+    
+                // Kiểm tra và thêm class active cho link hiện tại
+                if (normalizedLink === normalizedCurrent) {
+                    link.classList.add('active');
+                    // Lưu trạng thái active vào localStorage
+                    localStorage.setItem('activeSidebarLink', linkPage);
+                }
+    
+                // Thêm sự kiện click cho mỗi link
+                link.addEventListener('click', function(event) {
+                    // Xóa active từ tất cả các links
+                    document.querySelectorAll('.sidebar .nav-link').forEach(function(item) {
+                        item.classList.remove('active');
+                    });
+    
+                    // Thêm active cho link được click
+                    this.classList.add('active');
+    
+                    // Lưu trạng thái active vào localStorage
+                    localStorage.setItem('activeSidebarLink', this.getAttribute('href'));
+                });
+            }
+        });
+    
+        // Khôi phục trạng thái active từ localStorage nếu không có trang hiện tại khớp
+        if (!document.querySelector('.sidebar .nav-link.active')) {
+            var savedActiveLink = localStorage.getItem('activeSidebarLink');
+            if (savedActiveLink) {
+                var linkToActivate = document.querySelector('.sidebar .nav-link[href="' + savedActiveLink + '"]');
+                if (linkToActivate) {
+                    linkToActivate.classList.add('active');
+                }
+            }
+        }
+    });
+    </script>
 </body>
 </html>
