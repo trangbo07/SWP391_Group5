@@ -15,5 +15,8 @@ public class Feedback {
     private Timestamp created_at;
     private String created_at_formatted;
     private String doctor_name;
+    private String doctor_department;
+    private String doctor_phone;
+    private String doctor_eduLevel;
 }
 

@@ -17,14 +17,6 @@ public class UpdateFeedbackServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
 
-        HttpSession session = req.getSession();
-        model.AccountPatient user = (model.AccountPatient) session.getAttribute("user");
-        if (user == null) {
-            resp.setStatus(401);
-            resp.getWriter().write("{\"success\":false, \"message\":\"Chưa đăng nhập\"}");
-            return;
-        }
-
         BufferedReader reader = req.getReader();
         StringBuilder sb = new StringBuilder();
         String line;
@@ -34,13 +26,13 @@ public class UpdateFeedbackServlet extends HttpServlet {
         FeedbackUpdateRequest update = gson.fromJson(sb.toString(), FeedbackUpdateRequest.class);
 
         FeedbackDAO dao = new FeedbackDAO();
-        boolean updated = dao.updateFeedback(user.getAccount_patient_id(), update.doctorId, update.newContent);
+        boolean updated = dao.updateFeedbackById(update.feedbackId, update.newContent);
 
         resp.getWriter().write("{\"success\":" + updated + "}");
     }
 
     private static class FeedbackUpdateRequest {
-        int doctorId;
+        int feedbackId;
         String newContent;
     }
 }

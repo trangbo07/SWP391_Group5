@@ -31,158 +31,126 @@
   <link rel="stylesheet" href="../assets/assets/vendor/sheperd/dist/css/sheperd.css">
 
 
-
-    <style>
-
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .main-content {
-            flex: 1 0 auto;
-        }
-        .footer {
-            flex-shrink: 0;
-        }
-
-        #pagination {
-            margin-top: 24px;
-            margin-bottom: 0;
-            text-align: center;
-            position: static;
-            /* Đảm bảo không bị đẩy xuống cuối trang */
-        }
-        #pagination button {
-            padding: 8px 14px;
-            border: 1px solid #d1d5db;
-            background: #f3f4f6;
-            color: #333;
-            border-radius: 5px;
-            margin: 0 4px;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: background 0.2s, color 0.2s, border 0.2s;
-            box-shadow: none;
-        }
-        #pagination button.active {
-            background: #6c757d;
-            color: #fff;
-            border-color: #6c757d;
-        }
-        #pagination button:hover:not(.active) {
-            background: #e2e6ea;
-            color: #222;
-        }
-        /* --- Custom style for Doctor section --- */
-        .doctor-section-title {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #222;
-            margin: 40px 0 24px 0;
-            text-align: center;
-            letter-spacing: 0.5px;
-        }
-        .doctor-section-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 32px;
-        }
-        .doctor-section-buttons button {
-            padding: 10px 28px;
-            font-size: 1rem;
-            font-weight: 500;
-            border: none;
-            border-radius: 6px;
-            background: #007bff;
-            color: #fff;
-            transition: background 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            cursor: pointer;
-        }
-        .doctor-section-buttons button:hover {
-            background: #0056b3;
-        }
-        /* Style for the test links to look like buttons */
-        .doctor-section-buttons .test-link {
-            display: inline-block;
-            padding: 10px 28px;
-            font-size: 1rem;
-            font-weight: 500;
-            border: none;
-            border-radius: 6px;
-            background: #28a745;
-            color: #fff;
-            text-decoration: none;
-            transition: background 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            cursor: pointer;
-        }
-        .doctor-section-buttons .test-link:hover {
-            background: #218838;
-            color: #fff;
-            text-decoration: none;
-        }
-        /* Table style refinement */
-        #doctorFeedbackTable.styled-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 0 auto 24px auto;
-            background: #fff;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        #doctorFeedbackTable.styled-table th, #doctorFeedbackTable.styled-table td {
-            padding: 14px 12px;
-            text-align: center;
-            font-size: 1rem;
-        }
-        #doctorFeedbackTable.styled-table th {
-            background: #f7f7f7;
-            font-weight: 600;
-            color: #333;
-            border-bottom: 2px solid #eaeaea;
-        }
-        #doctorFeedbackTable.styled-table tbody tr {
-            border-bottom: 1px solid #f0f0f0;
-            transition: background 0.15s;
-        }
-        #doctorFeedbackTable.styled-table tbody tr:hover {
-            background: #f5faff;
-        }
-        #doctorFeedbackTable.styled-table img.avatar {
-            width: 48px;
-            height: 48px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 2px solid #e3e3e3;
-            background: #fafafa;
-        }
-        #doctorFeedbackTable.styled-table td.feedback {
-            max-width: 220px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        #doctorFeedbackTable.styled-table td.created-at {
-            color: #888;
-            font-size: 0.95em;
-        }
-        @media (max-width: 900px) {
-            .doctor-section-title { font-size: 1.3rem; }
-            .doctor-section-buttons button { font-size: 0.95rem; padding: 8px 16px; }
-            #doctorFeedbackTable.styled-table th, #doctorFeedbackTable.styled-table td { font-size: 0.95rem; padding: 10px 6px; }
-        }
-    </style>
-
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .main-content {
+      flex: 1 0 auto;
+    }
+    .footer {
+      flex-shrink: 0;
+    }
+    /* --- Custom style for Feedback section --- */
+    .feedback-section-title {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #222;
+      margin: 40px 0 24px 0;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .feedback-section-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .feedback-section-buttons button {
+      padding: 10px 28px;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      background: #007bff;
+      color: #fff;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      cursor: pointer;
+    }
+    .feedback-section-buttons button:hover {
+      background: #0056b3;
+    }
+    /* Table style refinement */
+    #feedbackResult table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 auto 24px auto;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      border-radius: 10px;
+      overflow: hidden;
+      max-width: 1100px;
+    }
+    #feedbackResult th, #feedbackResult td {
+      padding: 14px 12px;
+      text-align: center;
+      font-size: 1rem;
+    }
+    #feedbackResult th {
+      background: #f7f7f7;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #eaeaea;
+    }
+    #feedbackResult tr {
+      border-bottom: 1px solid #f0f0f0;
+      transition: background 0.15s;
+    }
+    #feedbackResult tr:hover {
+      background: #f5faff;
+    }
+    #feedbackResult td.feedback-content {
+      max-width: 220px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #feedbackResult td {
+      color: #2d3748;
+    }
+    #feedbackResult button, #feedbackResult .sendFeedbackBtn, #feedbackResult .edit-feedback-btn {
+      padding: 7px 18px;
+      font-size: 0.98rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      background: #28a745;
+      color: #fff;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      cursor: pointer;
+    }
+    #feedbackResult button:hover, #feedbackResult .sendFeedbackBtn:hover, #feedbackResult .edit-feedback-btn:hover {
+      background: #218838;
+    }
+    #feedbackResult table {
+      margin-top: 18px;
+    }
+    #feedbackResult p {
+      text-align: center;
+      color: #888;
+      font-size: 1.1rem;
+      margin-top: 32px;
+    }
+    @media (max-width: 900px) {
+      .feedback-section-title { font-size: 1.3rem; }
+      .feedback-section-buttons button { font-size: 0.95rem; padding: 8px 16px; }
+      #feedbackResult th, #feedbackResult td { font-size: 0.95rem; padding: 10px 6px; }
+    }
+    @media (max-width: 600px) {
+      .feedback-section-buttons { flex-direction: column; gap: 12px; }
+      #feedbackResult th, #feedbackResult td { font-size: 0.9rem; padding: 7px 2px; }
+      #feedbackResult table { max-width: 100%; }
+    }
+  </style>
 
 
   <!-- Kivicare Design System Css -->
@@ -272,21 +240,21 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-arrow justify-content-start gap-2 rounded-0 "
-                       aria-current="page" href="./patient-encounters.html">
-                      <i class="icon" data-bs-toggle="tooltip" title="Encounters" data-bs-placement="right">
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-                             xmlns="http://www.w3.org/2000/svg">
-                          <path opacity="0.4"
-                                d="M16.3125 6.60938C16.3125 11.25 9 15.1875 9 15.1875C9 15.1875 1.6875 11.25 1.6875 6.60938C1.6875 5.60238 2.08753 4.63663 2.79958 3.92458C3.51163 3.21253 4.47738 2.8125 5.48438 2.8125C7.07273 2.8125 8.43328 3.67805 9 5.0625C9.56672 3.67805 10.9273 2.8125 12.5156 2.8125C13.5226 2.8125 14.4884 3.21253 15.2004 3.92458C15.9125 4.63663 16.3125 5.60238 16.3125 6.60938Z"
+                  <a class="nav-link menu-arrow justify-content-start gap-2 rounded-0 "
+                     aria-current="page" href="./patient-encounters.html">
+                    <i class="icon" data-bs-toggle="tooltip" title="Encounters" data-bs-placement="right">
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+                           xmlns="http://www.w3.org/2000/svg">
+                        <path opacity="0.4"
+                              d="M16.3125 6.60938C16.3125 11.25 9 15.1875 9 15.1875C9 15.1875 1.6875 11.25 1.6875 6.60938C1.6875 5.60238 2.08753 4.63663 2.79958 3.92458C3.51163 3.21253 4.47738 2.8125 5.48438 2.8125C7.07273 2.8125 8.43328 3.67805 9 5.0625C9.56672 3.67805 10.9273 2.8125 12.5156 2.8125C13.5226 2.8125 14.4884 3.21253 15.2004 3.92458C15.9125 4.63663 16.3125 5.60238 16.3125 6.60938Z"
+                              fill="currentColor" />
+                        <path
+                                d="M5.0625 9.5625H2.25C2.10082 9.5625 1.95774 9.50324 1.85225 9.39775C1.74676 9.29226 1.6875 9.14918 1.6875 9C1.6875 8.85082 1.74676 8.70774 1.85225 8.60225C1.95774 8.49676 2.10082 8.4375 2.25 8.4375H4.76156L5.71922 7.00031C5.77057 6.92316 5.84018 6.85988 5.92188 6.81612C6.00357 6.77235 6.09482 6.74945 6.1875 6.74945C6.28018 6.74945 6.37143 6.77235 6.45312 6.81612C6.53482 6.85988 6.60443 6.92316 6.65578 7.00031L8.4375 9.67219L9.09422 8.68781C9.14563 8.61076 9.21527 8.54759 9.29696 8.50392C9.37866 8.46026 9.46987 8.43744 9.5625 8.4375H11.25C11.3992 8.4375 11.5423 8.49676 11.6477 8.60225C11.7532 8.70774 11.8125 8.85082 11.8125 9C11.8125 9.14918 11.7532 9.29226 11.6477 9.39775C11.5423 9.50324 11.3992 9.5625 11.25 9.5625H9.86344L8.90578 10.9997C8.85443 11.0768 8.78482 11.1401 8.70312 11.1839C8.62143 11.2276 8.53018 11.2505 8.4375 11.2505C8.34482 11.2505 8.25357 11.2276 8.17188 11.1839C8.09018 11.1401 8.02057 11.0768 7.96922 10.9997L6.1875 8.32641L5.53078 9.31078C5.47953 9.3881 5.40996 9.45154 5.32826 9.49546C5.24655 9.53937 5.15526 9.56241 5.0625 9.5625ZM12.5156 2.25C11.0637 2.25 9.79242 2.87437 9 3.92977C8.20758 2.87437 6.93633 2.25 5.48438 2.25C4.3286 2.2513 3.22053 2.71101 2.40327 3.52827C1.58601 4.34553 1.1263 5.4536 1.125 6.60938C1.125 6.66211 1.125 6.71484 1.125 6.76758C1.12966 6.91676 1.1934 7.05798 1.30218 7.16018C1.41097 7.26237 1.55589 7.31716 1.70508 7.3125C1.85426 7.30784 1.99548 7.2441 2.09768 7.13532C2.19987 7.02653 2.25466 6.88161 2.25 6.73242C2.25 6.69164 2.25 6.65016 2.25 6.60938C2.25112 5.75191 2.59224 4.92988 3.19856 4.32356C3.80488 3.71724 4.62691 3.37612 5.48438 3.375C6.85195 3.375 8.00016 4.10344 8.47969 5.27344C8.52207 5.37661 8.59416 5.46485 8.6868 5.52695C8.77945 5.58905 8.88847 5.62221 9 5.62221C9.11153 5.62221 9.22055 5.58905 9.3132 5.52695C9.40584 5.46485 9.47793 5.37661 9.52031 5.27344C9.99984 4.10133 11.148 3.375 12.5156 3.375C13.3731 3.37612 14.1951 3.71724 14.8014 4.32356C15.4078 4.92988 15.7489 5.75191 15.75 6.60938C15.75 10.3788 10.2825 13.7918 9 14.5406C8.23852 14.097 6.00258 12.7125 4.31156 10.8696C4.21068 10.7596 4.07022 10.6941 3.92108 10.6877C3.77195 10.6812 3.62635 10.7343 3.51633 10.8352C3.4063 10.936 3.34086 11.0765 3.3344 11.2256C3.32794 11.3748 3.38099 11.5204 3.48187 11.6304C5.67352 14.021 8.60977 15.6157 8.73352 15.6825C8.81543 15.7266 8.90699 15.7496 9 15.7496C9.09301 15.7496 9.18457 15.7266 9.26648 15.6825C9.57726 15.5152 16.875 11.5312 16.875 6.60938C16.8737 5.4536 16.414 4.34553 15.5967 3.52827C14.7795 2.71101 13.6714 2.2513 12.5156 2.25Z"
                                 fill="currentColor" />
-                          <path
-                                  d="M5.0625 9.5625H2.25C2.10082 9.5625 1.95774 9.50324 1.85225 9.39775C1.74676 9.29226 1.6875 9.14918 1.6875 9C1.6875 8.85082 1.74676 8.70774 1.85225 8.60225C1.95774 8.49676 2.10082 8.4375 2.25 8.4375H4.76156L5.71922 7.00031C5.77057 6.92316 5.84018 6.85988 5.92188 6.81612C6.00357 6.77235 6.09482 6.74945 6.1875 6.74945C6.28018 6.74945 6.37143 6.77235 6.45312 6.81612C6.53482 6.85988 6.60443 6.92316 6.65578 7.00031L8.4375 9.67219L9.09422 8.68781C9.14563 8.61076 9.21527 8.54759 9.29696 8.50392C9.37866 8.46026 9.46987 8.43744 9.5625 8.4375H11.25C11.3992 8.4375 11.5423 8.49676 11.6477 8.60225C11.7532 8.70774 11.8125 8.85082 11.8125 9C11.8125 9.14918 11.7532 9.29226 11.6477 9.39775C11.5423 9.50324 11.3992 9.5625 11.25 9.5625H9.86344L8.90578 10.9997C8.85443 11.0768 8.78482 11.1401 8.70312 11.1839C8.62143 11.2276 8.53018 11.2505 8.4375 11.2505C8.34482 11.2505 8.25357 11.2276 8.17188 11.1839C8.09018 11.1401 8.02057 11.0768 7.96922 10.9997L6.1875 8.32641L5.53078 9.31078C5.47953 9.3881 5.40996 9.45154 5.32826 9.49546C5.24655 9.53937 5.15526 9.56241 5.0625 9.5625ZM12.5156 2.25C11.0637 2.25 9.79242 2.87437 9 3.92977C8.20758 2.87437 6.93633 2.25 5.48438 2.25C4.3286 2.2513 3.22053 2.71101 2.40327 3.52827C1.58601 4.34553 1.1263 5.4536 1.125 6.60938C1.125 6.66211 1.125 6.71484 1.125 6.76758C1.12966 6.91676 1.1934 7.05798 1.30218 7.16018C1.41097 7.26237 1.55589 7.31716 1.70508 7.3125C1.85426 7.30784 1.99548 7.2441 2.09768 7.13532C2.19987 7.02653 2.25466 6.88161 2.25 6.73242C2.25 6.69164 2.25 6.65016 2.25 6.60938C2.25112 5.75191 2.59224 4.92988 3.19856 4.32356C3.80488 3.71724 4.62691 3.37612 5.48438 3.375C6.85195 3.375 8.00016 4.10344 8.47969 5.27344C8.52207 5.37661 8.59416 5.46485 8.6868 5.52695C8.77945 5.58905 8.88847 5.62221 9 5.62221C9.11153 5.62221 9.22055 5.58905 9.3132 5.52695C9.40584 5.46485 9.47793 5.37661 9.52031 5.27344C9.99984 4.10133 11.148 3.375 12.5156 3.375C13.3731 3.37612 14.1951 3.71724 14.8014 4.32356C15.4078 4.92988 15.7489 5.75191 15.75 6.60938C15.75 10.3788 10.2825 13.7918 9 14.5406C8.23852 14.097 6.00258 12.7125 4.31156 10.8696C4.21068 10.7596 4.07022 10.6941 3.92108 10.6877C3.77195 10.6812 3.62635 10.7343 3.51633 10.8352C3.4063 10.936 3.34086 11.0765 3.3344 11.2256C3.32794 11.3748 3.38099 11.5204 3.48187 11.6304C5.67352 14.021 8.60977 15.6157 8.73352 15.6825C8.81543 15.7266 8.90699 15.7496 9 15.7496C9.09301 15.7496 9.18457 15.7266 9.26648 15.6825C9.57726 15.5152 16.875 11.5312 16.875 6.60938C16.8737 5.4536 16.414 4.34553 15.5967 3.52827C14.7795 2.71101 13.6714 2.2513 12.5156 2.25Z"
-                                  fill="currentColor" />
-                        </svg>
-                      </i>
-                      <span class="item-name">Xem Hồ Sơ Bệnh Án</span>
-                    </a>
+                      </svg>
+                    </i>
+                    <span class="item-name">Xem Hồ Sơ Bệnh Án</span>
+                  </a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link menu-arrow justify-content-start gap-2 rounded-0 "
@@ -305,37 +273,37 @@
                     <span class="item-name">Bác Sĩ</span>
                   </a>
                 </li>
-                  <li class="nav-item">
-                      <a class="nav-link menu-arrow justify-content-start gap-2 rounded-0 "
-                         aria-current="page" href="./patient-payments.html">
-                          <i class="icon" data-bs-toggle="tooltip" title="Payments" data-bs-placement="right">
-                              <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                                   xmlns="http://www.w3.org/2000/svg">
-                                  <path fill-rule="evenodd" clip-rule="evenodd"
-                                        d="M21.9964 8.37513H17.7618C15.7911 8.37859 14.1947 9.93514 14.1911 11.8566C14.1884 13.7823 15.7867 15.3458 17.7618 15.3484H22V15.6543C22 19.0136 19.9636 21 16.5173 21H7.48356C4.03644 21 2 19.0136 2 15.6543V8.33786C2 4.97862 4.03644 3 7.48356 3H16.5138C19.96 3 21.9964 4.97862 21.9964 8.33786V8.37513ZM6.73956 8.36733H12.3796H12.3831H12.3902C12.8124 8.36559 13.1538 8.03019 13.152 7.61765C13.1502 7.20598 12.8053 6.87318 12.3831 6.87491H6.73956C6.32 6.87664 5.97956 7.20858 5.97778 7.61852C5.976 8.03019 6.31733 8.36559 6.73956 8.36733Z"
-                                        fill="currentColor"></path>
-                                  <path opacity="0.4"
-                                        d="M16.0374 12.2966C16.2465 13.2478 17.0805 13.917 18.0326 13.8996H21.2825C21.6787 13.8996 22 13.5715 22 13.166V10.6344C21.9991 10.2297 21.6787 9.90077 21.2825 9.8999H17.9561C16.8731 9.90338 15.9983 10.8024 16 11.9102C16 12.0398 16.0128 12.1695 16.0374 12.2966Z"
-                                        fill="currentColor"></path>
-                                  <circle cx="18" cy="11.8999" r="1" fill="currentColor"></circle>
-                              </svg>
-                          </i>
-                          <span class="item-name">Thanh Toán</span>
-                      </a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link menu-arrow justify-content-start gap-2 rounded-0"
-                         aria-current="page" href="./patient-feedback.html">
-                          <i class="icon" data-bs-toggle="tooltip" title="Feedback" data-bs-placement="right">
-                              <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
-                                   xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M20 2H4C2.89 2 2 2.89 2 4V18L6 14H20C21.11 14 22 13.11 22 12V4C22 2.89 21.11 2 20 2Z"
-                                        fill="currentColor" />
-                              </svg>
-                          </i>
-                          <span class="item-name">Đánh giá của bạn</span>
-                      </a>
-                  </li>
+                <li class="nav-item">
+                  <a class="nav-link menu-arrow justify-content-start gap-2 rounded-0 "
+                     aria-current="page" href="./patient-payments.html">
+                    <i class="icon" data-bs-toggle="tooltip" title="Payments" data-bs-placement="right">
+                      <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                           xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M21.9964 8.37513H17.7618C15.7911 8.37859 14.1947 9.93514 14.1911 11.8566C14.1884 13.7823 15.7867 15.3458 17.7618 15.3484H22V15.6543C22 19.0136 19.9636 21 16.5173 21H7.48356C4.03644 21 2 19.0136 2 15.6543V8.33786C2 4.97862 4.03644 3 7.48356 3H16.5138C19.96 3 21.9964 4.97862 21.9964 8.33786V8.37513ZM6.73956 8.36733H12.3796H12.3831H12.3902C12.8124 8.36559 13.1538 8.03019 13.152 7.61765C13.1502 7.20598 12.8053 6.87318 12.3831 6.87491H6.73956C6.32 6.87664 5.97956 7.20858 5.97778 7.61852C5.976 8.03019 6.31733 8.36559 6.73956 8.36733Z"
+                              fill="currentColor"></path>
+                        <path opacity="0.4"
+                              d="M16.0374 12.2966C16.2465 13.2478 17.0805 13.917 18.0326 13.8996H21.2825C21.6787 13.8996 22 13.5715 22 13.166V10.6344C21.9991 10.2297 21.6787 9.90077 21.2825 9.8999H17.9561C16.8731 9.90338 15.9983 10.8024 16 11.9102C16 12.0398 16.0128 12.1695 16.0374 12.2966Z"
+                              fill="currentColor"></path>
+                        <circle cx="18" cy="11.8999" r="1" fill="currentColor"></circle>
+                      </svg>
+                    </i>
+                    <span class="item-name">Thanh Toán</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link menu-arrow justify-content-start gap-2 rounded-0"
+                     aria-current="page" href="./patient-feedback.html">
+                    <i class="icon" data-bs-toggle="tooltip" title="Feedback" data-bs-placement="right">
+                      <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="none"
+                           xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2H4C2.89 2 2 2.89 2 4V18L6 14H20C21.11 14 22 13.11 22 12V4C22 2.89 21.11 2 20 2Z"
+                              fill="currentColor" />
+                      </svg>
+                    </i>
+                    <span class="item-name">Đánh giá của bạn</span>
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
@@ -413,144 +381,43 @@
     </nav>            <!--Nav End-->
   </div>
 
-  <h6 class="doctor-section-title">Bác Sĩ Dành Cho Bạn</h6>
-  <div class="doctor-section-buttons">
-    <button id="department">Khám Chuyên Khoa</button>
-    <a class="test-link" href="./bai-test-danh-gia-tram-cam-beck-i1.html">Bài Test Tâm Lí</a>
-    <a class="test-link" href="./bai-test-tram-cam-tre-vi-thanh-nien-rads-10-20-tuoi-i25.html">Bài Test Trầm cảm của trẻ vị thành niên</a>
+  <h6 class="feedback-section-title">Quản Lý Đánh Giá &amp; Phản Hồi</h6>
+  <div class="col-md-4">
+    <label for="searchName" class="form-label">Tên Bác Sĩ</label>
+    <input type="text" class="form-control" id="searchName" placeholder="Nhập tên Bác Sĩ">
   </div>
-  <!-- Đặt phân trang ngay dưới bảng, không append vào document.body nữa -->
-  <div class="col-lg-12">
-      <div class="card">
-          <div class="card-body">
-              <div class="table-responsive">
-                  <table id="doctorFeedbackTable" class="styled-table">
-                      <thead>
-                      <tr>
-                          <th>Ảnh</th>
-                          <th>Họ tên</th>
-                          <th>Khoa</th>
-                          <th>Điện thoại</th>
-                          <th>Trình độ</th>
-                          <th>Phản hồi gần nhất</th>
-                          <th>Thời gian</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <!-- Dữ liệu sẽ được đổ vào đây -->
-                      </tbody>
-                  </table>
-              </div>
-              <div id="pagination"></div>
-          </div>
-      </div>
+  <div class="d-flex gap-2 align-items-center">
+    <input type="date" id="fromDate" class="form-control" style="width: 180px;">
+    <span>đến</span>
+    <input type="date" id="toDate" class="form-control" style="width: 180px;">
+    <button class="btn btn-primary" onclick="filterByDateRange()">Lọc</button>
   </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            const tbody = document.querySelector("#doctorFeedbackTable tbody");
-            const paginationDiv = document.getElementById("pagination");
-            let currentPage = 1;
-            const rowsPerPage = 5;
-            let data = [];
-
-            try {
-                const response = await fetch("/api/doctor-feedback-top10");
-                if (!response.ok) throw new Error("Không thể tải dữ liệu.");
-                data = await response.json();
-
-                if (data.length === 0) {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `<td colspan="7">Không có dữ liệu phản hồi.</td>`;
-                    tbody.appendChild(row);
-                    return;
-                }
-
-                renderTable(data, currentPage);
-                renderPagination(data);
-
-            } catch (err) {
-                console.error("Lỗi khi tải dữ liệu:", err);
-                const row = document.createElement("tr");
-                row.innerHTML = `<td colspan="7">Lỗi hệ thống khi lấy dữ liệu.</td>`;
-                tbody.appendChild(row);
-            }
-
-            function renderTable(data, page) {
-                tbody.innerHTML = ""; // Clear bảng
-                const start = (page - 1) * rowsPerPage;
-                const end = start + rowsPerPage;
-                const paginatedItems = data.slice(start, end);
-
-                paginatedItems.forEach(doctor => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-          <td><img class="avatar" src="${doctor.img}" alt="Ảnh bác sĩ"></td>
-          <td>${doctor.fullName}</td>
-          <td>${doctor.department}</td>
-          <td>${doctor.phone}</td>
-          <td>${doctor.eduLevel}</td>
-          <td class="feedback">${doctor.content}</td>
-          <td class="created-at">${doctor.createdAt}</td>
-        `;
-                    row.style.cursor = "pointer";
-                    row.addEventListener("click", () => {
-                        // Lưu thông tin vào localStorage (hoặc sessionStorage)
-                        localStorage.setItem("selectedDoctor", JSON.stringify(doctor));
-
-                        // Mở trang chi tiết
-                        window.location.href = "./bookappoinmentdoctor.html"; // Đổi path nếu cần
-                    });
-                    tbody.appendChild(row);
-                });
-            }
-
-            function renderPagination(data) {
-                const pageCount = Math.ceil(data.length / rowsPerPage);
-                paginationDiv.innerHTML = "";
-
-                for (let i = 1; i <= pageCount; i++) {
-                    const btn = document.createElement("button");
-                    btn.innerText = i;
-                    btn.style.margin = "0 5px";
-                    btn.className = (i === currentPage) ? "active" : "";
-
-                    btn.addEventListener("click", () => {
-                        currentPage = i;
-                        renderTable(data, currentPage);
-                        renderPagination(data);
-                    });
-
-                    paginationDiv.appendChild(btn);
-                }
-            }
-        });
-        document.getElementById("department").addEventListener("click", () => {
-            window.location.href = "./departments.html";
-        });
-    </script>
+  <div class="feedback-section-buttons">
+    <button id = "viewfeedback">Xem Feed Back</button>
+    <button id = "viewallfeedback">Xem Feed Back Của Bệnh Nhân</button>
   </div>
+  <div id="feedbackResult"></div>
 
+  </div>
 </main>
-<!-- Live Customizer start -->
-<!-- Setting offcanvas start here -->
 <!-- Footer Section Start -->
 <footer class="footer">
-    <div class="footer-body">
-        <ul class="left-panel list-inline mb-0 p-0">
-            <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Chính sách bảo mật</a></li>
-            <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Điều khoản sử dụng</a></li>
-            <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/contact.html">Liên hệ</a></li>
-        </ul>
-        <h6 class="right-panel mb-0">
-            © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span>.
-            Phát triển bởi
-            <a href="https://www.facebook.com/long.bao.303029" target="_blank">Bùi Bảo Long</a>.
-        </h6>
-    </div>
+  <div class="footer-body">
+    <ul class="left-panel list-inline mb-0 p-0">
+      <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Chính sách bảo mật</a></li>
+      <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Điều khoản sử dụng</a></li>
+      <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/contact.html">Liên hệ</a></li>
+    </ul>
+    <h6 class="right-panel mb-0">
+      © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span>.
+      Phát triển bởi
+      <a href="https://www.facebook.com/long.bao.303029" target="_blank">Bùi Bảo Long</a>.
+    </h6>
+  </div>
 </footer>
-
 <!-- Footer Section End -->
+<!-- Live Customizer start -->
+<!-- Setting offcanvas start here -->
 
 
 <a class="btn btn-fixed-end btn-warning btn-icon btn-setting" id="settingbutton" data-bs-toggle="offcanvas"
@@ -610,5 +477,266 @@
 <script src="../assets/jslogic/logout.js" defer></script>
 </body>
 </html>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const viewPendingBtn = document.getElementById("viewfeedback");
+    const viewAllBtn = document.getElementById("viewallfeedback");
+    const resultContainer = document.getElementById("feedbackResult");
+    const searchNameInput = document.getElementById("searchName");
+    const fromDateInput = document.getElementById("fromDate");
+    const toDateInput = document.getElementById("toDate");
+
+    let allFeedbackData = [];
+    let lastTableType = null; // 'all' or 'pending'
+
+    // Xem lịch khám chưa feedback
+    viewPendingBtn.addEventListener("click", async () => {
+      lastTableType = 'pending';
+      try {
+        const response = await fetch(`/api/pending-feedback`);
+        const feedbackData = await response.json();
+        allFeedbackData = feedbackData;
+        renderPendingTable(feedbackData);
+      } catch (err) {
+        console.error(err);
+        resultContainer.innerHTML = "<p>Không thể tải dữ liệu lịch khám.</p>";
+      }
+    });
+
+    // Xem toàn bộ feedback
+    viewAllBtn.addEventListener("click", async () => {
+      lastTableType = 'all';
+      try {
+        const response = await fetch(`/feedback`);
+        const feedbackData = await response.json();
+        allFeedbackData = feedbackData;
+        renderAllTable(feedbackData);
+      } catch (err) {
+        console.error(err);
+        resultContainer.innerHTML = "<p>Đã xảy ra lỗi khi tải feedback.</p>";
+      }
+    });
+
+    // Lọc theo tên bác sĩ (realtime)
+    searchNameInput.addEventListener("input", () => {
+      if (lastTableType === 'all') {
+        filterAndRenderAll();
+      } else if (lastTableType === 'pending') {
+        filterAndRenderPending();
+      }
+    });
+
+    // Lọc theo ngày/giờ
+    window.filterByDateRange = function() {
+      if (lastTableType === 'all') {
+        filterAndRenderAll();
+      } else if (lastTableType === 'pending') {
+        filterAndRenderPending();
+      }
+    }
+
+    // Helper: Lọc và render bảng feedback đã gửi
+    function filterAndRenderAll() {
+      let filtered = allFeedbackData;
+      const name = searchNameInput.value.trim().toLowerCase();
+      const from = fromDateInput.value;
+      const to = toDateInput.value;
+      if (name) {
+        filtered = filtered.filter(fb => (fb.doctor_name||'').toLowerCase().includes(name));
+      }
+      if (from) {
+        filtered = filtered.filter(fb => {
+          if (!fb.created_at_formatted) return false;
+          const date = parseDateTime(fb.created_at_formatted);
+          return date >= new Date(from);
+        });
+      }
+      if (to) {
+        filtered = filtered.filter(fb => {
+          if (!fb.created_at_formatted) return false;
+          const date = parseDateTime(fb.created_at_formatted);
+          // Để lấy hết ngày to, cộng thêm 1 ngày
+          return date <= new Date(new Date(to).getTime() + 24*60*60*1000);
+        });
+      }
+      renderAllTable(filtered);
+    }
+
+    // Helper: Lọc và render bảng pending feedback
+    function filterAndRenderPending() {
+      let filtered = allFeedbackData;
+      const name = searchNameInput.value.trim().toLowerCase();
+      const from = fromDateInput.value;
+      const to = toDateInput.value;
+      if (name) {
+        filtered = filtered.filter(fb => (fb.doctorName||'').toLowerCase().includes(name));
+      }
+      if (from) {
+        filtered = filtered.filter(fb => {
+          if (!fb.appointmentDatetime) return false;
+          const date = new Date(fb.appointmentDatetime);
+          return date >= new Date(from);
+        });
+      }
+      if (to) {
+        filtered = filtered.filter(fb => {
+          if (!fb.appointmentDatetime) return false;
+          const date = new Date(fb.appointmentDatetime);
+          return date <= new Date(new Date(to).getTime() + 24*60*60*1000);
+        });
+      }
+      renderPendingTable(filtered);
+    }
+
+    // Helper: Parse date string dd/MM/yyyy HH:mm (or similar)
+    function parseDateTime(str) {
+      // Nếu là ISO string thì trả về luôn
+      if (/\d{4}-\d{2}-\d{2}T/.test(str)) return new Date(str);
+      // Nếu là dd/MM/yyyy HH:mm
+      const [datePart, timePart] = str.split(' ');
+      if (!datePart) return new Date('');
+      const [d, m, y] = datePart.split('/');
+      if (!d || !m || !y) return new Date('');
+      let h = 0, min = 0;
+      if (timePart) {
+        [h, min] = timePart.split(':');
+      }
+      return new Date(+y, +m-1, +d, +h, +min);
+    }
+
+    // Render bảng feedback đã gửi
+    function renderAllTable(feedbackData) {
+      resultContainer.innerHTML = "";
+      if (!feedbackData || feedbackData.length === 0) {
+        resultContainer.innerHTML = "<p>Không có feedback nào hoặc không có kết quả phù hợp.</p>";
+        return;
+      }
+      const table = document.createElement("table");
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Bác sĩ</th>
+            <th>Chuyên khoa</th>
+            <th>Trình độ</th>
+            <th>SĐT</th>
+            <th>Ngày gửi</th>
+            <th>Nhận xét</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      `;
+      const tbody = table.querySelector("tbody");
+      feedbackData.forEach(fb => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${fb.doctor_name || "Không rõ"}</td>
+          <td>${fb.doctor_department || "Không rõ"}</td>
+          <td>${fb.doctor_eduLevel || "Không rõ"}</td>
+          <td>${fb.doctor_phone || "Không rõ"}</td>
+          <td>${fb.created_at_formatted || "Không rõ"}</td>
+          <td class="feedback-content">${fb.content || "Không có"}</td>
+          <td>
+            <button class="edit-feedback-btn" data-feedback-id="${fb.feedback_id}">Sửa</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+      resultContainer.appendChild(table);
+      // Sửa feedback (inline form)
+      document.querySelectorAll(".edit-feedback-btn").forEach(button => {
+        button.addEventListener("click", function() {
+          const tr = button.closest("tr");
+          const feedbackId = parseInt(button.dataset.feedbackId);
+          const oldContent = tr.querySelector(".feedback-content").textContent.trim();
+          // Nếu đã có form thì không thêm nữa
+          if (tr.nextSibling && tr.nextSibling.classList && tr.nextSibling.classList.contains("edit-row")) return;
+          // Ẩn nút Sửa
+          button.style.display = "none";
+          // Tạo dòng mới cho form
+          const editRow = document.createElement("tr");
+          editRow.className = "edit-row";
+          editRow.innerHTML = `<td colspan="7">
+            <form class="edit-feedback-form" style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+              <textarea style="width:90%;min-height:60px;resize:vertical;" class="form-control">${oldContent}</textarea>
+              <div style="display:flex; gap:10px;">
+                <button type="submit" class="btn btn-success">Lưu</button>
+                <button type="button" class="btn btn-secondary btn-cancel-edit">Hủy</button>
+              </div>
+            </form>
+          </td>`;
+          tr.parentNode.insertBefore(editRow, tr.nextSibling);
+          // Xử lý submit
+          const form = editRow.querySelector(".edit-feedback-form");
+          const textarea = form.querySelector("textarea");
+          form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const newContent = textarea.value.trim();
+            if (!newContent) {
+              textarea.focus();
+              textarea.classList.add("is-invalid");
+              return;
+            }
+            try {
+              const response = await fetch("/api/patient/feedback/update", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ feedbackId, newContent })
+              });
+              const result = await response.json();
+              if (result.success) {
+                // Cập nhật lại dữ liệu gốc
+                button.style.display = "";
+                editRow.remove();
+                // Reload lại bảng (giữ filter)
+                if (typeof viewAllBtn !== 'undefined') viewAllBtn.click();
+              } else {
+                textarea.classList.add("is-invalid");
+                textarea.value = result.message || "Cập nhật thất bại!";
+              }
+            } catch (err) {
+              textarea.classList.add("is-invalid");
+              textarea.value = "Lỗi khi gửi yêu cầu cập nhật.";
+            }
+          });
+          // Xử lý hủy
+          form.querySelector(".btn-cancel-edit").addEventListener("click", () => {
+            button.style.display = "";
+            editRow.remove();
+          });
+        });
+      });
+    }
+
+    // Render bảng pending feedback
+    function renderPendingTable(feedbackData) {
+      resultContainer.innerHTML = "";
+      if (!feedbackData || feedbackData.length === 0) {
+        resultContainer.innerHTML = "<p>Không có lịch khám nào chưa feedback hoặc không có kết quả phù hợp.</p>";
+        return;
+      }
+      const table = document.createElement("table");
+      table.innerHTML = `
+        <tr>
+          <th>Doctor</th>
+          <th>Patient</th>
+          <th>Thời gian</th>
+          <th>Hành động</th>
+        </tr>
+      `;
+      feedbackData.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.doctorName}</td>
+          <td>${item.patientName}</td>
+          <td>${new Date(item.appointmentDatetime).toLocaleString()}</td>
+          <td><button class="sendFeedbackBtn">Đánh giá</button></td>
+        `;
+        table.appendChild(row);
+      });
+      resultContainer.appendChild(table);
+    }
+  });
+</script>
 
 
