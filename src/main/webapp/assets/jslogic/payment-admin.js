@@ -185,44 +185,52 @@ class PaymentAdmin {
         const row = document.createElement('tr');
         row.setAttribute('data-item', 'list');
 
-        // Format date
-        const paymentDate = new Date(payment.payment_date);
-        const formattedDate = paymentDate.toLocaleDateString('en-US', {
-            day: '2-digit',
-            month: 'short',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-
         // Format amount
-        const formattedAmount = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        }).format(payment.amount);
+        let formattedAmount = '0';
+        if (typeof payment.total_amount === 'number' && !isNaN(payment.total_amount)) {
+            formattedAmount = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(payment.total_amount);
+        }
+
+        // Format payment date
+        let formattedDate = 'N/A';
+        if (payment.payment_date && typeof payment.payment_date === 'string' && payment.payment_date.length > 0) {
+            const dateObj = new Date(payment.payment_date);
+            if (!isNaN(dateObj.getTime())) {
+                formattedDate = dateObj.toLocaleString('en-GB', { hour12: false });
+            } else {
+                formattedDate = payment.payment_date;
+            }
+        }
 
         // Status badge
-        const statusClass = payment.status === 'Paid' ? 'success' :
-            payment.status === 'Pending' ? 'warning' : 'danger';
+        let statusClass = '';
+        let statusText = payment.status;
+        if (payment.status === 'Paid') {
+            statusClass = 'status-paid';
+        } else if (payment.status === 'Pending') {
+            statusClass = 'status-pending';
+        } else if (payment.status === 'Cancelled') {
+            statusClass = 'status-cancelled';
+        } else {
+            statusClass = 'status-default';
+        }
 
         row.innerHTML = `
             <th scope="row">${index}</th>
-            <td data-customer>${payment.customer_name || 'N/A'}</td>
-            <td>${formattedDate}</td>
-            <td>${payment.payment_type}</td>
+            <td>${payment.full_name || 'N/A'}</td>
+            <td>${payment.dob || 'N/A'}</td>
+            <td>${payment.gender || 'N/A'}</td>
+            <td>${payment.disease || 'N/A'}</td>
+            <td>${payment.conclusion || 'N/A'}</td>
+            <td>${payment.treatment_plan || 'N/A'}</td>
+            <td>${payment.invoice_id || 'N/A'}</td>
             <td>${formattedAmount}</td>
-            <td><span class="badge bg-${statusClass}">${payment.status}</span></td>
-            <td>
-                <button class="btn btn-sm btn-outline-primary me-1" onclick="paymentAdmin.editPayment(${payment.payment_id})">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-success me-1" onclick="paymentAdmin.updateStatus(${payment.payment_id}, 'Paid')">
-                    <i class="fas fa-check"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-warning" onclick="paymentAdmin.updateStatus(${payment.payment_id}, 'Pending')">
-                    <i class="fas fa-clock"></i>
-                </button>
-            </td>
+            <td><span class="badge ${statusClass}">${statusText}</span></td>
+            <td>${formattedDate}</td>
+            <td><button class="btn btn-sm btn-warning" onclick="paymentAdmin.editPayment(${payment.invoice_id})">Edit</button></td>
         `;
 
         return row;
@@ -323,46 +331,66 @@ class PaymentAdmin {
         }
     }
 
-    editPayment(paymentId) {
-        const payment = this.payments.find(p => p.payment_id === paymentId);
+    editPayment(invoiceId) {
+        const payment = this.payments.find(p => p.invoice_id === invoiceId);
         if (payment) {
             // Populate edit form
-            document.getElementById('Name').value = payment.customer_name || 'N/A';
-            document.getElementById('datetime').value = new Date(payment.payment_date).toISOString().split('T')[0];
-            document.getElementById('payment-method').value = payment.payment_type;
-            document.getElementById('Amount').value = `$${payment.amount}`;
-            document.getElementById('payment_id').value = payment.status;
-            this.editingPaymentId = payment.payment_id;
+            document.getElementById('edit_full_name').value = payment.full_name || '';
+            document.getElementById('edit_dob').value = payment.dob || '';
+            document.getElementById('edit_gender').value = payment.gender || '';
+            document.getElementById('edit_disease').value = payment.disease || '';
+            document.getElementById('edit_conclusion').value = payment.conclusion || '';
+            document.getElementById('edit_treatment_plan').value = payment.treatment_plan || '';
+            document.getElementById('edit_invoice_id').value = payment.invoice_id || '';
+            document.getElementById('edit_total_amount').value = payment.total_amount || '';
+            document.getElementById('edit_status').value = payment.status || '';
+            document.getElementById('edit_payment_date').value = payment.payment_date || '';
+            this.editingInvoiceId = payment.invoice_id;
             // Show edit offcanvas
-            const offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasPaymentEdit'));
-            offcanvas.show();
+            const offcanvasEl = document.getElementById('offcanvasPaymentEdit');
+            if (!offcanvasEl) {
+                console.error('Không tìm thấy offcanvasPaymentEdit trong DOM!');
+                alert('Không tìm thấy form chỉnh sửa!');
+                return;
+            }
+            if (window.bootstrap && window.bootstrap.Offcanvas) {
+                const offcanvas = new window.bootstrap.Offcanvas(offcanvasEl);
+                offcanvas.show();
+            } else if (typeof bootstrap !== 'undefined' && bootstrap.Offcanvas) {
+                const offcanvas = new bootstrap.Offcanvas(offcanvasEl);
+                offcanvas.show();
+            } else {
+                console.error('Bootstrap Offcanvas không khả dụng!');
+                alert('Không thể mở form chỉnh sửa (thiếu Bootstrap JS)!');
+            }
+        } else {
+            console.error('Không tìm thấy payment với invoice_id:', invoiceId);
+            alert('Không tìm thấy dữ liệu để chỉnh sửa!');
         }
     }
 
     async submitEditPayment() {
-        // Get paymentId from the currently edited payment
-        const paymentId = this.editingPaymentId;
-        if (!paymentId) {
+        // Get invoiceId from the currently edited payment
+        const invoiceId = this.editingInvoiceId;
+        if (!invoiceId) {
             this.showError('No payment selected for update');
             return;
         }
 
         // Get form values
-        const name = document.getElementById('Name').value.trim();
-        const paymentDate = document.getElementById('datetime').value;
-        const paymentType = document.getElementById('payment-method').value;
-        const amountStr = document.getElementById('Amount').value.replace('$', '').replace(',', '');
-        const status = document.getElementById('payment_id').value;
+        const full_name = document.getElementById('edit_full_name').value.trim();
+        const dob = document.getElementById('edit_dob').value;
+        const gender = document.getElementById('edit_gender').value;
+        const disease = document.getElementById('edit_disease').value;
+        const conclusion = document.getElementById('edit_conclusion').value;
+        const treatment_plan = document.getElementById('edit_treatment_plan').value;
+        const total_amount = document.getElementById('edit_total_amount').value;
+        const status = document.getElementById('edit_status').value;
+        const payment_date = document.getElementById('edit_payment_date').value;
 
         // Validation
-        if (!name || !paymentDate || !paymentType || !amountStr || !status) {
+        if (!full_name || !dob || !gender || !disease || !conclusion || !treatment_plan || !total_amount || !status || !payment_date) {
             this.showError('Please fill in all required fields');
-            return;
-        }
-
-        const amount = parseFloat(amountStr);
-        if (isNaN(amount) || amount <= 0) {
-            this.showError('Please enter a valid amount');
             return;
         }
 
@@ -373,21 +401,13 @@ class PaymentAdmin {
         updateBtn.disabled = true;
 
         try {
-            console.log('Updating payment:', {
-                paymentId,
-                amount,
-                paymentType,
-                status,
-                paymentDate
-            });
-
             const response = await fetch('/payment-admin/update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Accept': 'application/json'
                 },
-                body: `paymentId=${encodeURIComponent(paymentId)}&amount=${encodeURIComponent(amount)}&paymentType=${encodeURIComponent(paymentType)}&status=${encodeURIComponent(status)}&paymentDate=${encodeURIComponent(paymentDate)}`
+                body: `invoiceId=${encodeURIComponent(invoiceId)}&full_name=${encodeURIComponent(full_name)}&dob=${encodeURIComponent(dob)}&gender=${encodeURIComponent(gender)}&disease=${encodeURIComponent(disease)}&conclusion=${encodeURIComponent(conclusion)}&treatment_plan=${encodeURIComponent(treatment_plan)}&total_amount=${encodeURIComponent(total_amount)}&status=${encodeURIComponent(status)}&payment_date=${encodeURIComponent(payment_date)}`
             });
 
             if (!response.ok) {
@@ -395,25 +415,20 @@ class PaymentAdmin {
             }
 
             const result = await response.json();
-            console.log('Update result:', result);
-
             if (result.success) {
                 this.showSuccess('Payment updated successfully');
-
                 // Close modal
                 const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasPaymentEdit'));
                 if (offcanvas) {
                     offcanvas.hide();
                 }
-
                 // Refresh data and analytics immediately
                 await Promise.all([
                     this.loadPayments(),
                     this.loadAnalytics()
                 ]);
-
                 // Clear editing payment ID
-                this.editingPaymentId = null;
+                this.editingInvoiceId = null;
             } else {
                 this.showError(result.message || 'Failed to update payment');
             }
@@ -510,6 +525,53 @@ class PaymentAdmin {
             this.editPayment(firstPayment.payment_id);
         } else {
             console.log('No payments available for testing');
+        }
+    }
+
+    // Thêm mới payment cho admin business
+    async addPayment(paymentData) {
+        try {
+            const response = await fetch('/payment-adminbusiness/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json'
+                },
+                body: new URLSearchParams(paymentData).toString()
+            });
+            const result = await response.json();
+            if (result.success) {
+                this.showSuccess('Thêm thanh toán thành công');
+                await this.loadPayments();
+            } else {
+                this.showError('Thêm thanh toán thất bại');
+            }
+        } catch (error) {
+            this.showError('Lỗi khi thêm thanh toán: ' + error.message);
+        }
+    }
+
+    // Sửa payment cho admin business
+    async editPaymentAdminBusiness(invoiceId, paymentData) {
+        try {
+            paymentData.invoice_id = invoiceId;
+            const response = await fetch('/payment-adminbusiness/edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json'
+                },
+                body: new URLSearchParams(paymentData).toString()
+            });
+            const result = await response.json();
+            if (result.success) {
+                this.showSuccess('Cập nhật thanh toán thành công');
+                await this.loadPayments();
+            } else {
+                this.showError('Cập nhật thanh toán thất bại');
+            }
+        } catch (error) {
+            this.showError('Lỗi khi cập nhật thanh toán: ' + error.message);
         }
     }
 }

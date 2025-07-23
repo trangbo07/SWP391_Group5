@@ -978,283 +978,20 @@
                 <thead class="table-dark">
                 <tr>
                     <th>STT</th>
-                    <th>Tên khách hàng</th>
-                    <th>Ngày & Giờ</th>
-                    <th>Phương thức</th>
+                    <th>Họ tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Giới tính</th>
+                    <th>Bệnh</th>
+                    <th>Kết luận</th>
+                    <th>Phác đồ điều trị</th>
+                    <th>Mã hóa đơn</th>
                     <th>Số tiền</th>
                     <th>Trạng thái</th>
-                    <th>Hành động</th>
+                    <th>Ngày thanh toán</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr data-item="list">
-                    <th scope="row">1</th>
-                    <td>Isabella Brown</td>
-                    <td>24 Tháng 5 lúc 10:00</td>
-                    <td>Tiền mặt</td>
-                    <td>$500</td>
-                    <td>Đã hoàn thành</td>
-                    <td>
-                        <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(1)">
-                        <span class="text-success">Sửa</span>
-                        </a>
-                        <a href="#" class="d-inline-block ps-2 delete-btn">
-                        <span class="text-danger">Xóa</span>
-                        </a>
-                    </td>
-                </tr>
-                <tr data-item="list">
-                    <th scope="row">2</th>
-                    <td>Daniel White</td>
-                    <td>7 July At 02:15 PM</td>
-                    <td>Online</td>
-                    <td>$410</td>
-                    <td>Completed</td>
-                    <td>
-                        <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(2)">
-                        <span class="text-success">
-                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path d="M9.31055 14.3321H14.75" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8.58501 1.84609C9.16674 1.15084 10.2125 1.04889 10.9222 1.6188C10.9614 1.64972 12.2221 2.62909 12.2221 2.62909C13.0017 3.10039 13.244 4.10233 12.762 4.86694C12.7365 4.90789 5.60896 13.8234 5.60896 13.8234C5.37183 14.1192 5.01187 14.2938 4.62718 14.298L1.89765 14.3323L1.28265 11.7292C1.1965 11.3632 1.28265 10.9788 1.51978 10.683L8.58501 1.84609Z"
-                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                              <path d="M7.26562 3.50073L11.3548 6.64108" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                        <a href="#" class="d-inline-block ps-2 delete-btn">
-                        <span class="text-danger">
-                           <svg width="15" height="16" viewBox="0 0 15 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path
-                                      d="M12.4938 6.10107C12.4938 6.10107 12.0866 11.1523 11.8503 13.2801C11.7378 14.2963 11.1101 14.8918 10.0818 14.9106C8.12509 14.9458 6.16609 14.9481 4.21009 14.9068C3.22084 14.8866 2.60359 14.2836 2.49334 13.2853C2.25559 11.1388 1.85059 6.10107 1.85059 6.10107"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                              <path d="M13.5312 3.67969H0.812744" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path
-                                      d="M11.0804 3.67974C10.4917 3.67974 9.98468 3.26349 9.86918 2.68674L9.68693 1.77474C9.57443 1.35399 9.19343 1.06299 8.75918 1.06299H5.58443C5.15018 1.06299 4.76918 1.35399 4.65668 1.77474L4.47443 2.68674C4.35893 3.26349 3.85193 3.67974 3.26318 3.67974"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                    </td>
-                </tr>
-                <tr data-item="list">
-                    <th scope="row">3</th>
-                    <td>Ashley Garcia</td>
-                    <td>23 July At 11:00 AM</td>
-                    <td>Online</td>
-                    <td>$150</td>
-                    <td>Completed</td>
-                    <td>
-                        <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(3)">
-                        <span class="text-success">
-                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path d="M9.31055 14.3321H14.75" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8.58501 1.84609C9.16674 1.15084 10.2125 1.04889 10.9222 1.6188C10.9614 1.64972 12.2221 2.62909 12.2221 2.62909C13.0017 3.10039 13.244 4.10233 12.762 4.86694C12.7365 4.90789 5.60896 13.8234 5.60896 13.8234C5.37183 14.1192 5.01187 14.2938 4.62718 14.298L1.89765 14.3323L1.28265 11.7292C1.1965 11.3632 1.28265 10.9788 1.51978 10.683L8.58501 1.84609Z"
-                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                              <path d="M7.26562 3.50073L11.3548 6.64108" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                        <a href="#" class="d-inline-block ps-2 delete-btn">
-                        <span class="text-danger">
-                           <svg width="15" height="16" viewBox="0 0 15 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path
-                                      d="M12.4938 6.10107C12.4938 6.10107 12.0866 11.1523 11.8503 13.2801C11.7378 14.2963 11.1101 14.8918 10.0818 14.9106C8.12509 14.9458 6.16609 14.9481 4.21009 14.9068C3.22084 14.8866 2.60359 14.2836 2.49334 13.2853C2.25559 11.1388 1.85059 6.10107 1.85059 6.10107"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                              <path d="M13.5312 3.67969H0.812744" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path
-                                      d="M11.0804 3.67974C10.4917 3.67974 9.98468 3.26349 9.86918 2.68674L9.68693 1.77474C9.57443 1.35399 9.19343 1.06299 8.75918 1.06299H5.58443C5.15018 1.06299 4.76918 1.35399 4.65668 1.77474L4.47443 2.68674C4.35893 3.26349 3.85193 3.67974 3.26318 3.67974"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                    </td>
-                </tr>
-                <tr data-item="list">
-                    <th>4</th>
-                    <td>Jonathan Thomas</td>
-                    <td>13 Aug At 04:30 PM</td>
-                    <td>Online</td>
-                    <td>$390</td>
-                    <td>Completed</td>
-                    <td>
-                        <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(4)">
-                        <span class="text-success">
-                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path d="M9.31055 14.3321H14.75" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8.58501 1.84609C9.16674 1.15084 10.2125 1.04889 10.9222 1.6188C10.9614 1.64972 12.2221 2.62909 12.2221 2.62909C13.0017 3.10039 13.244 4.10233 12.762 4.86694C12.7365 4.90789 5.60896 13.8234 5.60896 13.8234C5.37183 14.1192 5.01187 14.2938 4.62718 14.298L1.89765 14.3323L1.28265 11.7292C1.1965 11.3632 1.28265 10.9788 1.51978 10.683L8.58501 1.84609Z"
-                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                              <path d="M7.26562 3.50073L11.3548 6.64108" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                        <a href="#" class="d-inline-block ps-2 delete-btn">
-                        <span class="text-danger">
-                           <svg width="15" height="16" viewBox="0 0 15 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path
-                                      d="M12.4938 6.10107C12.4938 6.10107 12.0866 11.1523 11.8503 13.2801C11.7378 14.2963 11.1101 14.8918 10.0818 14.9106C8.12509 14.9458 6.16609 14.9481 4.21009 14.9068C3.22084 14.8866 2.60359 14.2836 2.49334 13.2853C2.25559 11.1388 1.85059 6.10107 1.85059 6.10107"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                              <path d="M13.5312 3.67969H0.812744" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path
-                                      d="M11.0804 3.67974C10.4917 3.67974 9.98468 3.26349 9.86918 2.68674L9.68693 1.77474C9.57443 1.35399 9.19343 1.06299 8.75918 1.06299H5.58443C5.15018 1.06299 4.76918 1.35399 4.65668 1.77474L4.47443 2.68674C4.35893 3.26349 3.85193 3.67974 3.26318 3.67974"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                    </td>
-                </tr>
-                <tr data-item="list">
-                    <th>5</th>
-                    <td>Sophia Wilson</td>
-                    <td>24 Aug At 06:45 PM</td>
-                    <td>Cash</td>
-                    <td>$235</td>
-                    <td>Completed</td>
-                    <td>
-                        <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(5)">
-                        <span class="text-success">
-                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path d="M9.31055 14.3321H14.75" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8.58501 1.84609C9.16674 1.15084 10.2125 1.04889 10.9222 1.6188C10.9614 1.64972 12.2221 2.62909 12.2221 2.62909C13.0017 3.10039 13.244 4.10233 12.762 4.86694C12.7365 4.90789 5.60896 13.8234 5.60896 13.8234C5.37183 14.1192 5.01187 14.2938 4.62718 14.298L1.89765 14.3323L1.28265 11.7292C1.1965 11.3632 1.28265 10.9788 1.51978 10.683L8.58501 1.84609Z"
-                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                              <path d="M7.26562 3.50073L11.3548 6.64108" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                        <a href="#" class="d-inline-block ps-2 delete-btn">
-                        <span class="text-danger">
-                           <svg width="15" height="16" viewBox="0 0 15 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path
-                                      d="M12.4938 6.10107C12.4938 6.10107 12.0866 11.1523 11.8503 13.2801C11.7378 14.2963 11.1101 14.8918 10.0818 14.9106C8.12509 14.9458 6.16609 14.9481 4.21009 14.9068C3.22084 14.8866 2.60359 14.2836 2.49334 13.2853C2.25559 11.1388 1.85059 6.10107 1.85059 6.10107"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                              <path d="M13.5312 3.67969H0.812744" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path
-                                      d="M11.0804 3.67974C10.4917 3.67974 9.98468 3.26349 9.86918 2.68674L9.68693 1.77474C9.57443 1.35399 9.19343 1.06299 8.75918 1.06299H5.58443C5.15018 1.06299 4.76918 1.35399 4.65668 1.77474L4.47443 2.68674C4.35893 3.26349 3.85193 3.67974 3.26318 3.67974"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                    </td>
-                </tr>
-                <tr data-item="list">
-                    <th>6</th>
-                    <td>Benjamin Chen</td>
-                    <td>09 Sep At 01:00 PM</td>
-                    <td>Cash</td>
-                    <td>$220</td>
-                    <td>Completed</td>
-                    <td>
-                        <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(6)">
-                        <span class="text-success">
-                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path d="M9.31055 14.3321H14.75" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8.58501 1.84609C9.16674 1.15084 10.2125 1.04889 10.9222 1.6188C10.9614 1.64972 12.2221 2.62909 12.2221 2.62909C13.0017 3.10039 13.244 4.10233 12.762 4.86694C12.7365 4.90789 5.60896 13.8234 5.60896 13.8234C5.37183 14.1192 5.01187 14.2938 4.62718 14.298L1.89765 14.3323L1.28265 11.7292C1.1965 11.3632 1.28265 10.9788 1.51978 10.683L8.58501 1.84609Z"
-                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                              <path d="M7.26562 3.50073L11.3548 6.64108" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                        <a href="#" class="d-inline-block ps-2 delete-btn">
-                        <span class="text-danger">
-                           <svg width="15" height="16" viewBox="0 0 15 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path
-                                      d="M12.4938 6.10107C12.4938 6.10107 12.0866 11.1523 11.8503 13.2801C11.7378 14.2963 11.1101 14.8918 10.0818 14.9106C8.12509 14.9458 6.16609 14.9481 4.21009 14.9068C3.22084 14.8866 2.60359 14.2836 2.49334 13.2853C2.25559 11.1388 1.85059 6.10107 1.85059 6.10107"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                              <path d="M13.5312 3.67969H0.812744" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path
-                                      d="M11.0804 3.67974C10.4917 3.67974 9.98468 3.26349 9.86918 2.68674L9.68693 1.77474C9.57443 1.35399 9.19343 1.06299 8.75918 1.06299H5.58443C5.15018 1.06299 4.76918 1.35399 4.65668 1.77474L4.47443 2.68674C4.35893 3.26349 3.85193 3.67974 3.26318 3.67974"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                    </td>
-                </tr>
-                <tr data-item="list">
-                    <th>7</th>
-                    <td>Samantha Davis</td>
-                    <td>23 Sep At 03:30 PM</td>
-                    <td>Online</td>
-                    <td>$370</td>
-                    <td>Completed</td>
-                    <td>
-                        <a href="#" class="d-inline-block pe-2" onclick="paymentAdmin.editPayment(7)">
-                        <span class="text-success">
-                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path d="M9.31055 14.3321H14.75" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M8.58501 1.84609C9.16674 1.15084 10.2125 1.04889 10.9222 1.6188C10.9614 1.64972 12.2221 2.62909 12.2221 2.62909C13.0017 3.10039 13.244 4.10233 12.762 4.86694C12.7365 4.90789 5.60896 13.8234 5.60896 13.8234C5.37183 14.1192 5.01187 14.2938 4.62718 14.298L1.89765 14.3323L1.28265 11.7292C1.1965 11.3632 1.28265 10.9788 1.51978 10.683L8.58501 1.84609Z"
-                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                              <path d="M7.26562 3.50073L11.3548 6.64108" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                        <a href="#" class="d-inline-block ps-2 delete-btn">
-                        <span class="text-danger">
-                           <svg width="15" height="16" viewBox="0 0 15 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                              <path
-                                      d="M12.4938 6.10107C12.4938 6.10107 12.0866 11.1523 11.8503 13.2801C11.7378 14.2963 11.1101 14.8918 10.0818 14.9106C8.12509 14.9458 6.16609 14.9481 4.21009 14.9068C3.22084 14.8866 2.60359 14.2836 2.49334 13.2853C2.25559 11.1388 1.85059 6.10107 1.85059 6.10107"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                              <path d="M13.5312 3.67969H0.812744" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                              <path
-                                      d="M11.0804 3.67974C10.4917 3.67974 9.98468 3.26349 9.86918 2.68674L9.68693 1.77474C9.57443 1.35399 9.19343 1.06299 8.75918 1.06299H5.58443C5.15018 1.06299 4.76918 1.35399 4.65668 1.77474L4.47443 2.68674C4.35893 3.26349 3.85193 3.67974 3.26318 3.67974"
-                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round" />
-                           </svg>
-                        </span>
-                        </a>
-                    </td>
-                </tr>
+                <!-- Dữ liệu sẽ được render động bằng JS, không có dòng mẫu cứng ở đây -->
                 </tbody>
             </table>
         </div>
@@ -1300,31 +1037,48 @@
         </div>
         <div class="offcanvas-body">
             <div class="form-group col-md-12">
-                <label class="form-label" for="Name">Tên khách hàng <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="Name" value="sabella Brown">
+                <label class="form-label" for="edit_full_name">Họ và tên bệnh nhân <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="edit_full_name">
             </div>
             <div class="form-group col-md-12">
-                <label class="form-label" for="datetime">Ngày & Giờ <span class="text-danger">*</span></label>
-                <input type="text" id="datetime" class="form-control date_flatpicker flatpickr-input active" value="2023-05-24" readonly="readonly">
+                <label class="form-label" for="edit_dob">Ngày sinh <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" id="edit_dob">
             </div>
-            <div class="form-group">
-                <label class="form-label" for="payment-method">Phương thức thanh toán <span class="text-danger">*</span></label>
-                <select class="form-control select2-basic-single" id="payment-method">
-                    <option value="Prescription">Đơn thuốc</option>
-                    <option value="Service">Dịch vụ</option>
+            <div class="form-group col-md-12">
+                <label class="form-label" for="edit_gender">Giới tính <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="edit_gender">
+            </div>
+            <div class="form-group col-md-12">
+                <label class="form-label" for="edit_disease">Bệnh <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="edit_disease">
+            </div>
+            <div class="form-group col-md-12">
+                <label class="form-label" for="edit_conclusion">Kết luận <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="edit_conclusion">
+            </div>
+            <div class="form-group col-md-12">
+                <label class="form-label" for="edit_treatment_plan">Phác đồ điều trị <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="edit_treatment_plan">
+            </div>
+            <div class="form-group col-md-12">
+                <label class="form-label" for="edit_invoice_id">Mã hóa đơn <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="edit_invoice_id" readonly>
+            </div>
+            <div class="form-group col-md-12">
+                <label class="form-label" for="edit_total_amount">Tổng tiền <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="edit_total_amount">
+            </div>
+            <div class="form-group col-md-12">
+                <label class="form-label" for="edit_status">Trạng thái <span class="text-danger">*</span></label>
+                <select class="form-control" id="edit_status">
+                    <option value="Pending">Chờ xử lý</option>
+                    <option value="Paid">Đã thanh toán</option>
+                    <option value="Cancelled">Đã hủy</option>
                 </select>
             </div>
             <div class="form-group col-md-12">
-                <label class="form-label" for="Amount">Số tiền <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="Amount" value="$500">
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="payment_id">Trạng thái <span class="text-danger">*</span></label>
-                <select class="form-control select2-basic-single" id="payment_id">
-                    <option>Chờ xử lý</option>
-                    <option selected="selected">Đã thanh toán</option>
-                    <option>Đã hủy</option>
-                </select>
+                <label class="form-label" for="edit_payment_date">Ngày thanh toán <span class="text-danger">*</span></label>
+                <input type="datetime-local" class="form-control" id="edit_payment_date">
             </div>
         </div>
         <div class="offcanvas-footer border-top">
@@ -2219,7 +1973,7 @@
 <script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>
 
 <!-- Payment Admin Logic -->
-<script src="../assets/jslogic/payment-admin.js"></script>
+<!-- <script src="../assets/jslogic/payment-admin.js"></script> -->
 <!-- Sidebar Active Logic (ensure this is last for correct highlight) -->
 <script src="../assets/js/sidebar-active.js" defer></script>
  <script>
