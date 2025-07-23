@@ -5,6 +5,7 @@ import dto.DoctorDTOFA;
 import dto.PharmacistDTOFA;
 import dto.ReceptionistDTOFA;
 import model.AccountPharmacist;
+import util.PasswordHasherSHA256Util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -215,7 +216,7 @@ public class AdminSystemDAO {
             // Insert account
             psAccount = conn.prepareStatement(insertAccountSql, PreparedStatement.RETURN_GENERATED_KEYS);
             psAccount.setString(1, username);
-            psAccount.setString(2, password);
+            psAccount.setString(2, PasswordHasherSHA256Util.hashPassword(password)); // hash password before saving
             psAccount.setString(3, email);
             psAccount.setString(4, img);
             psAccount.setString(5, status);
@@ -385,8 +386,10 @@ public class AdminSystemDAO {
             } catch (Exception ignored) {
             }
             try {
-                if (conn != null) conn.setAutoCommit(true);
-                conn.close();
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
             } catch (Exception ignored) {
             }
         }
@@ -596,7 +599,7 @@ public class AdminSystemDAO {
 
             psAccount = conn.prepareStatement(insertAccountSql, PreparedStatement.RETURN_GENERATED_KEYS);
             psAccount.setString(1, username);
-            psAccount.setString(2, password);
+            psAccount.setString(2, PasswordHasherSHA256Util.hashPassword(password)); // hash password before saving
             psAccount.setString(3, email);
             psAccount.setString(4, img);
             psAccount.setString(5, status);
@@ -916,7 +919,7 @@ public class AdminSystemDAO {
             conn.setAutoCommit(false);
 
             psAccount.setString(1, username);
-            psAccount.setString(2, password);
+            psAccount.setString(2, PasswordHasherSHA256Util.hashPassword(password)); // hash password before saving
             psAccount.setString(3, email);
             psAccount.setString(4, img);
             psAccount.setString(5, role);
@@ -1195,7 +1198,7 @@ public class AdminSystemDAO {
 
             // B1. Insert vào AccountPharmacist
             psAccount.setString(1, username);
-            psAccount.setString(2, password);
+            psAccount.setString(2, PasswordHasherSHA256Util.hashPassword(password)); // hash password before saving
             psAccount.setString(3, email);
             psAccount.setString(4, img);
             psAccount.setString(5, status);
