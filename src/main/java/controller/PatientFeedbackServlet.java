@@ -54,7 +54,7 @@ public class PatientFeedbackServlet extends HttpServlet {
 
         // Gửi đánh giá
         FeedbackDAO dao = new FeedbackDAO();
-        boolean inserted = dao.insertFeedback(patientId, request.doctorId, request.comment);
+        boolean inserted = dao.insertFeedback(patientId, request.comment);
 
         PrintWriter out = resp.getWriter();
         if (inserted) {
