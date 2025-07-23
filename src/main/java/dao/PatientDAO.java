@@ -2,13 +2,16 @@ package dao;
 
 import model.Patient;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PatientDAO {
-    
+
+
     public List<Patient> getAllPatients() {
         List<Patient> patients = new ArrayList<>();
         String sql = "SELECT * FROM Patient ORDER BY full_name";
@@ -210,5 +213,42 @@ public class PatientDAO {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public int insertPatient(Patient patient) throws Exception {
+        String sql = "INSERT INTO Patient (full_name, dob, gender, phone, address) VALUES (?, ?, ?, ?, ?)";
+        int generatedId = -1;
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            ps.setString(1, patient.getFull_name());
+            LocalDate localDob = LocalDate.parse(patient.getDob(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            ps.setDate(2, Date.valueOf(localDob));
+            ps.setString(3, patient.getGender());
+            ps.setString(4, patient.getPhone());
+            ps.setString(5, patient.getAddress());
+            System.out.println("DOB: " + patient.getDob());
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    generatedId = rs.getInt(1);
+                }
+            }
+        }
+        return generatedId;
+    }
+
+    public void linkPatientToAccount(int patientId, int accountPatientId) throws Exception {
+        String sql = "INSERT INTO Patient_AccountPatient (patient_id, account_patient_id) VALUES (?, ?)";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, patientId);
+            ps.setInt(2, accountPatientId);
+            ps.executeUpdate();
+        }
     }
 } 

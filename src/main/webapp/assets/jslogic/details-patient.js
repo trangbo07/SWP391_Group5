@@ -17,9 +17,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Hiển thị thông tin bệnh nhân
         document.getElementById('patient-name').textContent = data.username || "---";
-        document.getElementById('patient-phone').textContent = data.phone || "---";
         document.getElementById('patient-email').textContent = data.email || "---";
-        document.getElementById('patient-username').textContent = data.username || "---";
         document.getElementById('patient-img').src = data.img || "/img/default-avatar.png";
 
     } catch (err) {

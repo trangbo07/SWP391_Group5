@@ -49,12 +49,10 @@ public class PatientFeedbackServlet extends HttpServlet {
         FeedbackRequest request = gson.fromJson(sb.toString(), FeedbackRequest.class);
 
         // Lấy user từ session
-        HttpSession session = req.getSession();
-        int patientId = ((model.AccountPatient) session.getAttribute("user")).getAccount_patient_id();
 
         // Gửi đánh giá
         FeedbackDAO dao = new FeedbackDAO();
-        boolean inserted = dao.insertFeedback(patientId, request.comment);
+        boolean inserted = dao.insertFeedback(request.patientId, request.doctorId, request.comment); // 🔹 thêm name
 
         PrintWriter out = resp.getWriter();
         if (inserted) {
@@ -66,6 +64,7 @@ public class PatientFeedbackServlet extends HttpServlet {
 
     // Lớp request model
     private static class FeedbackRequest {
+        int patientId;
         int doctorId;
         String comment;
     }
