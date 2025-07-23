@@ -54,7 +54,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
         
-        <!-- <style>
+        <style>
             /* Quick Actions Styles */
             .quick-action-btn {
                 display: flex;
@@ -308,7 +308,7 @@
             .main-content {
                 flex: 1;
             }
-        </style> -->
+        </style>
     </head>
     <body class="  ">
         <!-- loader Start -->
@@ -1888,6 +1888,53 @@
         <script src="../assets/jslogic/annoucement.js" defer></script>
         <script src="../assets/jslogic/logout.js" defer></script>
 
-
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Lấy đường dẫn file hiện tại (ví dụ: medicine-warehouse.html)
+                var currentPage = location.pathname.split("/").pop();
+            
+                // Lặp qua tất cả các nav-link trong sidebar
+                document.querySelectorAll('.sidebar .nav-link').forEach(function(link) {
+                    // Lấy href của từng link (bỏ ./ nếu có)
+                    var linkPage = link.getAttribute('href');
+                    if (linkPage) {
+                        var normalizedLink = linkPage.replace(/^\.\//, '');
+                        var normalizedCurrent = currentPage.replace(/^\.\//, '');
+            
+                        // Kiểm tra và thêm class active cho link hiện tại
+                        if (normalizedLink === normalizedCurrent) {
+                            link.classList.add('active');
+                            // Lưu trạng thái active vào localStorage
+                            localStorage.setItem('activeSidebarLink', linkPage);
+                        }
+            
+                        // Thêm sự kiện click cho mỗi link
+                        link.addEventListener('click', function(event) {
+                            // Xóa active từ tất cả các links
+                            document.querySelectorAll('.sidebar .nav-link').forEach(function(item) {
+                                item.classList.remove('active');
+                            });
+            
+                            // Thêm active cho link được click
+                            this.classList.add('active');
+            
+                            // Lưu trạng thái active vào localStorage
+                            localStorage.setItem('activeSidebarLink', this.getAttribute('href'));
+                        });
+                    }
+                });
+            
+                // Khôi phục trạng thái active từ localStorage nếu không có trang hiện tại khớp
+                if (!document.querySelector('.sidebar .nav-link.active')) {
+                    var savedActiveLink = localStorage.getItem('activeSidebarLink');
+                    if (savedActiveLink) {
+                        var linkToActivate = document.querySelector('.sidebar .nav-link[href="' + savedActiveLink + '"]');
+                        if (linkToActivate) {
+                            linkToActivate.classList.add('active');
+                        }
+                    }
+                }
+            });
+            </script>
     </body>
 </html>
