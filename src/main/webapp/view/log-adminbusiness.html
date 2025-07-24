@@ -902,6 +902,34 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Bảng bệnh nhân đã thanh toán -->
+                            <div class="mb-4" id="paidPatientsTableContainer">
+                                <h5 class="mb-3"><i class="fas fa-money-check-alt me-2 text-success"></i>Bệnh nhân đã thanh toán</h5>
+                                <div class="mb-2 d-flex flex-wrap align-items-center gap-2" id="paidPatientsTableControls">
+                                    <input type="text" id="searchPaidPatientName" class="form-control" style="max-width: 220px;" placeholder="Tìm tên bệnh nhân...">
+                                    <input type="text" id="searchPaidInvoiceId" class="form-control" style="max-width: 150px;" placeholder="Mã hóa đơn...">
+                                    <select id="filterPaidPatientTime" class="form-select" style="max-width: 180px;">
+                                        <option value="desc" selected>Mới nhất</option>
+                                        <option value="asc">Cũ nhất</option>
+                                    </select>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Mã hóa đơn</th>
+                                                <th>Thông tin</th>
+                                                <th>Ngày tạo hoá đơn</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="paidPatientsTable">
+                                            <!-- Dữ liệu sẽ được render ở đây -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- End bảng bệnh nhân đã thanh toán -->
                         </div>
 
                         <div class="tab-pane fade" id="staffLog" role="tabpanel" aria-labelledby="staff-log-tab">
@@ -1158,6 +1186,7 @@
 <script src="../assets/jslogic/logout.js" defer></script>
 <script src="../assets/jslogic/annoucement.js" defer></script>
 <script src="../assets/jslogic/log-adminsys.js" defer></script>
+<script src="../assets/jslogic/log-adminbusiness.js" defer></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Lấy đường dẫn file hiện tại (ví dụ: medicine-warehouse.html)

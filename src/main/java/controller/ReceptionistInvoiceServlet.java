@@ -33,9 +33,10 @@ public class ReceptionistInvoiceServlet extends HttpServlet {
                 return;
             }
 
-            // Check if user is receptionist
+            // Check if user is receptionist or admin business
             AccountStaff user = (AccountStaff) session.getAttribute("user");
-            if (!"Receptionist".equals(user.getRole())) {
+            String role = user.getRole();
+            if (!("Receptionist".equals(role) || "AdminBusiness".equals(role))) {
                 resp.setStatus(403);
                 out.write("{\"error\":\"Access denied\"}");
                 return;
