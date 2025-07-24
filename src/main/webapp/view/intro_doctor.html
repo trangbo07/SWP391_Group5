@@ -64,6 +64,14 @@
                 <span class="iq-subtitle text-uppercase text-primary">Đội ngũ bác sĩ</span>
                 <h3 class="iq-title iq-heading-title">Giới thiệu đội ngũ bác sĩ chuyên môn cao</h3>
             </div>
+            <!-- Dropdown chọn bác sĩ -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-6">
+                    <select id="doctorSelect" class="form-select">
+                        <option value="">Chọn bác sĩ để xem nhanh...</option>
+                    </select>
+                </div>
+            </div>
             <div class="row justify-content-center" id="doctor-list">
                 <!-- Danh sách bác sĩ sẽ được render ở đây -->
             </div>
@@ -161,18 +169,26 @@
     </div>
 </footer>
 <script>
-// Lấy danh sách bác sĩ từ API và render ra giao diện
+// Lấy danh sách bác sĩ từ API và render ra giao diện + dropdown
 fetch('../api/doctors')
     .then(res => res.json())
     .then(doctors => {
         const list = document.getElementById('doctor-list');
+        const select = document.getElementById('doctorSelect');
         if (!Array.isArray(doctors) || doctors.length === 0) {
             list.innerHTML = '<div class="col-12 text-center">Không có dữ liệu bác sĩ.</div>';
+            select.innerHTML = '<option value="">Không có bác sĩ</option>';
             return;
         }
+        // Render dropdown
+        select.innerHTML = '<option value="">Chọn bác sĩ để xem nhanh...</option>';
+        doctors.forEach((doctor, idx) => {
+            select.innerHTML += `<option value="doctor-${doctor.doctorId}">${doctor.fullName} (${doctor.department || ''})</option>`;
+        });
+        // Render danh sách bác sĩ
         list.innerHTML = doctors.map(doctor => `
             <div class="col-md-4 mb-4">
-                <div class="card shadow border-0 h-100 text-center">
+                <div class="card shadow border-0 h-100 text-center" id="doctor-${doctor.doctorId}">
                     <img src="${doctor.img || '../assets/images/docter/avttt.png'}" class="card-img-top rounded-top" alt="${doctor.fullName}">
                     <div class="card-body">
                         <h5 class="card-title">${doctor.fullName}</h5>
@@ -183,9 +199,22 @@ fetch('../api/doctors')
                 </div>
             </div>
         `).join('');
+        // Sự kiện chọn bác sĩ để scroll đến card
+        select.addEventListener('change', function() {
+            const val = this.value;
+            if (val) {
+                const card = document.getElementById(val);
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    card.classList.add('border-primary', 'border', 'border-3');
+                    setTimeout(() => card.classList.remove('border-primary', 'border', 'border-3'), 1500);
+                }
+            }
+        });
     })
     .catch(err => {
         document.getElementById('doctor-list').innerHTML = '<div class="col-12 text-center text-danger">Không thể tải danh sách bác sĩ.</div>';
+        document.getElementById('doctorSelect').innerHTML = '<option value="">Không thể tải bác sĩ</option>';
     });
 </script>
 </body>

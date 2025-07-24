@@ -165,6 +165,8 @@ public class AppointmentDAO {
                         rs.getString("gender"),
                         rs.getString("phone")
                 );
+                // Bổ sung mapping doctor_id
+                appointmentDTO.setDoctor_id(rs.getInt("doctor_id"));
             }
 
             rs.close();
@@ -412,4 +414,77 @@ public class AppointmentDAO {
         return appointments.isEmpty() ? null : appointments;
     }
 
+    // Cập nhật chi tiết lịch hẹn
+    public boolean updateAppointment(int appointmentId, int doctorId, int patientId, String appointmentDateTime, String shift, String note) {
+        DBContext db = DBContext.getInstance();
+        String sql = "UPDATE Appointment SET doctor_id = ?, patient_id = ?, appointment_datetime = ?, shift = ?, note = ? WHERE appointment_id = ?";
+        try (PreparedStatement ps = db.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, doctorId);
+            ps.setInt(2, patientId);
+            ps.setString(3, appointmentDateTime);
+            ps.setString(4, shift);
+            ps.setString(5, note);
+            ps.setInt(6, appointmentId);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Lấy danh sách các giờ (HH:mm) đã có người đặt cho bác sĩ, ngày, ca.
+     */
+    public List<String> getBookedSlots(int doctorId, String date, String shift) {
+        List<String> slots = new ArrayList<>();
+        DBContext db = DBContext.getInstance();
+        try {
+            String sql = "SELECT FORMAT(appointment_datetime, 'HH:mm') AS appointment_time " +
+                         "FROM Appointment " +
+                         "WHERE doctor_id = ? AND shift = ? AND CONVERT(date, appointment_datetime) = ?";
+            PreparedStatement statement = db.getConnection().prepareStatement(sql);
+            statement.setInt(1, doctorId);
+            statement.setString(2, shift);
+            statement.setString(3, date); // yyyy-MM-dd
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                slots.add(rs.getString("appointment_time"));
+            }
+            rs.close();
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return slots;
+    }
+
+    /**
+     * Kiểm tra slot đã có người đặt chưa cho bác sĩ, ngày, ca, giờ (HH:mm)
+     */
+    public boolean isSlotBooked(int doctorId, String date, String shift, String time) {
+        DBContext db = DBContext.getInstance();
+        try {
+            String sql = "SELECT COUNT(*) FROM Appointment " +
+                         "WHERE doctor_id = ? AND shift = ? AND CONVERT(date, appointment_datetime) = ? " +
+                         "AND FORMAT(appointment_datetime, 'HH:mm') = ?";
+            PreparedStatement statement = db.getConnection().prepareStatement(sql);
+            statement.setInt(1, doctorId);
+            statement.setString(2, shift);
+            statement.setString(3, date); // yyyy-MM-dd
+            statement.setString(4, time); // HH:mm
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                rs.close();
+                statement.close();
+                return count > 0;
+            }
+            rs.close();
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

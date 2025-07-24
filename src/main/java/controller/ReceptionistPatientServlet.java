@@ -42,6 +42,20 @@ public class ReceptionistPatientServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = resp.getWriter();
+        try {
+            // Trả về toàn bộ bệnh nhân cho lễ tân
+            java.util.List<model.Patient> allPatients = patientDAO.getAllPatients();
+            out.write(gson.toJson(allPatients));
+        } catch (Exception e) {
+            resp.setStatus(500);
+            out.write("{\"error\":\"Internal server error: " + e.getMessage() + "\"}");
+        }
+    }
+
     private static class PatientRequest {
         String full_name;
         String dob;
