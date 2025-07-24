@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đặt lịch hẹn mới - Lễ tân</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/assets/css/core/libs.min.css" />
+    <link rel="stylesheet" href="../assets/assets/css/kivicare.min.css?v=1.4.1" />
+    <link rel="stylesheet" href="../assets/assets/css/custom.min.css?v=1.4.1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .form-card {
+            max-width: 700px;
+            margin: 40px auto;
+            border-radius: 18px;
+            box-shadow: 0 6px 24px rgba(44,62,80,0.08);
+            background: #fff;
+            padding: 32px 28px 24px 28px;
+        }
+        .form-card .card-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: #fff;
+            border-radius: 18px 18px 0 0;
+            padding: 24px 28px 16px 28px;
+            margin: -32px -28px 24px -28px;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.06);
+        }
+        .form-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #dee2e6;
+            font-size: 1rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52,152,219,0.15);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 32px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(39,174,96,0.08);
+        }
+        .btn-success:hover {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            box-shadow: 0 4px 16px rgba(39,174,96,0.15);
+        }
+        @media (max-width: 600px) {
+            .form-card { padding: 18px 8px; }
+            .form-card .card-header { padding: 18px 8px 12px 8px; margin: -18px -8px 18px -8px; }
+        }
+    </style>
+</head>
+<body style="background: #f8f9fa;">
+<div class="form-card">
+    <div class="card-header text-center">
+        <h2 class="mb-0">Đặt lịch hẹn mới</h2>
+    </div>
+    <form id="appointmentForm">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Bệnh nhân</label>
+                <select class="form-select" name="patient_id" id="patientSelect" required>
+                    <option value="">Chọn bệnh nhân...</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Bác sĩ</label>
+                <select class="form-select" name="doctor_id" id="doctorSelect" required>
+                    <option value="">Chọn bác sĩ...</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Ngày hẹn</label>
+                <input type="date" class="form-control" name="appointment_date" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Ca (Shift)</label>
+                <select class="form-select" name="shift" id="shiftSelect" required>
+                    <option value="">Chọn ca...</option>
+                    <option value="Sáng">Sáng</option>
+                    <option value="Chiều">Chiều</option>
+                    <option value="Tối">Tối</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Chọn giờ</label>
+                <select class="form-select" id="slotSelect" name="appointment_time" required>
+                    <option value="">Chọn giờ...</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Ghi chú</label>
+                <input type="text" class="form-control" name="note">
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success">Đặt lịch hẹn</button>
+        </div>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script>
+function loadPatients() {
+    $.get('/api/receptionist/patient', function(data) {
+        console.log('Dữ liệu bệnh nhân trả về:', data);
+        const select = $('#patientSelect');
+        select.empty().append('<option value="">Chọn bệnh nhân...</option>');
+        data.forEach(p => {
+            select.append(`<option value="${p.patient_id}">${p.full_name} - ${p.dob || ''} - ${p.gender || ''}</option>`);
+        });
+    });
+}
+function loadDoctors() {
+    $.get('/api/receptionist/doctors', function(data) {
+        const select = $('#doctorSelect');
+        select.empty().append('<option value="">Chọn bác sĩ...</option>');
+        data.forEach(doc => {
+            select.append(`<option value="${doc.doctorId}">${doc.fullName} (${doc.department})</option>`);
+        });
+    });
+}
+function renderMorningSlots() {
+    const slots = ["08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00"];
+    let html = '<option value="">Chọn giờ...</option>';
+    slots.forEach(time => {
+        html += `<option value="${time}">${time}</option>`;
+    });
+    $('#slotSelect').html(html);
+}
+function renderAfternoonSlots() {
+    const slots = ["13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"];
+    let html = '<option value="">Chọn giờ...</option>';
+    slots.forEach(time => {
+        html += `<option value="${time}">${time}</option>`;
+    });
+    $('#slotSelect').html(html);
+}
+$(function() {
+    loadPatients();
+    loadDoctors();
+    // Khi chọn ca, nếu là Sáng thì render slot giờ sáng
+    $('#shiftSelect').on('change', function() {
+        if ($(this).val() === 'Sáng') {
+            renderMorningSlots();
+        } else if ($(this).val() === 'Chiều') {
+            renderAfternoonSlots();
+        } else {
+            $('#slotSelect').html('<option value="">Chọn giờ...</option>');
+        }
+    });
+    $('#appointmentForm').on('submit', function(e) {
+        e.preventDefault();
+        const formData = Object.fromEntries(new FormData(this));
+        function convertShift(shiftVi) {
+            switch (shiftVi) {
+                case 'Sáng': return 'Morning';
+                case 'Chiều': return 'Afternoon';
+                case 'Tối': return 'Evening';
+                default: return shiftVi;
+            }
+        }
+        if (!formData.appointment_date || !formData.appointment_time) {
+            alert('Vui lòng chọn ngày và giờ hợp lệ!');
+            return;
+        }
+        // Kiểm tra ngày giờ chọn có trong quá khứ không
+        const selectedDateTime = new Date(formData.appointment_date + 'T' + formData.appointment_time);
+        const now = new Date();
+        if (selectedDateTime <= now) {
+            alert('Bạn cần chọn lịch trong tương lai!');
+            return;
+        }
+        const appointmentDateTime = formData.appointment_date + ' ' + formData.appointment_time + ':00';
+        const payload = {
+            doctorId: parseInt(formData.doctor_id),
+            patientId: parseInt(formData.patient_id),
+            appointmentDateTime: appointmentDateTime,
+            shift: convertShift(formData.shift),
+            note: formData.note || ""
+        };
+        $.ajax({
+            url: '/api/receptionist/appointment',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            success: function(data) {
+                alert('Đặt lịch hẹn thành công!');
+                $('#appointmentForm')[0].reset();
+                $('#slotSelect').html('<option value="">Chọn giờ...</option>');
+            },
+            error: function(xhr) {
+                if (xhr.status === 409) {
+                    alert('Slot này đã có người đặt! Vui lòng chọn giờ khác.');
+                } else {
+                    alert('Đặt lịch hẹn thất bại!');
+                }
+            }
+        });
+    });
+});
+</script>
+</body>
+</html> 

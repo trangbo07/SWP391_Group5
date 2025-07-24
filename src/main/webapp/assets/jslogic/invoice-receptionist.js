@@ -60,7 +60,7 @@ async function loadInvoices() {
     } catch (error) {
         console.error('Error loading invoices:', error);
         showLoading(false);
-        showError('Failed to load invoices. Please try again.');
+        showError('Không thể tải hóa đơn. Vui lòng thử lại.');
     }
 }
 
@@ -74,7 +74,7 @@ function renderInvoices() {
             <tr>
                 <td colspan="8" class="text-center py-4">
                     <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">No invoices found</p>
+                    <p class="text-muted">Không có hóa đơn nào</p>
                 </td>
             </tr>
         `);
@@ -159,12 +159,12 @@ function createInvoiceRow(invoice) {
             </td>
             <td>
                 <div class="patient-info">
-                    <div class="fw-bold">${invoice.patient_name || 'N/A'}</div>
+                    <div class="fw-bold">${invoice.patient_name || 'Không có'}</div>
                     <div class="text-muted">
-                        <i class="fas fa-phone me-1"></i>${invoice.patient_phone || 'N/A'}
+                        <i class="fas fa-phone me-1"></i>${invoice.patient_phone || 'Không có'}
                     </div>
                     <div class="text-muted small">
-                        <i class="fas fa-map-marker-alt me-1"></i>${invoice.patient_address || 'N/A'}
+                        <i class="fas fa-map-marker-alt me-1"></i>${invoice.patient_address || 'Không có'}
                     </div>
                 </div>
             </td>
@@ -181,17 +181,17 @@ function createInvoiceRow(invoice) {
                 <span class="amount fw-bold">${totalAmount}</span>
             </td>
             <td>
-                <span class="status-badge ${statusClass}">${invoice.status}</span>
+                <span class="status-badge ${statusClass}">${getStatusVN(invoice.status)}</span>
             </td>
             <td>
                 <div class="btn-group" role="group">
-                    <button class="btn btn-sm btn-outline-primary" onclick="viewInvoiceDetails(${invoice.invoice_id})" title="View Details">
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewInvoiceDetails(${invoice.invoice_id})" title="Xem chi tiết">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-success" onclick="markAsPaid(${invoice.invoice_id})" title="Mark as Paid" ${invoice.status === 'Paid' ? 'disabled' : ''}>
+                    <button class="btn btn-sm btn-outline-success" onclick="markAsPaid(${invoice.invoice_id})" title="Đánh dấu đã thanh toán" ${invoice.status === 'Paid' ? 'disabled' : ''}>
                         <i class="fas fa-check"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="cancelInvoice(${invoice.invoice_id})" title="Cancel Invoice" ${invoice.status === 'Cancelled' ? 'disabled' : ''}>
+                    <button class="btn btn-sm btn-outline-danger" onclick="cancelInvoice(${invoice.invoice_id})" title="Hủy hóa đơn" ${invoice.status === 'Cancelled' ? 'disabled' : ''}>
                         <i class="fas fa-times"></i>
                     </button>
                     ${vnpayBtn}
@@ -206,18 +206,21 @@ function createInvoiceRow(invoice) {
 function initializeDataTable() {
     dataTable = $('#invoiceTable').DataTable({
         pageLength: 10,
-        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Tất cả"]],
         order: [[0, 'desc']], // Sort by invoice ID descending
         responsive: true,
         language: {
-            search: "Search:",
-            lengthMenu: "Show _MENU_ entries",
-            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            search: "Tìm kiếm:",
+            lengthMenu: "Hiển thị _MENU_ hóa đơn",
+            info: "Hiển thị _START_ đến _END_ của _TOTAL_ hóa đơn",
+            infoEmpty: "Không có hóa đơn nào",
+            infoFiltered: "(lọc từ _MAX_ hóa đơn)",
+            zeroRecords: "Không tìm thấy hóa đơn phù hợp",
             paginate: {
-                first: "First",
-                last: "Last",
-                next: "Next",
-                previous: "Previous"
+                first: "Đầu",
+                last: "Cuối",
+                next: "Tiếp",
+                previous: "Trước"
             }
         },
         columnDefs: [
@@ -303,7 +306,7 @@ async function viewInvoiceDetails(invoiceId) {
         
     } catch (error) {
         console.error('Error loading invoice details:', error);
-        showError('Failed to load invoice details.');
+        showError('Không thể tải chi tiết hóa đơn.');
     }
 }
 
@@ -315,44 +318,44 @@ function showInvoiceDetails(invoice) {
     const html = `
         <div class="row">
             <div class="col-md-6">
-                <h6 class="text-muted">Invoice Information</h6>
+                <h6 class="text-muted">Thông tin hóa đơn</h6>
                 <table class="table table-borderless">
                     <tr>
-                        <td><strong>Invoice ID:</strong></td>
+                        <td><strong>Mã hóa đơn:</strong></td>
                         <td>#${invoice.invoice_id}</td>
                     </tr>
                     <tr>
-                        <td><strong>Issue Date:</strong></td>
+                        <td><strong>Ngày lập:</strong></td>
                         <td>${formatDate(invoice.issue_date)}</td>
                     </tr>
                     <tr>
-                        <td><strong>Status:</strong></td>
-                        <td><span class="status-badge ${getStatusClass(invoice.status)}">${invoice.status}</span></td>
+                        <td><strong>Trạng thái:</strong></td>
+                        <td><span class="status-badge ${getStatusClass(invoice.status)}">${getStatusVN(invoice.status)}</span></td>
                     </tr>
                     <tr>
-                        <td><strong>Total Amount:</strong></td>
+                        <td><strong>Tổng tiền:</strong></td>
                         <td class="amount fw-bold">${formatCurrency(invoice.total_invoice || 0)}</td>
                     </tr>
                 </table>
             </div>
             <div class="col-md-6">
-                <h6 class="text-muted">Patient Information</h6>
+                <h6 class="text-muted">Thông tin bệnh nhân</h6>
                 <table class="table table-borderless">
                     <tr>
-                        <td><strong>Name:</strong></td>
-                        <td>${invoice.patient_name || 'N/A'}</td>
+                        <td><strong>Họ tên:</strong></td>
+                        <td>${invoice.patient_name || 'Không có'}</td>
                     </tr>
                     <tr>
-                        <td><strong>Phone:</strong></td>
-                        <td>${invoice.patient_phone || 'N/A'}</td>
+                        <td><strong>Số điện thoại:</strong></td>
+                        <td>${invoice.patient_phone || 'Không có'}</td>
                     </tr>
                     <tr>
-                        <td><strong>Address:</strong></td>
-                        <td>${invoice.patient_address || 'N/A'}</td>
+                        <td><strong>Địa chỉ:</strong></td>
+                        <td>${invoice.patient_address || 'Không có'}</td>
                     </tr>
                     <tr>
-                        <td><strong>Gender:</strong></td>
-                        <td>${invoice.patient_gender || 'N/A'}</td>
+                        <td><strong>Giới tính:</strong></td>
+                        <td>${invoice.patient_gender || 'Không có'}</td>
                     </tr>
                 </table>
             </div>
@@ -360,25 +363,25 @@ function showInvoiceDetails(invoice) {
         
         <div class="row mt-4">
             <div class="col-12">
-                <h6 class="text-muted">Payment Breakdown</h6>
+                <h6 class="text-muted">Chi tiết thanh toán</h6>
                 <table class="table table-bordered">
                     <thead class="table-light">
                         <tr>
-                            <th>Description</th>
-                            <th class="text-end">Amount</th>
+                            <th>Diễn giải</th>
+                            <th class="text-end">Số tiền</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Service Charges</td>
+                            <td>Tiền dịch vụ</td>
                             <td class="text-end">${formatCurrency(invoice.total_service_price || 0)}</td>
                         </tr>
                         <tr>
-                            <td>Prescription Charges</td>
+                            <td>Tiền thuốc</td>
                             <td class="text-end">${formatCurrency(invoice.total_prescription_price || 0)}</td>
                         </tr>
                         <tr class="table-primary">
-                            <td><strong>Total</strong></td>
+                            <td><strong>Tổng cộng</strong></td>
                             <td class="text-end"><strong>${formatCurrency(invoice.total_invoice || 0)}</strong></td>
                         </tr>
                     </tbody>
@@ -394,14 +397,14 @@ function showInvoiceDetails(invoice) {
 // Mark invoice as paid
 async function markAsPaid(invoiceId) {
     const result = await Swal.fire({
-        title: 'Mark as Paid?',
-        text: `Are you sure you want to mark invoice #${invoiceId} as paid?`,
+        title: 'Đánh dấu đã thanh toán?',
+        text: `Bạn có chắc chắn muốn đánh dấu hóa đơn #${invoiceId} đã thanh toán?`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#27ae60',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Yes, mark as paid',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: 'Đã thanh toán',
+        cancelButtonText: 'Hủy'
     });
 
     if (result.isConfirmed) {
@@ -419,12 +422,12 @@ async function markAsPaid(invoiceId) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            showSuccess('Invoice marked as paid successfully!');
+            showSuccess('Đã đánh dấu hóa đơn thanh toán thành công!');
             refreshData();
             
         } catch (error) {
             console.error('Error updating invoice status:', error);
-            showError('Failed to update invoice status.');
+            showError('Không thể cập nhật trạng thái hóa đơn!');
         }
     }
 }
@@ -432,14 +435,14 @@ async function markAsPaid(invoiceId) {
 // Cancel invoice
 async function cancelInvoice(invoiceId) {
     const result = await Swal.fire({
-        title: 'Cancel Invoice?',
-        text: `Are you sure you want to cancel invoice #${invoiceId}?`,
+        title: 'Hủy hóa đơn?',
+        text: `Bạn có chắc chắn muốn hủy hóa đơn #${invoiceId}?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#e74c3c',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Yes, cancel it',
-        cancelButtonText: 'No, keep it'
+        confirmButtonText: 'Hủy hóa đơn',
+        cancelButtonText: 'Không'
     });
 
     if (result.isConfirmed) {
@@ -457,12 +460,12 @@ async function cancelInvoice(invoiceId) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            showSuccess('Invoice cancelled successfully!');
+            showSuccess('Đã hủy hóa đơn thành công!');
             refreshData();
             
         } catch (error) {
             console.error('Error cancelling invoice:', error);
-            showError('Failed to cancel invoice.');
+            showError('Không thể hủy hóa đơn.');
         }
     }
 }
@@ -475,7 +478,7 @@ function refreshData() {
 // Export to Excel
 function exportToExcel() {
     // Implementation for Excel export
-    showInfo('Export functionality will be implemented soon.');
+    showInfo('Chức năng xuất Excel sẽ được triển khai sớm.');
 }
 
 // Print invoice
@@ -505,12 +508,21 @@ function getStatusClass(status) {
     }
 }
 
+function getStatusVN(status) {
+    switch ((status || '').toLowerCase()) {
+        case 'paid': return 'Đã thanh toán';
+        case 'pending': return 'Chờ thanh toán';
+        case 'cancelled': return 'Đã hủy';
+        default: return status || '';
+    }
+}
+
 function formatDate(dateString) {
-    if (!dateString) return 'N/A';
+    if (!dateString) return 'Không có';
     
     try {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
+        return date.toLocaleDateString('vi-VN', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
@@ -523,11 +535,11 @@ function formatDate(dateString) {
 }
 
 function formatCurrency(amount) {
-    if (amount === null || amount === undefined) return '$0.00';
+    if (amount === null || amount === undefined) return '0₫';
     
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('vi-VN', {
         style: 'currency',
-        currency: 'USD'
+        currency: 'VND'
     }).format(amount);
 }
 
@@ -547,7 +559,7 @@ function showLoading(show) {
 function showSuccess(message) {
     Swal.fire({
         icon: 'success',
-        title: 'Success!',
+        title: 'Thành công!',
         text: message,
         timer: 3000,
         showConfirmButton: false
@@ -557,7 +569,7 @@ function showSuccess(message) {
 function showError(message) {
     Swal.fire({
         icon: 'error',
-        title: 'Error!',
+        title: 'Lỗi!',
         text: message,
         confirmButtonColor: '#e74c3c'
     });
@@ -566,7 +578,7 @@ function showError(message) {
 function showInfo(message) {
     Swal.fire({
         icon: 'info',
-        title: 'Information',
+        title: 'Thông báo',
         text: message,
         confirmButtonColor: '#3498db'
     });

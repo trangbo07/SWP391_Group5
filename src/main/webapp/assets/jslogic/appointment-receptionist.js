@@ -5,6 +5,8 @@ let filteredAppointments = [];
 let currentPage = 1;
 let pageSize = 25;
 let currentAppointmentId = null;
+// Thêm biến để xác định chế độ chỉnh sửa
+let isEditMode = false;
 
 document.addEventListener('DOMContentLoaded', function() {
     loadAllAppointments();
@@ -67,7 +69,7 @@ async function loadAllAppointments() {
 
     } catch (error) {
         console.error('Error loading appointments:', error);
-        showError('Failed to load appointments. Please try again.');
+        showError('Không thể tải lịch hẹn. Vui lòng thử lại.');
     } finally {
         loadingIndicator.style.display = 'none';
     }
@@ -138,29 +140,29 @@ function renderAppointments() {
             <td>
                 <div class="d-flex align-items-center">
                     <div>
-                        <div class="fw-bold">${escapeHtml(appointment.full_name || 'N/A')}</div>
-                        <small class="text-muted">${escapeHtml(appointment.phone || 'N/A')}</small>
+                        <div class="fw-bold">${escapeHtml(appointment.full_name || 'Không có')}</div>
+                        <small class="text-muted">${escapeHtml(appointment.phone || 'Không có')}</small>
                     </div>
                 </div>
             </td>
             <td>
-                <div class="fw-bold">${escapeHtml(appointment.doctor_full_name || 'N/A')}</div>
+                <div class="fw-bold">${escapeHtml(appointment.doctor_full_name || 'Không có')}</div>
             </td>
             <td>
-                <span class="badge bg-info">${escapeHtml(appointment.doctor_department || 'N/A')}</span>
+                <span class="badge bg-info">${escapeHtml(appointment.doctor_department || 'Không có')}</span>
             </td>
             <td>
                 <div>${formatDateTime(appointment.appointment_datetime)}</div>
             </td>
             <td>
-                <span class="badge ${getShiftBadgeClass(appointment.shift)}">${escapeHtml(appointment.shift || 'N/A')}</span>
+                <span class="badge ${getShiftBadgeClass(appointment.shift)}">${getShiftVN(appointment.shift || 'Không có')}</span>
             </td>
             <td>
-                <span class="badge ${getStatusBadgeClass(appointment.status)}">${escapeHtml(appointment.status || 'N/A')}</span>
+                <span class="badge ${getStatusBadgeClass(appointment.status)}">${getStatusVN(appointment.status || 'Không có')}</span>
             </td>
             <td>
                 <div class="text-truncate" style="max-width: 150px;" title="${escapeHtml(appointment.note || '')}">
-                    ${escapeHtml(appointment.note || 'No note')}
+                    ${escapeHtml(appointment.note || 'Không có ghi chú')}
                 </div>
             </td>
             <td>
@@ -169,26 +171,26 @@ function renderAppointments() {
                             onclick="viewAppointmentDetail(${appointment.appointment_id})" 
                             data-appointment-id="${appointment.appointment_id}" 
                             data-action="view">
-                        <i class="fas fa-eye me-1"></i>View
+                        <i class="fas fa-eye me-1"></i>Xem
                     </button>
                     <button type="button" class="btn btn-warning text-white select-patient-btn" 
                             onclick="editAppointment(${appointment.appointment_id})" 
                             data-appointment-id="${appointment.appointment_id}" 
                             data-action="edit">
-                        <i class="fas fa-edit me-1"></i>Edit
+                        <i class="fas fa-edit me-1"></i>Chỉnh sửa
                     </button>
                     ${appointment.status === 'Pending' ? `
                         <button type="button" class="btn btn-success text-white select-patient-btn" 
                                 onclick="confirmAppointment(${appointment.appointment_id})" 
                                 data-appointment-id="${appointment.appointment_id}" 
                                 data-action="confirm">
-                            <i class="fas fa-check-circle me-1"></i>Confirm
+                            <i class="fas fa-check-circle me-1"></i>Xác nhận
                         </button>
                         <button type="button" class="btn btn-secondary text-white select-patient-btn" 
                                 onclick="cancelAppointment(${appointment.appointment_id})" 
                                 data-appointment-id="${appointment.appointment_id}" 
                                 data-action="cancel">
-                            <i class="fas fa-times-circle me-1"></i>Cancel
+                            <i class="fas fa-times-circle me-1"></i>Hủy
                         </button>
                     ` : ''}
                 </div>
@@ -213,7 +215,7 @@ function renderPagination(totalItems) {
     // Previous button
     paginationHTML += `
         <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a>
+            <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Trước</a>
         </li>
     `;
 
@@ -246,7 +248,7 @@ function renderPagination(totalItems) {
     // Next button
     paginationHTML += `
         <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a>
+            <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Tiếp</a>
         </li>
     `;
 
@@ -261,27 +263,45 @@ function changePage(page) {
     }
 }
 
-function viewAppointmentDetail(appointmentId) {
+function viewAppointmentDetail(appointmentId, isEdit = false) {
     const appointment = allAppointments.find(app => app.appointment_id === appointmentId);
     if (!appointment) {
-        showError('Appointment not found');
+        showError('Không tìm thấy lịch hẹn');
         return;
     }
-
     currentAppointmentId = appointmentId;
+    isEditMode = isEdit;
 
     // Populate modal with appointment details
     document.getElementById('modalAppointmentId').textContent = appointment.appointment_id;
-    document.getElementById('modalPatientName').textContent = appointment.full_name || 'N/A';
-    document.getElementById('modalPatientPhone').textContent = appointment.phone || 'N/A';
-    document.getElementById('modalPatientDob').textContent = appointment.dob || 'N/A';
-    document.getElementById('modalPatientGender').textContent = appointment.gender || 'N/A';
-    document.getElementById('modalDoctorName').textContent = appointment.doctor_full_name || 'N/A';
-    document.getElementById('modalDoctorDepartment').textContent = appointment.doctor_department || 'N/A';
+    document.getElementById('modalPatientName').textContent = appointment.full_name || 'Không có';
+    document.getElementById('modalPatientPhone').textContent = appointment.phone || 'Không có';
+    document.getElementById('modalPatientDob').textContent = appointment.dob || 'Không có';
+    document.getElementById('modalPatientGender').textContent = appointment.gender || 'Không có';
+    document.getElementById('modalDoctorName').textContent = appointment.doctor_full_name || 'Không có';
+    document.getElementById('modalDoctorDepartment').textContent = appointment.doctor_department || 'Không có';
     document.getElementById('modalDateTime').textContent = formatDateTime(appointment.appointment_datetime);
-    document.getElementById('modalShift').textContent = appointment.shift || 'N/A';
-    document.getElementById('modalStatus').textContent = appointment.status || 'N/A';
-    document.getElementById('modalNote').textContent = appointment.note || 'No note';
+    document.getElementById('modalShift').textContent = getShiftVN(appointment.shift) || 'Không có';
+    document.getElementById('modalStatus').textContent = getStatusVN(appointment.status) || 'Không có';
+    document.getElementById('modalNote').textContent = appointment.note || 'Không có ghi chú';
+
+    // Nếu là chế độ chỉnh sửa, chuyển các trường sang input
+    if (isEdit) {
+        // Thay các span thành input (chỉ demo cho các trường cơ bản, bạn có thể mở rộng thêm)
+        document.getElementById('modalDoctorName').innerHTML = `<input type='text' id='editDoctorName' class='form-control' value='${appointment.doctor_full_name || ''}'>`;
+        document.getElementById('modalDoctorDepartment').innerHTML = `<input type='text' id='editDoctorDepartment' class='form-control' value='${appointment.doctor_department || ''}'>`;
+        document.getElementById('modalDateTime').innerHTML = `<input type='datetime-local' id='editDateTime' class='form-control' value='${appointment.appointment_datetime ? appointment.appointment_datetime.substring(0,16) : ''}'>`;
+        document.getElementById('modalShift').innerHTML = `<select id='editShift' class='form-control'><option value='Sáng'>Sáng</option><option value='Chiều'>Chiều</option><option value='Tối'>Tối</option></select>`;
+        document.getElementById('modalNote').innerHTML = `<textarea id='editNote' class='form-control'>${appointment.note || ''}</textarea>`;
+        // Set shift value
+        document.getElementById('editShift').value = appointment.shift || 'Sáng';
+        // Ẩn nút Chỉnh sửa, hiện nút Lưu
+        document.getElementById('btnEditAppointment').style.display = 'none';
+        document.getElementById('btnSaveAppointment').style.display = 'inline-block';
+    } else {
+        document.getElementById('btnEditAppointment').style.display = 'inline-block';
+        document.getElementById('btnSaveAppointment').style.display = 'none';
+    }
 
     // Show modal
     const modal = new bootstrap.Modal(document.getElementById('appointmentDetailModal'));
@@ -289,26 +309,80 @@ function viewAppointmentDetail(appointmentId) {
 }
 
 function editAppointment(appointmentId) {
-    if (appointmentId) {
-        currentAppointmentId = appointmentId;
-    }
-    // This would redirect to edit appointment page or open edit modal
-    // For now, just show a message
-    showInfo('Edit appointment functionality will be implemented soon.');
+    viewAppointmentDetail(appointmentId, true);
 }
 
+// Lưu chỉnh sửa lịch hẹn
+function saveAppointmentEdit() {
+    const appointmentId = currentAppointmentId;
+    // Lấy lại thông tin từ input
+    // Lưu ý: Để chuẩn, bạn nên dùng select cho bác sĩ, bệnh nhân, ca, ...
+    const doctorName = document.getElementById('editDoctorName').value;
+    const doctorDepartment = document.getElementById('editDoctorDepartment').value;
+    const appointmentDateTime = document.getElementById('editDateTime').value;
+    const shift = document.getElementById('editShift').value;
+    const note = document.getElementById('editNote').value;
+    // Ở đây cần mapping doctorName/department về doctorId, demo tạm lấy lại doctorId cũ
+    const appointment = allAppointments.find(app => app.appointment_id === appointmentId);
+    const doctorId = appointment.doctor_id;
+    const patientId = appointment.patient_id;
+
+    fetch('/api/receptionist/appointment', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            action: 'edit',
+            appointmentId,
+            doctorId,
+            patientId,
+            appointmentDateTime: appointmentDateTime.replace('T', ' ') + ':00',
+            shift,
+            note
+        })
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.success) {
+            showSuccess('Cập nhật lịch hẹn thành công!');
+            refreshAppointments();
+            bootstrap.Modal.getInstance(document.getElementById('appointmentDetailModal')).hide();
+        } else {
+            showError(result.message || 'Cập nhật lịch hẹn thất bại!');
+        }
+    })
+    .catch(() => showError('Lỗi hệ thống. Vui lòng thử lại sau.'));
+}
+
+// Sửa lại hàm cancelAppointment để gọi API thực sự
 function cancelAppointment(appointmentId) {
-    if (!confirm('Are you sure you want to cancel this appointment?')) {
+    if (!confirm('Bạn có chắc chắn muốn hủy lịch hẹn này không?')) {
         return;
     }
-
-    // Implementation for canceling appointment
-    showInfo('Cancel appointment functionality will be implemented soon.');
+    fetch('/api/receptionist/appointment', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            action: 'cancel',
+            appointmentId
+        })
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.success) {
+            showSuccess('Hủy lịch hẹn thành công!');
+            refreshAppointments();
+        } else {
+            showError(result.message || 'Hủy lịch hẹn thất bại!');
+        }
+    })
+    .catch(() => showError('Lỗi hệ thống. Vui lòng thử lại sau.'));
 }
 
 function confirmAppointment(appointmentId) {
     console.log('confirmAppointment called with ID:', appointmentId, 'Type:', typeof appointmentId);
-    if (!confirm('Are you sure you want to confirm this appointment?')) {
+    if (!confirm('Bạn có chắc chắn muốn xác nhận lịch hẹn này không?')) {
         return;
     }
 
@@ -333,21 +407,21 @@ function confirmAppointment(appointmentId) {
     .then(result => {
         console.log('Response data:', result);
         if (result.ok && result.data.success) {
-            showSuccess('Appointment confirmed and added to waitlist!');
+            showSuccess('Lịch hẹn đã được xác nhận và thêm vào danh sách chờ!');
             refreshAppointments();
         } else {
-            showError(result.data.message || 'Failed to confirm appointment.');
+            showError(result.data.message || 'Xác nhận lịch hẹn thất bại.');
         }
     })
     .catch(err => {
         console.error('Error confirming appointment:', err);
-        showError('System error. Please try again later.');
+        showError('Lỗi hệ thống. Vui lòng thử lại sau.');
     });
 }
 
 function createNewAppointment() {
     // This would redirect to create appointment page
-    showInfo('Create new appointment functionality will be implemented soon.');
+    showInfo('Chức năng tạo lịch hẹn mới sẽ được cập nhật sau.');
 }
 
 function refreshAppointments() {
@@ -363,11 +437,11 @@ function clearFilters() {
 
 // Utility functions
 function formatDateTime(dateTimeString) {
-    if (!dateTimeString) return 'N/A';
+    if (!dateTimeString) return 'Không có';
     
     try {
         const date = new Date(dateTimeString);
-        return date.toLocaleString('en-US', {
+        return date.toLocaleString('vi-VN', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
@@ -421,15 +495,35 @@ function escapeHtml(text) {
 
 function showError(message) {
     // Using simple alert for now, can be replaced with toast notifications
-    alert('Error: ' + message);
+    alert('Lỗi: ' + message);
 }
 
 function showInfo(message) {
     // Using simple alert for now, can be replaced with toast notifications
-    alert('Info: ' + message);
+    alert('Thông báo: ' + message);
 }
 
 function showSuccess(message) {
     // Using simple alert for now, can be replaced with toast notifications
-    alert('Success: ' + message);
+    alert('Thành công: ' + message);
+} 
+
+// Hàm chuyển đổi trạng thái sang tiếng Việt
+function getStatusVN(status) {
+    switch ((status || '').toLowerCase()) {
+        case 'pending': return 'Chờ xác nhận';
+        case 'confirmed': return 'Đã xác nhận';
+        case 'completed': return 'Đã hoàn thành';
+        case 'cancelled': return 'Đã hủy';
+        default: return status || '';
+    }
+}
+// Hàm chuyển đổi ca sang tiếng Việt
+function getShiftVN(shift) {
+    switch ((shift || '').toLowerCase()) {
+        case 'morning': return 'Sáng';
+        case 'afternoon': return 'Chiều';
+        case 'evening': return 'Tối';
+        default: return shift || '';
+    }
 } 

@@ -187,7 +187,13 @@ function getStatusText(status) {
 }
 
 function showAlert(msg, type = 'info') {
-    alert(`[${type.toUpperCase()}] ${msg}`);
+    let prefix = '';
+    switch(type) {
+        case 'success': prefix = 'Thành công: '; break;
+        case 'error': prefix = 'Lỗi: '; break;
+        case 'info': default: prefix = 'Thông báo: '; break;
+    }
+    alert(prefix + msg);
 }
 
 function initHoverEffects() {

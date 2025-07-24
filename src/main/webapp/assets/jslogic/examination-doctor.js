@@ -478,16 +478,31 @@ document.addEventListener('DOMContentLoaded', function() {
         const skipBtn = e.target.closest('.skip-patient-btn');
         if (skipBtn) {
             const waitlistId = skipBtn.getAttribute('data-waitlist-id');
+            console.log("DEBUG: Skip button clicked, waitlistId =", waitlistId);
             if (waitlistId) {
-                // Xóa hàm updateWaitlistStatus vì không còn dùng ở phía JS
-                // updateWaitlistStatus(waitlistId, 'skipped').then(() => {
-                //     showAlert('Đã bỏ qua bệnh nhân!', 'success');
-                //     loadWaitlist();
-                // }).catch(() => {
-                //     showAlert('Không thể bỏ qua bệnh nhân!', 'danger');
-                // });
-                showAlert('Đã bỏ qua bệnh nhân!', 'success');
-                loadWaitlist();
+                fetch('/api/doctor/examination', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'skip', waitlistId: parseInt(waitlistId) })
+                })
+                .then(res => {
+                    console.log("DEBUG: Response status =", res.status);
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("DEBUG: Response data =", data);
+                    if (data.success) {
+                        showAlert('Đã bỏ qua bệnh nhân!', 'success');
+                        loadWaitlist();
+                    } else {
+                        showAlert(data.message || 'Không thể bỏ qua bệnh nhân!', 'danger');
+                    }
+                })
+                .catch((err) => {
+                    console.error("DEBUG: Fetch error", err);
+                    showAlert('Không thể bỏ qua bệnh nhân!', 'danger');
+                });
             }
         }
     });

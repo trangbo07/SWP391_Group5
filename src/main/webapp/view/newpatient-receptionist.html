@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm bệnh nhân mới - Lễ tân</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/assets/css/core/libs.min.css" />
+    <link rel="stylesheet" href="../assets/assets/css/kivicare.min.css?v=1.4.1" />
+    <link rel="stylesheet" href="../assets/assets/css/custom.min.css?v=1.4.1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .form-card {
+            max-width: 700px;
+            margin: 40px auto;
+            border-radius: 18px;
+            box-shadow: 0 6px 24px rgba(44,62,80,0.08);
+            background: #fff;
+            padding: 32px 28px 24px 28px;
+        }
+        .form-card .card-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: #fff;
+            border-radius: 18px 18px 0 0;
+            padding: 24px 28px 16px 28px;
+            margin: -32px -28px 24px -28px;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.06);
+        }
+        .form-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #dee2e6;
+            font-size: 1rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52,152,219,0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 32px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            box-shadow: 0 4px 16px rgba(44,62,80,0.15);
+        }
+        @media (max-width: 600px) {
+            .form-card { padding: 18px 8px; }
+            .form-card .card-header { padding: 18px 8px 12px 8px; margin: -18px -8px 18px -8px; }
+        }
+    </style>
+</head>
+<body style="background: #f8f9fa;">
+<div class="form-card">
+    <div class="card-header text-center">
+        <h2 class="mb-0">Thêm bệnh nhân mới</h2>
+    </div>
+    <form id="patientForm" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Họ tên</label>
+                <input type="text" class="form-control" name="full_name" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Ngày sinh</label>
+                <input type="date" class="form-control" name="dob" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Giới tính</label>
+                <select class="form-select" name="gender" required>
+                    <option value="">Chọn</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Số điện thoại</label>
+                <input type="text" class="form-control" name="phone" required>
+            </div>
+            <div class="col-md-8">
+                <label class="form-label">Địa chỉ</label>
+                <input type="text" class="form-control" name="address" required>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Tạo bệnh nhân</button>
+        </div>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script>
+$(function() {
+    $('#patientForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: '/api/receptionist/patient',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(Object.fromEntries(new FormData(this))),
+            success: function(data) {
+                alert('Tạo bệnh nhân thành công! ID: ' + data.patient_id);
+                $('#patientForm')[0].reset();
+            },
+            error: function() {
+                alert('Tạo bệnh nhân thất bại!');
+            }
+        });
+    });
+});
+</script>
+</body>
+</html> 

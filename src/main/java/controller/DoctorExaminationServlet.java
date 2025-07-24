@@ -63,6 +63,34 @@ public class DoctorExaminationServlet extends HttpServlet {
             // Đọc dữ liệu từ request
             Map<String, Object> requestData = mapper.readValue(request.getReader(), Map.class);
 
+            // Xử lý bỏ qua bệnh nhân (skip)
+            if ("skip".equals(requestData.get("action"))) {
+                Integer waitlistId = (Integer) requestData.get("waitlistId");
+                if (waitlistId == null) {
+                    jsonResponse.put("success", false);
+                    jsonResponse.put("message", "Missing waitlistId");
+                    mapper.writeValue(response.getWriter(), jsonResponse);
+                    return;
+                }
+                try {
+                    dao.WaitlistDAO waitlistDAO = new dao.WaitlistDAO();
+                    boolean ok = waitlistDAO.updateStatus(waitlistId, "Skipped");
+                    if (ok) {
+                        jsonResponse.put("success", true);
+                        jsonResponse.put("message", "Đã bỏ qua bệnh nhân!");
+                    } else {
+                        jsonResponse.put("success", false);
+                        jsonResponse.put("message", "Không thể bỏ qua bệnh nhân!");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    jsonResponse.put("success", false);
+                    jsonResponse.put("message", "Lỗi hệ thống: " + e.getMessage());
+                }
+                mapper.writeValue(response.getWriter(), jsonResponse);
+                return;
+            }
+
             // Lấy thông tin từ request
             Integer patientId = (Integer) requestData.get("patientId");
             Integer waitlistId = (Integer) requestData.get("waitlistId");
