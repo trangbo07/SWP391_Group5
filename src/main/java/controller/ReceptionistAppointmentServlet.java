@@ -103,6 +103,18 @@ public class ReceptionistAppointmentServlet extends HttpServlet {
             String body = req.getReader().lines().collect(Collectors.joining());
             AppointmentRequest appointmentRequest = gson.fromJson(body, AppointmentRequest.class);
 
+            // Xử lý xác nhận appointment
+            if ("confirm".equals(appointmentRequest.action)) {
+                boolean success = appointmentDAO.updateAppointmentStatus(appointmentRequest.appointmentId, "Confirmed");
+                if (success) {
+                    out.write("{\"success\":true,\"message\":\"Appointment confirmed successfully\"}");
+                } else {
+                    resp.setStatus(500);
+                    out.write("{\"success\":false,\"message\":\"Failed to confirm appointment\"}");
+                }
+                return;
+            }
+
             // Không cần action, chỉ nhận dữ liệu tạo appointment
             boolean success = appointmentDAO.createAppointment(
                 appointmentRequest.doctorId,
