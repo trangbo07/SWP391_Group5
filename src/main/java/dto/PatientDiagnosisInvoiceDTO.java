@@ -10,8 +10,10 @@ public class PatientDiagnosisInvoiceDTO {
     private String treatmentPlan;
     private double totalAmount;
     private String status;
+    private double serviceAmount;
+    private double medicineAmount;
 
-    public PatientDiagnosisInvoiceDTO(int invoiceId, String patientName, String dob, String gender, String disease, String conclusion, String treatmentPlan, double totalAmount, String status) {
+    public PatientDiagnosisInvoiceDTO(int invoiceId, String patientName, String dob, String gender, String disease, String conclusion, String treatmentPlan, double serviceAmount, double medicineAmount, double totalAmount, String status) {
         this.invoiceId = invoiceId;
         this.patientName = patientName;
         this.dob = dob;
@@ -19,6 +21,8 @@ public class PatientDiagnosisInvoiceDTO {
         this.disease = disease;
         this.conclusion = conclusion;
         this.treatmentPlan = treatmentPlan;
+        this.serviceAmount = serviceAmount;
+        this.medicineAmount = medicineAmount;
         this.totalAmount = totalAmount;
         this.status = status;
     }
@@ -41,4 +45,8 @@ public class PatientDiagnosisInvoiceDTO {
     public void setTotalAmount(double totalAmount) { this.totalAmount = totalAmount; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public double getServiceAmount() { return serviceAmount; }
+    public void setServiceAmount(double serviceAmount) { this.serviceAmount = serviceAmount; }
+    public double getMedicineAmount() { return medicineAmount; }
+    public void setMedicineAmount(double medicineAmount) { this.medicineAmount = medicineAmount; }
 } 
