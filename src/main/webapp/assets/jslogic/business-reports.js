@@ -414,7 +414,6 @@ class BusinessReportsManager {
                     <td class="text-success">${this.formatNumber(doctor.completed_appointments)}</td>
                     <td class="text-danger">${this.formatNumber(doctor.cancelled_appointments)}</td>
                     <td class="${rateClass} fw-bold">${completionRate.toFixed(1)}%</td>
-                    <td>${this.formatNumber(doctor.unique_patients)}</td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -452,6 +451,10 @@ class BusinessReportsManager {
                 const expiryStatus = medicine.expiry_status || 'Good';
                 const daysToExpiry = medicine.days_to_expiry || 0;
 
+                // Chuyển đổi trạng thái sang tiếng Việt
+                const stockStatusVN = this.getStockStatusVN(stockStatus);
+                const expiryStatusVN = this.getExpiryStatusVN(expiryStatus);
+
                 const stockBadgeClass = this.getStatusBadgeClass(stockStatus);
                 const expiryBadgeClass = this.getStatusBadgeClass(expiryStatus);
 
@@ -460,10 +463,10 @@ class BusinessReportsManager {
                     <td class="fw-bold">${medicine.medicine_name || 'N/A'}</td>
                     <td>${medicine.category || 'N/A'}</td>
                     <td class="text-center">${this.formatNumber(medicine.current_stock)}</td>
-                    <td><span class="status-badge ${stockBadgeClass}">${stockStatus}</span></td>
+                    <td><span class="status-badge ${stockBadgeClass}">${stockStatusVN}</span></td>
                     <td>${this.formatCurrency(medicine.price)}</td>
                     <td>${medicine.expiration_date || 'N/A'}</td>
-                    <td><span class="status-badge ${expiryBadgeClass}">${expiryStatus}</span></td>
+                    <td><span class="status-badge ${expiryBadgeClass}">${expiryStatusVN}</span></td>
                     <td class="text-center">${daysToExpiry}</td>
                 `;
                 tableBody.appendChild(row);
@@ -553,8 +556,10 @@ class BusinessReportsManager {
         const table = this.dataTables.medicines;
         if (!table) return;
 
+        // Luôn filter theo giá trị tiếng Anh gốc (không phải tiếng Việt)
         switch (filterType) {
             case 'critical':
+                // Cột 3 là tình trạng kho, cột 6 là trạng thái hạn
                 table.column(3).search('Critical').draw();
                 break;
             case 'expiring':
@@ -700,6 +705,31 @@ class BusinessReportsManager {
         }
     }
 }
+
+// Thêm các hàm chuyển đổi trạng thái sang tiếng Việt
+BusinessReportsManager.prototype.getStockStatusVN = function(status) {
+    switch ((status || '').toLowerCase()) {
+        case 'critical': return 'Nguy hiểm';
+        case 'low': return 'Sắp hết';
+        case 'moderate': return 'Trung bình';
+        case 'good': return 'Tốt';
+        case 'expiring soon': return 'Sắp hết hạn';
+        case 'monitor': return 'Theo dõi';
+        default: return status;
+    }
+};
+
+BusinessReportsManager.prototype.getExpiryStatusVN = function(status) {
+    switch ((status || '').toLowerCase()) {
+        case 'critical': return 'Nguy hiểm';
+        case 'low': return 'Sắp hết hạn';
+        case 'moderate': return 'Cần chú ý';
+        case 'good': return 'Còn hạn';
+        case 'expiring soon': return 'Sắp hết hạn';
+        case 'monitor': return 'Theo dõi';
+        default: return status;
+    }
+};
 
 // Initialize the reports manager when the page loads
 document.addEventListener('DOMContentLoaded', function() {

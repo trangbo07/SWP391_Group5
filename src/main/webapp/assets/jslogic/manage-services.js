@@ -1,6 +1,7 @@
 let currentPage = 1;
 const pageSize = 10;
 let totalPages = 1;
+let currentSort = '';
 
 $(document).ready(function() {
     loadServices();
@@ -31,6 +32,12 @@ $(document).ready(function() {
         currentPage = 1;
         let keyword = $(this).val();
         loadServices(keyword);
+    });
+
+    // Sắp xếp theo giá
+    $('#sortPriceSelect').on('change', function() {
+        currentSort = $(this).val();
+        loadServices($('#searchInput').val());
     });
 
     // Xử lý submit form (thêm/sửa)
@@ -144,6 +151,12 @@ function loadServices(keyword = '') {
         tbody.empty();
         let from = 0, to = 0, total = 0;
         if (data && data.services && data.services.length > 0) {
+            // Sắp xếp theo giá nếu có chọn
+            if (currentSort === 'asc') {
+                data.services.sort((a, b) => a.price - b.price);
+            } else if (currentSort === 'desc') {
+                data.services.sort((a, b) => b.price - a.price);
+            }
             data.services.forEach(function(service) {
                 tbody.append(`
                     <tr>
