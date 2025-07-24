@@ -1,6 +1,9 @@
 let allWaitlist = [];
 let selectedWaitlist = null;
 let selectedSymptoms = [];
+let currentStatusFilter = '';
+let currentVisitTypeFilter = '';
+let currentSearchKeyword = '';
 
 async function loadWaitlist() {
     const loadingSpinner = document.getElementById("loadingSpinner");
@@ -44,18 +47,37 @@ async function loadWaitlist() {
     }
 }
 
-function renderWaitlistTable() {
+function filterWaitlist() {
+    let filtered = allWaitlist;
+    // Lọc theo trạng thái
+    if (currentStatusFilter) {
+        filtered = filtered.filter(w => (w.status || '').toLowerCase() === currentStatusFilter);
+    }
+    // Lọc theo loại khám
+    if (currentVisitTypeFilter) {
+        filtered = filtered.filter(w => (w.visittype || '').toLowerCase() === currentVisitTypeFilter);
+    }
+    // Lọc theo từ khoá
+    if (currentSearchKeyword) {
+        const keyword = removeDiacritics(currentSearchKeyword.toLowerCase());
+        filtered = filtered.filter(w => {
+            const name = removeDiacritics((w.full_name || '').toLowerCase());
+            const id = (w.patient_id || '').toString();
+            return name.includes(keyword) || id.includes(keyword);
+        });
+    }
+    renderWaitlistTable(filtered);
+}
+
+function renderWaitlistTable(list) {
     const tableBody = document.getElementById("waitListTableBody");
     if (!tableBody) return;
-
+    const data = Array.isArray(list) ? list : allWaitlist;
     tableBody.innerHTML = '';
-
-    allWaitlist.forEach((waitlist, index) => {
+    data.forEach((waitlist, index) => {
         const statusClass = getStatusClass(waitlist.status);
-
         const row = document.createElement("tr");
         row.className = "waitlist-row";
-
         row.innerHTML = `
             <td>${index + 1}</td>
             <td><i class="fas fa-user me-2"></i>${waitlist.patient_id || 'Không có'}</td>
@@ -66,14 +88,17 @@ function renderWaitlistTable() {
             <td><span class="${statusClass}">${getStatusText(waitlist.status) || 'Không xác định'}</span></td>
             <td><i class="fas fa-vial me-2"></i>${getVisitTypeText(waitlist.visittype) || 'Không xác định'}</td>
             <td><i class="fas fa-sticky-note me-2"></i>${waitlist.note || 'Không có ghi chú'}</td>
-            <td><i class="fas fa-clock me-2"></i>${waitlist.shift || 'Không có'}</td>
+            <td><i class="fas fa-clock me-2"></i>${getShiftText(waitlist.shift) || 'Không có'}</td>
             <td>
                 ${generateActionButton(waitlist)}
             </td>
         `;
-
         tableBody.appendChild(row);
     });
+}
+
+function removeDiacritics(str) {
+    return str.normalize('NFD').replace(/\p{Diacritic}/gu, '');
 }
 
 // Hàm lấy class CSS cho status
@@ -94,7 +119,7 @@ function getStatusClass(status) {
 
 function getStatusText(status) {
     switch ((status || '').toLowerCase()) {
-        case 'waiting': return 'Chờ khám';
+        case 'waiting': return 'Chờ';
         case 'inprogress': return 'Đang khám';
         case 'skipped': return 'Bỏ qua';
         case 'completed': return 'Đã khám';
@@ -110,6 +135,15 @@ function getVisitTypeText(type) {
     }
 }
 
+function getShiftText(shift) {
+    switch ((shift || '').toLowerCase()) {
+        case 'morning': return 'Buổi sáng';
+        case 'afternoon': return 'Buổi chiều';
+        case 'evening': return 'Buổi tối';
+        default: return shift || 'Không xác định';
+    }
+}
+
 // Hàm tạo button action phù hợp theo status và visit type
 function generateActionButton(waitlist) {
     const status = waitlist.status?.toLowerCase();
@@ -117,19 +151,32 @@ function generateActionButton(waitlist) {
     const waitlistId = waitlist.waitlist_id;
 
     if (visitType === 'result') {
-        return `
-            <button class="btn btn-sm btn-warning" disabled>
-                <i class="fas fa-vial me-1"></i>Đang kiểm tra kết quả
-            </button>
-        `;
+        if (status === 'completed') {
+            return `
+                <button class="btn btn-sm btn-success" disabled>
+                    <i class="fas fa-check-circle me-1"></i>Hoàn tất 
+                </button>
+            `;
+        } else {
+            return `
+                <button class="btn btn-sm btn-warning" disabled>
+                    <i class="fas fa-vial me-1"></i>Đang kiểm tra kết quả
+                </button>
+            `;
+        }
     }
 
     switch (status) {
         case 'waiting':
             return `
-                <button class="btn btn-sm btn-primary select-patient-btn" data-waitlist-id="${waitlistId}">
-                    <i class="fas fa-stethoscope me-1"></i>Chọn khám
-                </button>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-primary select-patient-btn" data-waitlist-id="${waitlistId}">
+                        <i class="fas fa-stethoscope me-1"></i>Chọn khám
+                    </button>
+                    <button class="btn btn-sm btn-secondary skip-patient-btn" data-waitlist-id="${waitlistId}">
+                        <i class="fas fa-forward me-1"></i>Bỏ qua
+                    </button>
+                </div>
             `;
 
         case 'inprogress':
@@ -141,8 +188,8 @@ function generateActionButton(waitlist) {
 
         case 'completed':
             return `
-                <button class="btn btn-sm btn-success" disabled>
-                    <i class="fas fa-check-circle me-1"></i>Hoàn thành
+                <button class="btn btn-sm btn-success" >
+                    <i class="fas fa-check-circle me-1"></i>Đã khám
                 </button>
             `;
 
@@ -310,11 +357,7 @@ async function saveExamination(formData) {
 
         if (result.success) {
             showAlert('Đã lưu thông tin khám thành công!', 'success');
-
-            // Cập nhật trạng thái appointment thành InProgress
-            await updateWaitlistStatus(examinationData.waitlistId, 'InProgress');
-
-            // Quay lại danh sách bệnh nhân
+            // Đã bỏ cập nhật status waitlist từ phía JS. Việc cập nhật sẽ do backend xử lý qua DAO.
             setTimeout(() => {
                 backToPatientSelection();
                 loadWaitlist();
@@ -326,29 +369,6 @@ async function saveExamination(formData) {
     } catch (error) {
         console.error("Error saving examination:", error);
         showAlert('Không thể lưu thông tin khám. Vui lòng thử lại.', 'danger');
-    }
-}
-
-// Hàm cập nhật trạng thái waitlist
-async function updateWaitlistStatus(waitlistId, status) {
-    try {
-        const response = await fetch('/api/doctor/waitlist', {
-            method: 'PUT',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                waitlistId: waitlistId,
-                status: status
-            })
-        });
-
-        if (!response.ok) {
-            console.error('Không thể cập nhật trạng thái waitlist');
-        }
-    } catch (error) {
-        console.error("Error updating waitlist status:", error);
     }
 }
 
@@ -423,6 +443,52 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.ctrlKey && e.key === 'r') {
             e.preventDefault();
             loadWaitlist();
+        }
+    });
+
+    // Sự kiện filter-status
+    document.querySelectorAll('.filter-status').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-status').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const status = btn.getAttribute('data-status');
+            switch (status) {
+                case 'Waiting': currentStatusFilter = 'waiting'; break;
+                case 'InProgress': currentStatusFilter = 'inprogress'; break;
+                case 'Skipped': currentStatusFilter = 'skipped'; break;
+                case 'Completed': currentStatusFilter = 'completed'; break;
+                default: currentStatusFilter = '';
+            }
+            filterWaitlist();
+        });
+    });
+    // Sự kiện visitTypeFilter
+    document.getElementById('visitTypeFilter').addEventListener('change', function() {
+        currentVisitTypeFilter = this.value ? this.value.toLowerCase() : '';
+        filterWaitlist();
+    });
+    // Sự kiện searchKeyword
+    document.getElementById('searchKeyword').addEventListener('input', function() {
+        currentSearchKeyword = this.value;
+        filterWaitlist();
+    });
+
+    // Sự kiện cho nút skip
+    document.getElementById("waitListTableBody").addEventListener('click', function(e) {
+        const skipBtn = e.target.closest('.skip-patient-btn');
+        if (skipBtn) {
+            const waitlistId = skipBtn.getAttribute('data-waitlist-id');
+            if (waitlistId) {
+                // Xóa hàm updateWaitlistStatus vì không còn dùng ở phía JS
+                // updateWaitlistStatus(waitlistId, 'skipped').then(() => {
+                //     showAlert('Đã bỏ qua bệnh nhân!', 'success');
+                //     loadWaitlist();
+                // }).catch(() => {
+                //     showAlert('Không thể bỏ qua bệnh nhân!', 'danger');
+                // });
+                showAlert('Đã bỏ qua bệnh nhân!', 'success');
+                loadWaitlist();
+            }
         }
     });
 });

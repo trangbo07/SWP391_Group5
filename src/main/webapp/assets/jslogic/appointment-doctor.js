@@ -20,8 +20,8 @@ async function fetchAppointmentsByAction(action) {
         const appointments = await res.json();
 
         if (!Array.isArray(appointments) || appointments.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="7">No appointments available.</td></tr>';
-            if (info) info.innerText = `Showing 0 to 0 of 0 entries`;
+            tableBody.innerHTML = '<tr><td colspan="7">Không có lịch hẹn nào.</td></tr>';
+            if (info) info.innerText = `Hiển thị 0 đến 0 trên 0 mục`;
             return;
         }
 
@@ -48,17 +48,18 @@ function paginateAppointments() {
     tableBody.innerHTML = '';
 
     if (pageData.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="7">No appointments available.</td></tr>';
-        if (info) info.innerText = `Showing 0 to 0 of ${allAppointments.length} entries`;
+        tableBody.innerHTML = '<tr><td colspan="7">Không có lịch hẹn nào.</td></tr>';
+        if (info) info.innerText = `Hiển thị 0 đến 0 trên ${allAppointments.length} mục`;
         return;
     }
 
     pageData.forEach((a, index) => {
+        // Đảm bảo nút luôn là tiếng Việt, không lấy text từ backend
         const viewBtn = `<button class="btn btn-primary text-white select-patient-btn" data-appointment-id="${a.appointment_id}" data-action="view">
-                                    <i class="fas fa-eye me-1"></i>View
+                                    <i class="fas fa-eye me-1"></i>Xem
                                 </button>`;
         const cancelBtn = `<button class="btn btn-secondary text-white select-patient-btn" data-appointment-id="${a.appointment_id}" data-action="cancel">
-                                    <i class="fas fa-times-circle me-1"></i>Cancel
+                                    <i class="fas fa-times-circle me-1"></i>Huỷ
                                 </button>`;
 
         let actionButtons = viewBtn;
@@ -89,7 +90,7 @@ function paginateAppointments() {
     if (info) {
         const formattedStart = String(start + 1).padStart(2, '0');
         const formattedEnd = String(Math.min(end, allAppointments.length)).padStart(2, '0');
-        info.innerText = `Showing ${formattedStart} to ${formattedEnd} of ${allAppointments.length} entries`;
+        info.innerText = `Hiển thị ${formattedStart} đến ${formattedEnd} trên ${allAppointments.length} mục`;
     }
 }
 
@@ -165,7 +166,7 @@ async function handleView(id) {
 }
 
 async function handleCancel(id) {
-    if (!confirm("Are you sure you want to cancel this appointment?")) return;
+    if (!confirm("Bạn có chắc chắn muốn huỷ lịch hẹn này?")) return;
 
     try {
         const res = await fetch(`/api/doctor/appointment?action=cancel&id=${id}`, {
@@ -178,7 +179,7 @@ async function handleCancel(id) {
 
         if (!res.ok) throw new Error("Cancel failed");
 
-        alert("Appointment cancelled successfully.");
+        alert("Huỷ lịch hẹn thành công.");
 
         const canvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasAppointmentEdit'));
         if (canvas) canvas.hide();
@@ -188,7 +189,7 @@ async function handleCancel(id) {
 
     } catch (err) {
         console.error("Cancel failed:", err);
-        alert("Failed to cancel appointment.");
+        alert("Huỷ lịch hẹn thất bại.");
     }
 }
 
@@ -200,9 +201,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (NOA) {
         try {
             const noa = await countAppointmentsToday("Count");
-            NOA.innerText = `${noa} appointments today`;
+            NOA.innerText = `${noa} lịch hẹn hôm nay`;
         } catch (err) {
-            NOA.innerText = `Error loading count`;
+            NOA.innerText = `Lỗi khi tải số lượng lịch hẹn`;
         }
     }
 
@@ -243,7 +244,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         const NOA = document.getElementById("countappointmenttoday");
         const noa = await countAppointmentsToday("Count");
-        NOA.innerText = `${noa} appointments today`;
+        NOA.innerText = `${noa} lịch hẹn hôm nay`;
     });
 
     document.querySelector(".card-navigation a:nth-child(1)")?.addEventListener("click", (e) => {
@@ -308,7 +309,7 @@ document.getElementById("searchAppointmentBtn").addEventListener("click", async 
         paginateAppointments();
     } catch (err) {
         console.error("Search failed:", err);
-        document.getElementById("appointmentTableBody").innerHTML = `<tr><td colspan="7">Search failed</td></tr>`;
+        document.getElementById("appointmentTableBody").innerHTML = `<tr><td colspan="7">Tìm kiếm thất bại</td></tr>`;
     }
 });
 

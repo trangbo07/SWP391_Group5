@@ -542,7 +542,7 @@
                     <i class="fas fa-tasks me-2"></i>
                     Dịch Vụ Đã Giao
                 </h2>
-                <p class="text-muted">Xem và quản lý các dịch vụ paraclinical được giao cho bạn.</p>
+                <p class="text-muted">Xem và quản lý các dịch vụ cận lâm sàng được giao cho bạn.</p>
             </div>
         </div>
 
@@ -560,13 +560,13 @@
                         <div class="d-flex justify-content-md-end">
                             <div class="btn-group" role="group" aria-label="Trạng Thái Lọc">
                                 <button type="button" class="btn btn-primary active" data-status-filter="all">
-                                    <i class="fas fa-list me-1"></i> Tất Cả
+                                    <i class="fas fa-list me-1"></i> Tất cả
                                 </button>
                                 <button type="button" class="btn btn-outline-primary" data-status-filter="pending">
-                                    <i class="fas fa-clock me-1"></i> Chờ Xử Lý
+                                    <i class="fas fa-clock me-1"></i> Chờ xử lý
                                 </button>
                                 <button type="button" class="btn btn-outline-primary" data-status-filter="completed">
-                                    <i class="fas fa-check-circle me-1"></i> Hoàn Thành
+                                    <i class="fas fa-check-circle me-1"></i> Hoàn thành
                                 </button>
                             </div>
                         </div>
@@ -582,25 +582,25 @@
                     <div class="col-md-3">
                         <div class="d-flex flex-column">
                             <span class="h4 mb-1 text-primary" id="totalServices">0</span>
-                            <span class="text-muted small">Tổng Dịch Vụ</span>
+                            <span class="text-muted small">Tổng dịch vụ</span>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="d-flex flex-column">
                             <span class="h4 mb-1 text-warning" id="pendingServices">0</span>
-                            <span class="text-muted small">Chờ Xử Lý</span>
+                            <span class="text-muted small">Chờ xử lý</span>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="d-flex flex-column">
                             <span class="h4 mb-1 text-success" id="completedServices">0</span>
-                            <span class="text-muted small">Hoàn Thành</span>
+                            <span class="text-muted small">Hoàn thành</span>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="d-flex flex-column">
                             <span class="h4 mb-1 text-info" id="completionRate">0%</span>
-                            <span class="text-muted small">Tỷ Lệ Hoàn Thành</span>
+                            <span class="text-muted small">Tỷ lệ hoàn thành</span>
                         </div>
                     </div>
                 </div>
@@ -623,14 +623,14 @@
         <!-- Loading Spinner -->
         <div id="loadingSpinner" class="d-flex justify-content-center align-items-center d-none" style="height: 200px;">
             <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                <span class="visually-hidden">Đang Tải...</span>
+                <span class="visually-hidden">Đang tải...</span>
             </div>
         </div>
 
         <!-- Error Message -->
         <div id="errorMessage" class="alert alert-danger d-none">
             <i class="fas fa-exclamation-triangle me-2"></i>
-            <span id="errorText">Đã Xảy Ra Lỗi</span>
+            <span id="errorText">Đã xảy ra lỗi</span>
         </div>
 
         <!-- Services List -->
@@ -641,7 +641,7 @@
         <!-- No Services Message -->
         <div id="noServicesMessage" class="text-center p-5 d-none">
            
-            <h4 class="mb-2">Không Tìm Thấy Dịch Vụ Đã Giao</h4>
+            <h4 class="mb-2">Không tìm thấy dịch vụ đã giao</h4>
             <p class="text-muted">Có vẻ như không có dịch vụ nào được giao cho bạn phù hợp với các bộ lọc hiện tại.</p>
         </div>
 
@@ -663,35 +663,35 @@
                     <input type="hidden" id="serviceOrderItemId" name="serviceOrderItemId">
 
                     <div class="mb-3">
-                        <label class="form-label">Tên Dịch Vụ</label>
+                        <label class="form-label">Tên dịch vụ</label>
                         <input type="text" class="form-control" id="modalServiceName" readonly>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Tên Bệnh Nhân</label>
+                        <label class="form-label">Tên bệnh nhân</label>
                         <input type="text" class="form-control" id="modalPatientName" readonly>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Kết Quả Xét Nghiệm *</label>
+                        <label class="form-label">Kết quả xét nghiệm *</label>
                         <textarea class="form-control" id="testResults" name="testResults" rows="4"
                                   placeholder="Nhập kết quả xét nghiệm chi tiết..." required></textarea>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Kết Luận</label>
+                        <label class="form-label">Kết luận</label>
                         <textarea class="form-control" id="conclusion" name="conclusion" rows="3"
                                   placeholder="Nhập kết luận hoặc khuyến nghị..."></textarea>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Trạng Thái</label>
+                        <label class="form-label">Trạng thái</label>
                         <select class="form-select" id="resultStatus" name="resultStatus" required>
                             <option value="">Chọn trạng thái...</option>
-                            <option value="Normal">Bình Thường</option>
-                            <option value="Abnormal">Bất Thường</option>
-                            <option value="Critical">Nghiêm Trọng</option>
-                            <option value="Pending">Chờ Xét Nghiệm Tiếp</option>
+                            <option value="Normal">Bình thường</option>
+                            <option value="Abnormal">Bất thường</option>
+                            <option value="Critical">Nghiêm trọng</option>
+                            <option value="Pending">Chờ xét nghiệm tiếp</option>
                         </select>
                     </div>
                 </form>
@@ -699,7 +699,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 <button type="button" class="btn btn-primary" onclick="saveTestResult()">
-                    <i class="fas fa-save me-2"></i>Lưu Kết Quả
+                    <i class="fas fa-save me-2"></i>Lưu kết quả
                 </button>
             </div>
         </div>

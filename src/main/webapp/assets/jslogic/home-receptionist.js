@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 function initDateTime() {
     function update() {
         const now = new Date();
-        document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', {
+        document.getElementById('current-time').textContent = now.toLocaleTimeString('vi-VN', {
             hour: '2-digit', minute: '2-digit'
         });
-        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', {
+        document.getElementById('current-date').textContent = now.toLocaleDateString('vi-VN', {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
     }
@@ -30,7 +30,7 @@ async function loadReceptionistProfile() {
         });
         if (!res.ok) throw new Error('Failed to load profile');
         const data = await res.json();
-        document.getElementById('receptionist-name').textContent = `Welcome, ${data.fullName}`;
+        document.getElementById('receptionist-name').textContent = `Xin chào, ${data.fullName}`;
         document.getElementById('receptionist-greeting').textContent = data.fullName;
     } catch (e) {
         console.error('Profile error:', e);
@@ -74,7 +74,7 @@ async function loadUpcomingAppointments() {
         if (!res.ok) throw new Error('Failed to load appointments');
         const data = await res.json();
         const container = document.getElementById('upcoming-appointments-list');
-        container.innerHTML = data.length ? '' : '<p class="text-muted text-center">No upcoming appointments</p>';
+        container.innerHTML = data.length ? '' : '<p class="text-muted text-center">Không có lịch hẹn sắp tới</p>';
 
         data.forEach(app => {
             container.appendChild(createAppointmentElement(app));
@@ -98,7 +98,7 @@ function createAppointmentElement(app) {
                 </p>
             </div>
             <div>
-                <span class="badge ${getStatusBadgeClass(app.status)}">${app.status}</span>
+                <span class="badge ${getStatusBadgeClass(app.status)}">${getStatusText(app.status)}</span>
             </div>
         </div>
     `;
@@ -111,7 +111,7 @@ async function loadCurrentWaitlist() {
         if (!res.ok) throw new Error('Failed to load waitlist');
         const data = await res.json();
         const container = document.getElementById('current-waitlist');
-        container.innerHTML = data.length ? '' : '<p class="text-muted text-center">No patients in waitlist</p>';
+        container.innerHTML = data.length ? '' : '<p class="text-muted text-center">Không có bệnh nhân nào trong danh sách chờ</p>';
 
         data.forEach((item, i) => {
             container.appendChild(createWaitlistElement(item, i));
@@ -129,12 +129,12 @@ function createWaitlistElement(patient, index) {
             <div>
                 <h6 class="mb-1">${patient.name}</h6>
                 <p class="mb-0 text-muted">
-                    <i class="fas fa-hashtag me-2"></i>Queue #${index + 1}
+                    <i class="fas fa-hashtag me-2"></i>Hàng đợi #${index + 1}
                     <span class="mx-2">•</span>
                     <i class="fas fa-clock me-2"></i>${formatWaitTime(patient.waitingSince)}
                 </p>
             </div>
-            <button class="btn btn-sm btn-outline-primary" onclick="processPatient(${patient.id})">Process</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="processPatient(${patient.id})">Xử lý</button>
         </div>
     `;
     return div;
@@ -148,23 +148,23 @@ async function processPatient(patientId) {
         if (!res.ok) throw new Error();
         await loadCurrentWaitlist();
         await loadDashboardStats();
-        showAlert('Patient processed successfully', 'success');
+        showAlert('Xử lý bệnh nhân thành công', 'success');
     } catch (e) {
         console.error('Process error:', e);
-        showAlert('Error processing patient', 'error');
+        showAlert('Lỗi khi xử lý bệnh nhân', 'error');
     }
 }
 
 function formatTime(timeStr) {
-    return new Date(timeStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    return new Date(timeStr).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
 }
 
 function formatWaitTime(startStr) {
     const start = new Date(startStr), now = new Date();
     const diffMin = Math.floor((now - start) / 60000);
-    if (diffMin < 60) return `${diffMin}m waiting`;
+    if (diffMin < 60) return `${diffMin} phút chờ`;
     const h = Math.floor(diffMin / 60), m = diffMin % 60;
-    return `${h}h ${m}m waiting`;
+    return `${h} giờ ${m} phút chờ`;
 }
 
 function getStatusBadgeClass(status) {
@@ -174,6 +174,16 @@ function getStatusBadgeClass(status) {
         'CANCELLED': 'bg-danger'
     };
     return map[status] || 'bg-secondary';
+}
+function getStatusText(status) {
+    const map = {
+        'PENDING': 'Chờ xác nhận',
+        'CONFIRMED': 'Đã xác nhận',
+        'IN_PROGRESS': 'Đang khám',
+        'COMPLETED': 'Đã hoàn thành',
+        'CANCELLED': 'Đã huỷ'
+    };
+    return map[status] || status;
 }
 
 function showAlert(msg, type = 'info') {
