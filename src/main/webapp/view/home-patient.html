@@ -528,6 +528,7 @@
         document.getElementById("department").addEventListener("click", () => {
             window.location.href = "./departments.html";
         });
+
     </script>
   </div>
 
@@ -608,6 +609,13 @@
 <script src="../assets/assets/js/solid-icon-search-filter.js?v=1.4.1" defer></script>
 
 <script src="../assets/jslogic/logout.js" defer></script>
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<df-messenger
+        intent="WELCOME"
+        chat-title="Kivicare_Chat_Box"
+        agent-id="b4784ffc-0dc4-44c2-944e-ddce5caa395b"
+        language-code="vi"
+></df-messenger>
 </body>
 </html>
 

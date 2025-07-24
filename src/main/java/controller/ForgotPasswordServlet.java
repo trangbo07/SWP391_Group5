@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.*;
 import util.EmailService;
+import util.PasswordHasherSHA256Util;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -101,7 +102,8 @@ public class ForgotPasswordServlet extends HttpServlet {
             return;
         }
 
-        boolean updated = accountDAO.updatePassword(resetEmail, newPassword);
+        String hashedPassword = PasswordHasherSHA256Util.hashPassword(newPassword);
+        boolean updated = accountDAO.updatePassword(resetEmail, hashedPassword);
         if (updated) {
             session.invalidate();
             jsonResponse.put("success", true);
