@@ -123,6 +123,7 @@ class PaymentAdmin {
             }
 
             this.payments = await response.json();
+            console.log('API /payment-admin trả về:', this.payments); // LOG TOÀN BỘ DỮ LIỆU
             this.filteredPayments = [...this.payments];
             this.currentPage = 1; // Reset to first page
             this.updatePaymentTable();
@@ -182,16 +183,31 @@ class PaymentAdmin {
     }
 
     createPaymentRow(payment, index) {
+        console.log('Render payment row:', payment); // LOG TỪNG PAYMENT
         const row = document.createElement('tr');
         row.setAttribute('data-item', 'list');
 
-        // Format amount
-        let formattedAmount = '0';
-        if (typeof payment.total_amount === 'number' && !isNaN(payment.total_amount)) {
-            formattedAmount = new Intl.NumberFormat('en-US', {
+        // Format amounts
+        let formattedServiceAmount = '0';
+        let formattedMedicineAmount = '0';
+        let formattedTotalAmount = '0';
+        if (typeof payment.serviceAmount === 'number' && !isNaN(payment.serviceAmount)) {
+            formattedServiceAmount = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD'
-            }).format(payment.total_amount);
+            }).format(payment.serviceAmount);
+        }
+        if (typeof payment.medicineAmount === 'number' && !isNaN(payment.medicineAmount)) {
+            formattedMedicineAmount = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(payment.medicineAmount);
+        }
+        if (typeof payment.totalAmount === 'number' && !isNaN(payment.totalAmount)) {
+            formattedTotalAmount = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(payment.totalAmount);
         }
 
         // Format payment date
@@ -227,7 +243,9 @@ class PaymentAdmin {
             <td>${payment.conclusion || 'N/A'}</td>
             <td>${payment.treatment_plan || 'N/A'}</td>
             <td>${payment.invoice_id || 'N/A'}</td>
-            <td>${formattedAmount}</td>
+            <td>${formattedServiceAmount}</td>
+            <td>${formattedMedicineAmount}</td>
+            <td>${formattedTotalAmount}</td>
             <td><span class="badge ${statusClass}">${statusText}</span></td>
             <td>${formattedDate}</td>
             <td><button class="btn btn-sm btn-warning" onclick="paymentAdmin.editPayment(${payment.invoice_id})">Edit</button></td>

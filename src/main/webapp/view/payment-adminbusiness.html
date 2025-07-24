@@ -1181,6 +1181,8 @@
                     <th>Ngày sinh</th>
                     <th>Giới tính</th>
                     <th>Bệnh</th>
+                    <th>Tiền dịch vụ</th>
+                    <th>Tiền thuốc</th>
                     <th>Tổng tiền</th>
                     <th>Trạng thái</th>
                   
@@ -1990,7 +1992,7 @@
             const tbody = document.getElementById('payment-table-body');
             tbody.innerHTML = '';
             if (!data.length) {
-                tbody.innerHTML = '<tr><td colspan="6">Không có dữ liệu phù hợp</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8">Không có dữ liệu phù hợp</td></tr>';
                 return;
             }
             // Phân trang
@@ -2004,9 +2006,10 @@
                     <td>${p.dob || ''}</td>
                     <td>${p.gender || ''}</td>
                     <td>${p.disease || ''}</td>
-                    <td>${p.total_amount != null ? p.total_amount : ''}</td>
+                    <td class="text-end">${formatCurrency(p.serviceAmount)}</td>
+                    <td class="text-end">${formatCurrency(p.medicineAmount)}</td>
+                    <td class="text-end fw-bold">${formatCurrency(p.totalAmount)}</td>
                     <td>${p.status || ''}</td>
-                   
                 `;
                 tbody.appendChild(tr);
             });
@@ -2104,13 +2107,18 @@
                     renderPagination(filteredData.length);
                 })
                 .catch(err => {
-                    document.getElementById('payment-table-body').innerHTML = '<tr><td colspan="6">Lỗi tải dữ liệu</td></tr>';
+                    document.getElementById('payment-table-body').innerHTML = '<tr><td colspan="8">Lỗi tải dữ liệu</td></tr>';
                 });
             document.getElementById('filterGender').addEventListener('change', applyFilter);
             document.getElementById('filterStatus').addEventListener('change', applyFilter);
             document.getElementById('searchName').addEventListener('input', applyFilter);
             document.getElementById('sortAmount').addEventListener('change', applyFilter);
         });
+
+        function formatCurrency(amount) {
+            if (typeof amount !== 'number') amount = parseFloat(amount) || 0;
+            return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        }
     </script>
             
         </script>

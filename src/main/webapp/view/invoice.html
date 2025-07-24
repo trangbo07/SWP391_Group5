@@ -128,7 +128,9 @@
                                                     <th scope="col">Bệnh</th>
                                                     <th scope="col">Kết luận</th>
                                                     <th scope="col">Phác đồ điều trị</th>
-                                                    <th scope="col">Số tiền</th>
+                                                    <th scope="col">Tiền dịch vụ</th>
+                                                    <th scope="col">Tiền thuốc</th>
+                                                    <th scope="col">Tổng tiền</th>
                                                     <th scope="col">Trạng thái</th>
                                                 </tr>
                                             </thead>
@@ -206,6 +208,8 @@
             let totalAmount = 0;
             
             data.forEach(inv => {
+                const serviceAmount = parseFloat(inv.serviceAmount) || 0;
+                const medicineAmount = parseFloat(inv.medicineAmount) || 0;
                 const amount = parseFloat(inv.totalAmount) || 0;
                 totalAmount += amount;
                 
@@ -216,6 +220,8 @@
                     <td>${inv.disease || 'N/A'}</td>
                     <td>${inv.conclusion || 'N/A'}</td>
                     <td>${inv.treatmentPlan || 'N/A'}</td>
+                    <td class="text-end">${formatCurrency(serviceAmount)}</td>
+                    <td class="text-end">${formatCurrency(medicineAmount)}</td>
                     <td class="text-end fw-bold">${formatCurrency(amount)}</td>
                     <td>
                         ${inv.status === 'Pending' 
