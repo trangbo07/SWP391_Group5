@@ -268,7 +268,7 @@ function performExamination(serviceOrderItemId, patientName, medicineRecordId) {
 
     const service = allAssignedServices.find(s => s.service_order_item_id === serviceOrderItemId);
     if (!service) {
-        showAlert('Service not found!', 'danger');
+        showAlert('Dịch vụ không tìm thấy!', 'danger');
         return;
     }
 
@@ -428,8 +428,8 @@ function renderServices() {
         const hasResults = service.result_description && service.result_description.trim() !== '';
         const status = hasResults ? 'completed' : 'pending';
         const statusInfo = {
-            'pending': { text: 'Pending', class: 'warning', icon: 'fas fa-clock' },
-            'completed': { text: 'Completed', class: 'success', icon: 'fas fa-check-circle' }
+            'pending': { text: 'Chờ xử lý', class: 'warning', icon: 'fas fa-clock' },
+            'completed': { text: 'Hoàn thành', class: 'success', icon: 'fas fa-check-circle' }
         };
 
         const serviceCard = document.createElement("div");
@@ -442,7 +442,7 @@ function renderServices() {
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-flask me-2 text-primary"></i>
-                        ${service.service_name || 'Unnamed Service'}
+                        ${service.service_name || 'Chưa đặt tên dịch vụ'}
                     </h5>
                     <span class="badge bg-${statusInfo[status].class}">
                         <i class="${statusInfo[status].icon} me-1"></i>
@@ -451,47 +451,47 @@ function renderServices() {
                 </div>
                 <div class="card-body">
                      <div class="mb-3">
-                        <h6 class="text-primary"><i class="fas fa-user me-2"></i>Patient Information</h6>
-                        <p class="mb-2"><strong>Name:</strong> ${service.patient_name || 'N/A'}</p>
-                        <p class="mb-2"><strong>Order Date:</strong> ${formatDateTime(service.order_date)}</p>
-                        <p class="mb-0"><strong>Service Price:</strong> ${(service.service_price || 0).toLocaleString()} VND</p>
+                        <h6 class="text-primary"><i class="fas fa-user me-2"></i>Thông tin bệnh nhân</h6>
+                        <p class="mb-2"><strong>Họ tên:</strong> ${service.patient_name || 'Không có'}</p>
+                        <p class="mb-2"><strong>Ngày chỉ định:</strong> ${formatDateTime(service.order_date)}</p>
+                        <p class="mb-0"><strong>Giá dịch vụ:</strong> ${(service.service_price || 0).toLocaleString()} VNĐ</p>
                     </div>
                     
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab-${cardId}" role="tablist">
                             <button class="nav-link active" id="nav-exam-tab-${cardId}" data-bs-toggle="tab" data-bs-target="#nav-exam-${cardId}" type="button" role="tab">
-                                <i class="fas fa-stethoscope me-1"></i>Exam Info
+                                <i class="fas fa-stethoscope me-1"></i>Thông tin khám
                             </button>
                             <button class="nav-link" id="nav-result-tab-${cardId}" data-bs-toggle="tab" data-bs-target="#nav-result-${cardId}" type="button" role="tab">
-                                <i class="fas fa-clipboard-check me-1"></i>Results
+                                <i class="fas fa-clipboard-check me-1"></i>Kết quả
                             </button>
                         </div>
                     </nav>
                     <div class="tab-content pt-3" id="nav-tabContent-${cardId}">
                         <div class="tab-pane fade show active" id="nav-exam-${cardId}" role="tabpanel">
-                            <h6><i class="fas fa-stethoscope me-2"></i>Examination Details</h6>
+                            <h6><i class="fas fa-stethoscope me-2"></i>Chi tiết khám</h6>
                             <div class="alert alert-light">
-                                <p class="mb-2"><strong>Symptoms:</strong><br>${service.symptoms || 'Not provided'}</p>
-                                <p class="mb-0"><strong>Preliminary Diagnosis:</strong><br>${service.preliminary_diagnosis || 'Not provided'}</p>
+                                <p class="mb-2"><strong>Triệu chứng:</strong><br>${service.symptoms || 'Chưa có thông tin'}</p>
+                                <p class="mb-0"><strong>Chẩn đoán sơ bộ:</strong><br>${service.preliminary_diagnosis || 'Chưa có thông tin'}</p>
                             </div>
-                            <p class="text-muted small"><strong>Service Description:</strong> ${service.service_description || 'No description available'}</p>
+                            <p class="text-muted small"><strong>Mô tả dịch vụ:</strong> ${service.service_description || 'Không có mô tả'}</p>
                         </div>
                         <div class="tab-pane fade" id="nav-result-${cardId}" role="tabpanel">
-                             <h6><i class="fas fa-clipboard-check me-2"></i>Test Results</h6>
+                             <h6><i class="fas fa-clipboard-check me-2"></i>Kết quả xét nghiệm</h6>
                              <div id="result-display-${service.service_order_item_id}">
                                 <!-- Result content will be rendered here -->
                              </div>
                              <button class="btn btn-${hasResults ? 'success' : 'primary'} btn-lg w-100 mt-3" onclick="openResultModal(${service.service_order_item_id})">
                                 <i class="fas fa-${hasResults ? 'edit' : 'plus'} me-2"></i>
-                                ${hasResults ? 'Update Results' : 'Enter Results'}
+                                ${hasResults ? 'Cập nhật kết quả' : 'Nhập kết quả'}
                              </button>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer text-muted small">
                     <i class="fas fa-info-circle me-1"></i>
-                    Service Order Item ID: ${service.service_order_item_id} | 
-                    Assigned to: ${service.doctor_name || 'You'}
+                    Mã dịch vụ: ${service.service_order_item_id} | 
+                    Bác sĩ chỉ định: ${service.doctor_name || 'Bạn'}
                 </div>
             </div>
         `;
@@ -527,29 +527,34 @@ function renderResultDisplay(serviceOrderItemId) {
     if (!resultContainer) return;
 
     if (service && service.result_description) {
+        // Parse result_description
+        let testResults = '', conclusion = '', status = '';
         const lines = service.result_description.split('\\n');
-        let resultHtml = '<div class="alert alert-success">';
         lines.forEach(line => {
-            if (line.includes(':')) {
-                const [key, ...valueParts] = line.split(':');
-                const value = valueParts.join(':').trim();
-                resultHtml += `
-                   <p class="mb-2"><strong>${key.trim()}:</strong> ${value}</p>`;
+            if (line.startsWith('Test Results:')) {
+                testResults = line.replace('Test Results:', '').trim();
+            } else if (line.startsWith('Conclusion:')) {
+                conclusion = line.replace('Conclusion:', '').trim();
+            } else if (line.startsWith('Status:')) {
+                status = line.replace('Status:', '').trim();
             }
         });
-        resultHtml += '</div>';
-
+        let resultHtml = `<div class="alert alert-success">
+            <p class="mb-2"><strong>Kết quả xét nghiệm:</strong><br><span class='text-primary'>${testResults || 'Không có'}</span></p>
+            <p class="mb-2"><strong>Kết luận:</strong><br><span class='text-success'>${conclusion || 'Không có'}</span></p>
+            <p class="mb-2"><strong>Trạng thái:</strong> <span class='badge bg-info text-dark ms-2'>${status || 'Không có'}</span></p>
+        `;
         if (service.result_date) {
-            resultHtml += `<p class="text-muted small"><i class="fas fa-clock me-1"></i>Results entered: ${formatDateTime(service.result_date)}</p>`;
+            resultHtml += `<p class="text-muted small mb-0"><i class="fas fa-clock me-1"></i>Nhập kết quả lúc: ${formatDateTime(service.result_date)}</p>`;
         }
-
+        resultHtml += '</div>';
         resultContainer.innerHTML = resultHtml;
     } else {
         resultContainer.innerHTML = `
             <div class="alert alert-warning">
                 <i class="fas fa-exclamation-triangle me-2"></i>
-                <strong>No results entered yet</strong>
-                <p class="mb-0 mt-2">Please perform the test and enter the results by clicking the button below.</p>
+                <strong>Chưa có kết quả</strong>
+                <p class="mb-0 mt-2">Vui lòng thực hiện xét nghiệm và nhập kết quả bằng nút bên dưới.</p>
             </div>
         `;
     }
@@ -558,7 +563,7 @@ function renderResultDisplay(serviceOrderItemId) {
 function openResultModal(serviceOrderItemId) {
     const service = allAssignedServices.find(s => s.service_order_item_id === serviceOrderItemId);
     if (!service) {
-        showAlert('Service not found. Please refresh the page.', 'danger');
+        showAlert('Không tìm thấy dịch vụ. Vui lòng tải lại trang.', 'danger');
         return;
     }
 
@@ -569,7 +574,7 @@ function openResultModal(serviceOrderItemId) {
     const modalTitle = document.querySelector('#resultModal .modal-title');
     modalTitle.innerHTML = `
         <i class="fas fa-flask me-2"></i>
-        ${hasResults ? 'Update' : 'Enter'} Test Results - ${service.service_name}
+        ${hasResults ? 'Cập nhật' : 'Nhập'} kết quả xét nghiệm - ${service.service_name}
     `;
 
     // Set form values
@@ -595,12 +600,12 @@ function openResultModal(serviceOrderItemId) {
             }
         });
 
-        showAlert('Existing results loaded for editing', 'info');
+        showAlert('Đã tải dữ liệu kết quả cũ để chỉnh sửa', 'info');
     }
 
     // Update save button text
     const saveButton = document.querySelector('#resultModal .btn-primary');
-    saveButton.innerHTML = `<i class="fas fa-save me-2"></i>${hasResults ? 'Update' : 'Save'} Results`;
+    saveButton.innerHTML = `<i class="fas fa-save me-2"></i>${hasResults ? 'Cập nhật' : 'Lưu'} kết quả`;
 
     const resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
     resultModal.show();
@@ -690,7 +695,7 @@ async function saveTestResult() {
     } finally {
         // Reset UI
         saveButton.disabled = false;
-        saveButton.innerHTML = '<i class="fas fa-save me-2"></i>Save Results';
+        saveButton.innerHTML = '<i class="fas fa-save me-2"></i>Lưu kết quả';
         form.style.opacity = '1';
     }
 }

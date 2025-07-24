@@ -191,15 +191,15 @@ function renderServiceResultsTable() {
         let progressText = '';
         
         if (isComplete) {
-            progressStatus = 'All Tests Complete';
+            progressStatus = 'Đã hoàn thành tất cả xét nghiệm';
             progressClass = 'progress-complete';
             progressText = '100%';
         } else if (progressPercentage > 0) {
-            progressStatus = 'Tests In Progress';
+            progressStatus = 'Đang thực hiện xét nghiệm';
             progressClass = 'progress-loading';
             progressText = `${progressPercentage}%`;
         } else {
-            progressStatus = 'Tests Pending';
+            progressStatus = 'Chờ thực hiện xét nghiệm';
             progressClass = 'progress-pending';
             progressText = '0%';
         }
@@ -383,12 +383,12 @@ async function displayDetailedResults(detailedResults, serviceOrderId) {
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="text-primary">
-                            <i class="fas fa-microscope me-2"></i>Service Order #${serviceOrderId} Results
+                            <i class="fas fa-microscope me-2"></i>Kết quả đơn dịch vụ #${serviceOrderId}
                         </h4>
-                        <p class="text-muted mb-0">Detailed test results for this specific service order</p>
+                        <p class="text-muted mb-0">Chi tiết kết quả xét nghiệm cho đơn này</p>
                     </div>
                     <div class="text-end">
-                        <span class="badge bg-info fs-6">${totalTests} Test${totalTests > 1 ? 's' : ''}</span>
+                        <span class="badge bg-info fs-6">${totalTests} Xét nghiệm</span>
                     </div>
                 </div>
             </div>
@@ -399,13 +399,13 @@ async function displayDetailedResults(detailedResults, serviceOrderId) {
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="text-success">
-                            <i class="fas fa-list-ul me-2"></i>All Patient Results
+                            <i class="fas fa-list-ul me-2"></i>Tất cả kết quả bệnh nhân
                         </h4>
-                        <p class="text-muted mb-0">Complete medical test history for this patient</p>
+                        <p class="text-muted mb-0">Lịch sử xét nghiệm đầy đủ của bệnh nhân này</p>
                     </div>
                     <div class="text-end">
-                        <span class="badge bg-primary fs-6 me-2">${orderCount} Order${orderCount > 1 ? 's' : ''}</span>
-                        <span class="badge bg-info fs-6">${totalTests} Test${totalTests > 1 ? 's' : ''}</span>
+                        <span class="badge bg-primary fs-6 me-2">${orderCount} Đơn</span>
+                        <span class="badge bg-info fs-6">${totalTests} Xét nghiệm</span>
                     </div>
                 </div>
             </div>
@@ -476,7 +476,7 @@ async function displayDetailedResults(detailedResults, serviceOrderId) {
             const isCompleted = result.is_completed;
             const statusIcon = isCompleted ? 'check-circle' : 'clock';
             const statusColor = isCompleted ? 'success' : 'warning';
-            const statusText = isCompleted ? 'Result Available' : 'Awaiting Results';
+            const statusText = isCompleted ? 'Đã có kết quả' : 'Chờ kết quả';
             
             contentHTML += `
                 <div class="test-card ${isCompleted ? 'completed' : 'pending'}" data-service-order-item-id="${result.service_order_item_id}">
@@ -519,11 +519,11 @@ async function displayDetailedResults(detailedResults, serviceOrderId) {
                                 <div class="result-header">
                                     <h6 class="result-title">
                                         <i class="fas fa-microscope me-2 text-success"></i>
-                                        Test Results
+                                        Kết quả xét nghiệm
                                     </h6>
                                     <div class="result-date">
                                         <i class="fas fa-clock me-1 text-muted"></i>
-                                        <small class="text-muted">Completed: ${formatDateTime(result.result_date)}</small>
+                                        <small class="text-muted">Hoàn thành: ${formatDateTime(result.result_date)}</small>
                                     </div>
                                 </div>
                                 
@@ -535,7 +535,7 @@ async function displayDetailedResults(detailedResults, serviceOrderId) {
                                 
                                 <div class="result-actions mt-3">
                                     <button class="btn btn-outline-secondary btn-sm print-result-btn" data-service-order-item-id="${result.service_order_item_id}">
-                                        <i class="fas fa-print me-1"></i>Print
+                                        <i class="fas fa-print me-1"></i>In phiếu
                                     </button>
                                 </div>
                             </div>
@@ -543,15 +543,15 @@ async function displayDetailedResults(detailedResults, serviceOrderId) {
                             <!-- Pending Result (Read-Only) -->
                             <div class="pending-result-display">
                                 <div class="pending-header">
-                                    <h6><i class="fas fa-hourglass-half me-2 text-warning"></i>Awaiting Test Results</h6>
-                                    <p class="pending-note">This test is currently pending. Results will appear here once available.</p>
+                                    <h6><i class="fas fa-hourglass-half me-2 text-warning"></i>Chờ kết quả xét nghiệm</h6>
+                                    <p class="pending-note">Xét nghiệm này đang chờ kết quả. Kết quả sẽ hiển thị tại đây khi có.</p>
                                 </div>
                                 
                                 <div class="pending-content">
                                     <div class="text-center py-4">
                                         <i class="fas fa-clock fa-2x text-muted mb-2"></i>
-                                        <p class="text-muted">Test results are not yet available</p>
-                                        <small class="text-muted">Please check back later for updated results</small>
+                                        <p class="text-muted">Chưa có kết quả xét nghiệm</p>
+                                        <small class="text-muted">Vui lòng quay lại sau để xem kết quả cập nhật</small>
                                     </div>
                                 </div>
                             </div>
@@ -581,7 +581,7 @@ async function displayDetailedResults(detailedResults, serviceOrderId) {
                                 data-medicine-record-id="${patientInfo.medicineRecord_id}"
                                 data-service-order-id="${orderGroup.order_id}"
                                 ${progressPercentage < 100 ? 'disabled' : ''}
-                                title="Progress: ${progressPercentage}% (${completedCount}/${totalCount} tests completed)">
+                                title="Tiến độ: ${progressPercentage}% (${completedCount}/${totalCount} xét nghiệm hoàn thành)">
                             <i class="fas fa-file-medical-alt me-2"></i>
                             ${progressPercentage < 100 ? `Chờ hoàn thành xét nghiệm (${progressPercentage}%)` : 'Kết luận điều trị'}
                             </button>`}
@@ -596,8 +596,8 @@ async function displayDetailedResults(detailedResults, serviceOrderId) {
             <div class="no-results-state">
                 <div class="text-center py-5">
                     <i class="fas fa-vials fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">No Test Results Found</h5>
-                    <p class="text-muted">There are no test results available for this patient.</p>
+                    <h5 class="text-muted">Không tìm thấy kết quả xét nghiệm</h5>
+                    <p class="text-muted">Không có kết quả xét nghiệm nào cho bệnh nhân này.</p>
                 </div>
             </div>
         `;
@@ -689,10 +689,10 @@ function displayEmptyState() {
             <td colspan="7" class="text-center py-5">
                 <div class="empty-state">
                     <i class="fas fa-vials fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">No Test Results Available</h5>
-                    <p class="text-muted">There are currently no patients waiting for test results.</p>
+                    <h5 class="text-muted">Không có kết quả xét nghiệm</h5>
+                    <p class="text-muted">Hiện tại không có bệnh nhân nào chờ kết quả xét nghiệm.</p>
                     <button class="btn btn-primary" onclick="loadServiceResults()">
-                        <i class="fas fa-refresh me-2"></i>Refresh
+                        <i class="fas fa-refresh me-2"></i>Làm mới kết quả
                     </button>
                 </div>
             </td>
@@ -780,7 +780,7 @@ function showAlert(message, type) {
 // Statistics function
 function showStatistics() {
     if (serviceResultsList.length === 0) {
-        showAlert('No data available for statistics.', 'warning');
+        showAlert('Không có dữ liệu để thống kê.', 'warning');
         return;
     }
 
@@ -794,32 +794,32 @@ function showStatistics() {
             <div class="col-md-3">
                 <div class="stat-card text-center p-3 border rounded">
                     <h3 class="text-primary">${serviceResultsList.length}</h3>
-                    <p class="mb-0">Total Patients</p>
+                    <p class="mb-0">Tổng số bệnh nhân</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card text-center p-3 border rounded">
                     <h3 class="text-success">${completeCount}</h3>
-                    <p class="mb-0">Complete Results</p>
+                    <p class="mb-0">Đã hoàn thành</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card text-center p-3 border rounded">
                     <h3 class="text-warning">${pendingCount}</h3>
-                    <p class="mb-0">Pending Results</p>
+                    <p class="mb-0">Chờ kết quả</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card text-center p-3 border rounded">
                     <h3 class="text-info">${Math.round((completedServices / totalServices) * 100) || 0}%</h3>
-                    <p class="mb-0">Overall Progress</p>
+                    <p class="mb-0">Tiến độ tổng thể</p>
                 </div>
             </div>
         </div>
     `;
 
     // Create modal or alert for statistics
-    showAlert(`<div class="statistics-summary"><h6>Service Results Statistics</h6>${statsHTML}</div>`, 'info');
+    showAlert(`<div class="statistics-summary"><h6>Thống kê kết quả dịch vụ</h6>${statsHTML}</div>`, 'info');
 }
 
 // Debug functions
@@ -913,7 +913,7 @@ async function testAPI() {
             showDebugOutput('No service orders found for current doctor. You need to prescribe some tests first!');
         }
         
-        showAlert('API test completed. Check debug output for details.', 'success');
+        showAlert('API test hoàn tất. Xem debug output để biết chi tiết.', 'success');
         
     } catch (error) {
         showDebugOutput(`API Error: ${error.message}`);
@@ -1868,6 +1868,15 @@ async function loadCompletedServices(medicineRecordId, serviceOrderId) {
             showAlert('Không có dịch vụ nào đã hoàn thành để thêm vào hóa đơn.', 'warning');
         }
 
+        // Lấy waitlistId từ kết quả chi tiết (nếu có)
+        let waitlistId = null;
+        if (detailedResults.length > 0 && detailedResults[0].waitlist_id) {
+            waitlistId = detailedResults[0].waitlist_id;
+        }
+        if (waitlistId) {
+            currentConclusionData.waitlistId = waitlistId;
+        }
+
     } catch (error) {
         console.error('Error loading completed services:', error);
         showAlert('Không thể tải danh sách dịch vụ: ' + error.message, 'danger');
@@ -2201,7 +2210,7 @@ function submitConclusion() {
         }
         return response.json();
     })
-    .then(data => {
+    .then(async data => {
         if (!data.success) {
             throw new Error(data.message || 'Không thể tạo hóa đơn');
         }
@@ -2251,6 +2260,9 @@ function submitConclusion() {
                 body: `invoiceId=${invoiceId}&totalAmount=${totalAmount}&notes=${encodeURIComponent(notes)}`
             })
         );
+
+        // Step 6: Cập nhật trạng thái waitlist thành Completed
+        // Đã bỏ cập nhật status waitlist từ phía JS. Việc cập nhật sẽ do backend xử lý qua DAO.
 
         return Promise.all(promises).then(() => invoiceId);
     })

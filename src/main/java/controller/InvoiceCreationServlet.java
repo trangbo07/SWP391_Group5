@@ -111,6 +111,7 @@ public class InvoiceCreationServlet extends HttpServlet {
         String conclusion = req.getParameter("conclusion");
         String treatmentPlan = req.getParameter("treatmentPlan");
         String disease = req.getParameter("disease");
+        String waitlistIdStr = req.getParameter("waitlistId"); // Lấy waitlistId từ client nếu có
 
         // Validate required parameters
         if (medicineRecordIdStr == null || medicineRecordIdStr.trim().isEmpty()) {
@@ -135,6 +136,12 @@ public class InvoiceCreationServlet extends HttpServlet {
 
         try {
             int medicineRecordId = Integer.parseInt(medicineRecordIdStr);
+            Integer waitlistId = null;
+            if (waitlistIdStr != null && !waitlistIdStr.trim().isEmpty()) {
+                try {
+                    waitlistId = Integer.parseInt(waitlistIdStr);
+                } catch (NumberFormatException ignored) {}
+            }
             
             // Get doctor_id from AccountStaff
             Doctor doctor = (Doctor) accountStaffDAO.getOStaffByStaffId(accountStaff.getAccount_staff_id(), "Doctor");
@@ -145,6 +152,17 @@ public class InvoiceCreationServlet extends HttpServlet {
 
             boolean success = diagnosisDAO.createNewDiagnosis(medicineRecordId, doctor.getDoctor_id(), conclusion, disease, treatmentPlan);
             
+            // Sau khi tạo chẩn đoán thành công, cập nhật status waitlist nếu có waitlistId
+            if (success && waitlistId != null) {
+                try {
+                    
+                    dao.WaitlistDAO waitlistDAO = new dao.WaitlistDAO();
+                    boolean updated = waitlistDAO.updateStatus(waitlistId, "Completed");
+                  
+                } catch (Exception e) {
+                    System.err.println("Không thể cập nhật trạng thái waitlist: " + e.getMessage());
+                }
+            }
             if (success) {
                 sendError(resp, true, null);
             } else {

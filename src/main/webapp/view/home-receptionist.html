@@ -329,172 +329,98 @@
         <!--Nav End-->
         <div class="content-inner">
           <div class="container-fluid">
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="card">
-                  <div class="card-header d-flex justify-content-between">
-                    <div class="header-title">
-                      <h4 class="card-title">Welcome, Receptionist!</h4>
-                    </div>
-                  </div>
+            <div class="row mb-4">
+              <div class="col-12 d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <div>
+                  <h2 class="fw-bold mb-1" id="receptionist-name">Xin chào, Lễ tân!</h2>
+                  <div class="text-muted" id="current-date">Thứ hai, 01/01/2024</div>
+                </div>
+                <div class="display-6 text-primary" id="current-time">08:00</div>
+              </div>
+            </div>
+            <div class="row g-4 mb-4">
+              <div class="col-md-3 col-6">
+                <div class="card text-center shadow quick-action-card">
                   <div class="card-body">
-                    <div class="row">
-                      <div class="col-md-4">
-                        <div class="card">
-                          <div class="card-body">
-                            <h5 class="card-title">Today's Appointments</h5>
-                            <h2 class="mb-2">15</h2>
-                            <p class="mb-0">Total appointments for today</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="card">
-                          <div class="card-body">
-                            <h5 class="card-title">Pending Appointments</h5>
-                            <h2 class="mb-2">5</h2>
-                            <p class="mb-0">Appointments waiting for confirmation</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="card">
-                          <div class="card-body">
-                            <h5 class="card-title">New Patients</h5>
-                            <h2 class="mb-2">3</h2>
-                            <p class="mb-0">New patients registered today</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                                    <!-- Book Appointment Section -->
-                    <div class="row mt-4">
-                      <div class="col-md-12">
-                        <div class="card appointment-form-card">
-                          <div class="card-header">
-                            <h4 class="card-title">Book New Appointment</h4>
-                          </div>
-                          <div class="card-body">
-                            <form id="appointment-form">
-                              <div class="row">
-                                                            <div class="col-md-6">
-                                  <div class="mb-3 patient-search-container">
-                                    <label for="patient-search" class="form-label">Search Patient</label>
-                                    <input type="text" class="form-control" id="patient-search" 
-                                            placeholder="Enter patient name or phone number">
-                                    <div id="patient-suggestions" class="dropdown-menu" style="width: 100%;"></div>
-                                    <input type="hidden" id="selected-patient-id">
-                                  </div>
-                                </div>
-                                <div class="col-md-6">
-                                  <div class="mb-3">
-                                    <label for="doctor-select" class="form-label">Select Doctor</label>
-                                    <select class="form-select" id="doctor-select" required>
-                                      <option value="">Choose a doctor...</option>
-                                    </select>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="col-md-4">
-                                  <div class="mb-3">
-                                    <label for="appointment-date" class="form-label">Appointment Date</label>
-                                    <input type="date" class="form-control" id="appointment-date" required>
-                                  </div>
-                                </div>
-                                <div class="col-md-4">
-                                  <div class="mb-3">
-                                    <label for="appointment-time" class="form-label">Appointment Time</label>
-                                    <input type="time" class="form-control" id="appointment-time" required>
-                                  </div>
-                                </div>
-                                <div class="col-md-4">
-                                  <div class="mb-3">
-                                    <label for="shift-select" class="form-label">Shift</label>
-                                    <select class="form-select" id="shift-select" required>
-                                      <option value="">Choose shift...</option>
-                                      <option value="Morning">Morning (08:00 - 12:00)</option>
-                                      <option value="Afternoon">Afternoon (13:00 - 17:00)</option>
-                                      <option value="Evening">Evening (18:00 - 21:00)</option>
-                                    </select>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="col-md-12">
-                                  <div class="mb-3">
-                                    <label for="appointment-note" class="form-label">Note</label>
-                                    <textarea class="form-control" id="appointment-note" rows="3" 
-                                              placeholder="Enter any additional notes..."></textarea>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="col-md-12">
-                                  <button type="submit" class="btn btn-primary me-2">Book Appointment</button>
-                                  <button type="reset" class="btn btn-secondary">Clear Form</button>
-                                </div>
-                              </div>
-                            </form>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Upcoming Appointments Section -->
-                    <div class="row mt-4">
-                      <div class="col-md-12">
-                        <div class="card">
-                          <div class="card-header">
-                            <h4 class="card-title">Upcoming Appointments</h4>
-                          </div>
-                          <div class="card-body">
-                            <div class="table-responsive">
-                              <table class="table table-hover">
-                                <thead>
-                                  <tr>
-                                    <th>Time</th>
-                                    <th>Patient Name</th>
-                                    <th>Doctor</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr>
-                                    <td>09:00 AM</td>
-                                    <td>John Doe</td>
-                                    <td>Dr. Smith</td>
-                                    <td><span class="badge bg-success">Confirmed</span></td>
-                                    <td>
-                                      <button class="btn btn-sm btn-primary">View</button>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>10:30 AM</td>
-                                    <td>Jane Smith</td>
-                                    <td>Dr. Johnson</td>
-                                    <td><span class="badge bg-warning">Pending</span></td>
-                                    <td>
-                                      <button class="btn btn-sm btn-primary">View</button>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>02:00 PM</td>
-                                    <td>Mike Wilson</td>
-                                    <td>Dr. Brown</td>
-                                    <td><span class="badge bg-success">Confirmed</span></td>
-                                    <td>
-                                      <button class="btn btn-sm btn-primary">View</button>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <div class="fs-2 mb-2 text-primary"><i class="fas fa-calendar-check"></i></div>
+                    <div class="fw-bold fs-5" id="total-appointments">0</div>
+                    <div class="text-muted">Lịch hẹn hôm nay</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="card text-center shadow quick-action-card">
+                  <div class="card-body">
+                    <div class="fs-2 mb-2 text-warning"><i class="fas fa-users"></i></div>
+                    <div class="fw-bold fs-5" id="waiting-patients">0</div>
+                    <div class="text-muted">Bệnh nhân chờ</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="card text-center shadow quick-action-card">
+                  <div class="card-body">
+                    <div class="fs-2 mb-2 text-success"><i class="fas fa-check-circle"></i></div>
+                    <div class="fw-bold fs-5" id="completed-appointments">0</div>
+                    <div class="text-muted">Đã hoàn thành</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="card text-center shadow quick-action-card">
+                  <div class="card-body">
+                    <div class="fs-2 mb-2 text-danger"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="fw-bold fs-5" id="pending-payments">0</div>
+                    <div class="text-muted">Chờ thanh toán</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row g-4 mb-4">
+              <div class="col-md-2 col-6">
+                <a href="appointment-receptionist.html" class="btn btn-lg btn-primary w-100 py-3 quick-action-card">
+                  <i class="fas fa-calendar-plus me-2"></i>Đặt lịch mới
+                </a>
+              </div>
+              <div class="col-md-2 col-6">
+                <a href="waitlist-receptionist.html" class="btn btn-lg btn-warning w-100 py-3 quick-action-card">
+                  <i class="fas fa-list-ol me-2"></i>Danh sách chờ
+                </a>
+              </div>
+              <div class="col-md-2 col-6">
+                <a href="appointment-receptionist.html" class="btn btn-lg btn-success w-100 py-3 quick-action-card">
+                  <i class="fas fa-calendar-alt me-2"></i>Lịch hẹn
+                </a>
+              </div>
+              <div class="col-md-2 col-6">
+                <a href="/view/patient-list.html" class="btn btn-lg btn-info w-100 py-3 quick-action-card">
+                  <i class="fas fa-user-friends me-2"></i>Quản lý bệnh nhân
+                </a>
+              </div>
+              <div class="col-md-2 col-6">
+                <a href="#" class="btn btn-lg btn-secondary w-100 py-3 quick-action-card">
+                  <i class="fas fa-chart-bar me-2"></i>Thống kê
+                </a>
+              </div>
+            </div>
+            <div class="row g-4">
+              <div class="col-md-6">
+                <div class="card h-100">
+                  <div class="card-header bg-light">
+                    <h5 class="mb-0">Lịch hẹn sắp tới</h5>
+                  </div>
+                  <div class="card-body" id="upcoming-appointments-list">
+                    <p class="text-muted text-center">Không có lịch hẹn sắp tới</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card h-100">
+                  <div class="card-header bg-light">
+                    <h5 class="mb-0">Bệnh nhân đang chờ</h5>
+                  </div>
+                  <div class="card-body" id="current-waitlist">
+                    <p class="text-muted text-center">Không có bệnh nhân nào trong danh sách chờ</p>
                   </div>
                 </div>
               </div>

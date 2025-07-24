@@ -646,10 +646,10 @@ public class DoctorServiceOrderServlet extends HttpServlet {
             boolean success = serviceOrderItemDAO.createMultipleServiceOrderItemsWithDoctors(serviceOrderItems);
 
             if (success) {
-                // Cập nhật waitlist (status = Result, visittype = Waiting) nếu có waitlistId
+                // Cập nhật waitlist (status = InProgress, visittype = Result) nếu có waitlistId
                 boolean waitlistUpdated = true;
                 if (waitlistId != null) {
-                    waitlistUpdated = waitlistDAO.updateStatusAndVisittype(waitlistId, "Result", "Waiting");
+                    waitlistUpdated = waitlistDAO.updateStatusAndVisittype(waitlistId, "InProgress", "Result");
                 }
                 jsonResponse.put("success", true);
                 jsonResponse.put("message", "Service order created successfully" + (waitlistId != null ? (waitlistUpdated ? " and waitlist updated" : " but failed to update waitlist") : ""));

@@ -8,29 +8,6 @@ let medicineRecordId = null;
 let waitlistId = null;
 let patientId = null;
 
-// Hàm hiển thị alert
-function showAlert(message, type) {
-    const alertContainer = document.getElementById("alertContainer");
-
-    const alertHtml = `
-        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    `;
-
-    alertContainer.innerHTML = alertHtml;
-
-    // Tự động ẩn alert sau 5 giây
-    setTimeout(() => {
-        const alert = alertContainer.querySelector('.alert');
-        if (alert) {
-            alert.remove();
-        }
-    }, 5000);
-}
-
 // Hàm khởi tạo trang với URL parameters
 function initializeServiceOrderDetailsPage() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -44,7 +21,7 @@ function initializeServiceOrderDetailsPage() {
     } else if (patientId) {
         loadPatientInfo(patientId);
     } else {
-        showAlert('Thiếu tham số cần thiết. Vui lòng truy cập trang này qua điều hướng hợp lệ.', 'warning');
+        console.warn('Thiếu tham số cần thiết. Vui lòng truy cập trang này qua điều hướng hợp lệ.');
     }
 
     loadAssignedServices();
@@ -53,7 +30,7 @@ function initializeServiceOrderDetailsPage() {
 // Hàm load thông tin bệnh nhân từ waitlist
 async function loadPatientFromWaitlist(waitlistId) {
     try {
-        showAlert('Đang tải thông tin bệnh nhân...', 'info');
+        console.log('Đang tải thông tin bệnh nhân...');
 
         const response = await fetch(`/api/doctor/service-order?action=getPatientFromWaitlist&waitlistId=${waitlistId}`, {
             method: 'GET',
@@ -79,21 +56,21 @@ async function loadPatientFromWaitlist(waitlistId) {
             // Lấy medicine record ID từ patient ID
             await getMedicineRecordByPatientId(result.data.patient_id);
             displayPatientInfo(result.data);
-            showAlert('Tải thông tin bệnh nhân thành công!', 'success');
+            console.log('Tải thông tin bệnh nhân thành công!');
         } else {
             throw new Error(result.message || 'Không thể tải thông tin bệnh nhân');
         }
 
     } catch (error) {
         console.error("Error loading patient from waitlist:", error);
-        showAlert(error.message || 'Không thể tải thông tin bệnh nhân. Vui lòng thử lại.', 'danger');
+        console.error(error.message || 'Không thể tải thông tin bệnh nhân. Vui lòng thử lại.');
     }
 }
 
 // Hàm load thông tin bệnh nhân theo ID
 async function loadPatientInfo(patientId) {
     try {
-        showAlert('Đang tải thông tin bệnh nhân...', 'info');
+        console.log('Đang tải thông tin bệnh nhân...');
 
         const response = await fetch(`/api/doctor/service-order?action=getPatientInfo&patientId=${patientId}`, {
             method: 'GET',
@@ -119,14 +96,14 @@ async function loadPatientInfo(patientId) {
             // Lấy medicine record ID từ patient ID
             await getMedicineRecordByPatientId(result.data.patient_id);
             displayPatientInfo(result.data);
-            showAlert('Tải thông tin bệnh nhân thành công!', 'success');
+            console.log('Tải thông tin bệnh nhân thành công!');
         } else {
             throw new Error(result.message || 'Không thể tải thông tin bệnh nhân');
         }
 
     } catch (error) {
         console.error("Error loading patient info:", error);
-        showAlert(error.message || 'Không thể tải thông tin bệnh nhân. Vui lòng thử lại.', 'danger');
+        console.error(error.message || 'Không thể tải thông tin bệnh nhân. Vui lòng thử lại.');
     }
 }
 
@@ -191,7 +168,7 @@ async function getMedicineRecordByPatientId(patientId) {
 
     } catch (error) {
         console.error("Error getting medicine record:", error);
-        showAlert('Cảnh báo: Không thể lấy hồ sơ khám bệnh. Đơn dịch vụ có thể không hoạt động đúng.', 'warning');
+        console.error('Cảnh báo: Không thể lấy hồ sơ khám bệnh. Đơn dịch vụ có thể không hoạt động đúng.');
     }
 }
 
@@ -226,14 +203,14 @@ async function loadAssignedServices() {
             }
             await loadDoctors();
             displayServices(assignedServices);
-            showAlert(`Đã tải ${assignedServices.length} dịch vụ khả dụng`, 'success');
+            console.log(`Đã tải ${assignedServices.length} dịch vụ khả dụng`);
         } else {
             throw new Error(result.message || 'Không thể tải danh sách dịch vụ');
         }
 
     } catch (error) {
         console.error("Error loading services:", error);
-        showAlert(error.message || 'Không thể tải danh sách dịch vụ. Vui lòng thử lại.', 'danger');
+        console.error(error.message || 'Không thể tải danh sách dịch vụ. Vui lòng thử lại.');
         const loadingSpinner = document.getElementById("loadingSpinner");
         loadingSpinner.style.display = "none";
     }
@@ -430,7 +407,7 @@ function updateSelectedServicesDisplay() {
 // Hàm tạo service order
 async function createServiceOrder() {
     if (selectedServices.length === 0) {
-        showAlert('Vui lòng chọn ít nhất một dịch vụ', 'warning');
+        console.warn('Vui lòng chọn ít nhất một dịch vụ');
         return;
     }
 
@@ -453,12 +430,12 @@ async function createServiceOrder() {
     });
 
     if (missingDoctors.length > 0) {
-        showAlert(`Vui lòng chọn bác sĩ cho: ${missingDoctors.join(', ')}`, 'warning');
+        console.warn(`Vui lòng chọn bác sĩ cho: ${missingDoctors.join(', ')}`);
         return;
     }
 
     try {
-        showAlert('Đang tạo đơn dịch vụ...', 'info');
+        console.log('Đang tạo đơn dịch vụ...');
 
         const orderData = {
             medicineRecordId: medicineRecordId,
@@ -489,14 +466,22 @@ async function createServiceOrder() {
 
         if (result.success) {
             const orderIdText = result.serviceOrderId ? ` (Mã đơn: ${result.serviceOrderId})` : '';
-            showAlert(`Đơn dịch vụ đã tạo thành công!${orderIdText}`, 'success');
+            console.log(`Đơn dịch vụ đã tạo thành công!${orderIdText}`);
             
+            // Set status thành inprogress cho waitlist ngay sau khi tạo đơn dịch vụ
+            if (waitlistId) {
+                try {
+                    await updateWaitlistStatus(waitlistId, 'inprogress');
+                } catch (e) {
+                    console.warn('Không thể cập nhật trạng thái sang "inprogress"');
+                }
+            }
             // Sử dụng endpoint mới để cập nhật status và visittype
             if (waitlistId && result.serviceOrderId) {
                 try {
                     await afterServiceOrderCreated(result.serviceOrderId, waitlistId);
                     setTimeout(() => {
-                        showAlert('✅ Trạng thái bệnh nhân đã tự động cập nhật: đã chuyển từ "Đầu tiên" sang "Kết quả" và đặt trạng thái là "Đang chờ" để kết quả dịch vụ', 'success');
+                        console.log('✅ Trạng thái bệnh nhân đã tự động cập nhật: đã chuyển từ "Đầu tiên" sang "Kết quả" và đặt trạng thái là "Đang chờ" để kết quả dịch vụ');
                     }, 1500);
                 } catch (error) {
                     console.error('Không thể cập nhật trạng thái waitlist qua endpoint mới:', error);
@@ -504,12 +489,12 @@ async function createServiceOrder() {
                     try {
                         await updateWaitlistToWaiting(waitlistId);
                         setTimeout(() => {
-                            showAlert('✅ Trạng thái bệnh nhân đã cập nhật (phương pháp fallback)', 'success');
+                            console.log('✅ Trạng thái bệnh nhân đã cập nhật (phương pháp fallback)');
                         }, 1500);
                     } catch (fallbackError) {
                         console.error('Phương pháp fallback cũng thất bại:', fallbackError);
                         setTimeout(() => {
-                            showAlert('⚠️ Đơn dịch vụ đã tạo nhưng cập nhật trạng thái thất bại. Vui lòng cập nhật thủ công.', 'warning');
+                            console.warn('⚠️ Đơn dịch vụ đã tạo nhưng cập nhật trạng thái thất bại. Vui lòng cập nhật thủ công.');
                         }, 1500);
                     }
                 }
@@ -533,7 +518,7 @@ async function createServiceOrder() {
             });
 
             setTimeout(() => {
-                showAlert(`✅ Các dịch vụ đã được giao thành công cho: ${assignedDoctorNames.join(', ')}. Bác sĩ đã giao dịch có thể xem các dịch vụ này trong trang "Dịch vụ đã giao" và bắt đầu thực hiện chúng.`, 'info');
+                console.log(`✅ Các dịch vụ đã được giao thành công cho: ${assignedDoctorNames.join(', ')}. Bác sĩ đã giao dịch có thể xem các dịch vụ này trong trang "Dịch vụ đã giao" và bắt đầu thực hiện chúng.`);
             }, 2000);
 
             // Show navigation options instead of direct redirect
@@ -547,7 +532,7 @@ async function createServiceOrder() {
 
     } catch (error) {
         console.error("Error creating service order:", error);
-        showAlert(error.message || 'Không thể tạo đơn dịch vụ. Vui lòng thử lại.', 'danger');
+        console.error(error.message || 'Không thể tạo đơn dịch vụ. Vui lòng thử lại.');
     }
 }
 
@@ -598,56 +583,56 @@ function showNavigationOptions() {
     alertContainer.innerHTML = existingAlerts + navigationHtml;
 }
 
-// Hàm hiển thị navigation options sau khi tạo service order
-function showNavigationOptionsAfterCreateOrder() {
-    const alertContainer = document.getElementById("alertContainer");
+// // Hàm hiển thị navigation options sau khi tạo service order
+// function showNavigationOptionsAfterCreateOrder() {
+//     const alertContainer = document.getElementById("alertContainer");
 
-    // Tạo danh sách tên bác sĩ được assign
-    const assignedDoctorNames = [];
-    selectedServices.forEach(service => {
-        const doctorSelect = document.getElementById(`doctor_${service.service_id}`);
-        if (doctorSelect && doctorSelect.selectedIndex > 0) {
-            const doctorName = doctorSelect.options[doctorSelect.selectedIndex].text;
-            if (!assignedDoctorNames.includes(doctorName)) {
-                assignedDoctorNames.push(doctorName);
-            }
-        }
-    });
+//     // Tạo danh sách tên bác sĩ được assign
+//     const assignedDoctorNames = [];
+//     selectedServices.forEach(service => {
+//         const doctorSelect = document.getElementById(`doctor_${service.service_id}`);
+//         if (doctorSelect && doctorSelect.selectedIndex > 0) {
+//             const doctorName = doctorSelect.options[doctorSelect.selectedIndex].text;
+//             if (!assignedDoctorNames.includes(doctorName)) {
+//                 assignedDoctorNames.push(doctorName);
+//             }
+//         }
+//     });
 
-    const navigationHtml = `
-        <div class="alert alert-success border-success" role="alert">
-            <h6 class="alert-heading">
-                <i class="fas fa-check-circle me-2"></i>
-                Đơn Dịch Vụ Đã Tạo Thành Công! 
-            </h6>
-            <p class="mb-3">✅ <strong>Dịch Vụ Đã Giao:</strong> ${assignedDoctorNames.length > 0 ? assignedDoctorNames.join(', ') : 'Không có bác sĩ nào được giao'}<br>
-            🔔 <strong>Thông báo:</strong> Bác sĩ đã giao sẽ được thông báo và có thể xem các dịch vụ này trong trang "Dịch vụ đã giao" của họ<br>
-            📋 <strong>Trạng Thái:</strong> Trạng thái bệnh nhân đã được cập nhật từ "Đầu tiên" sang "Kết quả" và đã chuyển sang "Đang chờ" để kết quả dịch vụ</p>
-            <div class="d-flex gap-2 flex-wrap">
-                <button type="button" class="btn btn-success btn-sm" onclick="navigateToAssignedServices()">
-                    <i class="fas fa-tasks me-1"></i>
-                    Xem Dịch Vụ Đã Giao Của Tôi
-                </button>
-                <button type="button" class="btn btn-primary btn-sm" onclick="navigateToServiceOrder()">
-                    <i class="fas fa-list-ul me-1"></i>
-                    Quản Lý Đơn Dịch Vụ
-                </button>
-                <button type="button" class="btn btn-outline-info btn-sm" onclick="createAnotherOrder()">
-                    <i class="fas fa-plus me-1"></i>
-                    Tạo Đơn Dịch Vụ Khác
-                </button>
-                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="navigateToHome()">
-                    <i class="fas fa-home me-1"></i>
-                    Bảng Điều Khiển Bác Sĩ
-                </button>
-            </div>
-        </div>
-    `;
+//     const navigationHtml = `
+//         <div class="alert alert-success border-success" role="alert">
+//             <h6 class="alert-heading">
+//                 <i class="fas fa-check-circle me-2"></i>
+//                 Đơn Dịch Vụ Đã Tạo Thành Công! 
+//             </h6>
+//             <p class="mb-3">✅ <strong>Dịch Vụ Đã Giao:</strong> ${assignedDoctorNames.length > 0 ? assignedDoctorNames.join(', ') : 'Không có bác sĩ nào được giao'}<br>
+//             🔔 <strong>Thông báo:</strong> Bác sĩ đã giao sẽ được thông báo và có thể xem các dịch vụ này trong trang "Dịch vụ đã giao" của họ<br>
+//             📋 <strong>Trạng Thái:</strong> Trạng thái bệnh nhân đã được cập nhật từ "Đầu tiên" sang "Kết quả" và đã chuyển sang "Đang chờ" để kết quả dịch vụ</p>
+//             <div class="d-flex gap-2 flex-wrap">
+//                 <button type="button" class="btn btn-success btn-sm" onclick="navigateToAssignedServices()">
+//                     <i class="fas fa-tasks me-1"></i>
+//                     Xem Dịch Vụ Đã Giao Của Tôi
+//                 </button>
+//                 <button type="button" class="btn btn-primary btn-sm" onclick="navigateToServiceOrder()">
+//                     <i class="fas fa-list-ul me-1"></i>
+//                     Quản Lý Đơn Dịch Vụ
+//                 </button>
+//                 <button type="button" class="btn btn-outline-info btn-sm" onclick="createAnotherOrder()">
+//                     <i class="fas fa-plus me-1"></i>
+//                     Tạo Đơn Dịch Vụ Khác
+//                 </button>
+//                 <button type="button" class="btn btn-outline-secondary btn-sm" onclick="navigateToHome()">
+//                     <i class="fas fa-home me-1"></i>
+//                     Bảng Điều Khiển Bác Sĩ
+//                 </button>
+//             </div>
+//         </div>
+//     `;
 
-    // Add to existing alerts
-    const existingAlerts = alertContainer.innerHTML;
-    alertContainer.innerHTML = existingAlerts + navigationHtml;
-}
+//     // Add to existing alerts
+//     const existingAlerts = alertContainer.innerHTML;
+//     alertContainer.innerHTML = existingAlerts + navigationHtml;
+// }
 
 // Navigation functions
 function navigateToServiceOrder() {
@@ -692,7 +677,7 @@ function createAnotherOrder() {
     // Clear alerts
     document.getElementById("alertContainer").innerHTML = '';
 
-    showAlert('Form đã được đặt lại. Bạn có thể tạo đơn dịch vụ mới.', 'info');
+    console.log('Form đã được đặt lại. Bạn có thể tạo đơn dịch vụ mới.');
 }
 
 // Hàm tìm kiếm service order theo ID
@@ -700,7 +685,7 @@ async function searchServiceOrder() {
     const serviceOrderId = document.getElementById("serviceOrderIdInput").value;
 
     if (!serviceOrderId) {
-        showAlert('Vui lòng nhập Mã Đơn Dịch Vụ', 'danger');
+        console.warn('Vui lòng nhập Mã Đơn Dịch Vụ');
         return;
     }
 
@@ -712,7 +697,7 @@ async function searchByMedicineRecord() {
     const medicineRecordId = document.getElementById("medicineRecordIdInput").value;
 
     if (!medicineRecordId) {
-        showAlert('Vui lòng nhập Mã Hồ Sơ Khám Bệnh', 'danger');
+        console.warn('Vui lòng nhập Mã Hồ Sơ Khám Bệnh');
         return;
     }
 
@@ -724,7 +709,7 @@ async function searchByPatientName() {
     const patientName = document.getElementById("patientNameInput").value;
 
     if (!patientName || patientName.trim().length < 2) {
-        showAlert('Vui lòng nhập tên bệnh nhân ít nhất 2 ký tự', 'danger');
+        console.warn('Vui lòng nhập tên bệnh nhân ít nhất 2 ký tự');
         return;
     }
 
@@ -773,7 +758,7 @@ async function getServiceOrderDetails(serviceOrderId) {
             console.log('Service order details received:', result.data);
             console.log('Items in response:', result.data.items);
             displayServiceOrderDetails(result.data);
-            showAlert('Tải chi tiết đơn dịch vụ thành công!', 'success');
+            console.log('Tải chi tiết đơn dịch vụ thành công!');
             scrollToSection('serviceOrderDetailsSection', 500);
         } else {
             throw new Error(result.message || 'Không thể lấy chi tiết đơn dịch vụ');
@@ -781,7 +766,7 @@ async function getServiceOrderDetails(serviceOrderId) {
 
     } catch (error) {
         console.error("Error getting service order details:", error);
-        showAlert(error.message || 'Không thể lấy chi tiết đơn dịch vụ. Vui lòng thử lại.', 'danger');
+        console.error(error.message || 'Không thể lấy chi tiết đơn dịch vụ. Vui lòng thử lại.');
         loadingSpinner.style.display = "none";
     }
 }
@@ -889,9 +874,9 @@ async function getServiceOrdersByPatientName(patientName) {
             displayServiceOrderHistory(result.data, `Đơn Dịch Vụ Của Bệnh Nhân: "${patientName}"`);
 
             if (result.data.length > 0) {
-                showAlert(`Tìm thấy ${result.data.length} đơn dịch vụ cho bệnh nhân "${patientName}"`, 'success');
+                console.log(`Tìm thấy ${result.data.length} đơn dịch vụ cho bệnh nhân "${patientName}"`);
             } else {
-                showAlert(`Không tìm thấy đơn dịch vụ nào cho bệnh nhân "${patientName}"`, 'info');
+                console.log(`Không tìm thấy đơn dịch vụ nào cho bệnh nhân "${patientName}"`);
             }
             scrollToSection('serviceOrderHistorySection', 500);
         } else {
@@ -900,7 +885,7 @@ async function getServiceOrdersByPatientName(patientName) {
 
     } catch (error) {
         console.error("Error getting service orders by patient name:", error);
-        showAlert(error.message || 'Không thể lấy danh sách đơn dịch vụ theo tên bệnh nhân. Vui lòng thử lại.', 'danger');
+        console.error(error.message || 'Không thể lấy danh sách đơn dịch vụ theo tên bệnh nhân. Vui lòng thử lại.');
         loadingSpinner.style.display = "none";
     }
 }
@@ -942,7 +927,7 @@ async function getServiceOrderHistory(medicineRecordId) {
         if (result.success) {
             currentHistoryData = result.data;
             displayServiceOrderHistory(result.data, `Lịch Sử Bệnh Nhân (Mã Hồ Sơ Khám: ${medicineRecordId})`);
-            showAlert('Tải lịch sử đơn dịch vụ thành công!', 'success');
+            console.log('Tải lịch sử đơn dịch vụ thành công!');
             scrollToSection('serviceOrderHistorySection', 500);
         } else {
             throw new Error(result.message || 'Không thể lấy lịch sử đơn dịch vụ');
@@ -950,7 +935,7 @@ async function getServiceOrderHistory(medicineRecordId) {
 
     } catch (error) {
         console.error("Error getting service order history:", error);
-        showAlert(error.message || 'Không thể lấy lịch sử đơn dịch vụ. Vui lòng thử lại.', 'danger');
+        console.error(error.message || 'Không thể lấy lịch sử đơn dịch vụ. Vui lòng thử lại.');
         loadingSpinner.style.display = "none";
     }
 }
@@ -996,9 +981,9 @@ async function getDoctorServiceOrderHistory() {
             displayServiceOrderHistory(result.data, 'Lịch Sử Đơn Dịch Vụ Của Tôi');
 
             if (result.data.length > 0) {
-                showAlert(`Đã tải ${result.data.length} đơn dịch vụ`, 'success');
+                console.log(`Đã tải ${result.data.length} đơn dịch vụ`);
             } else {
-                showAlert('Không tìm thấy đơn dịch vụ nào', 'info');
+                console.log('Không tìm thấy đơn dịch vụ nào');
             }
             scrollToSection('serviceOrderHistorySection', 500);
         } else {
@@ -1007,7 +992,7 @@ async function getDoctorServiceOrderHistory() {
 
     } catch (error) {
         console.error("Error getting doctor service order history:", error);
-        showAlert(error.message || 'Không thể lấy lịch sử đơn dịch vụ của bác sĩ. Vui lòng thử lại.', 'danger');
+        console.error(error.message || 'Không thể lấy lịch sử đơn dịch vụ của bác sĩ. Vui lòng thử lại.');
         loadingSpinner.style.display = "none";
     }
 }
@@ -1078,7 +1063,7 @@ function displayServiceOrderHistory(historyData, title) {
 // Hàm xem chi tiết order từ lịch sử
 function viewOrderDetails(serviceOrderId) {
     if (!serviceOrderId) {
-        showAlert('Mã đơn dịch vụ không hợp lệ', 'warning');
+        console.warn('Mã đơn dịch vụ không hợp lệ');
         return;
     }
 
@@ -1090,35 +1075,6 @@ function viewOrderDetails(serviceOrderId) {
     getServiceOrderDetails(serviceOrderId);
 }
 
-// Demo functions
-function demoGetServiceOrderDetails() {
-    const serviceOrderIdInput = document.getElementById("serviceOrderIdInput");
-    if (serviceOrderIdInput) {
-        serviceOrderIdInput.value = "1";
-    }
-    getServiceOrderDetails(1);
-}
-
-function demoGetPatientHistory() {
-    const medicineRecordIdInput = document.getElementById("medicineRecordIdInput");
-    if (medicineRecordIdInput) {
-        medicineRecordIdInput.value = "1";
-    }
-    getServiceOrderHistory(1);
-}
-
-function demoGetDoctorHistory() {
-    getDoctorServiceOrderHistory();
-}
-
-function demoSearchByPatientName() {
-    const patientNameInput = document.getElementById("patientNameInput");
-    if (patientNameInput) {
-        patientNameInput.value = "Nguyen";
-        searchByPatientName();
-    }
-}
-
 // Utility functions
 function formatDateTime(dateString) {
     if (!dateString) return 'N/A';
@@ -1128,15 +1084,6 @@ function formatDateTime(dateString) {
         return date.toLocaleString('en-GB');
     } catch (error) {
         return 'Ngày không hợp lệ';
-    }
-}
-
-// Print function
-function printServiceOrder() {
-    if (currentServiceOrderData) {
-        window.print();
-    } else {
-        showAlert('Không có dữ liệu để in', 'warning');
     }
 }
 
@@ -1180,7 +1127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Show welcome message with debug info
-        showAlert('Chào mừng đến trang Chi Tiết Đơn Dịch Vụ! Sử dụng các hàm tìm kiếm để khám phá đơn dịch vụ, hoặc tạo mới bằng các tham số URL.', 'info');
+        console.log('Chào mừng đến trang Chi Tiết Đơn Dịch Vụ! Sử dụng các hàm tìm kiếm để khám phá đơn dịch vụ, hoặc tạo mới bằng các tham số URL.');
         console.log('Các hàm debug có sẵn: testConnection(), testAssignedServices(), testViewServiceOrder(id), testViewLatestOrders(), chạyTestsDebug()');
         console.log('Lưu ý: testAssignedServices() sẽ so sánh giữa tất cả các dịch vụ vs các dịch vụ đã giao');
         console.log('Các hàm quản lý trạng thái waitlist có sẵn:');
@@ -1210,13 +1157,13 @@ async function testConnection() {
         console.log('Test Connection Result:', result);
 
         if (result.success) {
-            showAlert(`Kết nối thành công! Bác sĩ: ${result.doctor_name} (ID: ${result.doctor_id})`, 'success');
+            console.log(`Kết nối thành công! Bác sĩ: ${result.doctor_name} (ID: ${result.doctor_id})`);
         } else {
-            showAlert(`Kết nối thất bại: ${result.message}`, 'danger');
+            console.error(`Kết nối thất bại: ${result.message}`);
         }
     } catch (error) {
         console.error('Test connection error:', error);
-        showAlert(`Lỗi kết nối: ${error.message}`, 'danger');
+        console.error(`Lỗi kết nối: ${error.message}`);
     }
 }
 
@@ -1247,7 +1194,7 @@ async function testAssignedServices() {
         console.log('Assigned Services Result:', assignedResult);
 
         if (servicesResult.success) {
-            showAlert(`Tìm thấy ${servicesResult.data.length} dịch vụ tổng cộng, ${assignedResult.success ? assignedResult.data.length : 0} dịch vụ đã giao`, 'success');
+            console.log(`Tìm thấy ${servicesResult.data.length} dịch vụ tổng cộng, ${assignedResult.success ? assignedResult.data.length : 0} dịch vụ đã giao`);
             console.log('=== TẤT CẢ DỊCH VỤ ===');
             console.table(servicesResult.data);
             if (assignedResult.success) {
@@ -1255,11 +1202,11 @@ async function testAssignedServices() {
                 console.table(assignedResult.data);
             }
         } else {
-            showAlert(`Không thể tải dịch vụ: ${servicesResult.message}`, 'danger');
+            console.error(`Không thể tải dịch vụ: ${servicesResult.message}`);
         }
     } catch (error) {
         console.error('Test services error:', error);
-        showAlert(`Lỗi tải dịch vụ: ${error.message}`, 'danger');
+        console.error(`Lỗi tải dịch vụ: ${error.message}`);
     }
 }
 
@@ -1328,7 +1275,7 @@ async function updateWaitlistStatus(waitlistId, status) {
         const result = await response.json();
 
         if (response.ok && result.success) {
-            showAlert(`Trạng thái waitlist đã được cập nhật thành "${status}" thành công`, 'success');
+            console.log(`Trạng thái waitlist đã được cập nhật thành "${status}" thành công`);
             console.log('Trạng thái waitlist đã cập nhật:', result);
             return true;
         } else {
@@ -1336,7 +1283,7 @@ async function updateWaitlistStatus(waitlistId, status) {
         }
     } catch (error) {
         console.error("Error updating waitlist status:", error);
-        showAlert(error.message || 'Không thể cập nhật trạng thái waitlist', 'danger');
+        console.error(error.message || 'Không thể cập nhật trạng thái waitlist');
         return false;
     }
 }
@@ -1360,7 +1307,7 @@ async function updateWaitlistStatusAndVisittype(waitlistId, status, visittype) {
         const result = await response.json();
 
         if (response.ok && result.success) {
-            showAlert(`Waitlist đã được cập nhật thành công - Trạng thái: "${status}", Visittype: "${visittype}"`, 'success');
+            console.log(`Waitlist đã được cập nhật thành công - Trạng thái: "${status}", Visittype: "${visittype}"`);
             console.log('Trạng thái và visittype waitlist đã cập nhật:', result);
             return true;
         } else {
@@ -1368,7 +1315,7 @@ async function updateWaitlistStatusAndVisittype(waitlistId, status, visittype) {
         }
     } catch (error) {
         console.error("Error updating waitlist status and visittype:", error);
-        showAlert(error.message || 'Không thể cập nhật trạng thái và visittype waitlist', 'danger');
+        console.error(error.message || 'Không thể cập nhật trạng thái và visittype waitlist');
         return false;
     }
 }

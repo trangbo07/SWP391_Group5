@@ -115,6 +115,13 @@ public class DoctorExaminationServlet extends HttpServlet {
             boolean success = examResultDAO.createExamResult(examResult);
 
             if (success) {
+                // Cập nhật trạng thái waitlist thành InProgress
+                try {
+                    dao.WaitlistDAO waitlistDAO = new dao.WaitlistDAO();
+                    waitlistDAO.updateStatus(waitlistId, "InProgress");
+                } catch (Exception e) {
+                    System.err.println("Không thể cập nhật trạng thái waitlist: " + e.getMessage());
+                }
                 jsonResponse.put("success", true);
                 jsonResponse.put("message", "Examination result saved successfully");
                 jsonResponse.put("examResultId", examResult.getExam_result_id());
