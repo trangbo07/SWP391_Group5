@@ -2001,6 +2001,19 @@
             const pageData = data.slice(start, end);
             pageData.forEach(p => {
                 const tr = document.createElement('tr');
+                let statusClass = 'status-default';
+                let statusText = p.status || '';
+                let statusVN = statusText;
+                if (statusText.toLowerCase() === 'paid') {
+                    statusClass = 'status-paid';
+                    statusVN = 'Đã thanh toán';
+                } else if (statusText.toLowerCase() === 'pending') {
+                    statusClass = 'status-pending';
+                    statusVN = 'Chờ xử lý';
+                } else if (statusText.toLowerCase() === 'cancelled') {
+                    statusClass = 'status-cancelled';
+                    statusVN = 'Đã huỷ';
+                }
                 tr.innerHTML = `
                     <td>${p.full_name || ''}</td>
                     <td>${p.dob || ''}</td>
@@ -2009,7 +2022,7 @@
                     <td class="text-end">${formatCurrency(p.serviceAmount)}</td>
                     <td class="text-end">${formatCurrency(p.medicineAmount)}</td>
                     <td class="text-end fw-bold">${formatCurrency(p.totalAmount)}</td>
-                    <td>${p.status || ''}</td>
+                    <td><span class="badge ${statusClass}">${statusVN}</span></td>
                 `;
                 tbody.appendChild(tr);
             });
