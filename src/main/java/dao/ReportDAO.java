@@ -24,23 +24,36 @@ public class ReportDAO {
                 return report;
             }
 
-            // Query tổng doanh thu và các thống kê từ bảng Invoice
+            // Query tổng doanh thu = tiền dịch vụ + tiền thuốc, chỉ tính hóa đơn Paid
             String invoiceQuery = "SELECT " +
-                "COALESCE(SUM(CASE WHEN status = 'Paid' THEN total_amount ELSE 0 END), 0) as total_revenue, " +
-                "COUNT(*) as total_invoices, " +
-                "COALESCE(AVG(CASE WHEN status = 'Paid' THEN total_amount END), 0) as average_invoice_amount, " +
-                "COUNT(CASE WHEN status = 'Paid' THEN 1 END) as paid_invoices, " +
-                "COUNT(CASE WHEN status = 'Pending' THEN 1 END) as pending_invoices, " +
-                "COUNT(CASE WHEN status = 'Cancelled' THEN 1 END) as cancelled_invoices " +
-                "FROM Invoice WHERE 1=1";
+                "SUM(ISNULL(service_total, 0) + ISNULL(medicine_total, 0)) AS total_revenue, " +
+                "COUNT(*) AS total_invoices, " +
+                "COALESCE(AVG(ISNULL(service_total, 0) + ISNULL(medicine_total, 0)), 0) AS average_invoice_amount, " +
+                "COUNT(CASE WHEN i.status = 'Paid' THEN 1 END) as paid_invoices, " +
+                "COUNT(CASE WHEN i.status = 'Pending' THEN 1 END) as pending_invoices, " +
+                "COUNT(CASE WHEN i.status = 'Cancelled' THEN 1 END) as cancelled_invoices " +
+                "FROM Invoice i " +
+                "LEFT JOIN ( " +
+                "    SELECT invoice_id, SUM(total_price) AS service_total " +
+                "    FROM ServiceInvoice " +
+                "    GROUP BY invoice_id " +
+                ") si ON i.invoice_id = si.invoice_id " +
+                "LEFT JOIN ( " +
+                "    SELECT pi.invoice_id, SUM(mds.quantity * med.price) AS medicine_total " +
+                "    FROM PrescriptionInvoice pi " +
+                "    JOIN Medicines mds ON pi.prescription_invoice_id = mds.prescription_invoice_id " +
+                "    JOIN Medicine med ON mds.medicine_id = med.medicine_id " +
+                "    GROUP BY pi.invoice_id " +
+                ") mi ON i.invoice_id = mi.invoice_id " +
+                "WHERE i.status = 'Paid'";
 
             List<Object> params = new ArrayList<>();
             if (startDate != null && !startDate.isEmpty()) {
-                invoiceQuery += " AND CAST(issue_date AS DATE) >= ?";
+                invoiceQuery += " AND CAST(i.issue_date AS DATE) >= ?";
                 params.add(startDate);
             }
             if (endDate != null && !endDate.isEmpty()) {
-                invoiceQuery += " AND CAST(issue_date AS DATE) <= ?";
+                invoiceQuery += " AND CAST(i.issue_date AS DATE) <= ?";
                 params.add(endDate);
             }
 
