@@ -50,7 +50,7 @@ public class AdminbusinessDAO {
         }
     }
     public Integer getAdminIdByAccountStaffId(int accountStaffId) {
-    String sql = "SELECT admin_id FROM AdminBusiness WHERE account_staff_id = ?";
+    String sql = "SELECT admin_id FROM Admin WHERE account_staff_id = ?";
     try (Connection conn = DBContext.getInstance().getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setInt(1, accountStaffId);
@@ -68,7 +68,7 @@ public class AdminbusinessDAO {
         String sql = """
             SELECT ab.admin_id, ab.account_staff_id, ab.full_name, ab.department, ab.phone,
                    acs.username, acs.email, acs.role, acs.img, acs.status
-            FROM AdminBusiness ab
+            FROM Admin ab
             INNER JOIN AccountStaff acs ON ab.account_staff_id = acs.account_staff_id
             WHERE ab.account_staff_id = ?
         """;

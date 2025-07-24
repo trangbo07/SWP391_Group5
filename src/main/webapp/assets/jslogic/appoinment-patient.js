@@ -159,10 +159,10 @@ function renderPage() {
     tbody.innerHTML = '';
     page.forEach((a, idx) => {
         const viewBtn   = `<button class="btn btn-sm btn-primary" data-action="detail" data-appointment-id="${a.appointmentId}">
-            <i class="fas fa-eye me-1"></i>View
+            <i class="fas fa-eye me-1"></i>Xem Chi Tiết
         </button>`;
         const cancelBtn = `<button class="btn btn-sm btn-danger ms-1" data-action="cancel" data-appointment-id="${a.appointmentId}">
-            <i class="fas fa-times me-1"></i>Cancel
+            <i class="fas fa-times me-1"></i>Hủy Lịch
         </button>`;
 
         // Chỉ hiển thị nút Cancel cho các status có thể hủy
@@ -191,10 +191,10 @@ function renderPage() {
 // Tạo status badge với màu sắc
 function getStatusBadge(status) {
     const statusConfig = {
-        'Pending': 'bg-warning',
-        'Confirmed': 'bg-success',
-        'Completed': 'bg-primary',
-        'Cancelled': 'bg-danger'
+        "Đơn Đang Chờ": "bg-warning",
+        "Đơn Đã Xác Nhận": "bg-success",
+        "Đơn Hoàn Thành": "bg-primary",
+        "Đơn Bị Hủy": "bg-danger"
     };
 
     const badgeClass = statusConfig[status] || 'bg-secondary';

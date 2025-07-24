@@ -150,6 +150,164 @@
       #feedbackResult th, #feedbackResult td { font-size: 0.9rem; padding: 7px 2px; }
       #feedbackResult table { max-width: 100%; }
     }
+    .feedback-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: end;
+      gap: 18px;
+      margin: 0 auto 24px auto;
+      max-width: 900px;
+      padding: 18px 12px 0 12px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.03);
+    }
+    .feedback-filter-bar .form-label {
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .feedback-filter-bar .form-control {
+      min-width: 160px;
+      max-width: 220px;
+      border-radius: 7px;
+    }
+    .feedback-filter-bar .btn {
+      min-width: 90px;
+      border-radius: 7px;
+      font-weight: 500;
+    }
+    @media (max-width: 700px) {
+      .feedback-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 10px 4px 0 4px;
+      }
+      .feedback-filter-bar .form-control {
+        min-width: 0;
+        max-width: 100%;
+      }
+    }
+    .pagination-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin: 18px 0 0 0;
+    }
+    .pagination-bar button {
+      border: none;
+      background: #e9ecef;
+      color: #333;
+      border-radius: 5px;
+      padding: 5px 13px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .pagination-bar button.active, .pagination-bar button:focus {
+      background: #007bff;
+      color: #fff;
+    }
+    .pagination-bar button:disabled {
+      background: #f1f1f1;
+      color: #aaa;
+      cursor: not-allowed;
+    }
+    #modalOverlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.28);
+      z-index: 1999;
+      transition: background 0.18s;
+    }
+    #modalOverlay.active {
+      display: block;
+    }
+    #feedbackModal {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      background: #fff;
+      padding: 32px 28px 22px 28px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      z-index: 2000;
+      min-width: 320px;
+      max-width: 95vw;
+      width: 400px;
+      animation: modalIn 0.18s cubic-bezier(.4,1.6,.6,1) both;
+    }
+    @keyframes modalIn {
+      0% { transform: translate(-50%, -40%) scale(0.98); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+    #feedbackModal h5 {
+      text-align: center;
+      margin-bottom: 16px;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: #222;
+    }
+    #feedbackModal textarea {
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      padding: 10px 12px;
+      font-size: 1rem;
+      min-height: 80px;
+      resize: vertical;
+      margin-bottom: 10px;
+      width: 100%;
+      background: #fafbfc;
+      transition: border 0.18s;
+    }
+    #feedbackModal textarea:focus {
+      border: 1.5px solid #007bff;
+      outline: none;
+      background: #fff;
+    }
+    #feedbackModal .btn {
+      border-radius: 7px;
+      font-weight: 500;
+      min-width: 90px;
+      margin-right: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+      transition: background 0.18s, color 0.18s;
+    }
+    #feedbackModal .btn:last-child {
+      margin-right: 0;
+    }
+    #feedbackModal .btn-primary {
+      background: #007bff;
+      color: #fff;
+      border: none;
+    }
+    #feedbackModal .btn-primary:hover {
+      background: #0056b3;
+    }
+    #feedbackModal .btn-secondary {
+      background: #e9ecef;
+      color: #333;
+      border: none;
+    }
+    #feedbackModal .btn-secondary:hover {
+      background: #d1d5db;
+      color: #222;
+    }
+    @media (max-width: 500px) {
+      #feedbackModal {
+        min-width: 0;
+        width: 98vw;
+        padding: 18px 6vw 14px 6vw;
+      }
+      #feedbackModal h5 {
+        font-size: 1.05rem;
+      }
+    }
   </style>
 
 
@@ -380,23 +538,42 @@
       </div>
     </nav>            <!--Nav End-->
   </div>
-
+  <div id="feedbackModal" style="display:none; position:fixed; top:30%; left:50%; transform:translate(-50%, -30%); background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.2); z-index:1000;">
+    <h5>Gửi phản hồi</h5>
+    <textarea id="feedbackComment" rows="4" placeholder="Nhập nhận xét..." style="width:100%"></textarea>
+    <div style="margin-top:10px;">
+      <button id="submitFeedback" class="btn btn-primary">Gửi</button>
+      <button onclick="closeModal()" class="btn btn-secondary">Hủy</button>
+    </div>
+  </div>
+  <!-- Overlay -->
+  <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:999;"></div>
   <h6 class="feedback-section-title">Quản Lý Đánh Giá &amp; Phản Hồi</h6>
-  <div class="col-md-4">
-    <label for="searchName" class="form-label">Tên Bác Sĩ</label>
-    <input type="text" class="form-control" id="searchName" placeholder="Nhập tên Bác Sĩ">
-  </div>
-  <div class="d-flex gap-2 align-items-center">
-    <input type="date" id="fromDate" class="form-control" style="width: 180px;">
-    <span>đến</span>
-    <input type="date" id="toDate" class="form-control" style="width: 180px;">
-    <button class="btn btn-primary" onclick="filterByDateRange()">Lọc</button>
-  </div>
-  <div class="feedback-section-buttons">
-    <button id = "viewfeedback">Xem Feed Back</button>
-    <button id = "viewallfeedback">Xem Feed Back Của Bệnh Nhân</button>
+  <div class="feedback-filter-bar">
+    <div style="flex:1; min-width:160px;">
+      <label for="searchName" class="form-label">Tên Bác Sĩ</label>
+      <input type="text" class="form-control" id="searchName" placeholder="Nhập tên Bác Sĩ">
+    </div>
+    <div style="display:flex; align-items:end; gap:8px;">
+      <div>
+        <label for="fromDate" class="form-label">Từ ngày</label>
+        <input type="date" id="fromDate" class="form-control">
+      </div>
+      <div>
+        <label for="toDate" class="form-label">Đến ngày</label>
+        <input type="date" id="toDate" class="form-control">
+      </div>
+      <div style="align-self:flex-end;">
+        <button class="btn btn-primary" onclick="filterByDateRange()">Lọc</button>
+      </div>
+    </div>
+    <div style="align-self:flex-end; display:flex; gap:8px;">
+      <button id = "viewfeedback" class="btn btn-outline-primary">Xem Feed Back</button>
+      <button id = "viewallfeedback" class="btn btn-outline-success">Xem Feed Back Của Bệnh Nhân</button>
+    </div>
   </div>
   <div id="feedbackResult"></div>
+  <div id="paginationBar" class="pagination-bar"></div>
 
   </div>
 </main>
@@ -488,10 +665,39 @@
 
     let allFeedbackData = [];
     let lastTableType = null; // 'all' or 'pending'
+    let currentPage = 1;
+    const pageSize = 5;
 
-    // Xem lịch khám chưa feedback
+    function renderPagination(totalItems, currentPage, pageSize, onPageChange) {
+      const totalPages = Math.ceil(totalItems / pageSize);
+      const bar = document.getElementById('paginationBar');
+      bar.innerHTML = '';
+      if (totalPages <= 1) return;
+      // Prev
+      const prevBtn = document.createElement('button');
+      prevBtn.textContent = '<';
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.onclick = () => onPageChange(currentPage - 1);
+      bar.appendChild(prevBtn);
+      // Page numbers
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        if (i === currentPage) btn.classList.add('active');
+        btn.onclick = () => onPageChange(i);
+        bar.appendChild(btn);
+      }
+      // Next
+      const nextBtn = document.createElement('button');
+      nextBtn.textContent = '>';
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.onclick = () => onPageChange(currentPage + 1);
+      bar.appendChild(nextBtn);
+    }
+
     viewPendingBtn.addEventListener("click", async () => {
       lastTableType = 'pending';
+      currentPage = 1;
       try {
         const response = await fetch(`/api/pending-feedback`);
         const feedbackData = await response.json();
@@ -500,12 +706,13 @@
       } catch (err) {
         console.error(err);
         resultContainer.innerHTML = "<p>Không thể tải dữ liệu lịch khám.</p>";
+        document.getElementById('paginationBar').innerHTML = '';
       }
     });
 
-    // Xem toàn bộ feedback
     viewAllBtn.addEventListener("click", async () => {
       lastTableType = 'all';
+      currentPage = 1;
       try {
         const response = await fetch(`/feedback`);
         const feedbackData = await response.json();
@@ -514,35 +721,28 @@
       } catch (err) {
         console.error(err);
         resultContainer.innerHTML = "<p>Đã xảy ra lỗi khi tải feedback.</p>";
+        document.getElementById('paginationBar').innerHTML = '';
       }
     });
 
-    // Lọc theo tên bác sĩ (realtime)
     searchNameInput.addEventListener("input", () => {
-      if (lastTableType === 'all') {
-        filterAndRenderAll();
-      } else if (lastTableType === 'pending') {
-        filterAndRenderPending();
-      }
+      currentPage = 1;
+      lastTableType === 'all' ? filterAndRenderAll() : filterAndRenderPending();
     });
 
-    // Lọc theo ngày/giờ
-    window.filterByDateRange = function() {
-      if (lastTableType === 'all') {
-        filterAndRenderAll();
-      } else if (lastTableType === 'pending') {
-        filterAndRenderPending();
-      }
+    window.filterByDateRange = function () {
+      currentPage = 1;
+      lastTableType === 'all' ? filterAndRenderAll() : filterAndRenderPending();
     }
 
-    // Helper: Lọc và render bảng feedback đã gửi
     function filterAndRenderAll() {
       let filtered = allFeedbackData;
       const name = searchNameInput.value.trim().toLowerCase();
       const from = fromDateInput.value;
       const to = toDateInput.value;
+
       if (name) {
-        filtered = filtered.filter(fb => (fb.doctor_name||'').toLowerCase().includes(name));
+        filtered = filtered.filter(fb => (fb.doctor_name || '').toLowerCase().includes(name));
       }
       if (from) {
         filtered = filtered.filter(fb => {
@@ -555,21 +755,20 @@
         filtered = filtered.filter(fb => {
           if (!fb.created_at_formatted) return false;
           const date = parseDateTime(fb.created_at_formatted);
-          // Để lấy hết ngày to, cộng thêm 1 ngày
-          return date <= new Date(new Date(to).getTime() + 24*60*60*1000);
+          return date <= new Date(new Date(to).getTime() + 86400000);
         });
       }
       renderAllTable(filtered);
     }
 
-    // Helper: Lọc và render bảng pending feedback
     function filterAndRenderPending() {
       let filtered = allFeedbackData;
       const name = searchNameInput.value.trim().toLowerCase();
       const from = fromDateInput.value;
       const to = toDateInput.value;
+
       if (name) {
-        filtered = filtered.filter(fb => (fb.doctorName||'').toLowerCase().includes(name));
+        filtered = filtered.filter(fb => (fb.doctorName || '').toLowerCase().includes(name));
       }
       if (from) {
         filtered = filtered.filter(fb => {
@@ -582,93 +781,94 @@
         filtered = filtered.filter(fb => {
           if (!fb.appointmentDatetime) return false;
           const date = new Date(fb.appointmentDatetime);
-          return date <= new Date(new Date(to).getTime() + 24*60*60*1000);
+          return date <= new Date(new Date(to).getTime() + 86400000);
         });
       }
       renderPendingTable(filtered);
     }
 
-    // Helper: Parse date string dd/MM/yyyy HH:mm (or similar)
     function parseDateTime(str) {
-      // Nếu là ISO string thì trả về luôn
       if (/\d{4}-\d{2}-\d{2}T/.test(str)) return new Date(str);
-      // Nếu là dd/MM/yyyy HH:mm
       const [datePart, timePart] = str.split(' ');
       if (!datePart) return new Date('');
       const [d, m, y] = datePart.split('/');
-      if (!d || !m || !y) return new Date('');
       let h = 0, min = 0;
-      if (timePart) {
-        [h, min] = timePart.split(':');
-      }
-      return new Date(+y, +m-1, +d, +h, +min);
+      if (timePart) [h, min] = timePart.split(':');
+      return new Date(+y, +m - 1, +d, +h, +min);
     }
 
-    // Render bảng feedback đã gửi
     function renderAllTable(feedbackData) {
       resultContainer.innerHTML = "";
-      if (!feedbackData || feedbackData.length === 0) {
+      if (!feedbackData.length) {
         resultContainer.innerHTML = "<p>Không có feedback nào hoặc không có kết quả phù hợp.</p>";
+        document.getElementById('paginationBar').innerHTML = '';
         return;
       }
+      // Phân trang
+      const total = feedbackData.length;
+      const start = (currentPage - 1) * pageSize;
+      const end = start + pageSize;
+      const pageData = feedbackData.slice(start, end);
+
       const table = document.createElement("table");
       table.innerHTML = `
-        <thead>
-          <tr>
-            <th>Bác sĩ</th>
-            <th>Chuyên khoa</th>
-            <th>Trình độ</th>
-            <th>SĐT</th>
-            <th>Ngày gửi</th>
-            <th>Nhận xét</th>
-            <th>Hành động</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      `;
+      <thead>
+        <tr>
+          <th>Bác sĩ</th>
+          <th>Chuyên khoa</th>
+          <th>Trình độ</th>
+          <th>SĐT</th>
+          <th>Ngày gửi</th>
+          <th>Nhận xét</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    `;
       const tbody = table.querySelector("tbody");
-      feedbackData.forEach(fb => {
+      pageData.forEach(fb => {
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${fb.doctor_name || "Không rõ"}</td>
-          <td>${fb.doctor_department || "Không rõ"}</td>
-          <td>${fb.doctor_eduLevel || "Không rõ"}</td>
-          <td>${fb.doctor_phone || "Không rõ"}</td>
-          <td>${fb.created_at_formatted || "Không rõ"}</td>
-          <td class="feedback-content">${fb.content || "Không có"}</td>
-          <td>
-            <button class="edit-feedback-btn" data-feedback-id="${fb.feedback_id}">Sửa</button>
-          </td>
-        `;
+        <td>${fb.doctor_name || "Không rõ"}</td>
+        <td>${fb.doctor_department || "Không rõ"}</td>
+        <td>${fb.doctor_eduLevel || "Không rõ"}</td>
+        <td>${fb.doctor_phone || "Không rõ"}</td>
+        <td>${fb.created_at_formatted || "Không rõ"}</td>
+        <td class="feedback-content">${fb.content || "Không có"}</td>
+        <td><button class="edit-feedback-btn" data-feedback-id="${fb.feedback_id}">Sửa</button></td>
+      `;
         tbody.appendChild(row);
       });
       resultContainer.appendChild(table);
-      // Sửa feedback (inline form)
+      renderPagination(total, currentPage, pageSize, (page) => {
+        currentPage = page;
+        renderAllTable(feedbackData);
+      });
+
       document.querySelectorAll(".edit-feedback-btn").forEach(button => {
-        button.addEventListener("click", function() {
+        button.addEventListener("click", () => {
           const tr = button.closest("tr");
-          const feedbackId = parseInt(button.dataset.feedbackId);
+          const feedbackId = +button.dataset.feedbackId;
           const oldContent = tr.querySelector(".feedback-content").textContent.trim();
-          // Nếu đã có form thì không thêm nữa
-          if (tr.nextSibling && tr.nextSibling.classList && tr.nextSibling.classList.contains("edit-row")) return;
-          // Ẩn nút Sửa
+          if (tr.nextSibling?.classList?.contains("edit-row")) return;
           button.style.display = "none";
-          // Tạo dòng mới cho form
+
           const editRow = document.createElement("tr");
           editRow.className = "edit-row";
           editRow.innerHTML = `<td colspan="7">
-            <form class="edit-feedback-form" style="display:flex; flex-direction:column; align-items:center; gap:12px;">
-              <textarea style="width:90%;min-height:60px;resize:vertical;" class="form-control">${oldContent}</textarea>
-              <div style="display:flex; gap:10px;">
-                <button type="submit" class="btn btn-success">Lưu</button>
-                <button type="button" class="btn btn-secondary btn-cancel-edit">Hủy</button>
-              </div>
-            </form>
-          </td>`;
+          <form class="edit-feedback-form" style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+            <textarea style="width:90%;min-height:60px;resize:vertical;" class="form-control">${oldContent}</textarea>
+            <div style="display:flex; gap:10px;">
+              <button type="submit" class="btn btn-success">Lưu</button>
+              <button type="button" class="btn btn-secondary btn-cancel-edit">Hủy</button>
+            </div>
+          </form>
+        </td>`;
           tr.parentNode.insertBefore(editRow, tr.nextSibling);
-          // Xử lý submit
+
           const form = editRow.querySelector(".edit-feedback-form");
           const textarea = form.querySelector("textarea");
+
           form.addEventListener("submit", async (e) => {
             e.preventDefault();
             const newContent = textarea.value.trim();
@@ -685,11 +885,9 @@
               });
               const result = await response.json();
               if (result.success) {
-                // Cập nhật lại dữ liệu gốc
                 button.style.display = "";
                 editRow.remove();
-                // Reload lại bảng (giữ filter)
-                if (typeof viewAllBtn !== 'undefined') viewAllBtn.click();
+                viewAllBtn?.click();
               } else {
                 textarea.classList.add("is-invalid");
                 textarea.value = result.message || "Cập nhật thất bại!";
@@ -699,7 +897,7 @@
               textarea.value = "Lỗi khi gửi yêu cầu cập nhật.";
             }
           });
-          // Xử lý hủy
+
           form.querySelector(".btn-cancel-edit").addEventListener("click", () => {
             button.style.display = "";
             editRow.remove();
@@ -708,35 +906,107 @@
       });
     }
 
-    // Render bảng pending feedback
     function renderPendingTable(feedbackData) {
       resultContainer.innerHTML = "";
-      if (!feedbackData || feedbackData.length === 0) {
+      if (!feedbackData.length) {
         resultContainer.innerHTML = "<p>Không có lịch khám nào chưa feedback hoặc không có kết quả phù hợp.</p>";
+        document.getElementById('paginationBar').innerHTML = '';
         return;
       }
+      // Phân trang
+      const total = feedbackData.length;
+      const start = (currentPage - 1) * pageSize;
+      const end = start + pageSize;
+      const pageData = feedbackData.slice(start, end);
       const table = document.createElement("table");
       table.innerHTML = `
-        <tr>
-          <th>Doctor</th>
-          <th>Patient</th>
-          <th>Thời gian</th>
-          <th>Hành động</th>
-        </tr>
-      `;
-      feedbackData.forEach(item => {
+      <tr>
+        <th>Doctor</th>
+        <th>Patient</th>
+        <th>Thời gian</th>
+        <th>Hành động</th>
+      </tr>
+    `;
+      pageData.forEach(item => {
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${item.doctorName}</td>
-          <td>${item.patientName}</td>
-          <td>${new Date(item.appointmentDatetime).toLocaleString()}</td>
-          <td><button class="sendFeedbackBtn">Đánh giá</button></td>
-        `;
+        <td>${item.doctorName}</td>
+        <td>${item.patientName}</td>
+        <td>${new Date(item.appointmentDatetime).toLocaleString()}</td>
+        <td>
+          <button class="sendFeedbackBtn" data-doctor-id="${item.doctorId}" data-patient-id="${item.patientId}">Đánh giá</button>
+        </td>
+      `;
         table.appendChild(row);
       });
       resultContainer.appendChild(table);
+      renderPagination(total, currentPage, pageSize, (page) => {
+        currentPage = page;
+        renderPendingTable(feedbackData);
+      });
+      attachSendFeedbackListeners();
+    }
+
+    function attachSendFeedbackListeners() {
+      document.querySelectorAll(".sendFeedbackBtn").forEach(btn => {
+        btn.addEventListener("click", function () {
+          currentDoctorId = this.dataset.doctorId;
+          currentPatientId = this.dataset.patientId;
+          feedbackModal.style.display = "block";
+          modalOverlay.style.display = "block";
+        });
+      });
+    }
+
+    let currentDoctorId = null;
+    let currentPatientId = null;
+
+    const feedbackModal = document.getElementById("feedbackModal");
+    const modalOverlay = document.getElementById("modalOverlay");
+
+    document.getElementById("submitFeedback").addEventListener("click", function () {
+      const comment = document.getElementById("feedbackComment").value.trim();
+      if (!comment) {
+        alert("Vui lòng nhập nội dung đánh giá.");
+        return;
+      }
+      fetch("/api/patient/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ doctorId: currentDoctorId, patientId: currentPatientId, comment })
+      })
+              .then(res => res.json())
+              .then(data => {
+                alert(data.success ? "Gửi đánh giá thành công!" : (data.message || "Bạn đã đánh giá bác sĩ này rồi!"));
+                closeModal();
+              })
+              .catch(err => {
+                console.error(err);
+                alert("Lỗi khi gửi đánh giá.");
+                closeModal();
+              });
+    });
+
+    window.closeModal = function () {
+      feedbackModal.style.display = "none";
+      modalOverlay.style.display = "none";
+      document.getElementById("feedbackComment").value = "";
     }
   });
+  if (data.success) {
+    alert("Gửi đánh giá thành công!");
+
+    // Xóa dòng khỏi bảng mà nút đó thuộc về
+    const button = document.querySelector(`.sendFeedbackBtn[data-doctor-id="${currentDoctorId}"][data-patient-id="${currentPatientId}"]`);
+    if (button) {
+      const row = button.closest("tr");
+      if (row) row.remove();
+    }
+
+    closeModal();
+  }
 </script>
 
 

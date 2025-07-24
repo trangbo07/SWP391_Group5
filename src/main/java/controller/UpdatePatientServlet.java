@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import dao.PatientDAO;
 import model.Patient; // Import Patient class (adjust package if needed)
 import jakarta.servlet.annotation.WebServlet;
@@ -63,6 +64,7 @@ public class UpdatePatientServlet extends HttpServlet {
     }
 
     private static class PatientUpdateRequest {
+        @SerializedName("full_name")
         String fullName;
         String dob;
         String gender;

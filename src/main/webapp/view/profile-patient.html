@@ -47,23 +47,123 @@
         .footer {
             flex-shrink: 0;
         }
-        /* Custom style for patient form modal effect */
-        #patient-form {
+        .card {
+            border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+            background: #fff;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            min-height: 40px;
+        }
+        .btn-primary, .btn-success, .btn-outline-primary, .btn-outline-secondary {
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .table thead th {
+            background: #9e8cfa;
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .table-responsive {
+            border-radius: 12px;
+            overflow: auto;
+            max-height: 350px;
+        }
+        @media (max-width: 991px) {
+            .row.g-4 > [class^="col-"] {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+        /* Overlay popup for patient form */
+        .patient-form-overlay {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; right: 0; bottom: 0;
+            background: rgba(30, 30, 40, 0.35);
+            align-items: center;
+            justify-content: center;
+        }
+        .patient-form-overlay.active {
+            display: flex;
+        }
+        .patient-form-popup {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 32px 28px 24px 28px;
             max-width: 420px;
-            margin-left: auto;
-            margin-right: auto;
+            width: 95vw;
             position: relative;
-            z-index: 10;
-            transition: box-shadow 0.2s;
+            animation: popupIn 0.18s cubic-bezier(.4,1.6,.6,1) both;
         }
-        #patient-form input, #patient-form select {
-            margin-bottom: 12px;
+        @keyframes popupIn {
+            0% { transform: translateY(40px) scale(0.98); opacity: 0; }
+            100% { transform: none; opacity: 1; }
         }
-        #close-patient-form {
+        .patient-form-popup h5 {
+            text-align: center;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+        .patient-form-popup .close-btn {
             position: absolute;
-            top: 8px;
-            right: 12px;
+            top: 12px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 1.7rem;
+            color: #888;
             cursor: pointer;
+            z-index: 2;
+        }
+        .patient-form-popup label {
+            font-weight: 500;
+        }
+        .change-password-overlay {
+            display: none;
+            position: fixed;
+            z-index: 2100;
+            left: 0; top: 0; right: 0; bottom: 0;
+            background: rgba(30, 30, 40, 0.35);
+            align-items: center;
+            justify-content: center;
+        }
+        .change-password-overlay.active {
+            display: flex;
+        }
+        .change-password-popup {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 32px 28px 24px 28px;
+            max-width: 420px;
+            width: 95vw;
+            position: relative;
+            animation: popupIn 0.18s cubic-bezier(.4,1.6,.6,1) both;
+        }
+        .change-password-popup h5 {
+            text-align: center;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+        .change-password-popup .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 1.7rem;
+            color: #888;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .change-password-popup label {
+            font-weight: 500;
         }
     </style>
 
@@ -303,86 +403,113 @@
                     <div class="card-body d-flex flex-column justify-content-between">
                         <h4 class="card-title text-center mb-4"><i class="fas fa-user-shield me-2"></i>Tài Khoản Bệnh Nhân</h4>
                         <button class="btn btn-outline-primary w-100 mb-3" id="show-change-password"><i class="fas fa-key me-2"></i>Đổi Mật Khẩu</button>
-                        <div class="mb-3" id="change-password-section" style="display:none;">
-                            <div class="mb-2">
-                                <input type="password" id="old-password" class="form-control" placeholder="Vui Lòng Nhập Lại Mật Khẩu Cũ...">
-                                <input type="password" id="new-password" class="form-control" placeholder="Vui Lòng Nhập Mật Khẩu Mới...">
-                                <input type="password" id="confirm-password" class="form-control" placeholder="Vui Lòng Xác Nhận Lại Mật Khẩu...">
-                            </div>
-                            <button class="change-pass btn btn-success w-100"><i class="fas fa-check me-2"></i>Xác Nhận Đổi Mật Khẩu</button>
+                        <!-- Đổi mật khẩu sẽ là popup overlay -->
+                        <div class="change-password-overlay" id="changePasswordOverlay">
+                            <form class="change-password-popup" autocomplete="off" onsubmit="return false;">
+                                <button type="button" class="close-btn" id="close-change-password">&times;</button>
+                                <h5>Đổi Mật Khẩu</h5>
+                                <div class="mb-3">
+                                    <label for="old-password" class="form-label">Mật khẩu cũ</label>
+                                    <input type="password" id="old-password" class="form-control" placeholder="Vui Lòng Nhập Lại Mật Khẩu Cũ...">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new-password" class="form-label">Mật khẩu mới</label>
+                                    <input type="password" id="new-password" class="form-control" placeholder="Vui Lòng Nhập Mật Khẩu Mới...">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirm-password" class="form-label">Xác nhận mật khẩu mới</label>
+                                    <input type="password" id="confirm-password" class="form-control" placeholder="Vui Lòng Xác Nhận Lại Mật Khẩu...">
+                                </div>
+                                <button class="change-pass btn btn-success w-100">Xác Nhận Đổi Mật Khẩu</button>
+                            </form>
                         </div>
                         <button class="btn btn-outline-secondary w-100 mb-3" id="show-patient-form">Thêm Thông Tin Cho Bệnh Nhân</button>
-                        <form id="patient-form" style="display:none; background: #fff; border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); padding: 24px; margin-top: 12px;">
-                            <button type="button" id="close-patient-form" style="float:right; background:none; border:none; font-size:20px; color:#888; margin-bottom:8px;">&times;</button>
-                            <div class="mb-3">
-                                <label for="full_name" class="form-label">Họ tên</label>
-                                <input type="text" id="full_name" class="form-control" placeholder="Họ tên" required />
-                            </div>
-                            <div class="mb-3">
-                                <label for="dob" class="form-label">Ngày sinh</label>
-                                <input type="date" id="dob" class="form-control" required />
-                            </div>
-                            <div class="mb-3">
-                                <label for="gender" class="form-label">Giới tính</label>
-                                <select id="gender" class="form-select">
-                                    <option value="Nam">Nam</option>
-                                    <option value="Nữ">Nữ</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Số điện thoại</label>
-                                <input type="text" id="phone" class="form-control" placeholder="Số điện thoại" required />
-                            </div>
-                            <div class="mb-3">
-                                <label for="address" class="form-label">Địa chỉ</label>
-                                <input type="text" id="address" class="form-control" placeholder="Địa chỉ" required />
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Đăng ký bệnh nhân</button>
-                        </form>
-
+                        <!-- Form sẽ là popup, không đặt ở đây nữa -->
                     </div>
-
-
                 </div>
             </div>
             <div class="col-lg-6 d-flex align-items-stretch">
                 <!-- Profile Card -->
                 <div class="card w-100 shadow-sm">
                     <div class="card-body d-flex flex-column align-items-center justify-content-between">
-                        <!-- Đã sửa ID từ doctor-img thành patient-img -->
                         <img id="patient-img" src="../assets/assets/images/avatars/14.png" alt="Doctor Profile Image" class="rounded-circle mb-3" style="width: 110px; height: 110px; object-fit: cover;" />
-
                         <h4 class="mb-3" id="patient-name">...</h4>
                         <ul class="list-group list-group-flush mb-0">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <span><i class="fas fa-envelope me-2"></i>Email</span>
                                 <span id="patient-email">...</span>
                             </li>
-                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
-
         </div>
-
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <label for="searchName" class="form-label">Tên Người Thân</label>
+                <input type="text" class="form-control" id="searchName" placeholder="Nhập tên Bệnh Nhân">
+            </div>
+            <div class="col-md-3">
+                <label for="searchGender" class="form-label">Giới Tính</label>
+                <select class="form-select" id="searchGender">
+                    <option value="">Tất cả</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th>No.</th>
+                            <th>Tên Bệnh Nhân</th>
+                            <th>Ngày Sinh</th>
+                            <th>Giới Tính</th>
+                            <th>Địa Chỉ</th>
+                            <th>Xem Thêm Thông Tin Chi Tiết</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tablepatientlink"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <table class="table table-hover">
-        <thead style="background-color: #9e8cfa; color: white;">
-        <tr>
-            <th>No.</th>
-            <th>Tên Bệnh Nhân</th>
-            <th>Ngày Sinh</th>
-            <th>Giới Tính</th>
-            <th>Địa Chỉ</th>
-            <th>Xem Thêm Thông Tin Chi Tiết</th>
-        </tr>
-        </thead>
-        <tbody id="tablepatientlink">
-        <!-- Dữ liệu sẽ được thêm vào đây -->
-        </tbody>
-    </table>
+    <!-- Thêm popup overlay cho form bệnh nhân -->
+    <div class="patient-form-overlay" id="patientFormOverlay">
+        <form id="patient-form" class="patient-form-popup" autocomplete="off">
+            <button type="button" class="close-btn" id="close-patient-form">&times;</button>
+            <h5>Thêm / Cập nhật thông tin bệnh nhân</h5>
+            <input type="hidden" id="patient-id-hidden">
+            <div class="mb-3">
+                <label for="full_name" class="form-label">Họ tên</label>
+                <input type="text" id="full_name" class="form-control" placeholder="Họ tên" required />
+            </div>
+            <div class="mb-3">
+                <label for="dob" class="form-label">Ngày sinh</label>
+                <input type="date" id="dob" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label for="gender" class="form-label">Giới tính</label>
+                <select id="gender" class="form-select">
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Số điện thoại</label>
+                <input type="text" id="phone" class="form-control" placeholder="Số điện thoại" required />
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Địa chỉ</label>
+                <input type="text" id="address" class="form-control" placeholder="Địa chỉ" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Đăng ký bệnh nhân</button>
+        </form>
+    </div>
     <!-- Footer Section Start -->
     <footer class="footer">
         <div class="footer-body">
@@ -468,78 +595,123 @@
 
 <script src="../assets/jslogic/logout.js" defer></script>
 
-
-</body>
-</html>
 <script>
     document.addEventListener("DOMContentLoaded", async function () {
         let patientsData = []; // Biến để lưu dữ liệu bệnh nhân sẵn có
 
+        // ===== SỬA LOGIC OVERLAY FORM BỆNH NHÂN =====
+        (function() {
+            const overlay = document.getElementById('patientFormOverlay');
+            const showBtn = document.getElementById('show-patient-form');
+            const closeBtn = document.getElementById('close-patient-form');
+            const form = document.getElementById('patient-form');
+            if (showBtn && overlay && closeBtn && form) {
+                showBtn.addEventListener('click', function() {
+                    overlay.classList.add('active');
+                    form.reset();
+                    document.getElementById("patient-id-hidden").value = "";
+                    form.querySelector("button[type='submit']").textContent = "Đăng ký bệnh nhân";
+                });
+                closeBtn.addEventListener('click', function() {
+                    overlay.classList.remove('active');
+                    form.reset();
+                    document.getElementById("patient-id-hidden").value = "";
+                    form.querySelector("button[type='submit']").textContent = "Đăng ký bệnh nhân";
+                });
+                overlay.addEventListener('mousedown', function(e) {
+                    if (e.target === overlay) {
+                        overlay.classList.remove('active');
+                        form.reset();
+                        document.getElementById("patient-id-hidden").value = "";
+                        form.querySelector("button[type='submit']").textContent = "Đăng ký bệnh nhân";
+                    }
+                });
+            }
+        })();
+
+        // ===== SỬA LOGIC OVERLAY ĐỔI MẬT KHẨU =====
+        (function() {
+            const overlay = document.getElementById('changePasswordOverlay');
+            const showBtn = document.getElementById('show-change-password');
+            const closeBtn = document.getElementById('close-change-password');
+            if (showBtn && overlay && closeBtn) {
+                showBtn.addEventListener('click', function() {
+                    overlay.classList.add('active');
+                    document.getElementById('old-password').value = '';
+                    document.getElementById('new-password').value = '';
+                    document.getElementById('confirm-password').value = '';
+                });
+                closeBtn.addEventListener('click', function() {
+                    overlay.classList.remove('active');
+                    document.getElementById('old-password').value = '';
+                    document.getElementById('new-password').value = '';
+                    document.getElementById('confirm-password').value = '';
+                });
+                overlay.addEventListener('mousedown', function(e) {
+                    if (e.target === overlay) {
+                        overlay.classList.remove('active');
+                        document.getElementById('old-password').value = '';
+                        document.getElementById('new-password').value = '';
+                        document.getElementById('confirm-password').value = '';
+                    }
+                });
+            }
+        })();
+
         // ===== FORM TẠO/CHỈNH SỬA BỆNH NHÂN =====
         const form = document.getElementById("patient-form");
-
         if (form) {
-            // Đảm bảo có hidden input cho patientId nếu edit
             if (!document.getElementById("patient-id-hidden")) {
                 const hiddenInput = document.createElement("input");
                 hiddenInput.type = "hidden";
                 hiddenInput.id = "patient-id-hidden";
                 form.appendChild(hiddenInput);
             }
-
             const submitBtn = form.querySelector("button[type='submit']");
-            const originalBtnText = submitBtn.textContent; // Lưu text gốc để reset
-
+            const originalBtnText = submitBtn.textContent;
             form.addEventListener("submit", async function (e) {
                 e.preventDefault();
-
-                const fullName = document.getElementById("full_name").value.trim();
+                const full_name = document.getElementById("full_name").value.trim();
                 const dob = document.getElementById("dob").value;
                 const gender = document.getElementById("gender").value;
                 const phone = document.getElementById("phone").value.trim();
                 const address = document.getElementById("address").value.trim();
                 const patientId = document.getElementById("patient-id-hidden").value;
-
-                if (!fullName || !dob || !gender || !phone || !address) {
+                if (!full_name || !dob || !gender || !phone || !address) {
                     alert("Vui lòng điền đầy đủ thông tin.");
                     return;
                 }
-
                 const dobDate = new Date(dob);
                 const today = new Date();
                 if (dobDate >= today) {
                     alert("Ngày sinh không hợp lệ.");
                     return;
                 }
-
                 const phoneRegex = /^(0[0-9]{9})$/;
                 if (!phoneRegex.test(phone)) {
                     alert("Số điện thoại không hợp lệ. Phải có 10 chữ số và bắt đầu bằng 0.");
                     return;
                 }
-
-                const data = { fullName, dob, gender, phone, address };
-
+                const data = { full_name, dob, gender, phone, address };
                 let url = "/create-patient";
                 let method = "POST";
                 if (patientId) {
-                    url = `/update-patient/${patientId}`; // Giả sử endpoint update là như vậy, điều chỉnh nếu khác
-                    method = "PUT"; // Hoặc "PATCH" tùy backend
+                    url = `/update-patient/${patientId}`;
+                    method = "PUT";
                 }
-
                 try {
                     const res = await fetch(url, {
                         method: method,
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(data)
                     });
-
                     if (res.ok) {
                         alert(patientId ? "Cập nhật bệnh nhân thành công!" : "Tạo bệnh nhân thành công!");
                         form.reset();
-                        document.getElementById("patient-id-hidden").value = ""; // Reset hidden
-                        submitBtn.textContent = originalBtnText; // Reset button text
-                        loadPatientTable(); // Reload bảng sau submit để cập nhật dữ liệu sẵn
+                        document.getElementById("patient-id-hidden").value = "";
+                        submitBtn.textContent = originalBtnText;
+                        loadPatientTable();
+                        document.getElementById("patientFormOverlay").classList.remove("active");
                     } else {
                         const error = await res.text();
                         alert("Có lỗi xảy ra: " + error);
@@ -557,39 +729,15 @@
                 const sessionRes = await fetch("/api/session/patient", {
                     credentials: "include"
                 });
-
                 if (!sessionRes.ok) throw new Error("Không thể lấy patientId từ session");
-
                 const sessionData = await sessionRes.json();
                 const patientId = sessionData.patientId;
-
                 const res = await fetch(`/api/records/summary?patientId=${patientId}`, {
                     credentials: "include"
                 });
-
                 if (!res.ok) throw new Error("Không thể lấy dữ liệu từ API");
-
-                const data = await res.json();
-                patientsData = data; // Lưu dữ liệu vào biến toàn cục để dùng cho edit
-                console.log(data);
-                const tableBody = document.getElementById("tablepatientlink");
-                if (tableBody) {
-                    tableBody.innerHTML = "";
-                    data.forEach((item, index) => {
-                        const tr = document.createElement("tr");
-                        tr.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${item.fullName || "..."}</td>
-                        <td>${item.dob || "..."}</td>
-                        <td>${item.gender || "..."}</td>
-                        <td>${item.address || "..."}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm edit-btn" data-patient-id="${item.patientId}">Sửa</button>
-                        </td>
-                    `;
-                        tableBody.appendChild(tr);
-                    });
-                }
+                patientsData = await res.json();
+                filterAndRenderTable();
             } catch (error) {
                 console.error("Lỗi:", error);
                 const tableBody = document.getElementById("tablepatientlink");
@@ -598,56 +746,40 @@
                 }
             }
         }
-
-        // Load bảng lần đầu
         loadPatientTable();
 
         // ===== ĐỔI MẬT KHẨU =====
-        const btnShowChangePass = document.getElementById('show-change-password');
-        const sectionChangePass = document.getElementById('change-password-section');
         const btnConfirmChange = document.querySelector('.change-pass');
-
-        if (btnShowChangePass && sectionChangePass) {
-            btnShowChangePass.addEventListener('click', function () {
-                sectionChangePass.style.display = sectionChangePass.style.display === 'none' ? 'block' : 'none';
-            });
-        }
-
         if (btnConfirmChange) {
             btnConfirmChange.addEventListener('click', async function () {
                 const oldPass = document.getElementById('old-password').value.trim();
                 const newPass = document.getElementById('new-password').value.trim();
                 const confirmPass = document.getElementById('confirm-password').value.trim();
-
                 if (!oldPass || !newPass || !confirmPass) {
                     alert("Vui lòng nhập đầy đủ thông tin.");
                     return;
                 }
-
                 if (newPass.length < 6) {
                     alert("Mật khẩu mới phải có ít nhất 6 ký tự.");
                     return;
                 }
-
                 if (newPass !== confirmPass) {
                     alert("Xác nhận mật khẩu không khớp.");
                     return;
                 }
-
                 try {
                     const response = await fetch('/change-password', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ oldPassword: oldPass, newPassword: newPass })
                     });
-
                     const result = await response.json();
                     if (response.ok) {
                         alert("Đổi mật khẩu thành công!");
                         document.getElementById('old-password').value = '';
                         document.getElementById('new-password').value = '';
                         document.getElementById('confirm-password').value = '';
-                        sectionChangePass.style.display = 'none';
+                        document.getElementById('changePasswordOverlay').classList.remove('active');
                     } else {
                         alert(result.message || "Có lỗi xảy ra.");
                     }
@@ -655,26 +787,6 @@
                     console.error(error);
                     alert("Không thể kết nối đến máy chủ.");
                 }
-            });
-        }
-
-        // ===== MỞ FORM THÊM BỆNH NHÂN =====
-        const btnShowPatientForm = document.getElementById('show-patient-form');
-        const patientForm = document.getElementById('patient-form');
-        const btnClosePatientForm = document.getElementById('close-patient-form');
-
-        if (btnShowPatientForm && patientForm && btnClosePatientForm) {
-            btnShowPatientForm.addEventListener('click', function () {
-                patientForm.style.display = 'block';
-                document.getElementById("patient-id-hidden").value = ""; // Reset nếu mở mới
-                form.querySelector("button[type='submit']").textContent = originalBtnText; // Reset text
-            });
-
-            btnClosePatientForm.addEventListener('click', function () {
-                patientForm.style.display = 'none';
-                form.reset();
-                document.getElementById("patient-id-hidden").value = "";
-                form.querySelector("button[type='submit']").textContent = originalBtnText;
             });
         }
 
@@ -688,16 +800,17 @@
                 const patient = patientsData.find(p => p.patientId == patientId);
 
                 if (patient) {
-                    // Hiển thị form
-                    const form = document.getElementById("patient-form");
-                    form.style.display = "block";
+                    // Hiển thị overlay popup
+                    document.getElementById("patientFormOverlay").classList.add("active");
 
                     // Đặt trạng thái edit
+                    const form = document.getElementById("patient-form");
                     const submitBtn = form.querySelector("button[type='submit']");
+                    form.reset(); // Reset trước khi set dữ liệu
                     submitBtn.textContent = "Xác nhận cập nhật";
 
                     // Đổ dữ liệu vào form
-                    document.getElementById("full_name").value = patient.fullName || "";
+                    document.getElementById("full_name").value = patient.full_name || "";
                     document.getElementById("dob").value = patient.dob || "";
                     document.getElementById("gender").value = patient.gender || "Nam";
                     document.getElementById("phone").value = patient.phone || "";
@@ -710,5 +823,43 @@
                 }
             }
         });
+
+        // ===== FILTER VÀ RENDER TABLE =====
+        function renderPatientTable(data) {
+            const tableBody = document.getElementById("tablepatientlink");
+            if (tableBody) {
+                tableBody.innerHTML = "";
+                if (data.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="6">Không có dữ liệu phù hợp</td></tr>`;
+                    return;
+                }
+                data.forEach((item, index) => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.fullName || "..."}</td>
+                <td>${item.dob || "..."}</td>
+                <td>${item.gender || "..."}</td>
+                <td>${item.address || "..."}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm edit-btn" data-patient-id="${item.patientId}">Sửa</button>
+                </td>
+            `;
+                    tableBody.appendChild(tr);
+                });
+            }
+        }
+        function filterAndRenderTable() {
+            const nameValue = document.getElementById("searchName").value.trim().toLowerCase();
+            const genderValue = document.getElementById("searchGender").value;
+            const filtered = patientsData.filter(item => {
+                const matchName = item.fullName && item.fullName.toLowerCase().includes(nameValue);
+                const matchGender = !genderValue || (item.gender === genderValue);
+                return matchName && matchGender;
+            });
+            renderPatientTable(filtered);
+        }
+        document.getElementById("searchName").addEventListener("input", filterAndRenderTable);
+        document.getElementById("searchGender").addEventListener("change", filterAndRenderTable);
     });
 </script>
