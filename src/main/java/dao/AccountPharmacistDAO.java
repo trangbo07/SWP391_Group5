@@ -62,6 +62,36 @@ public class AccountPharmacistDAO {
         }
     }
 
+    public static AccountPharmacist getAccountByPharmacistId(int pharmacistId) {
+        DBContext db = DBContext.getInstance();
+        AccountPharmacist pharmacist = null;
+
+        try {
+            String sql = """    
+                         SELECT * FROM AccountPharmacist WHERE account_pharmacist_id = ?
+                         """;
+            PreparedStatement statement = db.getConnection().prepareStatement(sql);
+            statement.setInt(1, pharmacistId);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                pharmacist = new AccountPharmacist(
+                        rs.getInt("account_pharmacist_id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("email"),
+                        rs.getString("img"),
+                        rs.getString("status")
+
+                );
+            }
+        } catch (Exception e) {
+            return null;
+        }
+
+        return pharmacist;
+    }
+
     public static boolean updatePassword(String email, String newPassword) {
         DBContext db = DBContext.getInstance();
 

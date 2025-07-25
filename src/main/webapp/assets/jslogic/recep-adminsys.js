@@ -44,7 +44,7 @@ async function fetchReceptionistsWithFilter() {
         const receptionists = await response.json();
 
         if (!Array.isArray(receptionists) || receptionists.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="8">No receptionists found.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="8">Không tìm thấy lễ tân nào</td></tr>';
             if (info) info.innerText = `Hiển thị 0 đến 0 trong tổng số 0 bản ghi`;
             return;
         }
@@ -187,7 +187,6 @@ function viewReceptionist(receptionistId) {
     document.getElementById('viewReceptionistId').textContent = r.receptionistId;
     document.getElementById('viewAccountStaffId').textContent = r.accountStaffId;
     document.getElementById('viewUsername').textContent = r.username;
-    document.getElementById('viewPassword').value = r.password || '********';
     document.getElementById('viewEmail').textContent = r.email;
     document.getElementById('viewFullName').textContent = r.fullName;
     document.getElementById('viewPhone').textContent = r.phone;

@@ -219,7 +219,6 @@ function viewAdmin(adminId) {
     document.getElementById('viewAdminId').textContent = a.adminId;
     document.getElementById('viewAccountStaffId').textContent = a.accountStaffId;
     document.getElementById('viewUsername').textContent = a.username;
-    document.getElementById("viewPassword").value = a.password || '********';
     document.getElementById('viewEmail').textContent = a.email;
     document.getElementById('viewFullName').textContent = a.fullName;
     document.getElementById('viewDepartment').textContent = a.department;

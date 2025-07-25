@@ -1,10 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
-import dao.AccountDAO;
-import dao.AccountStaffDAO;
-import dao.AdminSystemDAO;
-import dao.SystemLogStaffDAO;
+import dao.*;
 import dto.DistinctResponse;
 import dto.JsonResponse;
 import dto.PharmacistDTOFA;
@@ -15,6 +12,7 @@ import jakarta.servlet.http.*;
 import model.AccountPharmacist;
 import model.AccountStaff;
 import model.SystemLog_Staff;
+import util.EmailService;
 import util.ImageCheckUtil;
 import util.NormalizeUtil;
 
@@ -269,6 +267,20 @@ public class AdminSys4PharmacistServlet extends HttpServlet {
 
                 if (ok && staff != null) {
                     logStaffAction(logDAO, staff, "Nhân viên " + staff.getUsername() + " đã đặt lại mật khẩu tài khoản dược sĩ ID: " + pharmacistId, "UPDATE");
+
+                    AccountPharmacistDAO accountPharmacistDAO  =  new AccountPharmacistDAO();
+                    AccountPharmacist pharmacist = accountPharmacistDAO.getAccountByPharmacistId(pharmacistId);
+                    if (pharmacist != null && pharmacist.getEmail() != null) {
+                        String toEmail = pharmacist.getEmail();
+                        String subject = "Your password has been reset";
+                        String content = EmailService.generateNewPasswordEmailContent(generatedPassword);
+
+                        try {
+                            EmailService.sendEmail(toEmail, subject, content); // Hàm gửi mail có định dạng HTML
+                        } catch (Exception e) {
+                            System.err.println("Gửi email thất bại: " + e.getMessage());
+                        }
+                    }
                 }
 
                 return;

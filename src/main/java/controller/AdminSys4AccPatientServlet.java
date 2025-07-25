@@ -1,10 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
-import dao.AccountDAO;
-import dao.AccountPatientDAOFA;
-import dao.SystemLogPatientDAO;
-import dao.SystemLogStaffDAO;
+import dao.*;
 import dto.AccountPatientDTO;
 import dto.DistinctResponse;
 import dto.JsonResponse;
@@ -12,9 +9,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import model.AccountPatient;
 import model.AccountStaff;
 import model.SystemLog_Patient;
 import model.SystemLog_Staff;
+import util.EmailService;
 import util.ImageCheckUtil;
 import util.NormalizeUtil;
 
@@ -297,6 +296,18 @@ public class AdminSys4AccPatientServlet extends HttpServlet {
                         log.setAction_type("UPDATE");
 
                         logDAO.insertLog(log);
+
+                        if (target != null && target.getEmail() != null) {
+                            String toEmail = target.getEmail();
+                            String subject = "Your password has been reset";
+                            String content = EmailService.generateNewPasswordEmailContent(newPass);
+
+                            try {
+                                EmailService.sendEmail(toEmail, subject, content); // Hàm gửi mail có định dạng HTML
+                            } catch (Exception e) {
+                                System.err.println("Gửi email thất bại: " + e.getMessage());
+                            }
+                        }
                     }
                 }
 

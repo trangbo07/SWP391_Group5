@@ -196,7 +196,6 @@ function viewDoctor(doctorId) {
     document.getElementById('viewDoctorId').textContent = d.doctorId;
     document.getElementById('viewAccountStaffId').textContent = d.accountStaffId;
     document.getElementById('viewUsername').textContent = d.username;
-    document.getElementById("viewPassword").value = d.password || '********';
     document.getElementById('viewEmail').textContent = d.email;
     document.getElementById('viewFullName').textContent = d.fullName;
     document.getElementById('viewDepartment').textContent = d.department;

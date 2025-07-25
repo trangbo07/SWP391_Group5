@@ -189,7 +189,6 @@ function viewAccountPatient(accountPatientId) {
 
     document.getElementById('viewAccountPatientId').textContent = a.accountPatientId;
     document.getElementById('viewUsername').textContent = a.username;
-    document.getElementById("viewPassword").value = a.password || '********';
     document.getElementById('viewEmail').textContent = a.email;
     document.getElementById('viewStatus').textContent = a.status === "Disable" ? 'Kích hoạt' :
                                                                                     a.status === "Enable" ? 'Vô hiệu hóa' :

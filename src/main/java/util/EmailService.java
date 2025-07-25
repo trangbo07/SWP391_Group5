@@ -45,4 +45,15 @@ public class EmailService {
                 + "Best regards,<br>"
                 + "KiviCare Team";
     }
+
+    public static String generateNewPasswordEmailContent(String newPassword) {
+        return "Hello,<br><br>"
+                + "Your password has been reset by the administrator for the Medical Clinic & Patient Management system.<br><br>"
+                + "Your new password is: <b>" + newPassword + "</b><br><br>"
+                + "Please use this new password to log in. For security reasons, it is strongly recommended that you change your password after logging in.<br><br>"
+                + "If you did not request this change or believe this is an error, please contact support immediately.<br><br>"
+                + "Best regards,<br>"
+                + "KiviCare Team";
+    }
+
 }
