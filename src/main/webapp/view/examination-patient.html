@@ -33,6 +33,23 @@
 
 
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content {
+            flex: 1 0 auto;
+        }
+        .footer {
+            flex-shrink: 0;
+        }
+
         #pagination {
             margin-top: 20px;
             text-align: center;
@@ -314,23 +331,24 @@
     </div>
 
     <!-- Footer Section Start -->
-    <footer class="footer">
-        <div class="footer-body">
-            <ul class="left-panel list-inline mb-0 p-0">
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Chính sách bảo mật</a></li>
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Điều khoản sử dụng</a></li>
-                <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/contact.html">Liên hệ</a></li>
-            </ul>
-            <h6 class="right-panel mb-0">
-                © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span>.
-                Phát triển bởi
-                <a href="https://www.facebook.com/long.bao.303029" target="_blank">Bùi Bảo Long</a>.
-            </h6>
-        </div>
-    </footer>
+
 
     <!-- Footer Section End -->
 </main>
+<footer class="footer">
+    <div class="footer-body">
+        <ul class="left-panel list-inline mb-0 p-0">
+            <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/privacy-policy.html">Chính sách bảo mật</a></li>
+            <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/terms-of-service.html">Điều khoản sử dụng</a></li>
+            <li class="list-inline-item fw-500"><a class="footer-link" href="./extra/contact.html">Liên hệ</a></li>
+        </ul>
+        <h6 class="right-panel mb-0">
+            © <script>document.write(new Date().getFullYear())</script> <span data-setting="app_name">KiviCare</span>.
+            Phát triển bởi
+            <a href="https://www.facebook.com/long.bao.303029" target="_blank">Bùi Bảo Long</a>.
+        </h6>
+    </div>
+</footer>
 <!-- Live Customizer start -->
 <!-- Setting offcanvas start here -->
 
