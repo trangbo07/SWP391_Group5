@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.AccountStaff;
 import model.SystemLog_Staff;
+import util.EmailService;
 import util.ImageCheckUtil;
 import util.NormalizeUtil;
 
@@ -279,6 +280,20 @@ public class AdminSys4RecepServlet extends HttpServlet {
 
                 if (ok && currentStaff != null) {
                     logStaffAction(logDAO, currentStaff, "Nhân viên " + currentStaff.getUsername() + " đã đặt lại mật khẩu cho lễ tân ID: " + staffId, "UPDATE");
+
+                    AccountStaffDAO staffDAO = new AccountStaffDAO();
+                    AccountStaff staff = staffDAO.getAccountStaffById(staffId);
+                    if (staff != null && staff.getEmail() != null) {
+                        String toEmail = staff.getEmail();
+                        String subject = "Your password has been reset";
+                        String content = EmailService.generateNewPasswordEmailContent(generatedPassword);
+
+                        try {
+                            EmailService.sendEmail(toEmail, subject, content); // Hàm gửi mail có định dạng HTML
+                        } catch (Exception e) {
+                            System.err.println("Gửi email thất bại: " + e.getMessage());
+                        }
+                    }
                 }
 
                 return;

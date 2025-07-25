@@ -187,7 +187,6 @@ function viewPharmacist(pharmacistId) {
     document.getElementById('viewPharmacistId').textContent = p.pharmacistId;
     document.getElementById('viewAccountPharmacistId').textContent = p.accountPharmacistId;
     document.getElementById('viewUsername').textContent = p.username;
-    document.getElementById("viewPassword").value = p.password || '********';
     document.getElementById('viewEmail').textContent = p.email;
     document.getElementById('viewFullName').textContent = p.fullName;
     document.getElementById('viewPhone').textContent = p.phone;
