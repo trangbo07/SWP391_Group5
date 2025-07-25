@@ -681,6 +681,21 @@
                     alert("Vui lòng điền đầy đủ thông tin.");
                     return;
                 }
+                // Validate Họ tên
+                if (full_name.length > 50) {
+                    alert("Họ tên không được vượt quá 50 ký tự.");
+                    return;
+                }
+                const nameRegex = /^[a-zA-ZÀ-ỹ\s'.-]+$/u;
+                if (!nameRegex.test(full_name)) {
+                    alert("Họ tên chỉ được chứa chữ cái, dấu, khoảng trắng và một số ký tự đặc biệt như . - '");
+                    return;
+                }
+                // Validate Địa chỉ
+                if (address.length > 50) {
+                    alert("Địa chỉ không được vượt quá 50 ký tự.");
+                    return;
+                }
                 const dobDate = new Date(dob);
                 const today = new Date();
                 if (dobDate >= today) {
@@ -763,6 +778,11 @@
                     alert("Mật khẩu mới phải có ít nhất 6 ký tự.");
                     return;
                 }
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/;
+                if (!passwordRegex.test(newPass)) {
+                    alert("Mật khẩu mới phải có ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt.");
+                    return;
+                }
                 if (newPass !== confirmPass) {
                     alert("Xác nhận mật khẩu không khớp.");
                     return;
@@ -781,7 +801,7 @@
                         document.getElementById('confirm-password').value = '';
                         document.getElementById('changePasswordOverlay').classList.remove('active');
                     } else {
-                        alert(result.message || "Có lỗi xảy ra.");
+                        alert("Mật Khẩu Không Trùng Khớp.");
                     }
                 } catch (error) {
                     console.error(error);
