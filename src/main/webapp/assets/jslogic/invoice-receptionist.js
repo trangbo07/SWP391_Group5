@@ -1,14 +1,67 @@
 // Global variables
 let invoiceData = [];
 let dataTable;
-let currentInvoiceId = null;
 
 // Initialize when page loads
 $(document).ready(function() {
-    loadInvoices();
-    initializeDataTable();
-    setupEventListeners();
+    checkLoginStatus().then(() => {
+        loadInvoices();
+        initializeDataTable();
+        setupEventListeners();
+    }).catch(() => {
+        // If not logged in, redirect to login
+        window.location.href = '/login';
+    });
 });
+
+// Check login status
+async function checkLoginStatus() {
+    try {
+        const response = await fetch('/api/receptionist/invoices', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.status === 401) {
+            throw new Error('Not logged in');
+        }
+        
+        // Debug: Log response for troubleshooting
+        console.log('Login check response status:', response.status);
+        
+        return true;
+    } catch (error) {
+        console.error('Login check error:', error);
+        throw error;
+    }
+}
+
+// Debug function to check user role
+async function debugUserRole() {
+    try {
+        const response = await fetch('/api/receptionist/invoices', {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        console.log('Debug - Response status:', response.status);
+        console.log('Debug - Response headers:', response.headers);
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Debug - Response data length:', data ? data.length : 'null');
+        }
+        
+    } catch (error) {
+        console.error('Debug - Error:', error);
+    }
+}
 
 // Setup event listeners
 function setupEventListeners() {
@@ -47,10 +100,27 @@ async function loadInvoices() {
         });
 
         if (!response.ok) {
+            if (response.status === 401) {
+                showError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                // Redirect to login page
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+                return;
+            } else if (response.status === 403) {
+                showError('Bạn không có quyền truy cập trang này.');
+                return;
+            }
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
+        
+        // Check if data is an error object
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
         invoiceData = data;
         
         renderInvoices();
@@ -60,7 +130,12 @@ async function loadInvoices() {
     } catch (error) {
         console.error('Error loading invoices:', error);
         showLoading(false);
-        showError('Không thể tải hóa đơn. Vui lòng thử lại.');
+        
+        if (error.message.includes('Failed to fetch')) {
+            showErrorState('Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.');
+        } else {
+            showErrorState('Không thể tải hóa đơn. Vui lòng thử lại.');
+        }
     }
 }
 
@@ -87,71 +162,16 @@ function renderInvoices() {
     });
 }
 
-// Thêm hàm thanh toán VNPay cho từng hóa đơn
-async function payWithVnPay(invoiceId, amount) {
-    try {
-        const response = await fetch('/api/vnpay/create-payment', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `amount=${Math.round(amount)}`
-        });
-        const data = await response.json();
-        if (data.paymentUrl) {
-            window.location.href = data.paymentUrl;
-        } else {
-            showError('Không tạo được link thanh toán VNPay!');
-        }
-    } catch (e) {
-        showError('Lỗi khi tạo link thanh toán VNPay!');
-    }
-}
 
-// Thêm hàm thanh toán tiền mặt cho từng hóa đơn
-async function payWithCash(invoiceId) {
-    const result = await Swal.fire({
-        title: 'Xác nhận thanh toán tiền mặt?',
-        text: `Bạn chắc chắn muốn đánh dấu hóa đơn #${invoiceId} đã thanh toán bằng tiền mặt?`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#27ae60',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Đã nhận tiền',
-        cancelButtonText: 'Hủy'
-    });
-    if (result.isConfirmed) {
-        try {
-            const response = await fetch(`/api/receptionist/invoices/${invoiceId}/status`, {
-                method: 'PUT',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ status: 'Paid' })
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            showSuccess('Đã đánh dấu hóa đơn thanh toán tiền mặt thành công!');
-            refreshData();
-        } catch (error) {
-            console.error('Error updating invoice status:', error);
-            showError('Không thể cập nhật trạng thái hóa đơn!');
-        }
-    }
-}
 
-// Sửa hàm createInvoiceRow để thêm nút thanh toán tiền mặt nếu hóa đơn chưa thanh toán
+// Tạo hàng hóa đơn trong bảng
 function createInvoiceRow(invoice) {
     const statusClass = getStatusClass(invoice.status);
     const formattedDate = formatDate(invoice.issue_date);
     const servicePrice = formatCurrency(invoice.total_service_price || 0);
     const prescriptionPrice = formatCurrency(invoice.total_prescription_price || 0);
     const totalAmount = formatCurrency(invoice.total_invoice || 0);
-    // Nút VNPay chỉ hiện khi chưa thanh toán
-    const vnpayBtn = invoice.status === 'Pending' ? `<button class="btn btn-sm btn-outline-warning" onclick="payWithVnPay(${invoice.invoice_id}, ${invoice.total_invoice || 0})" title="Thanh toán VNPay"><i class="fas fa-credit-card"></i> VNPay</button>` : '';
-    // Nút tiền mặt chỉ hiện khi chưa thanh toán
-    const cashBtn = invoice.status === 'Pending' ? `<button class="btn btn-sm btn-outline-success" onclick="payWithCash(${invoice.invoice_id})" title="Thanh toán tiền mặt"><i class="fas fa-money-bill-wave"></i> Tiền mặt</button>` : '';
-    // Nút View: truyền đúng invoice.invoice_id (số thực tế)
+    
     return `
         <tr>
             <td>
@@ -185,17 +205,15 @@ function createInvoiceRow(invoice) {
             </td>
             <td>
                 <div class="btn-group" role="group">
-                    <button class="btn btn-sm btn-outline-primary" onclick="viewInvoiceDetails(${invoice.invoice_id})" title="Xem chi tiết">
-                        <i class="fas fa-eye"></i>
-                    </button>
                     <button class="btn btn-sm btn-outline-success" onclick="markAsPaid(${invoice.invoice_id})" title="Đánh dấu đã thanh toán" ${invoice.status === 'Paid' ? 'disabled' : ''}>
                         <i class="fas fa-check"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning" onclick="markAsPending(${invoice.invoice_id})" title="Đổi về chờ thanh toán" ${invoice.status === 'Pending' ? 'disabled' : ''}>
+                        <i class="fas fa-clock"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-danger" onclick="cancelInvoice(${invoice.invoice_id})" title="Hủy hóa đơn" ${invoice.status === 'Cancelled' ? 'disabled' : ''}>
                         <i class="fas fa-times"></i>
                     </button>
-                    ${vnpayBtn}
-                    ${cashBtn}
                 </div>
             </td>
         </tr>
@@ -234,12 +252,16 @@ function updateStatistics() {
     const totalInvoices = invoiceData.length;
     const paidInvoices = invoiceData.filter(inv => inv.status === 'Paid').length;
     const pendingInvoices = invoiceData.filter(inv => inv.status === 'Pending').length;
-    const totalAmount = invoiceData.reduce((sum, inv) => sum + (inv.total_invoice || 0), 0);
+    
+    // Tính tổng doanh thu từ các hóa đơn đã thanh toán
+    const totalRevenue = invoiceData
+        .filter(inv => inv.status === 'Paid')
+        .reduce((sum, inv) => sum + (inv.total_invoice || 0), 0);
 
     $('#totalInvoices').text(totalInvoices);
     $('#totalPaid').text(paidInvoices);
     $('#totalPending').text(pendingInvoices);
-    $('#totalAmount').text(formatCurrency(totalAmount));
+    $('#totalRevenue').text(formatCurrency(totalRevenue));
 }
 
 // Apply filters
@@ -282,117 +304,29 @@ function applyFilters() {
         });
         dataTable.draw();
     }
+    
+    // Update statistics based on filtered data
+    updateFilteredStatistics(filteredData);
 }
 
-// View invoice details
-async function viewInvoiceDetails(invoiceId) {
-    currentInvoiceId = invoiceId;
+// Update statistics based on filtered data
+function updateFilteredStatistics(filteredData) {
+    const totalInvoices = filteredData.length;
+    const paidInvoices = filteredData.filter(inv => inv.status === 'Paid').length;
+    const pendingInvoices = filteredData.filter(inv => inv.status === 'Pending').length;
     
-    try {
-        const response = await fetch(`/api/receptionist/invoices/${invoiceId}`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+    // Tính tổng doanh thu từ các hóa đơn đã thanh toán trong dữ liệu đã lọc
+    const totalRevenue = filteredData
+        .filter(inv => inv.status === 'Paid')
+        .reduce((sum, inv) => sum + (inv.total_invoice || 0), 0);
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const invoice = await response.json();
-        showInvoiceDetails(invoice);
-        
-    } catch (error) {
-        console.error('Error loading invoice details:', error);
-        showError('Không thể tải chi tiết hóa đơn.');
-    }
+    $('#totalInvoices').text(totalInvoices);
+    $('#totalPaid').text(paidInvoices);
+    $('#totalPending').text(pendingInvoices);
+    $('#totalRevenue').text(formatCurrency(totalRevenue));
 }
 
-// Show invoice details in modal
-function showInvoiceDetails(invoice) {
-    const modal = new bootstrap.Modal(document.getElementById('invoiceDetailModal'));
-    const content = $('#invoiceDetailContent');
-    
-    const html = `
-        <div class="row">
-            <div class="col-md-6">
-                <h6 class="text-muted">Thông tin hóa đơn</h6>
-                <table class="table table-borderless">
-                    <tr>
-                        <td><strong>Mã hóa đơn:</strong></td>
-                        <td>#${invoice.invoice_id}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Ngày lập:</strong></td>
-                        <td>${formatDate(invoice.issue_date)}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Trạng thái:</strong></td>
-                        <td><span class="status-badge ${getStatusClass(invoice.status)}">${getStatusVN(invoice.status)}</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Tổng tiền:</strong></td>
-                        <td class="amount fw-bold">${formatCurrency(invoice.total_invoice || 0)}</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="col-md-6">
-                <h6 class="text-muted">Thông tin bệnh nhân</h6>
-                <table class="table table-borderless">
-                    <tr>
-                        <td><strong>Họ tên:</strong></td>
-                        <td>${invoice.patient_name || 'Không có'}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Số điện thoại:</strong></td>
-                        <td>${invoice.patient_phone || 'Không có'}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Địa chỉ:</strong></td>
-                        <td>${invoice.patient_address || 'Không có'}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Giới tính:</strong></td>
-                        <td>${invoice.patient_gender || 'Không có'}</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        
-        <div class="row mt-4">
-            <div class="col-12">
-                <h6 class="text-muted">Chi tiết thanh toán</h6>
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Diễn giải</th>
-                            <th class="text-end">Số tiền</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Tiền dịch vụ</td>
-                            <td class="text-end">${formatCurrency(invoice.total_service_price || 0)}</td>
-                        </tr>
-                        <tr>
-                            <td>Tiền thuốc</td>
-                            <td class="text-end">${formatCurrency(invoice.total_prescription_price || 0)}</td>
-                        </tr>
-                        <tr class="table-primary">
-                            <td><strong>Tổng cộng</strong></td>
-                            <td class="text-end"><strong>${formatCurrency(invoice.total_invoice || 0)}</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    `;
-    
-    content.html(html);
-    modal.show();
-}
+
 
 // Mark invoice as paid
 async function markAsPaid(invoiceId) {
@@ -419,15 +353,79 @@ async function markAsPaid(invoiceId) {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                if (response.status === 401) {
+                    showError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                    return;
+                }
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
             }
 
+            const result = await response.json();
             showSuccess('Đã đánh dấu hóa đơn thanh toán thành công!');
             refreshData();
             
         } catch (error) {
             console.error('Error updating invoice status:', error);
-            showError('Không thể cập nhật trạng thái hóa đơn!');
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack
+            });
+            showError('Không thể cập nhật trạng thái hóa đơn: ' + error.message);
+        }
+    }
+}
+
+// Mark invoice as pending
+async function markAsPending(invoiceId) {
+    const result = await Swal.fire({
+        title: 'Đổi về chờ thanh toán?',
+        text: `Bạn có chắc chắn muốn đổi hóa đơn #${invoiceId} về trạng thái chờ thanh toán?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#f39c12',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Đổi trạng thái',
+        cancelButtonText: 'Hủy'
+    });
+
+    if (result.isConfirmed) {
+        try {
+            const response = await fetch(`/api/receptionist/invoices/${invoiceId}/status`, {
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: 'Pending' })
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    showError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                    return;
+                }
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            showSuccess('Đã đổi trạng thái hóa đơn về chờ thanh toán thành công!');
+            refreshData();
+            
+        } catch (error) {
+            console.error('Error updating invoice status to pending:', error);
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack
+            });
+            showError('Không thể đổi trạng thái hóa đơn: ' + error.message);
         }
     }
 }
@@ -457,15 +455,28 @@ async function cancelInvoice(invoiceId) {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                if (response.status === 401) {
+                    showError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                    return;
+                }
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
             }
 
+            const result = await response.json();
             showSuccess('Đã hủy hóa đơn thành công!');
             refreshData();
             
         } catch (error) {
             console.error('Error cancelling invoice:', error);
-            showError('Không thể hủy hóa đơn.');
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack
+            });
+            showError('Không thể hủy hóa đơn: ' + error.message);
         }
     }
 }
@@ -481,12 +492,7 @@ function exportToExcel() {
     showInfo('Chức năng xuất Excel sẽ được triển khai sớm.');
 }
 
-// Print invoice
-function printInvoice() {
-    if (currentInvoiceId) {
-        window.open(`/api/receptionist/invoices/${currentInvoiceId}/print`, '_blank');
-    }
-}
+
 
 // Logout function
 function logout() {
@@ -546,14 +552,34 @@ function formatCurrency(amount) {
 function showLoading(show) {
     const spinner = $('#loadingSpinner');
     const table = $('#invoiceTable');
+    const errorState = $('#errorState');
     
     if (show) {
         spinner.show();
         table.hide();
+        errorState.hide();
     } else {
         spinner.hide();
         table.show();
+        errorState.hide();
     }
+}
+
+function showErrorState(message) {
+    const spinner = $('#loadingSpinner');
+    const table = $('#invoiceTable');
+    const errorState = $('#errorState');
+    const errorMessage = $('#errorMessage');
+    
+    spinner.hide();
+    table.hide();
+    errorMessage.text(message);
+    errorState.show();
+}
+
+// Retry loading data
+function retryLoad() {
+    loadInvoices();
 }
 
 function showSuccess(message) {
