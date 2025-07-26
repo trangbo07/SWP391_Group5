@@ -1,6 +1,9 @@
 // Global variables
 let invoiceData = [];
 let dataTable;
+let currentPage = 1;
+let pageSize = 10;
+let filteredData = [];
 
 // Initialize when page loads
 $(document).ready(function() {
@@ -65,11 +68,9 @@ async function debugUserRole() {
 
 // Setup event listeners
 function setupEventListeners() {
-    // Search functionality
-    $('#searchFilter').on('keyup', function() {
-        if (dataTable) {
-            dataTable.search(this.value).draw();
-        }
+    // Real-time search functionality
+    $('#searchFilter').on('input', function() {
+        applyFilters();
     });
 
     // Status filter
@@ -80,6 +81,14 @@ function setupEventListeners() {
     // Date filter
     $('#dateFilter').on('change', function() {
         applyFilters();
+    });
+
+    // Page size change
+    $('#pageSizeSelect').on('change', function() {
+        pageSize = parseInt($(this).val());
+        currentPage = 1;
+        renderPagination();
+        renderInvoices();
     });
 
     // Auto refresh every 30 seconds
@@ -122,6 +131,7 @@ async function loadInvoices() {
         }
         
         invoiceData = data;
+        filteredData = [...data]; // Initialize filtered data
         
         renderInvoices();
         updateStatistics();
@@ -139,12 +149,12 @@ async function loadInvoices() {
     }
 }
 
-// Render invoices in table
+// Render invoices in table with pagination
 function renderInvoices() {
     const tbody = $('#invoiceTableBody');
     tbody.empty();
 
-    if (!invoiceData || invoiceData.length === 0) {
+    if (!filteredData || filteredData.length === 0) {
         tbody.append(`
             <tr>
                 <td colspan="8" class="text-center py-4">
@@ -153,13 +163,26 @@ function renderInvoices() {
                 </td>
             </tr>
         `);
+        updatePaginationInfo(0);
+        renderPagination();
         return;
     }
 
-    invoiceData.forEach(invoice => {
+    // Calculate pagination
+    const totalPages = Math.ceil(filteredData.length / pageSize);
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = Math.min(startIndex + pageSize, filteredData.length);
+    const pageData = filteredData.slice(startIndex, endIndex);
+
+    // Render page data
+    pageData.forEach(invoice => {
         const row = createInvoiceRow(invoice);
         tbody.append(row);
     });
+
+    // Update pagination info and controls
+    updatePaginationInfo(filteredData.length, startIndex + 1, endIndex);
+    renderPagination(totalPages);
 }
 
 
@@ -220,31 +243,10 @@ function createInvoiceRow(invoice) {
     `;
 }
 
-// Initialize DataTable
+// Initialize DataTable (simplified for custom pagination)
 function initializeDataTable() {
-    dataTable = $('#invoiceTable').DataTable({
-        pageLength: 10,
-        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Tất cả"]],
-        order: [[0, 'desc']], // Sort by invoice ID descending
-        responsive: true,
-        language: {
-            search: "Tìm kiếm:",
-            lengthMenu: "Hiển thị _MENU_ hóa đơn",
-            info: "Hiển thị _START_ đến _END_ của _TOTAL_ hóa đơn",
-            infoEmpty: "Không có hóa đơn nào",
-            infoFiltered: "(lọc từ _MAX_ hóa đơn)",
-            zeroRecords: "Không tìm thấy hóa đơn phù hợp",
-            paginate: {
-                first: "Đầu",
-                last: "Cuối",
-                next: "Tiếp",
-                previous: "Trước"
-            }
-        },
-        columnDefs: [
-            { orderable: false, targets: 7 } // Actions column
-        ]
-    });
+    // Remove DataTable initialization since we're using custom pagination
+    // The table will be managed by our custom pagination system
 }
 
 // Update statistics
@@ -270,7 +272,7 @@ function applyFilters() {
     const dateFilter = $('#dateFilter').val();
     const searchFilter = $('#searchFilter').val();
 
-    let filteredData = invoiceData;
+    filteredData = [...invoiceData];
 
     // Status filter
     if (statusFilter) {
@@ -295,15 +297,11 @@ function applyFilters() {
         );
     }
 
-    // Update table with filtered data
-    if (dataTable) {
-        dataTable.clear();
-        filteredData.forEach(invoice => {
-            const row = createInvoiceRow(invoice);
-            dataTable.row.add($(row));
-        });
-        dataTable.draw();
-    }
+    // Reset to first page when filtering
+    currentPage = 1;
+    
+    // Update table and pagination
+    renderInvoices();
     
     // Update statistics based on filtered data
     updateFilteredStatistics(filteredData);
@@ -324,6 +322,111 @@ function updateFilteredStatistics(filteredData) {
     $('#totalPaid').text(paidInvoices);
     $('#totalPending').text(pendingInvoices);
     $('#totalRevenue').text(formatCurrency(totalRevenue));
+}
+
+// Update pagination info
+function updatePaginationInfo(totalItems, startItem = 0, endItem = 0) {
+    if (totalItems === 0) {
+        $('#paginationInfo').text('Không có hóa đơn nào');
+    } else {
+        $('#paginationInfo').text(`Hiển thị ${startItem}-${endItem} của ${totalItems} hóa đơn`);
+    }
+}
+
+// Render pagination controls
+function renderPagination(totalPages = 0) {
+    const container = $('#paginationContainer');
+    container.empty();
+
+    if (totalPages <= 1) {
+        return;
+    }
+
+    // Previous button
+    const prevDisabled = currentPage === 1 ? 'disabled' : '';
+    container.append(`
+        <li class="page-item ${prevDisabled}">
+            <a class="page-link" href="#" onclick="goToPage(${currentPage - 1})" ${prevDisabled}>
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </li>
+    `);
+
+    // Page numbers
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    // First page
+    if (startPage > 1) {
+        container.append(`
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="goToPage(1)">1</a>
+            </li>
+        `);
+        if (startPage > 2) {
+            container.append(`
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            `);
+        }
+    }
+
+    // Page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        const active = i === currentPage ? 'active' : '';
+        container.append(`
+            <li class="page-item ${active}">
+                <a class="page-link" href="#" onclick="goToPage(${i})">${i}</a>
+            </li>
+        `);
+    }
+
+    // Last page
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            container.append(`
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            `);
+        }
+        container.append(`
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="goToPage(${totalPages})">${totalPages}</a>
+            </li>
+        `);
+    }
+
+    // Next button
+    const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+    container.append(`
+        <li class="page-item ${nextDisabled}">
+            <a class="page-link" href="#" onclick="goToPage(${currentPage + 1})" ${nextDisabled}>
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </li>
+    `);
+}
+
+// Go to specific page
+function goToPage(page) {
+    if (page < 1 || page > Math.ceil(filteredData.length / pageSize)) {
+        return;
+    }
+    currentPage = page;
+    renderInvoices();
+}
+
+// Clear search
+function clearSearch() {
+    $('#searchFilter').val('');
+    applyFilters();
 }
 
 
