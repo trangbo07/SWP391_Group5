@@ -89,20 +89,20 @@
                                 <input
                                         type="text"
                                         name="username"
-                                        placeholder="Your username *"
+                                        placeholder="Tên đăng nhập *"
                                         class="form-control mb-5"
                                         required
-                                        title="username" />
+                                        title="Tên đăng nhập" />
                             </div>
                             <div class="custom-form-field">
                                 <input
                                         type="email"
                                         name="email"
-                                        placeholder="Your email *"
+                                        placeholder="Email *"
                                         class="form-control mb-5"
                                         required
                                         pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$"
-                                        title="Please enter a valid Gmail address (e.g., example@gmail.com)" />
+                                        title="Vui lòng nhập địa chỉ Gmail hợp lệ (ví dụ: example@gmail.com)" />
                             </div>
 
                             <!-- Trường mật khẩu -->
@@ -111,12 +111,12 @@
                                         type="password"
                                         id="password"
                                         name="password"
+                                        placeholder="Mật khẩu *"
                                         class="form-control mb-5"
-                                        placeholder="Your password *"
                                         required
-                                        minlength="8"
-                                        maxlength="30"
-                                        title="Mật khẩu phải có chữ hoa, chữ thường, số và ký tự đặc biệt"
+                                        minlength="6"
+                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
+                                        title="Mật khẩu tối thiểu 6 ký tự, có chữ hoa, chữ thường và số"
                                 />
                             </div>
 
@@ -125,22 +125,21 @@
                                         type="password"
                                         id="re_password"
                                         name="re_password"
-                                        placeholder="Confirm password *"
+                                        placeholder="Nhập lại mật khẩu *"
                                         class="form-control mb-5"
                                         required
+                                        minlength="6"
+                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
+                                        title="Mật khẩu tối thiểu 6 ký tự, có chữ hoa, chữ thường và số"
                                 />
                             </div>
                             <div id="errorMessage" class="text-danger mb-3"></div>
-                            <p class="mb-5"> Your personal data will be used to support
-                                your experience throughout this
-                                website, to manage access to your account, and for other
-                                purposes described in our <a
-                                        href="./privacy-policy.html"> privcy policy</a>.
+                            <p class="mb-5"> Dữ liệu cá nhân của bạn sẽ được sử dụng để hỗ trợ trải nghiệm trên website, quản lý tài khoản và cho các mục đích khác theo <a href="./privacy-policy.html">chính sách bảo mật</a>.
                             </p>
                             <button type="submit"
                                     class="iq-button text-capitalize border-0">
                      <span
-                             class="iq-btn-text-holder position-relative">register</span>
+                             class="iq-btn-text-holder position-relative">Đăng ký</span>
                                 <span class="iq-btn-icon-holder">
                         <svg xmlns="http://www.w3.org/2000/svg" width="10"
                              height="10" viewBox="0 0 8 8" fill="none">
@@ -152,11 +151,11 @@
                             </button>
                         </form>
                         <div class="d-flex align-items-center mt-3">
-                            <p class="my-0 text-capitalize">Already have an account?</p>
+                            <p class="my-0 text-capitalize">Đã có tài khoản?</p>
                             <h5 class="sign_up_btn mb-0 ms-2">
                                 <div class="iq-btn-container">
                                     <a class="iq-button iq-btn-link text-capitalize" href="login.html">
-                                        sign in
+                                        Đăng nhập
                                         <span class="btn-link-icon">
                               <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 8 8" fill="none">
                                  <path d="M7.32046 4.70834H4.74952V7.25698C4.74952 7.66734 4.41395 8 4 8C3.58605 8 3.25048 7.66734 3.25048 7.25698V4.70834H0.679545C0.293423 4.6687 0 4.34614 0 3.96132C0 3.5765 0.293423 3.25394 0.679545 3.21431H3.24242V0.673653C3.28241 0.290878 3.60778 0 3.99597 0C4.38416 0 4.70954 0.290878 4.74952 0.673653V3.21431H7.32046C7.70658 3.25394 8 3.5765 8 3.96132C8 4.34614 7.70658 4.6687 7.32046 4.70834Z" fill="currentColor"></path>
