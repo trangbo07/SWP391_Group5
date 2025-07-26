@@ -280,6 +280,55 @@
                 padding: 10px 15px;
             }
 
+            /* Password change form styles */
+            .change-password-section {
+                background: var(--bs-card-bg);
+                border-radius: 10px;
+                padding: 20px;
+                border: 1px solid var(--bs-border-color);
+            }
+
+            .input-group .btn-outline-secondary {
+                border-left: none;
+            }
+
+            .input-group .form-control:focus {
+                border-right: none;
+                box-shadow: none;
+            }
+
+            .input-group .btn-outline-secondary:focus {
+                box-shadow: none;
+            }
+
+            .form-label i {
+                color: var(--bs-primary);
+            }
+
+            .form-text i {
+                color: var(--bs-info);
+            }
+
+            /* Password strength indicator */
+            .password-strength {
+                height: 4px;
+                border-radius: 2px;
+                margin-top: 5px;
+                transition: all 0.3s ease;
+            }
+
+            .password-strength.weak {
+                background: linear-gradient(to right, #dc3545 0%, #dc3545 33%, #e9ecef 33%, #e9ecef 100%);
+            }
+
+            .password-strength.medium {
+                background: linear-gradient(to right, #ffc107 0%, #ffc107 66%, #e9ecef 66%, #e9ecef 100%);
+            }
+
+            .password-strength.strong {
+                background: linear-gradient(to right, #198754 0%, #198754 100%);
+            }
+
             /* Dark mode support */
             [data-bs-theme='dark'] .sidebar .nav-link.active {
                 background-color: var(--bs-primary);
@@ -958,12 +1007,57 @@
                         <div class="card w-100 shadow-sm">
                             <div class="card-body d-flex flex-column justify-content-between">
                                 <h4 class="card-title text-center mb-4"><i class="fas fa-user-shield me-2"></i>Account Center</h4>
-                                <button class="btn btn-outline-primary w-100 mb-3" id="show-change-password"><i class="fas fa-key me-2"></i>Change Password</button>
-                                <div class="mb-3" id="change-password-section" style="display:none;">
-                                    <div class="mb-2">
-                                        <input type="password" id="change-password" class="form-control" placeholder="Enter new password...">
-                                    </div>
-                                    <button class="btn btn-success w-100"><i class="fas fa-check me-2"></i>Confirm Change</button>
+                                <button class="btn btn-outline-primary w-100 mb-3" id="show-change-password"><i class="fas fa-key me-2"></i>Đổi mật khẩu</button>
+                                <div class="mb-3 change-password-section" id="change-password-section" style="display:none;">
+                                    <form id="change-password-form">
+                                        <div class="mb-3">
+                                            <label for="current-password" class="form-label">
+                                                <i class="fas fa-lock me-2"></i>Mật khẩu hiện tại
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="password" id="current-password" name="currentPassword" class="form-control" placeholder="Nhập mật khẩu hiện tại..." required>
+                                                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('current-password')">
+                                                    <i class="fas fa-eye" id="current-password-icon"></i>
+                                                </button>
+                                            </div>
+                                            <div class="invalid-feedback" id="current-password-error"></div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="new-password" class="form-label">
+                                                <i class="fas fa-key me-2"></i>Mật khẩu mới
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="password" id="new-password" name="newPassword" class="form-control" placeholder="Nhập mật khẩu mới..." required>
+                                                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('new-password')">
+                                                    <i class="fas fa-eye" id="new-password-icon"></i>
+                                                </button>
+                                            </div>
+                                            <div class="invalid-feedback" id="new-password-error"></div>
+                                            <small class="form-text text-muted">
+                                                <i class="fas fa-info-circle me-1"></i>Mật khẩu phải có ít nhất 6 ký tự
+                                            </small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="confirm-password" class="form-label">
+                                                <i class="fas fa-check-circle me-2"></i>Xác nhận mật khẩu mới
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="password" id="confirm-password" name="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu mới..." required>
+                                                <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('confirm-password')">
+                                                    <i class="fas fa-eye" id="confirm-password-icon"></i>
+                                                </button>
+                                            </div>
+                                            <div class="invalid-feedback" id="confirm-password-error"></div>
+                                        </div>
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-success" id="submit-change-password">
+                                                <i class="fas fa-check me-2"></i>Xác nhận đổi mật khẩu
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" id="cancel-change-password">
+                                                <i class="fas fa-times me-2"></i>Hủy
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                                 <button class="btn btn-outline-secondary w-100 mb-3" id="show-security-info"><i class="fas fa-lock me-2"></i>Security</button>
                                 <div id="security-info-section" style="display:none;">
@@ -1016,32 +1110,23 @@
                 </div>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    const btnChangePass = document.getElementById('show-change-password');
-                    const btnSecurity = document.getElementById('show-security-info');
-                    const sectionChangePass = document.getElementById('change-password-section');
-                    const sectionSecurity = document.getElementById('security-info-section');
-                    btnChangePass.addEventListener('click', function() {
-                        sectionChangePass.style.display = (sectionChangePass.style.display === 'none' || sectionChangePass.style.display === '') ? 'block' : 'none';
-                        sectionSecurity.style.display = 'none';
-                    });
-                    btnSecurity.addEventListener('click', function() {
-                        sectionSecurity.style.display = (sectionSecurity.style.display === 'none' || sectionSecurity.style.display === '') ? 'block' : 'none';
-                        sectionChangePass.style.display = 'none';
-                    });
                     // Toggle profile detail
                     const btnProfileDetail = document.getElementById('toggle-profile-detail');
                     const sectionProfileDetail = document.getElementById('profile-detail-section');
                     let detailOpen = false;
-                    btnProfileDetail.addEventListener('click', function() {
-                        detailOpen = !detailOpen;
-                        if(detailOpen) {
-                            sectionProfileDetail.style.display = 'block';
-                            btnProfileDetail.innerHTML = '<i class="fas fa-chevron-up me-2"></i>Hide Details';
-                        } else {
-                            sectionProfileDetail.style.display = 'none';
-                            btnProfileDetail.innerHTML = '<i class="fas fa-chevron-down me-2"></i>Show Details';
-                        }
-                    });
+                    
+                    if (btnProfileDetail && sectionProfileDetail) {
+                        btnProfileDetail.addEventListener('click', function() {
+                            detailOpen = !detailOpen;
+                            if(detailOpen) {
+                                sectionProfileDetail.style.display = 'block';
+                                btnProfileDetail.innerHTML = '<i class="fas fa-chevron-up me-2"></i>Ẩn chi tiết';
+                            } else {
+                                sectionProfileDetail.style.display = 'none';
+                                btnProfileDetail.innerHTML = '<i class="fas fa-chevron-down me-2"></i>Hiển thị chi tiết';
+                            }
+                        });
+                    }
                 });
             </script>
             </div>
@@ -1885,6 +1970,8 @@
         <script src="../assets/assets/js/sidebar.js?v=1.4.1" defer></script>
         <script src="../assets/jslogic/annoucement.js" defer></script>
         <script src="../assets/jslogic/logout.js" defer></script>
+        <script src="../assets/jslogic/change-password-admin-business.js" defer></script>
+        <script src="../assets/assets/vendor/sweetalert2/dist/sweetalert2.min.js" async></script>
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
