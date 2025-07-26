@@ -33,10 +33,10 @@ public class ReceptionistInvoiceServlet extends HttpServlet {
                 return;
             }
 
-            // Check if user is receptionist or admin business
+            // Check if user is receptionist, admin business, or patient
             AccountStaff user = (AccountStaff) session.getAttribute("user");
             String role = user.getRole();
-            if (!("Receptionist".equals(role) || "AdminBusiness".equals(role))) {
+            if (!("Receptionist".equals(role) || "AdminBusiness".equals(role) || "Patient".equals(role))) {
                 resp.setStatus(403);
                 out.write("{\"error\":\"Access denied\"}");
                 return;
@@ -88,9 +88,10 @@ public class ReceptionistInvoiceServlet extends HttpServlet {
                 return;
             }
 
-            // Check if user is receptionist
+            // Check if user is receptionist, admin business, or patient
             AccountStaff user = (AccountStaff) session.getAttribute("user");
-            if (!"Receptionist".equals(user.getRole())) {
+            String role = user.getRole();
+            if (!("Receptionist".equals(role) || "AdminBusiness".equals(role) || "Patient".equals(role))) {
                 resp.setStatus(403);
                 out.write("{\"error\":\"Access denied\"}");
                 return;
