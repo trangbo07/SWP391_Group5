@@ -111,12 +111,12 @@
                                         type="password"
                                         id="password"
                                         name="password"
-                                        placeholder="Your password *"
                                         class="form-control mb-5"
+                                        placeholder="Your password *"
                                         required
-                                        minlength="6"
-                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
-                                        title="Password must be at least 6 characters with uppercase, lowercase, and number"
+                                        minlength="8"
+                                        maxlength="30"
+                                        title="Mật khẩu phải có chữ hoa, chữ thường, số và ký tự đặc biệt"
                                 />
                             </div>
 
@@ -128,9 +128,6 @@
                                         placeholder="Confirm password *"
                                         class="form-control mb-5"
                                         required
-                                        minlength="6"
-                                        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
-                                        title="Password must be at least 6 characters with uppercase, lowercase, and number"
                                 />
                             </div>
                             <div id="errorMessage" class="text-danger mb-3"></div>
@@ -278,3 +275,22 @@
 <script src="../assets/jslogic/registration.js" defer></script>
 </body>
 </html>
+<script>
+    const passwordInput = document.getElementById("password");
+
+    passwordInput.addEventListener("input", function () {
+        const value = passwordInput.value;
+
+        const hasUppercase = /[A-Z]/.test(value);
+        const hasLowercase = /[a-z]/.test(value);
+        const hasDigit = /\d/.test(value);
+        const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
+        const isValidLength = value.length >= 8 && value.length <= 30;
+
+        if (!hasUppercase || !hasLowercase || !hasDigit || !hasSpecial || !isValidLength) {
+            passwordInput.setCustomValidity("Mật khẩu phải từ 8-30 ký tự, có chữ hoa, chữ thường, số và ký tự đặc biệt.");
+        } else {
+            passwordInput.setCustomValidity("");
+        }
+    });
+</script>

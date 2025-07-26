@@ -970,6 +970,10 @@
         alert("Vui lòng nhập nội dung đánh giá.");
         return;
       }
+      if (comment.length > 100) {
+        alert("Nội dung đánh giá không được vượt quá 100 ký tự.");
+        return;
+      }
       fetch("/api/patient/feedback", {
         method: "POST",
         headers: {
@@ -981,6 +985,12 @@
               .then(data => {
                 alert(data.success ? "Gửi đánh giá thành công!" : (data.message || "Bạn đã đánh giá bác sĩ này rồi!"));
                 closeModal();
+                if (data.success) {
+                  // Reload lại pending feedback table
+                  if (typeof viewPendingBtn !== 'undefined' && viewPendingBtn) {
+                    viewPendingBtn.click();
+                  }
+                }
               })
               .catch(err => {
                 console.error(err);
