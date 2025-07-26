@@ -147,6 +147,36 @@ public class AccountStaffDAO {
         return staff;
     }
 
+    public boolean updatePasswordIfMatch(int accountStaffId, String oldPassword, String newPassword) {
+        String checkSql = "SELECT password FROM AccountStaff WHERE account_staff_id = ?";
+        String updateSql = "UPDATE AccountStaff SET password = ? WHERE account_staff_id = ?";
+
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+
+            checkStmt.setInt(1, accountStaffId);
+            ResultSet rs = checkStmt.executeQuery();
+
+            if (rs.next()) {
+                String currentPassword = rs.getString("password");
+                if (!currentPassword.equals(oldPassword)) {
+                    return false; // Mật khẩu cũ không khớp
+                }
+
+                try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                    updateStmt.setString(1, newPassword);
+                    updateStmt.setInt(2, accountStaffId);
+                    return updateStmt.executeUpdate() > 0;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false; // Không tìm thấy tài khoản hoặc có lỗi
+    }
+
     public Object getOStaffByStaffId(int account_staff_id, String role) {
         DBContext db = DBContext.getInstance();
         Object staffObject = null;

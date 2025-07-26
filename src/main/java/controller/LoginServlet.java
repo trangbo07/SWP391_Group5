@@ -67,9 +67,9 @@ public class LoginServlet extends HttpServlet {
                 redirectUrl = "home-patient.html";
             }
 
-            jsonResponse = new JsonResponse(true, "Login successful", redirectUrl);
+            jsonResponse = new JsonResponse(true, "Đăng nhập thành công", redirectUrl);
         } else {
-            jsonResponse = new JsonResponse(false, "Incorrect username or password");
+            jsonResponse = new JsonResponse(false, "Tên đăng nhập hoặc mật khẩu không đúng");
         }
 
         mapper.writeValue(response.getWriter(), jsonResponse);
