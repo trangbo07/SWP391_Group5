@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Login | Medical Clinic & Patient Management</title>
+    <title>Đăng nhập | Quản lý bệnh viện & Quản lý bệnh nhân</title>
     <!-- Config Options -->
     <meta name="setting_options" content='{&quot;saveLocal&quot;:&quot;sessionStorage&quot;,&quot;storeKey&quot;:&quot;huisetting&quot;,&quot;setting&quot;:{&quot;app_name&quot;:{&quot;value&quot;:&quot;Kivicare&quot;}}}'>
     <!-- Google Font Api KEY-->
@@ -52,6 +52,52 @@
             min-height: 100vh;
             width: 100%;
         }
+        
+        /* Smooth loading animations */
+        .iq-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .iq-button:disabled {
+            cursor: not-allowed;
+            transform: scale(0.98);
+            opacity: 0.7;
+        }
+        
+        .iq-btn-text-holder,
+        .iq-btn-icon-holder {
+            transition: opacity 0.2s ease-out;
+        }
+        
+        #loginLoading {
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .spinner-border {
+            animation: spinner-border 0.75s linear infinite;
+        }
+        
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Success animation */
+        .success-text {
+            color: #28a745 !important;
+            font-weight: 500;
+        }
+        
+        /* Error animation */
+        #errorMessage {
+            transition: all 0.3s ease-in-out;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
     </style>
     <script src="../assets/js/context-path.js"></script>
 </head>
@@ -87,18 +133,17 @@
                         </div>
                         <form id="loginForm" method="post">
                             <div class="custom-form-field">
-                                <label for="username">Username or email
-                                    address&nbsp;<span>*</span></label>
+                                <label for="username">Tên đăng nhập hoặc email&nbsp;<span>*</span></label>
                                 <input
                                         type="text"
                                         id="username"
                                         name="user-name"
                                         class="form-control mb-5"
                                         required
-                                        title="Please enter a valid Gmail address (e.g., example@gmail.com)">
+                                        title="Vui lòng nhập địa chỉ Gmail hợp lệ (ví dụ: example@gmail.com)">
                             </div>
                             <div class="custom-form-field">
-                                <label for="password">Password&nbsp; <span>*</span>
+                                <label for="password">Mật khẩu&nbsp; <span>*</span>
                                 </label>
                                 <input type="password" id="password" name="password" class="form-control mb-5"
                                        required>
@@ -109,36 +154,40 @@
                                 <label class="custom-form-field">
                                     <input type="checkbox" id="rememberme" name="rememberme" class="mr-2">
                                     <span class="checkmark"></span>
-                                    <span>Remember me</span>
+                                    <span>Ghi nhớ đăng nhập</span>
                                 </label>
-                                <a href="reset-password.html" class="forgot-pwd">Forgot
-                                    Password?</a>
+                                <a href="reset-password.html" class="forgot-pwd">Quên mật khẩu?</a>
                             </div>
                             <div class="iq-btn-container">
-                                <button type="submit"
-                                        class="iq-button text-capitalize border-0">
-                        <span class="iq-btn-text-holder position-relative">log
-                           in</span>
-                                    <span class="iq-btn-icon-holder">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="10"
-                                height="10" viewBox="0 0 8 8" fill="none">
-                              <path
-                                      d="M7.32046 4.70834H4.74952V7.25698C4.74952 7.66734 4.41395 8 4 8C3.58605 8 3.25048 7.66734 3.25048 7.25698V4.70834H0.679545C0.293423 4.6687 0 4.34614 0 3.96132C0 3.5765 0.293423 3.25394 0.679545 3.21431H3.24242V0.673653C3.28241 0.290878 3.60778 0 3.99597 0C4.38416 0 4.70954 0.290878 4.74952 0.673653V3.21431H7.32046C7.70658 3.25394 8 3.5765 8 3.96132C8 4.34614 7.70658 4.6687 7.32046 4.70834Z"
-                                      fill="currentColor"></path>
-                           </svg>
-                        </span>
+                                <button type="submit" id="loginBtn"
+                                        class="iq-button text-capitalize border-0" style="transition: all 0.3s ease-in-out;">
+                                    <span class="iq-btn-text-holder position-relative" id="loginText">Đăng nhập</span>
+                                    <span class="iq-btn-icon-holder" id="loginIcon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="10"
+                                             height="10" viewBox="0 0 8 8" fill="none">
+                                            <path
+                                                    d="M7.32046 4.70834H4.74952V7.25698C4.74952 7.66734 4.41395 8 4 8C3.58605 8 3.25048 7.66734 3.25048 7.25698V4.70834H0.679545C0.293423 4.6687 0 4.34614 0 3.96132C0 3.5765 0.293423 3.25394 0.679545 3.21431H3.24242V0.673653C3.28241 0.290878 3.60778 0 3.99597 0C4.38416 0 4.70954 0.290878 4.74952 0.673653V3.21431H7.32046C7.70658 3.25394 8 3.5765 8 3.96132C8 4.34614 7.70658 4.6687 7.32046 4.70834Z"
+                                                    fill="currentColor"></path>
+                                        </svg>
+                                    </span>
                                 </button>
+                            </div>
+                            <div id="loginLoading" class="text-center mt-3" style="display: none; opacity: 0; transition: opacity 0.3s ease-in-out;">
+                                <div class="spinner-border text-primary" role="status" style="width: 1.5rem; height: 1.5rem;">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 text-muted mb-0">Đang đăng nhập...</p>
                             </div>
                         </form>
 
 
 
                         <div class="d-flex align-items-center mt-5 flex-wrap gap-2">
-                            <p class="my-0 text-capitalize">Don't have an account?</p>
+                            <p class="my-0 text-capitalize">Chưa có tài khoản?</p>
                             <h5 class="sign_up_btn mb-0">
                                 <div class="iq-btn-container">
                                     <a class="iq-button iq-btn-link text-capitalize" href="registration.html">
-                                        Sign up
+                                        Đăng ký
                                         <span class="btn-link-icon">
                               <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 8 8" fill="none">
                                  <path d="M7.32046 4.70834H4.74952V7.25698C4.74952 7.66734 4.41395 8 4 8C3.58605 8 3.25048 7.66734 3.25048 7.25698V4.70834H0.679545C0.293423 4.6687 0 4.34614 0 3.96132C0 3.5765 0.293423 3.25394 0.679545 3.21431H3.24242V0.673653C3.28241 0.290878 3.60778 0 3.99597 0C4.38416 0 4.70954 0.290878 4.74952 0.673653V3.21431H7.32046C7.70658 3.25394 8 3.5765 8 3.96132C8 4.34614 7.70658 4.6687 7.32046 4.70834Z" fill="currentColor"></path>
