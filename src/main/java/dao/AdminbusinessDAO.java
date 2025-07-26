@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import dto.AdminBusinessDTO;
+import util.PasswordHasherSHA256Util;
 
 public class AdminbusinessDAO {
     public boolean checkScheduleDuplicate(int doctorId, String date, String shift) {
@@ -105,7 +106,7 @@ public class AdminbusinessDAO {
         try (Connection conn = DBContext.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            ps.setString(1, newPassword);
+            ps.setString(1, PasswordHasherSHA256Util.hashPassword(newPassword));
             ps.setInt(2, accountStaffId);
             
             return ps.executeUpdate() > 0;
@@ -113,5 +114,32 @@ public class AdminbusinessDAO {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    public boolean verifyCurrentPassword(int accountStaffId, String currentPassword) {
+        String sql = "SELECT password FROM AccountStaff WHERE account_staff_id = ?";
+        
+        try (Connection conn = DBContext.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, accountStaffId);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                String storedPassword = rs.getString("password");
+                System.out.println("Stored password hash: " + storedPassword);
+                System.out.println("Current password: " + currentPassword);
+                boolean result = storedPassword != null && PasswordHasherSHA256Util.verifyPassword(currentPassword, storedPassword);
+                System.out.println("Password verification result: " + result);
+                return result;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean changePassword(int accountStaffId, String newPassword) {
+        return updatePassword(accountStaffId, newPassword);
     }
 }
